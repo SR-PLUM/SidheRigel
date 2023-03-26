@@ -72,3 +72,12 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Character Asset
+Content/ParagonCrunch/*
+Content/ParagonKhaimera/*
+Content/ParagonFey/*
+Content/ParagonSevarog/*
+Content/ParagonIggyScorch/*
+Content/ParagonMurdock/*
+
