@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SidheRigelCharacter.h"
 #include "UObject/ConstructorHelpers.h"
@@ -48,4 +48,44 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+}
+
+void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	check(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction("SkillOne", IE_Pressed, this, &ASidheRigelCharacter::SkillOne);
+	PlayerInputComponent->BindAction("SkillTwo", IE_Pressed, this, &ASidheRigelCharacter::SkillTwo);
+	PlayerInputComponent->BindAction("SkillThree", IE_Pressed, this, &ASidheRigelCharacter::SkillThree);
+	PlayerInputComponent->BindAction("SkillFour", IE_Pressed, this, &ASidheRigelCharacter::SkillFour);
+}
+
+void ASidheRigelCharacter::SkillOne()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Q"));
+}
+
+void ASidheRigelCharacter::SkillTwo()
+{
+	UE_LOG(LogTemp, Warning, TEXT("W"));
+}
+
+void ASidheRigelCharacter::SkillThree()
+{
+	UE_LOG(LogTemp, Warning, TEXT("E"));
+}
+
+void ASidheRigelCharacter::SkillFour()
+{
+	UE_LOG(LogTemp, Warning, TEXT("R"));
+}
+
+void ASidheRigelCharacter::SetLevel(int32 _level)
+{
+	level = _level;
+
+	if ((level != 19) && (level % 3 == 1 || level == 20))
+	{
+		//특성 띄우기
+	}
 }

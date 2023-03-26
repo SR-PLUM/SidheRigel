@@ -25,14 +25,7 @@ void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 		// Look for the touch location
 		FVector HitLocation = FVector::ZeroVector;
 		FHitResult Hit;
-		if(bIsTouch)
-		{
-			GetHitResultUnderFinger(ETouchIndex::Touch1, ECC_Visibility, true, Hit);
-		}
-		else
-		{
-			GetHitResultUnderCursor(ECC_Visibility, true, Hit);
-		}
+		GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 		HitLocation = Hit.Location;
 
 		// Direct the Pawn towards that location
@@ -56,11 +49,6 @@ void ASidheRigelPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ASidheRigelPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &ASidheRigelPlayerController::OnSetDestinationReleased);
-
-	// support touch devices 
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ASidheRigelPlayerController::OnTouchPressed);
-	InputComponent->BindTouch(EInputEvent::IE_Released, this, &ASidheRigelPlayerController::OnTouchReleased);
-
 }
 
 void ASidheRigelPlayerController::OnSetDestinationPressed()
@@ -89,16 +77,4 @@ void ASidheRigelPlayerController::OnSetDestinationReleased()
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitLocation);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitLocation, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
-}
-
-void ASidheRigelPlayerController::OnTouchPressed(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	bIsTouch = true;
-	OnSetDestinationPressed();
-}
-
-void ASidheRigelPlayerController::OnTouchReleased(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	bIsTouch = false;
-	OnSetDestinationReleased();
 }
