@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -17,22 +17,29 @@ public:
 	// Sets default values for this actor's properties
 	ADummy();
 
-protected:	//ÀÎÅÍÆäÀÌ½º ±¸Çö
+protected:	//ì¸í„°í˜ì´ìŠ¤ êµ¬í˜„
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void TakeDamage(float damage) override;
-	virtual void RestoreHP(float value) override;
+	UFUNCTION()
+		virtual void TakeDamage(float damage) override;
+	UFUNCTION()
+		virtual void RestoreHP(float value) override;
 	
-	virtual void Stun(float time) override;
-	virtual void Stop(float time) override;
-	virtual void Slow(float time, float value) override;
-	virtual void Silence(float time) override;
-	virtual void Airborne(float time) override;
+	UFUNCTION()
+		virtual void Stun(float time) override;
+	UFUNCTION()
+		virtual void Stop(float time) override;
+	UFUNCTION()
+		virtual void Slow(float time, float value) override;
+	UFUNCTION()
+		virtual void Silence(float time) override;
+	UFUNCTION()
+		virtual void Airborne(float time) override;
 
-private:	//½ºÅİ
+private:	//ìŠ¤í…Ÿ
 	UPROPERTY()
-		TMap<FString, float> MaxHP;			//·¹º§¾÷À» Á¦¿ÜÇÑ ´Ù¸¥ ¿äÀÎµé¿¡ ÀÇÇØ Áõ°¡µÇ´Â Ã¼·Â µñ¼Å³Ê¸®
+		TMap<FString, float> MaxHP;			//ë ˆë²¨ì—…ì„ ì œì™¸í•œ ë‹¤ë¥¸ ìš”ì¸ë“¤ì— ì˜í•´ ì¦ê°€ë˜ëŠ” ì²´ë ¥ ë”•ì…”ë„ˆë¦¬
 	UPROPERTY()
 		float currentHP;
 
@@ -40,7 +47,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-protected:	//¸Å½¬
+protected:	//ë§¤ì‰¬
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* DummyMesh;
 };

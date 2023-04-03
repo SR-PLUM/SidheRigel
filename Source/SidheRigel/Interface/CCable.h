@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -22,9 +22,14 @@ class SIDHERIGEL_API ICCable
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void Stun(float time) = 0;
-	virtual void Stop(float time) = 0;
-	virtual void Slow(float time, float value) = 0;
-	virtual void Silence(float time) = 0;
-	virtual void Airborne(float time) = 0;
+	UFUNCTION()
+		virtual void Stun(float time) = 0;
+	UFUNCTION()
+		virtual void Stop(float time) = 0;
+	UFUNCTION()
+		virtual void Slow(float time, float value) = 0;
+	UFUNCTION()
+		virtual void Silence(float time) = 0;
+	UFUNCTION()
+		virtual void Airborne(float time) = 0;
 };

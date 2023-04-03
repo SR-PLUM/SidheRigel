@@ -89,3 +89,35 @@ void ASidheRigelCharacter::SetLevel(int32 _level)
 		//특성 띄우기
 	}
 }
+
+void ASidheRigelCharacter::Attack()
+{
+}
+
+void ASidheRigelCharacter::Stun(float time)
+{
+}
+
+void ASidheRigelCharacter::Stop(float time)
+{
+}
+
+void ASidheRigelCharacter::Slow(float time, float value)
+{
+}
+
+void ASidheRigelCharacter::Silence(float time)
+{
+}
+
+void ASidheRigelCharacter::Airborne(float time)
+{
+}
+
+void ASidheRigelCharacter::TakeDamage(float damage)
+{
+}
+
+void ASidheRigelCharacter::RestoreHP(float value)
+{
+}

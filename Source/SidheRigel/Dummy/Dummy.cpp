@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Dummy.h"
@@ -9,10 +9,10 @@ ADummy::ADummy()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//½ºÅ×Æ½ ¸Ş½¬ ÄÄÆ÷³ÍÆ® »ı¼º
+	//ìŠ¤í…Œí‹± ë©”ì‰¬ ì»´í¬ë„ŒíŠ¸ ìƒì„±
 	DummyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DummyMeshComponent"));
 
-	//±âº» ½ºÅİ Ãß°¡
+	//ê¸°ë³¸ ìŠ¤í…Ÿ ì¶”ê°€
 	MaxHP.Add(TEXT("Default"), 100);
 }
 

@@ -4,10 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/Attackable.h"
+#include "Interface/CCable.h"
+#include "Interface/Damagable.h"
+#include "Interface/Movable.h"
 #include "SidheRigelCharacter.generated.h"
 
 UCLASS(Blueprintable)
-class ASidheRigelCharacter : public ACharacter
+class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable
 {
 	GENERATED_BODY()
 
@@ -89,5 +93,25 @@ protected:	//Stat
 
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
+
+public:		//Interface Implement
+	UFUNCTION()
+		virtual void Attack() override;
+
+	UFUNCTION()
+		virtual void Stun(float time) override;
+	UFUNCTION()
+		virtual void Stop(float time) override;
+	UFUNCTION()
+		virtual void Slow(float time, float value) override;
+	UFUNCTION()
+		virtual void Silence(float time) override;
+	UFUNCTION()
+		virtual void Airborne(float time) override;
+
+	UFUNCTION()
+		virtual void TakeDamage(float damage) override;
+	UFUNCTION()
+		virtual void RestoreHP(float value) override;
 };
 
