@@ -18,7 +18,7 @@ class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCab
 public:
 	ASidheRigelCharacter();
 
-	// Called every frame.
+	virtual void BeginPlay();
 	virtual void Tick(float DeltaSeconds) override;
 
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);

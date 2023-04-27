@@ -42,9 +42,12 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;	
+}
 
-	UE_LOG(LogTemp, Warning, TEXT("TESTTESTTESTTEST"));
+void ASidheRigelCharacter::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
