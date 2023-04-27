@@ -4,10 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/Attackable.h"
+#include "Interface/CCable.h"
+#include "Interface/Damagable.h"
+#include "Interface/Movable.h"
 #include "SidheRigelCharacter.generated.h"
 
 UCLASS(Blueprintable)
-class ASidheRigelCharacter : public ACharacter
+class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable
 {
 	GENERATED_BODY()
 
@@ -24,7 +28,7 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-private:
+protected:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* TopDownCameraComponent;
@@ -45,79 +49,69 @@ protected:	//Skill
 
 protected:	//Stat
 	UPROPERTY()
-		int32 level;										//레벨
+		int32 level;							//레벨
 	UPROPERTY()
-		int32 experience;									//현재 보유하고 있는 경험치
+		int32 experience;						//현재 보유하고 있는 경험치
 	UPROPERTY()
-		float range;										//사거리
+		float currentHP;						//현재 체력
 	UPROPERTY()
-		TMap<FString, float> additionalRange;				//레벨업을 제외한 다른 요인들에 의해 증가되는 사거리 딕셔너리
+		TMap<FString, float> range;				//레벨업을 제외한 다른 요인들에 의해 증가되는 사거리 딕셔너리
 	UPROPERTY()
-		float speed;										//이동속도
+		TMap<FString, float> speed;				//레벨업을 제외한 다른 요인들에 의해 증가되는 이동속도 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> additionalSpeed;				//레벨업을 제외한 다른 요인들에 의해 증가되는 이동속도 딕셔너리
+		TMap<FString, float> attackDamage;		//레벨업을 제외한 다른 요인들에 의해 증가되는 공격력 딕셔너리
 	UPROPERTY()
-		float attackDamage;									//공격력
+		TMap<FString, float> abiltyPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 주문력 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> additionalAttackDamage;		//레벨업을 제외한 다른 요인들에 의해 증가되는 공격력 딕셔너리
+		TMap<FString, int32> criticalRate;		//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 확률 딕셔너리
 	UPROPERTY()
-		float abilityPower;									//주문력
+		TMap<FString, int32> criticalDamage;	//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 피해 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> additionalAbiltyPower;			//레벨업을 제외한 다른 요인들에 의해 증가되는 주문력 딕셔너리
+		TMap<FString, float> attackSpeed;		//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 피해 딕셔너리
 	UPROPERTY()
-		TMap<FString, int32> additionalCriticalRate;		//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 확률 딕셔너리
+		TMap<FString, float> MaxHP;				//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 딕셔너리
 	UPROPERTY()
-		TMap<FString, int32> additionalCriticalDamage;		//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 피해 딕셔너리
+		TMap<FString, float> generateHealthPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 재생량 딕셔너리
 	UPROPERTY()
-		float attackSpeed;									//공격속도
+		TMap<FString, float> manaPoint;			//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> additionalAttackSpeed;			//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 피해 딕셔너리
+		TMap<FString, float> defencePoint;		//레벨업을 제외한 다른 요인들에 의해 증가되는 방어력 딕셔너리
 	UPROPERTY()
-		float healthPoint;									//체력
+		TMap<FString, float> magicResistPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 마법저항력 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> additionalHealthPoint;			//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 딕셔너리
+		TMap<FString, float> armorPenetration;	//레벨업을 제외한 다른 요인들에 의해 증가되는 물리관통력 딕셔너리
 	UPROPERTY()
-		float generateHealthPoint;							//체력 재생량
+		TMap<FString, float> magicPenetration;	//레벨업을 제외한 다른 요인들에 의해 증가되는 마법관통력 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> additionalGenerateHealthPoint;		//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 재생량 딕셔너리
+		TMap<FString, int32> cooldownReduction;	//레벨업을 제외한 다른 요인들에 의해 증가되는 쿨타임감소 딕셔너리
 	UPROPERTY()
-		float manaPoint;									//마나
+		TMap<FString, float> lifeSteal;			//레벨업을 제외한 다른 요인들에 의해 증가되는 흡혈 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> additionalManaPoint;			//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 딕셔너리
+		TMap<FString, float> protectPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 회복 및 보호막 효과 딕셔너리
 	UPROPERTY()
-		float defencePoint;									//방어력
-	UPROPERTY()
-		TMap<FString, float> additionalDefencePoint;		//레벨업을 제외한 다른 요인들에 의해 증가되는 방어력 딕셔너리
-	UPROPERTY()
-		float magicResistPoint;								//마법저항력
-	UPROPERTY()
-		TMap<FString, float> additionalMagicResistPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 마법저항력 딕셔너리
-	UPROPERTY()
-		float armorPenetration;								//물리관통력
-	UPROPERTY()
-		TMap<FString, float> additionalArmorPenetration;	//레벨업을 제외한 다른 요인들에 의해 증가되는 물리관통력 딕셔너리
-	UPROPERTY()
-		float magicPenetration;								//마법관통력
-	UPROPERTY()
-		TMap<FString, float> additionalMagicPenetration;	//레벨업을 제외한 다른 요인들에 의해 증가되는 마법관통력 딕셔너리
-	UPROPERTY()
-		int32 cooldownReduction;							//쿨타임감소
-	UPROPERTY()
-		TMap<FString, int32> additionalCooldownReduction;	//레벨업을 제외한 다른 요인들에 의해 증가되는 쿨타임감소 딕셔너리
-	UPROPERTY()
-		float lifeSteal;									//흡혈
-	UPROPERTY()
-		TMap<FString, float> additionalLifeSteal;			//레벨업을 제외한 다른 요인들에 의해 증가되는 흡혈 딕셔너리
-	UPROPERTY()
-		float protectPower;									//회복 및 보호막 효과
-	UPROPERTY()
-		TMap<FString, float> additionalProtectPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 회복 및 보호막 효과 딕셔너리
-	UPROPERTY()
-		float endurance;									//인내심
-	UPROPERTY()
-		TMap<FString, float> additionalEndurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
+		TMap<FString, float> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
 
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
+
+public:		//Interface Implement
+	UFUNCTION()
+		virtual void Attack() override;
+
+	UFUNCTION()
+		virtual void Stun(float time) override;
+	UFUNCTION()
+		virtual void Stop(float time) override;
+	UFUNCTION()
+		virtual void Slow(float time, float value) override;
+	UFUNCTION()
+		virtual void Silence(float time) override;
+	UFUNCTION()
+		virtual void Airborne(float time) override;
+
+	UFUNCTION()
+		virtual void TakeDamage(float damage) override;
+	UFUNCTION()
+		virtual void RestoreHP(float value) override;
 };
 
