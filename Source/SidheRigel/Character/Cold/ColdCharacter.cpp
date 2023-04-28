@@ -1,30 +1,32 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BlazeCharacter.h"
+#include "ColdCharacter.h"
 
 // Sets default values
-ABlazeCharacter::ABlazeCharacter()
+AColdCharacter::AColdCharacter()
 {
 
 }
 
 // Called when the game starts or when spawned
-void ABlazeCharacter::BeginPlay()
+void AColdCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-void ABlazeCharacter::Tick(float DeltaTime)
+// Called every frame
+void AColdCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Called to bind functionality to input
-void ABlazeCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AColdCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 }
 

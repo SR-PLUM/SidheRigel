@@ -5,23 +5,21 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "SidheRigel/SidheRigelCharacter.h"
-#include "BlazeCharacter.generated.h"
+#include "ColdCharacter.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API ABlazeCharacter : public ASidheRigelCharacter
+class SIDHERIGEL_API AColdCharacter : public ASidheRigelCharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ABlazeCharacter();
+	AColdCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
