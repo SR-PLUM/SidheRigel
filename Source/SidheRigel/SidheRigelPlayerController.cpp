@@ -12,6 +12,9 @@ ASidheRigelPlayerController::ASidheRigelPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
+
+	bEnableClickEvents = true;
+	bEnableMouseOverEvents = true;
 }
 
 void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
@@ -49,6 +52,8 @@ void ASidheRigelPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ASidheRigelPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &ASidheRigelPlayerController::OnSetDestinationReleased);
+
+	InputComponent->BindAction("RightClick", IE_Pressed, this, &ASidheRigelPlayerController::ClickedRightMouseButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationPressed()
@@ -76,5 +81,23 @@ void ASidheRigelPlayerController::OnSetDestinationReleased()
 		// We move there and spawn some particles
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitLocation);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitLocation, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+	}
+}
+
+void ASidheRigelPlayerController::ClickedRightMouseButton()
+{
+	FHitResult HitResult;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, false, HitResult);
+
+	AActor* target = HitResult.GetActor();
+	if (target)
+	{
+		if (target->Tags.Contains("Hero"))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Mouse Click+++ Actor: %s"), *HitResult.GetActor()->GetName()));
+			StopMovement();
+			
+			Cast<ASidheRigelCharacter>(GetPawn())->Attack(target);
+		}
 	}
 }

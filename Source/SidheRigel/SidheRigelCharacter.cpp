@@ -1,6 +1,7 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SidheRigelCharacter.h"
+#include "Dummy/DummyProjectile.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
@@ -42,7 +43,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;	
+	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -95,8 +96,31 @@ void ASidheRigelCharacter::SetLevel(int32 _level)
 	}
 }
 
-void ASidheRigelCharacter::Attack()
+void ASidheRigelCharacter::Attack(AActor* Target)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("CAST!")));
+	if (ProjectileClass)
+	{
+		FVector MuzzleLocation = GetActorLocation();
+		FRotator MuzzleRotation = GetActorRotation();
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				// Set the projectile's initial trajectory.
+				FVector LaunchDirection = MuzzleRotation.Vector();
+				Projectile->Target = Target;
+			}
+		}
+	}
 }
 
 void ASidheRigelCharacter::Stun(float time)
