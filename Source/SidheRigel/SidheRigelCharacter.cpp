@@ -44,6 +44,12 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Dummy/BP_DummyProjectile"));
+	if (Projectile.Object)
+	{
+		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -115,6 +121,7 @@ void ASidheRigelCharacter::Attack(AActor* Target)
 			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
+				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
 				// Set the projectile's initial trajectory.
 				FVector LaunchDirection = MuzzleRotation.Vector();
 				Projectile->Target = Target;
