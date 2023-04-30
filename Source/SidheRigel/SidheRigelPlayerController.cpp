@@ -15,13 +15,15 @@ ASidheRigelPlayerController::ASidheRigelPlayerController()
 
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
+
+	bAttacking = false;
 }
 
 void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	if(bInputPressed)
+	if(bInputPressed && !bAttacking)
 	{
 		FollowTime += DeltaTime;
 
@@ -70,7 +72,7 @@ void ASidheRigelPlayerController::OnSetDestinationReleased()
 	bInputPressed = false;
 
 	// If it was a short press
-	if(FollowTime <= ShortPressThreshold)
+	if(FollowTime <= ShortPressThreshold && !bAttacking)
 	{
 		// We look for the location in the world where the player has pressed the input
 		FVector HitLocation = FVector::ZeroVector;
@@ -82,6 +84,8 @@ void ASidheRigelPlayerController::OnSetDestinationReleased()
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitLocation);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitLocation, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
+
+	bAttacking = false;
 }
 
 void ASidheRigelPlayerController::ClickedRightMouseButton()
@@ -94,6 +98,7 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 	{
 		if (target->Tags.Contains("Hero"))
 		{
+			bAttacking = true;
 			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Mouse Click+++ Actor: %s"), *HitResult.GetActor()->GetName()));
 			StopMovement();
 			
