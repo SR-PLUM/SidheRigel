@@ -14,6 +14,7 @@ ADummy::ADummy()
 
 	//기본 스텟 추가
 	MaxHP.Add(TEXT("Default"), 100);
+	currentHP = 100;
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +27,9 @@ void ADummy::BeginPlay()
 void ADummy::TakeDamage(float damage)
 {
 	currentHP -= damage;
-	if (currentHP < 0)
+	UE_LOG(LogTemp, Warning, TEXT("Remain HP is %f"), currentHP);
+
+	if (currentHP <= 0)
 	{
 		currentHP = 0;
 		UE_LOG(LogTemp, Warning, TEXT("Dummy is Dead"));

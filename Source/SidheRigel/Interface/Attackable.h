@@ -23,5 +23,5 @@ class SIDHERIGEL_API IAttackable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION()
-		virtual void Attack() = 0;
+		virtual void Attack(AActor* Target) = 0;
 };

@@ -12,13 +12,18 @@ ASidheRigelPlayerController::ASidheRigelPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
+
+	bEnableClickEvents = true;
+	bEnableMouseOverEvents = true;
+
+	bAttacking = false;
 }
 
 void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	if(bInputPressed)
+	if(bInputPressed && !bAttacking)
 	{
 		FollowTime += DeltaTime;
 
@@ -49,6 +54,8 @@ void ASidheRigelPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ASidheRigelPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &ASidheRigelPlayerController::OnSetDestinationReleased);
+
+	InputComponent->BindAction("RightClick", IE_Pressed, this, &ASidheRigelPlayerController::ClickedRightMouseButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationPressed()
@@ -65,7 +72,7 @@ void ASidheRigelPlayerController::OnSetDestinationReleased()
 	bInputPressed = false;
 
 	// If it was a short press
-	if(FollowTime <= ShortPressThreshold)
+	if(FollowTime <= ShortPressThreshold && !bAttacking)
 	{
 		// We look for the location in the world where the player has pressed the input
 		FVector HitLocation = FVector::ZeroVector;
@@ -76,5 +83,39 @@ void ASidheRigelPlayerController::OnSetDestinationReleased()
 		// We move there and spawn some particles
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitLocation);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitLocation, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+	}
+
+	bAttacking = false;
+}
+
+void ASidheRigelPlayerController::ClickedRightMouseButton()
+{
+	FHitResult HitResult;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, false, HitResult);
+
+	AActor* target = HitResult.GetActor();
+	if (target)
+	{
+		auto MyPawn = Cast<ASidheRigelCharacter>(GetPawn());
+		if (MyPawn)
+		{
+			if (target->Tags.Contains("Hero"))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DistanceTo MyPawn: %f"), MyPawn->GetDistanceTo(target)));
+				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("MyRange: %f"), MyPawn->GetRange()));
+
+				if (MyPawn->GetDistanceTo(target) <= MyPawn->GetRange())
+				{
+					bAttacking = true;
+					StopMovement();
+
+					MyPawn->Attack(target);
+				}
+				else
+				{
+					//move to enemy and if character is enough close to enemy, attack enemy
+				}
+			}
+		}
 	}
 }

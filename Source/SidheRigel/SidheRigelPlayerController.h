@@ -39,9 +39,13 @@ protected:
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
 
+	void ClickedRightMouseButton();
+
 private:
 	bool bInputPressed; // Input is bring pressed
 	float FollowTime; // For how long it has been pressed
+
+	bool bAttacking;
 };
 
 

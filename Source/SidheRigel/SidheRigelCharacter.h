@@ -37,6 +37,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
 
+	// Projectile class to spawn.
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ADummyProjectile> ProjectileClass;
+
 protected:	//Skill
 	UFUNCTION()
 		void SkillOne();
@@ -93,10 +97,11 @@ protected:	//Stat
 
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
+	float GetRange();
 
 public:		//Interface Implement
 	UFUNCTION()
-		virtual void Attack() override;
+		virtual void Attack(AActor* Target) override;
 
 	UFUNCTION()
 		virtual void Stun(float time) override;
