@@ -50,6 +50,9 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	{
 		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
 	}
+
+	//Character Property Initialize
+	range.Add("Base", 500.f);
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -100,6 +103,17 @@ void ASidheRigelCharacter::SetLevel(int32 _level)
 	{
 		//특성 띄우기
 	}
+}
+
+float ASidheRigelCharacter::GetRange()
+{
+	float res = 0;
+	for (auto value : range)
+	{
+		res += value.Value;
+	}
+
+	return res;
 }
 
 void ASidheRigelCharacter::Attack(AActor* Target)

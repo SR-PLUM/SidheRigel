@@ -97,6 +97,7 @@ protected:	//Stat
 
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
+	float GetRange();
 
 public:		//Interface Implement
 	UFUNCTION()

@@ -96,13 +96,26 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 	AActor* target = HitResult.GetActor();
 	if (target)
 	{
-		if (target->Tags.Contains("Hero"))
+		auto MyPawn = Cast<ASidheRigelCharacter>(GetPawn());
+		if (MyPawn)
 		{
-			bAttacking = true;
-			GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Mouse Click+++ Actor: %s"), *HitResult.GetActor()->GetName()));
-			StopMovement();
-			
-			Cast<ASidheRigelCharacter>(GetPawn())->Attack(target);
+			if (target->Tags.Contains("Hero"))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DistanceTo MyPawn: %f"), MyPawn->GetDistanceTo(target)));
+				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("MyRange: %f"), MyPawn->GetRange()));
+
+				if (MyPawn->GetDistanceTo(target) <= MyPawn->GetRange())
+				{
+					bAttacking = true;
+					StopMovement();
+
+					MyPawn->Attack(target);
+				}
+				else
+				{
+					//move to enemy and if character is enough close to enemy, attack enemy
+				}
+			}
 		}
 	}
 }
