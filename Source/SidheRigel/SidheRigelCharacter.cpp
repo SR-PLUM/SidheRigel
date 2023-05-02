@@ -53,6 +53,9 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//Character Property Initialize
 	range.Add("Base", 500.f);
+	attackSpeed.Add("Base", 1.f);
+
+	bAttackDelay = false;
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -116,31 +119,54 @@ float ASidheRigelCharacter::GetRange()
 	return res;
 }
 
+float ASidheRigelCharacter::GetAttackSpeed()
+{
+	float res = 0;
+	for (auto value : range)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
+void ASidheRigelCharacter::SetAttackDelayFalse()
+{
+	bAttackDelay = false;
+}
+
 void ASidheRigelCharacter::Attack(AActor* Target)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("CAST!")));
-	if (ProjectileClass)
+	if (!bAttackDelay)
 	{
-		FVector MuzzleLocation = GetActorLocation();
-		FRotator MuzzleRotation = GetActorRotation();
+		bAttackDelay = true;
 
-		UWorld* World = GetWorld();
-		if (World)
+		if (ProjectileClass)
 		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
+			FVector MuzzleLocation = GetActorLocation();
+			FRotator MuzzleRotation = GetActorRotation();
 
-			// Spawn the projectile at the muzzle.
-			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-			if (Projectile)
+			UWorld* World = GetWorld();
+			if (World)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
-				// Set the projectile's initial trajectory.
-				FVector LaunchDirection = MuzzleRotation.Vector();
-				Projectile->Target = Target;
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = GetInstigator();
+
+				// Spawn the projectile at the muzzle.
+				ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				if (Projectile)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
+					// Set the projectile's initial trajectory.
+					FVector LaunchDirection = MuzzleRotation.Vector();
+					Projectile->Target = Target;
+				}
 			}
 		}
+		FTimerHandle AttackDelayTimer;
+		GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, (1000 / GetAttackSpeed()), false);
 	}
 }
 

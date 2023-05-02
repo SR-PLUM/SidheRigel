@@ -98,6 +98,11 @@ protected:	//Stat
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
 	float GetRange();
+	float GetAttackSpeed();
+
+protected:	//AttackDelay
+	bool bAttackDelay;
+	void SetAttackDelayFalse();
 
 public:		//Interface Implement
 	UFUNCTION()
