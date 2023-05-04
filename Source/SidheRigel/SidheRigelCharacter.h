@@ -97,12 +97,15 @@ protected:	//Stat
 
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
+	void SetTarget(AActor* target);
 	float GetRange();
 	float GetAttackSpeed();
 
-protected:	//AttackDelay
+protected:	//Attack
 	bool bAttackDelay;
 	void SetAttackDelayFalse();
+
+	AActor* target;
 
 public:		//Interface Implement
 	UFUNCTION()

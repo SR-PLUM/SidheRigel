@@ -66,6 +66,48 @@ void ASidheRigelCharacter::BeginPlay()
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+	if (target)
+	{
+		if (GetDistanceTo(target) <= GetRange())	//타겟이 사거리 내 범위에 속함
+		{
+			if (!bAttackDelay)
+			{
+				bAttackDelay = true;
+
+				if (ProjectileClass)
+				{
+					FVector MuzzleLocation = GetActorLocation();
+					FRotator MuzzleRotation = GetActorRotation();
+
+					UWorld* World = GetWorld();
+					if (World)
+					{
+						FActorSpawnParameters SpawnParams;
+						SpawnParams.Owner = this;
+						SpawnParams.Instigator = GetInstigator();
+
+						// Spawn the projectile at the muzzle.
+						ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+						if (Projectile)
+						{
+							GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
+							// Set the projectile's initial trajectory.
+							FVector LaunchDirection = MuzzleRotation.Vector();
+							Projectile->Target = target;
+						}
+					}
+				}
+				FTimerHandle AttackDelayTimer;
+				GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, (1000 / GetAttackSpeed()), false);
+			}
+		}
+		else												//타겟이 사거리 밖에 있음
+		{
+			FVector WorldDirection = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+			AddMovementInput(WorldDirection, 1.f, false);
+		}
+	}
 }
 
 void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -108,6 +150,11 @@ void ASidheRigelCharacter::SetLevel(int32 _level)
 	}
 }
 
+void ASidheRigelCharacter::SetTarget(AActor* _target)
+{
+	target = _target;
+}
+
 float ASidheRigelCharacter::GetRange()
 {
 	float res = 0;
@@ -138,36 +185,8 @@ void ASidheRigelCharacter::SetAttackDelayFalse()
 void ASidheRigelCharacter::Attack(AActor* Target)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("CAST!")));
-	if (!bAttackDelay)
-	{
-		bAttackDelay = true;
 
-		if (ProjectileClass)
-		{
-			FVector MuzzleLocation = GetActorLocation();
-			FRotator MuzzleRotation = GetActorRotation();
-
-			UWorld* World = GetWorld();
-			if (World)
-			{
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.Owner = this;
-				SpawnParams.Instigator = GetInstigator();
-
-				// Spawn the projectile at the muzzle.
-				ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-				if (Projectile)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
-					// Set the projectile's initial trajectory.
-					FVector LaunchDirection = MuzzleRotation.Vector();
-					Projectile->Target = Target;
-				}
-			}
-		}
-		FTimerHandle AttackDelayTimer;
-		GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, (1000 / GetAttackSpeed()), false);
-	}
+	target = Target;
 }
 
 void ASidheRigelCharacter::Stun(float time)

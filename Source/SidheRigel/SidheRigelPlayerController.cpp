@@ -104,17 +104,13 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DistanceTo MyPawn: %f"), MyPawn->GetDistanceTo(target)));
 				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("MyRange: %f"), MyPawn->GetRange()));
 
-				if (MyPawn->GetDistanceTo(target) <= MyPawn->GetRange())
-				{
-					bAttacking = true;
-					StopMovement();
+				bAttacking = true;
 
-					MyPawn->Attack(target);
-				}
-				else
-				{
-					//move to enemy and if character is enough close to enemy, attack enemy
-				}
+				MyPawn->Attack(target);
+			}
+			else
+			{
+				MyPawn->SetTarget(NULL);
 			}
 		}
 	}
