@@ -50,6 +50,10 @@ protected:	//Skill
 		virtual void SkillThree();
 	UFUNCTION()
 		virtual void SkillFour();
+	UFUNCTION()
+		virtual void SkillCancel();
+	UFUNCTION()
+		virtual void UseSkill(AActor* target);
 
 protected:	//Stat
 	UPROPERTY()

@@ -29,9 +29,9 @@ protected:	//Skill
 	virtual void SkillTwo();
 	virtual	void SkillThree();
 	virtual void SkillFour();
-	void SkillCancel();
+	virtual void SkillCancel();
 
-	void useSkill(AActor* target);
+	virtual void useSkill(AActor* target);
 
 private:	//State
 	E_SkillState skillState;
