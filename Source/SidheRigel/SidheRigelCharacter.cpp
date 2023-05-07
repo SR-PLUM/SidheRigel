@@ -169,7 +169,7 @@ float ASidheRigelCharacter::GetRange()
 float ASidheRigelCharacter::GetAttackSpeed()
 {
 	float res = 0;
-	for (auto value : range)
+	for (auto value : attackSpeed)
 	{
 		res += value.Value;
 	}
