@@ -1,12 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "DummyProjectile.h"
+
+#include "ColdQProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
-#include "../Interface/Damagable.h"
+#include "SidheRigel/Interface/Damagable.h"
 
 // Sets default values
-ADummyProjectile::ADummyProjectile()
+AColdQProjectile::AColdQProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -51,14 +52,14 @@ ADummyProjectile::ADummyProjectile()
 }
 
 // Called when the game starts or when spawned
-void ADummyProjectile::BeginPlay()
+void AColdQProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ADummyProjectile::Tick(float DeltaTime)
+void AColdQProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -66,6 +67,7 @@ void ADummyProjectile::Tick(float DeltaTime)
 	{
 		FVector Forward = Target->GetActorLocation() - GetActorLocation();
 		ProjectileMovementComponent->Velocity = Forward * ProjectileMovementComponent->InitialSpeed;
+		
 		if ((this->GetDistanceTo(Target)) < 100.f)
 		{
 			Cast<IDamagable>(Target)->TakeDamage(10.f);

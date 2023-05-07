@@ -43,13 +43,13 @@ protected:
 
 protected:	//Skill
 	UFUNCTION()
-		void SkillOne();
+		virtual void SkillOne();
 	UFUNCTION()
-		void SkillTwo();
+		virtual void SkillTwo();
 	UFUNCTION()
-		void SkillThree();
+		virtual void SkillThree();
 	UFUNCTION()
-		void SkillFour();
+		virtual void SkillFour();
 
 protected:	//Stat
 	UPROPERTY()
