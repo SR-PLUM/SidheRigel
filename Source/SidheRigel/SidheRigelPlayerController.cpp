@@ -56,6 +56,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SetDestination", IE_Released, this, &ASidheRigelPlayerController::OnSetDestinationReleased);
 
 	InputComponent->BindAction("RightClick", IE_Pressed, this, &ASidheRigelPlayerController::ClickedRightMouseButton);
+	InputComponent->BindAction("LeftClick", IE_Pressed, this, &ASidheRigelPlayerController::ClickedLeftMouseButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationPressed()
@@ -104,18 +105,22 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DistanceTo MyPawn: %f"), MyPawn->GetDistanceTo(target)));
 				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("MyRange: %f"), MyPawn->GetRange()));
 
-				if (MyPawn->GetDistanceTo(target) <= MyPawn->GetRange())
-				{
-					bAttacking = true;
-					StopMovement();
+				bAttacking = true;
 
-					MyPawn->Attack(target);
-				}
-				else
-				{
-					//move to enemy and if character is enough close to enemy, attack enemy
-				}
+				MyPawn->Attack(target);
+			}
+			else
+			{
+				MyPawn->SetTarget(NULL);
 			}
 		}
 	}
+}
+
+void ASidheRigelPlayerController::ClickedLeftMouseButton()
+{
+	FHitResult HitResult;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, false, HitResult);
+
+	AActor* target = HitResult.GetActor();
 }
