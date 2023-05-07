@@ -140,6 +140,14 @@ void ASidheRigelCharacter::SkillFour()
 	UE_LOG(LogTemp, Warning, TEXT("R"));
 }
 
+void ASidheRigelCharacter::SkillCancel()
+{
+}
+
+void ASidheRigelCharacter::UseSkill(AActor* target)
+{
+}
+
 void ASidheRigelCharacter::SetLevel(int32 _level)
 {
 	level = _level;

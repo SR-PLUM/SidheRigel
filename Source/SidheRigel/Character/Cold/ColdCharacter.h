@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Enum/E_SkillState.h"
 #include "ColdCharacter.generated.h"
 
 UCLASS()
@@ -23,4 +24,22 @@ protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:	//Skill
+	virtual void SkillOne();
+	virtual void SkillTwo();
+	virtual	void SkillThree();
+	virtual void SkillFour();
+	virtual void SkillCancel();
+
+	virtual void useSkill(AActor* target);
+
+private:	//State
+	E_SkillState skillState;
+
+protected:	//Skill Projectile
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AColdQProjectile> QProjectileClass;
+
+private:	//Skill Variable
+	int32 QCount = 10;
 };
