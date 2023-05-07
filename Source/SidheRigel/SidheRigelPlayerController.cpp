@@ -56,6 +56,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SetDestination", IE_Released, this, &ASidheRigelPlayerController::OnSetDestinationReleased);
 
 	InputComponent->BindAction("RightClick", IE_Pressed, this, &ASidheRigelPlayerController::ClickedRightMouseButton);
+	InputComponent->BindAction("LeftClick", IE_Pressed, this, &ASidheRigelPlayerController::ClickedLeftMouseButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationPressed()
@@ -114,4 +115,12 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 			}
 		}
 	}
+}
+
+void ASidheRigelPlayerController::ClickedLeftMouseButton()
+{
+	FHitResult HitResult;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, false, HitResult);
+
+	AActor* target = HitResult.GetActor();
 }

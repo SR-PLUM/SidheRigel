@@ -40,6 +40,7 @@ protected:
 	void OnSetDestinationReleased();
 
 	void ClickedRightMouseButton();
+	void ClickedLeftMouseButton();
 
 private:
 	bool bInputPressed; // Input is bring pressed
