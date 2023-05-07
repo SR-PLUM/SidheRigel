@@ -100,9 +100,11 @@ protected:	//Stat
 		TMap<FString, float> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
 
 public:		//Getter, Setter
-	void SetLevel(int32 _level);
 	void SetTarget(AActor* target);
+	void SetLevel(int32 _level);
+
 	float GetRange();
+	float GetAttackDamage();
 	float GetAttackSpeed();
 
 protected:	//Attack

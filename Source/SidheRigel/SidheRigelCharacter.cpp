@@ -53,6 +53,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//Character Property Initialize
 	range.Add("Base", 500.f);
+	attackDamage.Add("Base", 10.f);
 	attackSpeed.Add("Base", 1.f);
 
 	bAttackDelay = false;
@@ -95,6 +96,7 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 							// Set the projectile's initial trajectory.
 							FVector LaunchDirection = MuzzleRotation.Vector();
 							Projectile->Target = target;
+							Projectile->AttackDamage = GetAttackDamage();
 						}
 					}
 				}
@@ -142,10 +144,12 @@ void ASidheRigelCharacter::SkillFour()
 
 void ASidheRigelCharacter::SkillCancel()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Cancel"));
 }
 
 void ASidheRigelCharacter::UseSkill(AActor* target)
 {
+	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)
@@ -172,6 +176,17 @@ float ASidheRigelCharacter::GetRange()
 	}
 
 	return res;
+}
+
+float ASidheRigelCharacter::GetAttackDamage()
+{
+	float res = 0;
+	for (auto value : attackDamage)
+	{
+		res += value.Value;
+	}
+
+	return 0.0f;
 }
 
 float ASidheRigelCharacter::GetAttackSpeed()
