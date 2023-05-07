@@ -144,7 +144,7 @@ void ASidheRigelCharacter::SkillCancel()
 {
 }
 
-void ASidheRigelCharacter::UseSkill(AActor* target)
+void ASidheRigelCharacter::UseSkill(AActor* _target)
 {
 }
 

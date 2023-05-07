@@ -100,6 +100,8 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 		auto MyPawn = Cast<ASidheRigelCharacter>(GetPawn());
 		if (MyPawn)
 		{
+			MyPawn->SkillCancel();
+
 			if (target->Tags.Contains("Hero"))
 			{
 				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DistanceTo MyPawn: %f"), MyPawn->GetDistanceTo(target)));
@@ -123,4 +125,13 @@ void ASidheRigelPlayerController::ClickedLeftMouseButton()
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, false, HitResult);
 
 	AActor* target = HitResult.GetActor();
+
+	if (target)
+	{
+		auto MyPawn = Cast<ASidheRigelCharacter>(GetPawn());
+		if (MyPawn)
+		{
+			MyPawn->UseSkill(target);
+		}
+	}
 }

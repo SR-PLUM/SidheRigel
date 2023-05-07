@@ -72,7 +72,7 @@ void AColdCharacter::SkillCancel()
 	skillState = Null;
 }
 
-void AColdCharacter::useSkill(AActor* target)
+void AColdCharacter::UseSkill(AActor* _target)
 {
 	switch (skillState)
 	{
@@ -82,28 +82,31 @@ void AColdCharacter::useSkill(AActor* target)
 	case Q_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use Q"));
 
-		if (QProjectileClass)
+		if (_target->Tags.Contains("Hero"))
 		{
-			FVector MuzzleLocation = GetActorLocation();
-			FRotator MuzzleRotation = GetActorRotation();
-
-			UWorld* World = GetWorld();
-			if (World)
+			if (QProjectileClass)
 			{
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.Owner = this;
-				SpawnParams.Instigator = GetInstigator();
+				FVector MuzzleLocation = GetActorLocation();
+				FRotator MuzzleRotation = GetActorRotation();
 
-				for (int i = 0; i < QCount; i++)
+				UWorld* World = GetWorld();
+				if (World)
 				{
-					// Spawn the projectile at the muzzle.
-					AColdQProjectile* Projectile = World->SpawnActor<AColdQProjectile>(QProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-					if (Projectile)
+					FActorSpawnParameters SpawnParams;
+					SpawnParams.Owner = this;
+					SpawnParams.Instigator = GetInstigator();
+
+					for (int i = 0; i < QCount; i++)
 					{
-						GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
-						// Set the projectile's initial trajectory.
-						FVector LaunchDirection = MuzzleRotation.Vector();
-						Projectile->Target = target;
+						// Spawn the projectile at the muzzle.
+						AColdQProjectile* Projectile = World->SpawnActor<AColdQProjectile>(QProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+						if (Projectile)
+						{
+							GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
+							// Set the projectile's initial trajectory.
+							FVector LaunchDirection = MuzzleRotation.Vector();
+							Projectile->Target = _target;
+						}
 					}
 				}
 			}
