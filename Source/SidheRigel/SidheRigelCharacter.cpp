@@ -147,7 +147,7 @@ void ASidheRigelCharacter::SkillCancel()
 	UE_LOG(LogTemp, Warning, TEXT("Cancel"));
 }
 
-void ASidheRigelCharacter::UseSkill(AActor* target)
+void ASidheRigelCharacter::UseSkill(AActor* _target)
 {
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
 }

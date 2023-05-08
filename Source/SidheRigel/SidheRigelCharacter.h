@@ -15,6 +15,8 @@ class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCab
 {
 	GENERATED_BODY()
 
+		friend class ASidheRigelPlayerController;
+
 public:
 	ASidheRigelCharacter();
 
