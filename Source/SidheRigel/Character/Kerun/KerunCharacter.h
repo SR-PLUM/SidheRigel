@@ -17,8 +17,30 @@ class SIDHERIGEL_API AKerunCharacter : public ASidheRigelCharacter
 public:
 	AKerunCharacter();
 
+protected:
+
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime);
+
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
+protected:	//Skill
+	virtual void SkillOne();
+
+/*
+	virtual void SkillTwo();
+	virtual	void SkillThree();
+	virtual void SkillFour();
+
+	virtual void SkillCancel();
+	virtual void UseSkill(AActor* target);
+
+private:	//State
+	E_SkillState skillState;
+
+*/
+private:
+	UPROPERTY()
+	class UKerunQSkill* KerunQSkillRef;
 };
