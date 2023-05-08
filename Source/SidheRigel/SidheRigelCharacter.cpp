@@ -52,9 +52,11 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	}
 
 	//Character Property Initialize
-	//range.Add("Base", 500.f);
-	//attackDamage.Add("Base", 5.f);
-	//attackSpeed.Add("Base", 1.f);
+	range.Add("Base", 500.f);
+	attackDamage.Add("Base", 5.f);
+	attackSpeed.Add("Base", 1.f);
+	criticalRate.Add("Base", 50);
+	criticalDamage.Add("Base", 50);
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 
 	bAttackDelay = false;
@@ -96,6 +98,8 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 							// Set the projectile's initial trajectory.
 							Projectile->Target = target;
 							Projectile->AttackDamage = GetAttackDamage();
+							Projectile->criticalRate = (float)GetCriticalRate()/100.f;
+							Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
 						}
 					}
 				}
@@ -188,12 +192,42 @@ float ASidheRigelCharacter::GetAttackDamage()
 	return res;
 }
 
+int32 ASidheRigelCharacter::GetCriticalRate()
+{
+	int32 res = 0;
+	for (auto value : criticalRate)
+	{
+		res += value.Value;
+	}
+	if (res > 100)	//MaxCriticalRate
+	{
+		res = 100;
+	}
+
+	return res;
+}
+
+int32 ASidheRigelCharacter::GetCriticalDamage()
+{
+	int32 res = 0;
+	for (auto value : criticalDamage)
+	{
+		res += value.Value;
+	}
+	
+	return res;
+}
+
 float ASidheRigelCharacter::GetAttackSpeed()
 {
 	float res = 0;
 	for (auto value : attackSpeed)
 	{
 		res += value.Value;
+	}
+	if (res > 2.5f)	//MaxAttackSpeed
+	{
+		res = 2.5f;
 	}
 
 	return res;

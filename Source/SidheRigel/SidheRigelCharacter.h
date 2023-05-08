@@ -107,6 +107,8 @@ public:		//Getter, Setter
 
 	float GetRange();
 	float GetAttackDamage();
+	int32 GetCriticalRate();
+	int32 GetCriticalDamage();
 	float GetAttackSpeed();
 
 protected:	//Attack
