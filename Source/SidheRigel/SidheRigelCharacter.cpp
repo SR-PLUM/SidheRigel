@@ -52,9 +52,10 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	}
 
 	//Character Property Initialize
-	range.Add("Base", 500.f);
-	attackDamage.Add("Base", 10.f);
-	attackSpeed.Add("Base", 1.f);
+	//range.Add("Base", 500.f);
+	//attackDamage.Add("Base", 5.f);
+	//attackSpeed.Add("Base", 1.f);
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 
 	bAttackDelay = false;
 }
@@ -92,16 +93,14 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 						ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 						if (Projectile)
 						{
-							GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
 							// Set the projectile's initial trajectory.
-							FVector LaunchDirection = MuzzleRotation.Vector();
 							Projectile->Target = target;
 							Projectile->AttackDamage = GetAttackDamage();
 						}
 					}
 				}
 				FTimerHandle AttackDelayTimer;
-				GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, (1000 / GetAttackSpeed()), false);
+				GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, 1/GetAttackSpeed(), false);
 			}
 		}
 		else												//타겟이 사거리 밖에 있음
@@ -186,7 +185,7 @@ float ASidheRigelCharacter::GetAttackDamage()
 		res += value.Value;
 	}
 
-	return 0.0f;
+	return res;
 }
 
 float ASidheRigelCharacter::GetAttackSpeed()
@@ -205,11 +204,9 @@ void ASidheRigelCharacter::SetAttackDelayFalse()
 	bAttackDelay = false;
 }
 
-void ASidheRigelCharacter::Attack(AActor* Target)
+void ASidheRigelCharacter::Attack(AActor* _target)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("CAST!")));
-
-	target = Target;
+	target = _target;
 }
 
 void ASidheRigelCharacter::Stun(float time)
