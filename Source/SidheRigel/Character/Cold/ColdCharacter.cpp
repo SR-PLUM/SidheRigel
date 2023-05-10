@@ -102,9 +102,7 @@ void AColdCharacter::UseSkill(AActor* _target)
 						AColdQProjectile* Projectile = World->SpawnActor<AColdQProjectile>(QProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 						if (Projectile)
 						{
-							GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
 							// Set the projectile's initial trajectory.
-							FVector LaunchDirection = MuzzleRotation.Vector();
 							Projectile->Target = _target;
 						}
 					}

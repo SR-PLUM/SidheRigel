@@ -4,6 +4,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "../Interface/Damagable.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 ADummyProjectile::ADummyProjectile()
@@ -68,7 +69,15 @@ void ADummyProjectile::Tick(float DeltaTime)
 		ProjectileMovementComponent->Velocity = Forward * ProjectileMovementComponent->InitialSpeed;
 		if ((this->GetDistanceTo(Target)) < 100.f)
 		{
-			Cast<IDamagable>(Target)->TakeDamage(10.f);
+			float totalAttackDamage = AttackDamage;
+
+			if (FMath::RandRange(0, 1) <= criticalRate)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("CRITICAL!"));
+				totalAttackDamage *= criticalDamage;
+			}
+
+			Cast<IDamagable>(Target)->TakeDamage(totalAttackDamage);
 			Destroy();
 		}
 	}
