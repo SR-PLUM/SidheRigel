@@ -25,6 +25,9 @@ protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:
+	virtual void SpawnAttackProjectile() override;
+
 protected:	//Skill
 	virtual void SkillOne();
 
