@@ -24,6 +24,12 @@ protected:
 public:
 	UPROPERTY()
 		AActor* Target;
+	UPROPERTY()
+		float AttackDamage;
+	UPROPERTY()
+		float criticalRate;
+	UPROPERTY()
+		float criticalDamage;
 
 private:
 	UPROPERTY(VisibleAnywhere)

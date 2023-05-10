@@ -104,9 +104,6 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 
 			if (target->Tags.Contains("Hero"))
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DistanceTo MyPawn: %f"), MyPawn->GetDistanceTo(target)));
-				GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("MyRange: %f"), MyPawn->GetRange()));
-
 				bAttacking = true;
 
 				MyPawn->Attack(target);

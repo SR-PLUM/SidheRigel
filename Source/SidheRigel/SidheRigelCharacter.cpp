@@ -53,7 +53,11 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//Character Property Initialize
 	range.Add("Base", 500.f);
+	attackDamage.Add("Base", 5.f);
 	attackSpeed.Add("Base", 1.f);
+	criticalRate.Add("Base", 50);
+	criticalDamage.Add("Base", 50);
+	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 
 	bAttackDelay = false;
 }
@@ -91,15 +95,16 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 						ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 						if (Projectile)
 						{
-							GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Has Projectile!!")));
 							// Set the projectile's initial trajectory.
-							FVector LaunchDirection = MuzzleRotation.Vector();
 							Projectile->Target = target;
+							Projectile->AttackDamage = GetAttackDamage();
+							Projectile->criticalRate = (float)GetCriticalRate()/100.f;
+							Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
 						}
 					}
 				}
 				FTimerHandle AttackDelayTimer;
-				GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, (1000 / GetAttackSpeed()), false);
+				GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, 1/GetAttackSpeed(), false);
 			}
 		}
 		else												//타겟이 사거리 밖에 있음
@@ -142,10 +147,12 @@ void ASidheRigelCharacter::SkillFour()
 
 void ASidheRigelCharacter::SkillCancel()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Cancel"));
 }
 
 void ASidheRigelCharacter::UseSkill(AActor* _target)
 {
+	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)
@@ -174,12 +181,53 @@ float ASidheRigelCharacter::GetRange()
 	return res;
 }
 
+float ASidheRigelCharacter::GetAttackDamage()
+{
+	float res = 0;
+	for (auto value : attackDamage)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
+int32 ASidheRigelCharacter::GetCriticalRate()
+{
+	int32 res = 0;
+	for (auto value : criticalRate)
+	{
+		res += value.Value;
+	}
+	if (res > 100)	//MaxCriticalRate
+	{
+		res = 100;
+	}
+
+	return res;
+}
+
+int32 ASidheRigelCharacter::GetCriticalDamage()
+{
+	int32 res = 0;
+	for (auto value : criticalDamage)
+	{
+		res += value.Value;
+	}
+	
+	return res;
+}
+
 float ASidheRigelCharacter::GetAttackSpeed()
 {
 	float res = 0;
 	for (auto value : attackSpeed)
 	{
 		res += value.Value;
+	}
+	if (res > 2.5f)	//MaxAttackSpeed
+	{
+		res = 2.5f;
 	}
 
 	return res;
@@ -190,11 +238,9 @@ void ASidheRigelCharacter::SetAttackDelayFalse()
 	bAttackDelay = false;
 }
 
-void ASidheRigelCharacter::Attack(AActor* Target)
+void ASidheRigelCharacter::Attack(AActor* _target)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("CAST!")));
-
-	target = Target;
+	target = _target;
 }
 
 void ASidheRigelCharacter::Stun(float time)
