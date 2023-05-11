@@ -51,6 +51,10 @@ void AKerunCharacter::SpawnAttackProjectile()
 	}
 }
 
+void AKerunCharacter::InitAttackProjectile()
+{
+}
+
 void AKerunCharacter::SkillOne()
 {
 	KerunQSkillRef->ImproveAttackSpeed(attackSpeed);

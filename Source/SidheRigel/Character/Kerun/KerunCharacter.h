@@ -27,6 +27,7 @@ protected:
 
 protected:
 	virtual void SpawnAttackProjectile() override;
+	virtual void InitAttackProjectile() override;
 
 protected:	//Skill
 	virtual void SkillOne();
