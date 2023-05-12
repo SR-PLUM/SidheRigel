@@ -52,19 +52,26 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	}
 
 	//Character Property Initialize
-	range.Add("Base", 500.f);
-	attackDamage.Add("Base", 5.f);
-	attackSpeed.Add("Base", 1.f);
-	criticalRate.Add("Base", 50);
-	criticalDamage.Add("Base", 50);
+	range.Add("Debug", 500.f);
+	attackDamage.Add("Debug", 5.f);
+	attackSpeed.Add("Debug", 1.f);
+	criticalRate.Add("Debug", 50);
+	criticalDamage.Add("Debug", 50);
+	MaxHP.Add("Debug", 100.f);
+	generateHealthPoint.Add("Debug", 0.2f);
+	lifeSteal.Add("Debug", 5.f);
+	protectPower.Add("Debug", 20);
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 
+	currentHP = GetMaxHP();
 	bAttackDelay = false;
 }
 
 void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -165,6 +172,29 @@ void ASidheRigelCharacter::SetLevel(int32 _level)
 	}
 }
 
+void ASidheRigelCharacter::SetCurrentHP(float _hp)
+{
+	currentHP = _hp;
+
+	float var_MaxHP = GetMaxHP();
+	if (currentHP > var_MaxHP)
+	{
+		currentHP = var_MaxHP;
+	}
+}
+
+float ASidheRigelCharacter::GetCurrentHP()
+{
+	return currentHP;
+}
+
+void ASidheRigelCharacter::IE_GenerateHP()
+{
+	RestoreHP(GetGenerateHealthPoint());
+
+	//UE_LOG(LogTemp, Warning, TEXT("generate HP / HP : %f / %s"), currentHP, *this->GetName());
+}
+
 void ASidheRigelCharacter::SetTarget(AActor* _target)
 {
 	target = _target;
@@ -233,6 +263,50 @@ float ASidheRigelCharacter::GetAttackSpeed()
 	return res;
 }
 
+float ASidheRigelCharacter::GetMaxHP()
+{
+	float res = 0;
+	for (auto value : MaxHP)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
+float ASidheRigelCharacter::GetGenerateHealthPoint()
+{
+	float res = 0;
+	for (auto value : generateHealthPoint)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
+float ASidheRigelCharacter::GetLifeSteal()
+{
+	float res = 0;
+	for (auto value : lifeSteal)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
+int32 ASidheRigelCharacter::GetProtectPower()
+{
+	int32 res = 0;
+	for (auto value : protectPower)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
 void ASidheRigelCharacter::SetAttackDelayFalse()
 {
 	bAttackDelay = false;
@@ -265,8 +339,22 @@ void ASidheRigelCharacter::Airborne(float time)
 
 void ASidheRigelCharacter::TakeDamage(float damage)
 {
+	currentHP -= damage;
+	if (currentHP <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Die"));
+		currentHP = 0;
+	}
 }
 
 void ASidheRigelCharacter::RestoreHP(float value)
 {
+	currentHP += value;
+	
+	float var_MaxHP = GetMaxHP();
+
+	if (currentHP > var_MaxHP)
+	{
+		currentHP = var_MaxHP;
+	}
 }

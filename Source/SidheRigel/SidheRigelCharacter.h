@@ -97,19 +97,26 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, float> lifeSteal;			//레벨업을 제외한 다른 요인들에 의해 증가되는 흡혈 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> protectPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 회복 및 보호막 효과 딕셔너리
+		TMap<FString, int32> protectPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 회복 및 보호막 효과 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
+		TMap<FString, int32> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
 
 public:		//Getter, Setter
 	void SetTarget(AActor* target);
 	void SetLevel(int32 _level);
+	void SetCurrentHP(float _hp);
+	float GetCurrentHP();
+	void IE_GenerateHP();
 
 	float GetRange();
 	float GetAttackDamage();
 	int32 GetCriticalRate();
 	int32 GetCriticalDamage();
 	float GetAttackSpeed();
+	float GetMaxHP();
+	float GetGenerateHealthPoint();
+	float GetLifeSteal();
+	int32 GetProtectPower();
 
 protected:	//Attack
 	bool bAttackDelay;
@@ -117,6 +124,8 @@ protected:	//Attack
 
 	AActor* target;
 
+protected:
+	FTimerHandle GenerateHPTimer;
 public:		//Interface Implement
 	UFUNCTION()
 		virtual void Attack(AActor* Target) override;
