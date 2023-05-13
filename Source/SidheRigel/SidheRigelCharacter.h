@@ -21,7 +21,7 @@ public:
 	ASidheRigelCharacter();
 
 	virtual void BeginPlay();
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void Tick(float DeltaTime) override;
 
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 
@@ -123,9 +123,13 @@ protected:	//Attack
 	void SetAttackDelayFalse();
 
 	AActor* target;
+  
+  virtual void SpawnAttackProjectile();
+	virtual void InitAttackProjectile();
 
 protected:
 	FTimerHandle GenerateHPTimer;
+  
 public:		//Interface Implement
 	UFUNCTION()
 		virtual void Attack(AActor* Target) override;
