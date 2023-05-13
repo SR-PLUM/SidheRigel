@@ -45,11 +45,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Dummy/BP_DummyProjectile"));
-	if (Projectile.Object)
-	{
-		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
-	}
+	InitAttackProjectile();
 
 	//Character Property Initialize
 	range.Add("Base", 500.f);
@@ -81,27 +77,7 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 
 				if (ProjectileClass)
 				{
-					FVector MuzzleLocation = GetActorLocation();
-					FRotator MuzzleRotation = GetActorRotation();
-
-					UWorld* World = GetWorld();
-					if (World)
-					{
-						FActorSpawnParameters SpawnParams;
-						SpawnParams.Owner = this;
-						SpawnParams.Instigator = GetInstigator();
-
-						// Spawn the projectile at the muzzle.
-						ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-						if (Projectile)
-						{
-							// Set the projectile's initial trajectory.
-							Projectile->Target = target;
-							Projectile->AttackDamage = GetAttackDamage();
-							Projectile->criticalRate = (float)GetCriticalRate()/100.f;
-							Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
-						}
-					}
+					SpawnAttackProjectile();
 				}
 				FTimerHandle AttackDelayTimer;
 				GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, 1/GetAttackSpeed(), false);
@@ -236,6 +212,40 @@ float ASidheRigelCharacter::GetAttackSpeed()
 void ASidheRigelCharacter::SetAttackDelayFalse()
 {
 	bAttackDelay = false;
+}
+
+void ASidheRigelCharacter::SpawnAttackProjectile()
+{
+	FVector MuzzleLocation = GetActorLocation();
+	FRotator MuzzleRotation = GetActorRotation();
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		// Spawn the projectile at the muzzle.
+		ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+		if (Projectile)
+		{
+			// Set the projectile's initial trajectory.
+			Projectile->Target = target;
+			Projectile->AttackDamage = GetAttackDamage();
+			Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
+			Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+		}
+	}
+}
+
+void ASidheRigelCharacter::InitAttackProjectile()
+{
+	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Dummy/BP_DummyProjectile"));
+	if (Projectile.Object)
+	{
+		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
 }
 
 void ASidheRigelCharacter::Attack(AActor* _target)
