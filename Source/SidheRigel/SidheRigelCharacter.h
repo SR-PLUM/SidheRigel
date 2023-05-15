@@ -120,6 +120,8 @@ public:		//Getter, Setter
 	float GetLifeSteal();
 	int32 GetProtectPower();
 
+	virtual void InitProperty();
+
 public:
 	void ChangeAttackState();
 	void WaitAttackDelay();

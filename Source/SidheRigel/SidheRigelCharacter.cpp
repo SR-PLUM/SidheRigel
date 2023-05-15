@@ -49,19 +49,8 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitAttackProjectile();
 
-	//Character Property Initialize
-	range.Add("Debug", 500.f);
-	attackDamage.Add("Debug", 5.f);
-	attackSpeed.Add("Debug", 1.f);
-	criticalRate.Add("Debug", 50);
-	criticalDamage.Add("Debug", 50);
-	MaxHP.Add("Debug", 100.f);
-	generateHealthPoint.Add("Debug", 0.2f);
-	lifeSteal.Add("Debug", 5.f);
-	protectPower.Add("Debug", 20);
+	InitProperty();
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
-
-	currentHP = GetMaxHP();
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -264,6 +253,21 @@ int32 ASidheRigelCharacter::GetProtectPower()
 	}
 
 	return res;
+}
+
+void ASidheRigelCharacter::InitProperty()
+{
+	range.Add("Debug", 500.f);
+	attackDamage.Add("Debug", 5.f);
+	attackSpeed.Add("Debug", 1.f);
+	criticalRate.Add("Debug", 50);
+	criticalDamage.Add("Debug", 50);
+	MaxHP.Add("Debug", 100.f);
+	generateHealthPoint.Add("Debug", 0.2f);
+	lifeSteal.Add("Debug", 5.f);
+	protectPower.Add("Debug", 20);
+
+	currentHP = GetMaxHP();
 }
 
 void ASidheRigelCharacter::WaitAttackDelay()
