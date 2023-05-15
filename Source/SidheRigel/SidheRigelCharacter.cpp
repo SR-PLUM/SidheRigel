@@ -1,6 +1,8 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SidheRigelCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "State/Attack/attackStateMachine.h"
 #include "Dummy/DummyProjectile.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -47,25 +49,15 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitAttackProjectile();
 
-	//Character Property Initialize
-	range.Add("Debug", 500.f);
-	attackDamage.Add("Debug", 5.f);
-	attackSpeed.Add("Debug", 1.f);
-	criticalRate.Add("Debug", 50);
-	criticalDamage.Add("Debug", 50);
-	MaxHP.Add("Debug", 100.f);
-	generateHealthPoint.Add("Debug", 0.2f);
-	lifeSteal.Add("Debug", 5.f);
-	protectPower.Add("Debug", 20);
+	InitProperty();
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
-
-	currentHP = GetMaxHP();
-	bAttackDelay = false;
 }
 
 void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	attackStateMachine = new AttackStateMachine(this);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
@@ -76,25 +68,7 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 
 	if (target)
 	{
-		if (GetDistanceTo(target) <= GetRange())	//타겟이 사거리 내 범위에 속함
-		{
-			if (!bAttackDelay)
-			{
-				bAttackDelay = true;
-
-				if (ProjectileClass)
-				{
-					SpawnAttackProjectile();
-				}
-				FTimerHandle AttackDelayTimer;
-				GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, 1/GetAttackSpeed(), false);
-			}
-		}
-		else												//타겟이 사거리 밖에 있음
-		{
-			FVector WorldDirection = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-			AddMovementInput(WorldDirection, 1.f, false);
-		}
+		attackStateMachine->Run();
 	}
 }
 
@@ -167,8 +141,6 @@ float ASidheRigelCharacter::GetCurrentHP()
 void ASidheRigelCharacter::IE_GenerateHP()
 {
 	RestoreHP(GetGenerateHealthPoint());
-
-	//UE_LOG(LogTemp, Warning, TEXT("generate HP / HP : %f / %s"), currentHP, *this->GetName());
 }
 
 void ASidheRigelCharacter::SetTarget(AActor* _target)
@@ -283,34 +255,30 @@ int32 ASidheRigelCharacter::GetProtectPower()
 	return res;
 }
 
-void ASidheRigelCharacter::SetAttackDelayFalse()
+void ASidheRigelCharacter::InitProperty()
 {
-	bAttackDelay = false;
+	range.Add("Debug", 500.f);
+	attackDamage.Add("Debug", 5.f);
+	attackSpeed.Add("Debug", 1.f);
+	criticalRate.Add("Debug", 50);
+	criticalDamage.Add("Debug", 50);
+	MaxHP.Add("Debug", 100.f);
+	generateHealthPoint.Add("Debug", 0.2f);
+	lifeSteal.Add("Debug", 5.f);
+	protectPower.Add("Debug", 20);
+
+	currentHP = GetMaxHP();
 }
 
-void ASidheRigelCharacter::SpawnAttackProjectile()
+void ASidheRigelCharacter::WaitAttackDelay()
 {
-	FVector MuzzleLocation = GetActorLocation();
-	FRotator MuzzleRotation = GetActorRotation();
+	FTimerHandle AttackDelayTimer;
+	GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::ChangeAttackState, 1 / GetAttackSpeed(), false);
+}
 
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
-
-		// Spawn the projectile at the muzzle.
-		ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-		if (Projectile)
-		{
-			// Set the projectile's initial trajectory.
-			Projectile->Target = target;
-			Projectile->AttackDamage = GetAttackDamage();
-			Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
-			Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
-		}
-	}
+void ASidheRigelCharacter::ChangeAttackState()
+{
+	attackStateMachine->ChangeState(attackStateMachine->moveToAttackState);
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()
@@ -318,7 +286,35 @@ void ASidheRigelCharacter::InitAttackProjectile()
 	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Dummy/BP_DummyProjectile"));
 	if (Projectile.Object)
 	{
-		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+		baseProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
+}
+
+void ASidheRigelCharacter::SpawnAttackProjectile()
+{
+	if (baseProjectileClass)
+	{
+		FVector MuzzleLocation = GetActorLocation();
+		FRotator MuzzleRotation = GetActorRotation();
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(baseProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				// Set the projectile's initial trajectory.
+				Projectile->Target = target;
+				Projectile->AttackDamage = GetAttackDamage();
+				Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
+				Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+			}
+		}
 	}
 }
 

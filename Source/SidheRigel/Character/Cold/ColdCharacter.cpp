@@ -3,6 +3,7 @@
 
 #include "ColdCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdQProjectile.h"
+#include "SidheRigel/Character/Cold/ColdAttackProjectile.h"
 
 // Sets default values
 AColdCharacter::AColdCharacter()
@@ -14,6 +15,8 @@ AColdCharacter::AColdCharacter()
 	{
 		QProjectileClass = (UClass*)QProjectile.Object->GeneratedClass;
 	}
+
+	InitAttackProjectile();
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +38,43 @@ void AColdCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AColdCharacter::InitAttackProjectile()
+{
+	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/Cold/BP_ColdAttackProjectile"));
+	if (Projectile.Object)
+	{
+		attackProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
+}
+
+void AColdCharacter::SpawnAttackProjectile()
+{
+	if (attackProjectileClass)
+	{
+		FVector MuzzleLocation = GetActorLocation();
+		FRotator MuzzleRotation = GetActorRotation();
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			AColdAttackProjectile* Projectile = World->SpawnActor<AColdAttackProjectile>(attackProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				// Set the projectile's initial trajectory.
+				Projectile->Target = target;
+				Projectile->AttackDamage = GetAttackDamage();
+				Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
+				Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+			}
+		}
+	}
 }
 
 void AColdCharacter::SkillOne()

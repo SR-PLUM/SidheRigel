@@ -15,7 +15,7 @@ class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCab
 {
 	GENERATED_BODY()
 
-		friend class ASidheRigelPlayerController;
+	friend class ASidheRigelPlayerController;
 
 public:
 	ASidheRigelCharacter();
@@ -41,7 +41,9 @@ protected:
 
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class ADummyProjectile> ProjectileClass;
+		TSubclassOf<class ADummyProjectile> baseProjectileClass;
+
+	class AttackStateMachine* attackStateMachine;
 
 protected:	//Skill
 	UFUNCTION()
@@ -118,14 +120,15 @@ public:		//Getter, Setter
 	float GetLifeSteal();
 	int32 GetProtectPower();
 
-protected:	//Attack
-	bool bAttackDelay;
-	void SetAttackDelayFalse();
+	virtual void InitProperty();
 
-	AActor* target;
-  
-  virtual void SpawnAttackProjectile();
+public:
+	void ChangeAttackState();
+	void WaitAttackDelay();
+public:
 	virtual void InitAttackProjectile();
+	virtual void SpawnAttackProjectile();
+	AActor* target;
 
 protected:
 	FTimerHandle GenerateHPTimer;

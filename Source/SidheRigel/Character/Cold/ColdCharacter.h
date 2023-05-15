@@ -24,6 +24,13 @@ protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+protected:	//Attack
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AColdAttackProjectile> attackProjectileClass;
+	
+	virtual void InitAttackProjectile() override;
+	virtual void SpawnAttackProjectile() override;
+
 protected:	//Skill
 	virtual void SkillOne();
 	virtual void SkillTwo();

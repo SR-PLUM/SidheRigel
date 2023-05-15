@@ -31,13 +31,15 @@ public:
 	UPROPERTY()
 		float criticalDamage;
 
-private:
+protected:
 	UPROPERTY(VisibleAnywhere)
 		class USphereComponent* CollisionComponent;
-
 	UPROPERTY(VisibleAnywhere)
 		class UProjectileMovementComponent* ProjectileMovementComponent;
-
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* ProjectileMesh;
+
+protected:	//InitFunction
+	virtual void SetProjectileMesh();
+	virtual void SetProjectileMovementComponent();
 };
