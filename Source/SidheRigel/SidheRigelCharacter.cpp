@@ -62,7 +62,6 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 
 	currentHP = GetMaxHP();
-	bAttackDelay = false;
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -267,11 +266,6 @@ int32 ASidheRigelCharacter::GetProtectPower()
 	return res;
 }
 
-void ASidheRigelCharacter::SetAttackDelayFalse()
-{
-	bAttackDelay = false;
-}
-
 void ASidheRigelCharacter::WaitAttackDelay()
 {
 	FTimerHandle AttackDelayTimer;
@@ -283,9 +277,18 @@ void ASidheRigelCharacter::ChangeAttackState()
 	attackStateMachine->ChangeState(attackStateMachine->moveToAttackState);
 }
 
+void ASidheRigelCharacter::InitAttackProjectile()
+{
+	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Dummy/BP_DummyProjectile"));
+	if (Projectile.Object)
+	{
+		baseProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
+}
+
 void ASidheRigelCharacter::SpawnAttackProjectile()
 {
-	if (ProjectileClass)
+	if (baseProjectileClass)
 	{
 		FVector MuzzleLocation = GetActorLocation();
 		FRotator MuzzleRotation = GetActorRotation();
@@ -298,7 +301,7 @@ void ASidheRigelCharacter::SpawnAttackProjectile()
 			SpawnParams.Instigator = GetInstigator();
 
 			// Spawn the projectile at the muzzle.
-			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(baseProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
 				// Set the projectile's initial trajectory.
@@ -308,15 +311,6 @@ void ASidheRigelCharacter::SpawnAttackProjectile()
 				Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
 			}
 		}
-	}
-}
-
-void ASidheRigelCharacter::InitAttackProjectile()
-{
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Dummy/BP_DummyProjectile"));
-	if (Projectile.Object)
-	{
-		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
 	}
 }
 

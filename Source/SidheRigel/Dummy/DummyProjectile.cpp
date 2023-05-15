@@ -3,7 +3,7 @@
 #include "DummyProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
-#include "../Interface/Damagable.h"
+#include "SidheRigel/Interface/Damagable.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
@@ -27,27 +27,11 @@ ADummyProjectile::ADummyProjectile()
 	}
 	if (!ProjectileMesh)
 	{
-		ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-		ProjectileMesh->SetupAttachment(CollisionComponent);
-
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Dummy/MaterialSphere"));
-		if (Mesh.Succeeded())
-		{
-			ProjectileMesh->SetStaticMesh(Mesh.Object);
-		}
-
+		SetProjectileMesh();
 	}
 	if (!ProjectileMovementComponent)
 	{
-		// Use this component to drive this projectile's movement.
-		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 5.f;
-		ProjectileMovementComponent->MaxSpeed = 5.f;
-		ProjectileMovementComponent->bRotationFollowsVelocity = true;
-		ProjectileMovementComponent->bShouldBounce = false;
-		ProjectileMovementComponent->Bounciness = 0.f;
-		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+		SetProjectileMovementComponent();
 	}
 }
 
@@ -56,6 +40,30 @@ void ADummyProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ADummyProjectile::SetProjectileMesh()
+{
+	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
+	ProjectileMesh->SetupAttachment(CollisionComponent);
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Dummy/MaterialSphere"));
+	if (Mesh.Succeeded())
+	{
+		ProjectileMesh->SetStaticMesh(Mesh.Object);
+	}
+}
+
+void ADummyProjectile::SetProjectileMovementComponent()
+{
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
+	ProjectileMovementComponent->InitialSpeed = 5.f;
+	ProjectileMovementComponent->MaxSpeed = 5.f;
+	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+	ProjectileMovementComponent->bShouldBounce = false;
+	ProjectileMovementComponent->Bounciness = 0.f;
+	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 }
 
 // Called every frame

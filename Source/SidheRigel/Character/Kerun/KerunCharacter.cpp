@@ -39,7 +39,7 @@ void AKerunCharacter::SpawnAttackProjectile()
 		SpawnParams.Instigator = GetInstigator();
 
 		// Spawn the projectile at the muzzle.
-		ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+		ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(baseProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 		if (Projectile)
 		{
 			// Set the projectile's initial trajectory.

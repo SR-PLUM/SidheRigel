@@ -41,7 +41,7 @@ protected:
 
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class ADummyProjectile> ProjectileClass;
+		TSubclassOf<class ADummyProjectile> baseProjectileClass;
 
 	class AttackStateMachine* attackStateMachine;
 
@@ -120,15 +120,12 @@ public:		//Getter, Setter
 	float GetLifeSteal();
 	int32 GetProtectPower();
 
-protected:	//Attack
-	bool bAttackDelay;
-	void SetAttackDelayFalse();
 public:
 	void ChangeAttackState();
 	void WaitAttackDelay();
 public:
-	virtual void SpawnAttackProjectile();
 	virtual void InitAttackProjectile();
+	virtual void SpawnAttackProjectile();
 	AActor* target;
 
 protected:
