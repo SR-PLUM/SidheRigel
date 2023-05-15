@@ -1,6 +1,8 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SidheRigelCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "State/Attack/attackStateMachine.h"
 #include "Dummy/DummyProjectile.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -67,6 +69,8 @@ void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	attackStateMachine = new AttackStateMachine(this);
+
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
 
@@ -76,25 +80,7 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 
 	if (target)
 	{
-		if (GetDistanceTo(target) <= GetRange())	//타겟이 사거리 내 범위에 속함
-		{
-			if (!bAttackDelay)
-			{
-				bAttackDelay = true;
-
-				if (ProjectileClass)
-				{
-					SpawnAttackProjectile();
-				}
-				FTimerHandle AttackDelayTimer;
-				GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::SetAttackDelayFalse, 1/GetAttackSpeed(), false);
-			}
-		}
-		else												//타겟이 사거리 밖에 있음
-		{
-			FVector WorldDirection = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-			AddMovementInput(WorldDirection, 1.f, false);
-		}
+		attackStateMachine->Run();
 	}
 }
 
@@ -167,8 +153,6 @@ float ASidheRigelCharacter::GetCurrentHP()
 void ASidheRigelCharacter::IE_GenerateHP()
 {
 	RestoreHP(GetGenerateHealthPoint());
-
-	//UE_LOG(LogTemp, Warning, TEXT("generate HP / HP : %f / %s"), currentHP, *this->GetName());
 }
 
 void ASidheRigelCharacter::SetTarget(AActor* _target)
@@ -288,27 +272,41 @@ void ASidheRigelCharacter::SetAttackDelayFalse()
 	bAttackDelay = false;
 }
 
+void ASidheRigelCharacter::WaitAttackDelay()
+{
+	FTimerHandle AttackDelayTimer;
+	GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::ChangeAttackState, 1 / GetAttackSpeed(), false);
+}
+
+void ASidheRigelCharacter::ChangeAttackState()
+{
+	attackStateMachine->ChangeState(attackStateMachine->moveToAttackState);
+}
+
 void ASidheRigelCharacter::SpawnAttackProjectile()
 {
-	FVector MuzzleLocation = GetActorLocation();
-	FRotator MuzzleRotation = GetActorRotation();
-
-	UWorld* World = GetWorld();
-	if (World)
+	if (ProjectileClass)
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
+		FVector MuzzleLocation = GetActorLocation();
+		FRotator MuzzleRotation = GetActorRotation();
 
-		// Spawn the projectile at the muzzle.
-		ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-		if (Projectile)
+		UWorld* World = GetWorld();
+		if (World)
 		{
-			// Set the projectile's initial trajectory.
-			Projectile->Target = target;
-			Projectile->AttackDamage = GetAttackDamage();
-			Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
-			Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				// Set the projectile's initial trajectory.
+				Projectile->Target = target;
+				Projectile->AttackDamage = GetAttackDamage();
+				Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
+				Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+			}
 		}
 	}
 }
