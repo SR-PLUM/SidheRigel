@@ -25,9 +25,15 @@ protected:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	virtual void InitProperty() override;
+
 protected:
 	virtual void SpawnAttackProjectile() override;
 	virtual void InitAttackProjectile() override;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AKerunAttackProjectile> ProjectileClass;
 
 protected:	//Skill
 	virtual void SkillOne();

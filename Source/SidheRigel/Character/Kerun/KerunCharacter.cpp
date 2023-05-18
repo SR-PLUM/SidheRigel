@@ -3,10 +3,11 @@
 #include "KerunCharacter.h"
 #include "../../Dummy/DummyProjectile.h"
 #include "Skills/KerunQSkill.h"
+#include "KerunAttackProjectile.h"
 
 AKerunCharacter::AKerunCharacter()
 {
-	
+	InitAttackProjectile();
 }
 
 void AKerunCharacter::BeginPlay()
@@ -19,11 +20,32 @@ void AKerunCharacter::BeginPlay()
 void AKerunCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//Kerun QSkill
+	if (KerunQSkillRef->CheckAttackCount())
+	{
+		KerunQSkillRef->QuitQSkill(attackSpeed);
+	}
 }
 
 void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AKerunCharacter::InitProperty()
+{
+	range.Add("Debug", 20.f);
+	attackDamage.Add("Debug", 5.f);
+	attackSpeed.Add("Debug", 1.f);
+	criticalRate.Add("Debug", 50);
+	criticalDamage.Add("Debug", 50);
+	MaxHP.Add("Debug", 100.f);
+	generateHealthPoint.Add("Debug", 0.2f);
+	lifeSteal.Add("Debug", 5.f);
+	protectPower.Add("Debug", 20);
+
+	currentHP = GetMaxHP();
 }
 
 void AKerunCharacter::SpawnAttackProjectile()
@@ -39,23 +61,32 @@ void AKerunCharacter::SpawnAttackProjectile()
 		SpawnParams.Instigator = GetInstigator();
 
 		// Spawn the projectile at the muzzle.
-		ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(baseProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+		AKerunAttackProjectile* Projectile = World->SpawnActor<AKerunAttackProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 		if (Projectile)
 		{
 			// Set the projectile's initial trajectory.
-			Projectile->Target = target;
-			Projectile->AttackDamage = GetAttackDamage();
-			Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
-			Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+			InitProjectileProperty(Projectile);
+
+			//Kerun QSkill
+			if (KerunQSkillRef->IsWorking)
+			{
+				KerunQSkillRef->AttackCount += 1;
+			}
+			
 		}
 	}
 }
 
 void AKerunCharacter::InitAttackProjectile()
 {
+	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/Kerun/BP_KerunAttackProjectile"));
+	if (Projectile.Object)
+	{
+		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
 }
 
 void AKerunCharacter::SkillOne()
 {
-	KerunQSkillRef->ImproveAttackSpeed(attackSpeed);
+	KerunQSkillRef->ImproveAttackSpeed(attackSpeed, this);
 }

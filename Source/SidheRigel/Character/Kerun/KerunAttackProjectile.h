@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../../Dummy/DummyProjectile.h"
 #include "KerunAttackProjectile.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API AKerunAttackProjectile : public AActor
+class SIDHERIGEL_API AKerunAttackProjectile : public ADummyProjectile
 {
 	GENERATED_BODY()
 	
@@ -23,6 +24,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+protected:	//InitFunction
+	virtual void SetProjectileMesh() override;
+	virtual void SetProjectileMovementComponent() override;
+	/*
 public:
 	UPROPERTY()
 		AActor* Target;
@@ -39,5 +45,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 		class UProjectileMovementComponent* ProjectileMovementComponent;
-
+		*/
 };
