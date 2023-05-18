@@ -35,6 +35,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AKerunAttackProjectile> ProjectileClass;
 
+private:
+	void InitAttackAnimation();
+
+	class UAnimMontage* AttackAnim;
+
 protected:	//Skill
 	virtual void SkillOne();
 

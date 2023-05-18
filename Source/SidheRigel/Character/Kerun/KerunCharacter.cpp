@@ -4,6 +4,7 @@
 #include "../../Dummy/DummyProjectile.h"
 #include "Skills/KerunQSkill.h"
 #include "KerunAttackProjectile.h"
+#include "Animation/AnimInstance.h"
 
 AKerunCharacter::AKerunCharacter()
 {
@@ -35,7 +36,7 @@ void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AKerunCharacter::InitProperty()
 {
-	range.Add("Debug", 20.f);
+	range.Add("Debug", 200.f);
 	attackDamage.Add("Debug", 5.f);
 	attackSpeed.Add("Debug", 1.f);
 	criticalRate.Add("Debug", 50);
@@ -75,6 +76,21 @@ void AKerunCharacter::SpawnAttackProjectile()
 			
 		}
 	}
+	/*
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>AttackAnimMontage(TEXT("/Game/Heros/Kerun/Animations/Melee_A_Montage.Melee_A_Montage"));
+	
+	if (AttackAnimMontage.Succeeded())
+	{
+		AttackAnim = AttackAnimMontage.Object;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(AttackAnim);
+	}*/
 }
 
 void AKerunCharacter::InitAttackProjectile()
@@ -84,6 +100,13 @@ void AKerunCharacter::InitAttackProjectile()
 	{
 		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
 	}
+}
+
+
+
+void AKerunCharacter::InitAttackAnimation()
+{
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>AttackAnimMontage(TEXT("/Game/Heros/Kerun/Animations/Melee_A_Montage"));
 }
 
 void AKerunCharacter::SkillOne()
