@@ -33,8 +33,12 @@ protected:	//Attack
 
 protected:	//Skill
 	virtual void SkillOne();
+	void QImplement(AActor* _target);
+
 	virtual void SkillTwo();
+
 	virtual	void SkillThree();
+
 	virtual void SkillFour();
 
 	virtual void SkillCancel();
