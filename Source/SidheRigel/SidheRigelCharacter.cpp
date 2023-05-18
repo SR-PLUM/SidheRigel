@@ -49,13 +49,14 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitAttackProjectile();
 
-	InitProperty();
+	
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 }
 
 void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	InitProperty();
 
 	attackStateMachine = new AttackStateMachine(this);
 

@@ -20,7 +20,7 @@ public:
 
 public :
 	int32 AttackCount = 0;
-	int32 MaxAttackCount = 3;
+	int32 MaxAttackCount = 2;
 
 	float MaxDuration = 5.0f;
 	float MaxAttackSpeed = 2.5f;
@@ -31,6 +31,17 @@ public :
 	// CoolTime
 	float CoolDownDuration = 10.f;
 
+private :
+	//Working SetTimer
+	FTimerHandle WorkingTimer;
+
+	//Cooling SetTimer
+	FTimerHandle CoolingTimer;
+
 public :
-	void ImproveAttackSpeed(TMap<FString, float>& AttackSpeed);
+	void ImproveAttackSpeed(TMap<FString, float>& AttackSpeed, class AKerunCharacter * Owner);
+
+	void QuitQSkill(TMap<FString, float>& AttackSpeed);
+
+	bool CheckAttackCount();
 };
