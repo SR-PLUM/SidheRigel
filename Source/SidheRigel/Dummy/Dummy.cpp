@@ -2,6 +2,7 @@
 
 
 #include "Dummy.h"
+#include "SidheRigel/SidheRigelCharacter.h"
 
 // Sets default values
 ADummy::ADummy()
@@ -24,10 +25,15 @@ void ADummy::BeginPlay()
 	
 }
 
-void ADummy::TakeDamage(float damage)
+void ADummy::TakeDamage(float damage, AActor* damageCauser)
 {
 	currentHP -= damage;
 	UE_LOG(LogTemp, Warning, TEXT("Remain HP is %f"), currentHP);
+
+	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
+	{
+		causerCharacter->LifeSteal(damage);
+	}
 
 	if (currentHP <= 0)
 	{

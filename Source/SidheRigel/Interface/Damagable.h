@@ -23,7 +23,7 @@ class SIDHERIGEL_API IDamagable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION()
-		virtual void TakeDamage(float damage) = 0;
+		virtual void TakeDamage(float damage, AActor* damageCauser) = 0;
 	UFUNCTION()
 		virtual void RestoreHP(float value) = 0;
 };

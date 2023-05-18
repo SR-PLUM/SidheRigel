@@ -66,7 +66,7 @@ void AKerunAttackProjectile::Tick(float DeltaTime)
 				totalAttackDamage *= criticalDamage;
 			}
 
-			Cast<IDamagable>(Target)->TakeDamage(totalAttackDamage);
+			//Cast<IDamagable>(Target)->TakeDamage(totalAttackDamage);
 			Destroy();
 		}
 	}

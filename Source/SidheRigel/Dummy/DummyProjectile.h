@@ -25,6 +25,8 @@ public:
 	UPROPERTY()
 		AActor* Target;
 	UPROPERTY()
+		AActor* projectileOwner;
+	UPROPERTY()
 		float AttackDamage;
 	UPROPERTY()
 		float criticalRate;

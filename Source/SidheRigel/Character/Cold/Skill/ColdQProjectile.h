@@ -26,6 +26,8 @@ public:
 public:
 	UPROPERTY()
 		AActor* Target;
+	UPROPERTY()
+		AActor* projectileOwner;
 
 private:
 	UPROPERTY(VisibleAnywhere)
