@@ -22,7 +22,7 @@ protected:	//인터페이스 구현
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-		virtual void TakeDamage(float damage) override;
+		virtual void TakeDamage(float damage, AActor* damageCauser) override;
 	UFUNCTION()
 		virtual void RestoreHP(float value) override;
 	

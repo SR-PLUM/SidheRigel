@@ -85,9 +85,8 @@ void ADummyProjectile::Tick(float DeltaTime)
 				totalAttackDamage *= criticalDamage;
 			}
 
-			Cast<IDamagable>(Target)->TakeDamage(totalAttackDamage);
+			Cast<IDamagable>(Target)->TakeDamage(totalAttackDamage, projectileOwner);
 			Destroy();
 		}
 	}
 }
-

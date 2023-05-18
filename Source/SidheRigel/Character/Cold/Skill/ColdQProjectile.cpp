@@ -70,7 +70,7 @@ void AColdQProjectile::Tick(float DeltaTime)
 		
 		if ((this->GetDistanceTo(Target)) < 100.f)
 		{
-			Cast<IDamagable>(Target)->TakeDamage(10.f);
+			Cast<IDamagable>(Target)->TakeDamage(10.f, projectileOwner);
 			Destroy();
 		}
 	}

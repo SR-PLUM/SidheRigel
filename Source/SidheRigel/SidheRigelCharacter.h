@@ -97,7 +97,7 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, int32> cooldownReduction;	//레벨업을 제외한 다른 요인들에 의해 증가되는 쿨타임감소 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> lifeSteal;			//레벨업을 제외한 다른 요인들에 의해 증가되는 흡혈 딕셔너리
+		TMap<FString, int32> lifeSteal;			//레벨업을 제외한 다른 요인들에 의해 증가되는 흡혈 딕셔너리
 	UPROPERTY()
 		TMap<FString, int32> protectPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 회복 및 보호막 효과 딕셔너리
 	UPROPERTY()
@@ -117,7 +117,7 @@ public:		//Getter, Setter
 	float GetAttackSpeed();
 	float GetMaxHP();
 	float GetGenerateHealthPoint();
-	float GetLifeSteal();
+	int32 GetLifeSteal();
 	int32 GetProtectPower();
 
 	virtual void InitProperty();
@@ -125,14 +125,20 @@ public:		//Getter, Setter
 public:
 	void ChangeAttackState();
 	void WaitAttackDelay();
+
 public:
 	virtual void InitAttackProjectile();
 	virtual void SpawnAttackProjectile();
+	UFUNCTION()
+		void InitProjectileProperty(ADummyProjectile* projectile);
 	AActor* target;
+
+	UFUNCTION()
+		void LifeSteal(float damage);
 
 protected:
 	FTimerHandle GenerateHPTimer;
-  
+ 
 public:		//Interface Implement
 	UFUNCTION()
 		virtual void Attack(AActor* Target) override;
@@ -149,7 +155,7 @@ public:		//Interface Implement
 		virtual void Airborne(float time) override;
 
 	UFUNCTION()
-		virtual void TakeDamage(float damage) override;
+		virtual void TakeDamage(float damage, AActor* damageCauser) override;
 	UFUNCTION()
 		virtual void RestoreHP(float value) override;
 };

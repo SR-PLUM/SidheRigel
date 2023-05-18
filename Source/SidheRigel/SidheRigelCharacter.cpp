@@ -233,9 +233,9 @@ float ASidheRigelCharacter::GetGenerateHealthPoint()
 	return res;
 }
 
-float ASidheRigelCharacter::GetLifeSteal()
+int32 ASidheRigelCharacter::GetLifeSteal()
 {
-	float res = 0;
+	int32 res = 0;
 	for (auto value : lifeSteal)
 	{
 		res += value.Value;
@@ -308,14 +308,27 @@ void ASidheRigelCharacter::SpawnAttackProjectile()
 			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(baseProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
-				// Set the projectile's initial trajectory.
-				Projectile->Target = target;
-				Projectile->AttackDamage = GetAttackDamage();
-				Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
-				Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+				InitProjectileProperty(Projectile);
 			}
 		}
 	}
+}
+
+void ASidheRigelCharacter::InitProjectileProperty(ADummyProjectile* projectile)
+{
+	projectile->Target = target;
+	projectile->projectileOwner = this;
+	projectile->AttackDamage = GetAttackDamage();
+	projectile->criticalRate = (float)GetCriticalRate() / 100.f;
+	projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+}
+
+void ASidheRigelCharacter::LifeSteal(float damage)
+{
+	float _lifeSteal = (float)GetLifeSteal() / 100.f;
+	
+	RestoreHP(damage * _lifeSteal);
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Health Restore! HP : %f"), currentHP));
 }
 
 void ASidheRigelCharacter::Attack(AActor* _target)
@@ -343,9 +356,13 @@ void ASidheRigelCharacter::Airborne(float time)
 {
 }
 
-void ASidheRigelCharacter::TakeDamage(float damage)
+void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
 	currentHP -= damage;
+	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
+	{
+		causerCharacter->LifeSteal(damage);
+	}
 	if (currentHP <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Die"));

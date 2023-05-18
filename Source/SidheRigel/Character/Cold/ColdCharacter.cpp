@@ -67,11 +67,7 @@ void AColdCharacter::SpawnAttackProjectile()
 			AColdAttackProjectile* Projectile = World->SpawnActor<AColdAttackProjectile>(attackProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
-				// Set the projectile's initial trajectory.
-				Projectile->Target = target;
-				Projectile->AttackDamage = GetAttackDamage();
-				Projectile->criticalRate = (float)GetCriticalRate() / 100.f;
-				Projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
+				InitProjectileProperty(Projectile);
 			}
 		}
 	}
@@ -144,6 +140,7 @@ void AColdCharacter::UseSkill(AActor* _target)
 						{
 							// Set the projectile's initial trajectory.
 							Projectile->Target = _target;
+							Projectile->projectileOwner = this;
 						}
 					}
 				}
