@@ -80,6 +80,43 @@ void AColdCharacter::SkillOne()
 	skillState = Q_Ready;
 }
 
+void AColdCharacter::QImplement(AActor* _target)
+{
+	
+	if (_target->Tags.Contains("Hero"))
+	{
+		if (QProjectileClass)
+		{
+			for (int32 i = 0; i < QCount; i++)
+			{
+				FTimerHandle QProjectileGenerateTimer;
+				GetWorldTimerManager().SetTimer(QProjectileGenerateTimer,
+					FTimerDelegate::CreateLambda([=]()
+						{
+							FVector MuzzleLocation = GetActorLocation();
+							FRotator MuzzleRotation = GetActorRotation();
+
+							UWorld* World = GetWorld();
+							if (World)
+							{
+								FActorSpawnParameters SpawnParams;
+								SpawnParams.Owner = this;
+								SpawnParams.Instigator = GetInstigator();
+
+								// Spawn the projectile at the muzzle.
+								AColdQProjectile* Projectile = World->SpawnActor<AColdQProjectile>(QProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+								if (Projectile)
+								{
+									Projectile->Target = _target;
+									Projectile->projectileOwner = this;
+								}
+							}
+						}),(float)i * 0.1f, false);
+			}
+		}
+	}
+}
+
 void AColdCharacter::SkillTwo()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Cold Ready W"));
@@ -117,35 +154,7 @@ void AColdCharacter::UseSkill(AActor* _target)
 		break;
 	case Q_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use Q"));
-
-		if (_target->Tags.Contains("Hero"))
-		{
-			if (QProjectileClass)
-			{
-				FVector MuzzleLocation = GetActorLocation();
-				FRotator MuzzleRotation = GetActorRotation();
-
-				UWorld* World = GetWorld();
-				if (World)
-				{
-					FActorSpawnParameters SpawnParams;
-					SpawnParams.Owner = this;
-					SpawnParams.Instigator = GetInstigator();
-
-					for (int i = 0; i < QCount; i++)
-					{
-						// Spawn the projectile at the muzzle.
-						AColdQProjectile* Projectile = World->SpawnActor<AColdQProjectile>(QProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-						if (Projectile)
-						{
-							// Set the projectile's initial trajectory.
-							Projectile->Target = _target;
-							Projectile->projectileOwner = this;
-						}
-					}
-				}
-			}
-		}
+		QImplement(_target);
 
 		skillState = Null;
 		break;
