@@ -109,7 +109,7 @@ void AFairyWingCharacter::SkillCancel()
 	skillState = Null;
 }
 
-void AFairyWingCharacter::UseSkill(AActor* _target)
+void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 {
 	switch (skillState)
 	{
@@ -127,31 +127,35 @@ void AFairyWingCharacter::UseSkill(AActor* _target)
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing use E"));
 
-		if (_target->Tags.Contains("Hero"))
+		if (AActor* _target = HitResult.GetActor())
 		{
-			if (EProjectileClass)
+			if (_target->Tags.Contains("Hero"))
 			{
-				FVector MuzzleLocation = GetActorLocation();
-				FRotator MuzzleRotation = GetActorRotation();
-
-				UWorld* World = GetWorld();
-				if (World)
+				if (EProjectileClass)
 				{
-					FActorSpawnParameters SpawnParams;
-					SpawnParams.Owner = this;
-					SpawnParams.Instigator = GetInstigator();
+					FVector MuzzleLocation = GetActorLocation();
+					FRotator MuzzleRotation = GetActorRotation();
 
-					// Spawn the projectile at the muzzle.
-					AFairyWingEProjectile* Projectile = World->SpawnActor<AFairyWingEProjectile>(EProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-					if (Projectile)
+					UWorld* World = GetWorld();
+					if (World)
 					{
-						// Set the projectile's initial trajectory.
-						Projectile->Target = _target;
-						Projectile->projectileOwner = this;
+						FActorSpawnParameters SpawnParams;
+						SpawnParams.Owner = this;
+						SpawnParams.Instigator = GetInstigator();
+
+						// Spawn the projectile at the muzzle.
+						AFairyWingEProjectile* Projectile = World->SpawnActor<AFairyWingEProjectile>(EProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+						if (Projectile)
+						{
+							// Set the projectile's initial trajectory.
+							Projectile->Target = _target;
+							Projectile->projectileOwner = this;
+						}
 					}
 				}
 			}
 		}
+		
 
 		skillState = Null;
 		break;

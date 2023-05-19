@@ -80,38 +80,40 @@ void AColdCharacter::SkillOne()
 	skillState = Q_Ready;
 }
 
-void AColdCharacter::QImplement(AActor* _target)
+void AColdCharacter::QImplement(FHitResult HitResult)
 {
-	
-	if (_target->Tags.Contains("Hero"))
+	if (AActor* _target = HitResult.GetActor())
 	{
-		if (QProjectileClass)
+		if (_target->Tags.Contains("Hero"))
 		{
-			for (int32 i = 0; i < QCount; i++)
+			if (QProjectileClass)
 			{
-				FTimerHandle QProjectileGenerateTimer;
-				GetWorldTimerManager().SetTimer(QProjectileGenerateTimer,
-					FTimerDelegate::CreateLambda([=]()
-						{
-							FVector MuzzleLocation = GetActorLocation();
-							FRotator MuzzleRotation = GetActorRotation();
-
-							UWorld* World = GetWorld();
-							if (World)
+				for (int32 i = 0; i < QCount; i++)
+				{
+					FTimerHandle QProjectileGenerateTimer;
+					GetWorldTimerManager().SetTimer(QProjectileGenerateTimer,
+						FTimerDelegate::CreateLambda([=]()
 							{
-								FActorSpawnParameters SpawnParams;
-								SpawnParams.Owner = this;
-								SpawnParams.Instigator = GetInstigator();
+								FVector MuzzleLocation = GetActorLocation();
+								FRotator MuzzleRotation = GetActorRotation();
 
-								// Spawn the projectile at the muzzle.
-								AColdQProjectile* Projectile = World->SpawnActor<AColdQProjectile>(QProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-								if (Projectile)
+								UWorld* World = GetWorld();
+								if (World)
 								{
-									Projectile->Target = _target;
-									Projectile->projectileOwner = this;
+									FActorSpawnParameters SpawnParams;
+									SpawnParams.Owner = this;
+									SpawnParams.Instigator = GetInstigator();
+
+									// Spawn the projectile at the muzzle.
+									AColdQProjectile* Projectile = World->SpawnActor<AColdQProjectile>(QProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+									if (Projectile)
+									{
+										Projectile->Target = _target;
+										Projectile->projectileOwner = this;
+									}
 								}
-							}
-						}),(float)i * 0.1f, false);
+							}), (float)i * 0.1f, false);
+				}
 			}
 		}
 	}
@@ -122,6 +124,11 @@ void AColdCharacter::SkillTwo()
 	UE_LOG(LogTemp, Warning, TEXT("Cold Ready W"));
 
 	skillState = W_Ready;
+}
+
+void AColdCharacter::WImplement()
+{
+
 }
 
 void AColdCharacter::SkillThree()
@@ -145,7 +152,7 @@ void AColdCharacter::SkillCancel()
 	skillState = Null;
 }
 
-void AColdCharacter::UseSkill(AActor* _target)
+void AColdCharacter::UseSkill(FHitResult HitResult)
 {
 	switch (skillState)
 	{
@@ -154,12 +161,14 @@ void AColdCharacter::UseSkill(AActor* _target)
 		break;
 	case Q_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use Q"));
-		QImplement(_target);
 
+		QImplement(HitResult);
 		skillState = Null;
 		break;
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use W"));
+
+		WImplement();
 		skillState = Null;
 		break;
 	case E_Ready:
