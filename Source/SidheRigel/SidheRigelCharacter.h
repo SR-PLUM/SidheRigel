@@ -57,7 +57,7 @@ protected:	//Skill
 	UFUNCTION()
 		virtual void SkillCancel();
 	UFUNCTION()
-		virtual void UseSkill(AActor* target);
+		virtual void UseSkill(FHitResult HitResult);
 
 protected:	//Stat
 	UPROPERTY()
