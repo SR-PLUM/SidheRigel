@@ -36,9 +36,8 @@ protected:
 		TSubclassOf<class AKerunAttackProjectile> ProjectileClass;
 
 private:
-	void InitAttackAnimation();
 
-	class UAnimMontage* AttackAnim;
+	class UKerunAnimInstance* AnimInstance;
 
 protected:	//Skill
 	virtual void SkillOne();

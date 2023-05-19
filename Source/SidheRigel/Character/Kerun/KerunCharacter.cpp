@@ -4,7 +4,7 @@
 #include "../../Dummy/DummyProjectile.h"
 #include "Skills/KerunQSkill.h"
 #include "KerunAttackProjectile.h"
-#include "Animation/AnimInstance.h"
+#include "KerunAnimInstance.h"
 
 AKerunCharacter::AKerunCharacter()
 {
@@ -16,6 +16,9 @@ void AKerunCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	KerunQSkillRef = NewObject<UKerunQSkill>();
+
+	//AnimInstance = Cast<UKerunAnimInstance>(GetMesh()->GetAnimInstance());
+	
 }
 
 void AKerunCharacter::Tick(float DeltaTime)
@@ -76,21 +79,14 @@ void AKerunCharacter::SpawnAttackProjectile()
 			
 		}
 	}
+
 	/*
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage>AttackAnimMontage(TEXT("/Game/Heros/Kerun/Animations/Melee_A_Montage.Melee_A_Montage"));
-	
-	if (AttackAnimMontage.Succeeded())
-	{
-		AttackAnim = AttackAnimMontage.Object;
-	}
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-
 	if (AnimInstance)
 	{
-		AnimInstance->Montage_Play(AttackAnim);
-	}*/
+		AnimInstance->PlayAttackMontage();
+		UE_LOG(LogTemp, Warning, TEXT("AnimInstance is Not Null"));
+	}
+	*/
 }
 
 void AKerunCharacter::InitAttackProjectile()
@@ -100,13 +96,6 @@ void AKerunCharacter::InitAttackProjectile()
 	{
 		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
 	}
-}
-
-
-
-void AKerunCharacter::InitAttackAnimation()
-{
-	static ConstructorHelpers::FObjectFinder<UAnimMontage>AttackAnimMontage(TEXT("/Game/Heros/Kerun/Animations/Melee_A_Montage"));
 }
 
 void AKerunCharacter::SkillOne()

@@ -5,6 +5,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
+UKerunAnimInstance::UKerunAnimInstance()
+{
+	InitAttackAnimation();
+}
+
 void UKerunAnimInstance::NativeInitializeAnimation()
 {
 	KerunCharacter = Cast<AKerunCharacter>(TryGetPawnOwner());
@@ -21,4 +26,19 @@ void UKerunAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		Speed = UKismetMathLibrary::VSizeXY(KerunCharacterMovement->Velocity);
 	}
 	
+}
+
+void UKerunAnimInstance::PlayAttackMontage()
+{
+	Montage_Play(AttackAnim, 1.0f);
+}
+
+void UKerunAnimInstance::InitAttackAnimation()
+{
+	static ConstructorHelpers::FObjectFinder<UAnimMontage>AttackAnimMontage(TEXT("/Game/Heros/Kerun/Animations/Melee_A_Montage"));
+	if (AttackAnimMontage.Succeeded())
+	{
+		AttackAnim = AttackAnimMontage.Object;
+		UE_LOG(LogTemp, Warning, TEXT("AttackAnim is Not Null"));
+	}
 }

@@ -15,9 +15,14 @@ class SIDHERIGEL_API UKerunAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 public:
+
+	UKerunAnimInstance();
+
 	virtual void NativeInitializeAnimation() override;
 
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
+
+	void PlayAttackMontage();
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
@@ -28,5 +33,10 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	float Speed;
+
+	void InitAttackAnimation();
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack)
+	UAnimMontage* AttackAnim;
 	
 };
