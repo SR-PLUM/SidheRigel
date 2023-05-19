@@ -2,12 +2,21 @@
 
 
 #include "FairyWingCharacter.h"
+#include "SidheRigel/Character/FairyWing/Skill/FairyWingEProjectile.h"
+#include "SidheRigel/Character/FairyWing/FairyWingAttackProjectile.h"
 
 // Sets default values
 AFairyWingCharacter::AFairyWingCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+ 	skillState = Null;
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> EProjectile(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingEProjectile"));
+	if (EProjectile.Object)
+	{
+		EProjectileClass = (UClass*)EProjectile.Object->GeneratedClass;
+	}
+
+	InitAttackProjectile();
 
 }
 
@@ -32,3 +41,125 @@ void AFairyWingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 }
 
+void AFairyWingCharacter::InitAttackProjectile()
+{
+	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/FairyWing/BP_FairyWingAttackProjectile"));
+	if (Projectile.Object)
+	{
+		attackProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
+}
+
+void AFairyWingCharacter::SpawnAttackProjectile()
+{
+	if (attackProjectileClass)
+	{
+		FVector MuzzleLocation = GetActorLocation();
+		FRotator MuzzleRotation = GetActorRotation();
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			AFairyWingAttackProjectile* Projectile = World->SpawnActor<AFairyWingAttackProjectile>(attackProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				InitProjectileProperty(Projectile);
+			}
+		}
+	}
+}
+
+void AFairyWingCharacter::SkillOne()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FairyWing Ready Q"));
+
+	skillState = Q_Ready;
+}
+
+void AFairyWingCharacter::SkillTwo()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FairyWing Ready W"));
+
+	skillState = W_Ready;
+}
+
+void AFairyWingCharacter::SkillThree()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FairyWing Ready E"));
+
+	skillState = E_Ready;
+}
+
+void AFairyWingCharacter::SkillFour()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FairyWing Ready R"));
+
+	skillState = R_Ready;
+}
+
+void AFairyWingCharacter::SkillCancel()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FairyWing SkillCancel"));
+
+	skillState = Null;
+}
+
+void AFairyWingCharacter::UseSkill(AActor* _target)
+{
+	switch (skillState)
+	{
+	case Null:
+		UE_LOG(LogTemp, Warning, TEXT("FairyWing SkillState is Null"));
+		break;
+	case Q_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("FairyWing use Q"));
+		skillState = Null;
+		break;
+	case W_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("FairyWing use W"));
+		skillState = Null;
+		break;
+	case E_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("FairyWing use E"));
+
+		if (_target->Tags.Contains("Hero"))
+		{
+			if (EProjectileClass)
+			{
+				FVector MuzzleLocation = GetActorLocation();
+				FRotator MuzzleRotation = GetActorRotation();
+
+				UWorld* World = GetWorld();
+				if (World)
+				{
+					FActorSpawnParameters SpawnParams;
+					SpawnParams.Owner = this;
+					SpawnParams.Instigator = GetInstigator();
+
+					// Spawn the projectile at the muzzle.
+					AFairyWingEProjectile* Projectile = World->SpawnActor<AFairyWingEProjectile>(EProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+					if (Projectile)
+					{
+						// Set the projectile's initial trajectory.
+						Projectile->Target = _target;
+						Projectile->projectileOwner = this;
+					}
+				}
+			}
+		}
+
+		skillState = Null;
+		break;
+	case R_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("FairyWing use R"));
+		skillState = Null;
+		break;
+	default:
+		break;
+	}
+}
