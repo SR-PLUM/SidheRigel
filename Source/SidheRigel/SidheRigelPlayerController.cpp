@@ -121,14 +121,9 @@ void ASidheRigelPlayerController::ClickedLeftMouseButton()
 	FHitResult HitResult;
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, false, HitResult);
 
-	AActor* target = HitResult.GetActor();
-
-	if (target)
+	auto MyPawn = Cast<ASidheRigelCharacter>(GetPawn());
+	if (MyPawn)
 	{
-		auto MyPawn = Cast<ASidheRigelCharacter>(GetPawn());
-		if (MyPawn)
-		{
-			MyPawn->UseSkill(target);
-		}
+		MyPawn->UseSkill(HitResult);
 	}
 }

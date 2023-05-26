@@ -108,7 +108,7 @@ void ASidheRigelCharacter::SkillCancel()
 	UE_LOG(LogTemp, Warning, TEXT("Cancel"));
 }
 
-void ASidheRigelCharacter::UseSkill(AActor* _target)
+void ASidheRigelCharacter::UseSkill(FHitResult HitResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
 }
@@ -329,7 +329,6 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 	float _lifeSteal = (float)GetLifeSteal() / 100.f;
 	
 	RestoreHP(damage * _lifeSteal);
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Health Restore! HP : %f"), currentHP));
 }
 
 void ASidheRigelCharacter::Attack(AActor* _target)
