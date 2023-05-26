@@ -2,6 +2,8 @@
 
 
 #include "FairyWingCharacter.h"
+#include "Components/SphereComponent.h"
+#include "SidheRigel/Character/FairyWing/Skill/FairyWingQCollider.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingEProjectile.h"
 #include "SidheRigel/Character/FairyWing/FairyWingAttackProjectile.h"
 
@@ -16,8 +18,13 @@ AFairyWingCharacter::AFairyWingCharacter()
 		EProjectileClass = (UClass*)EProjectile.Object->GeneratedClass;
 	}
 
-	InitAttackProjectile();
+	static ConstructorHelpers::FObjectFinder<UBlueprint> QCollider(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingQCollider"));
+	if (QCollider.Object)
+	{
+		QColliderClass = (UClass*)QCollider.Object->GeneratedClass;
+	}
 
+	InitAttackProjectile();
 }
 
 // Called when the game starts or when spawned
@@ -118,6 +125,40 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 		break;
 	case Q_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing use Q"));
+
+		if (QColliderClass)
+		{
+			FVector MuzzleLocation = HitResult.Location;
+			FRotator MuzzleRotation = GetActorRotation();
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = GetInstigator();
+
+				// Spawn the projectile at the muzzle.
+				AFairyWingQCollider* Collider = World->SpawnActor<AFairyWingQCollider>(QColliderClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				if (Collider)
+				{
+					// Set the projectile's initial trajectory.
+					Collider->colliderOwner = this;
+
+					FTimerHandle QColliderDestroyTimer;
+					GetWorldTimerManager().SetTimer(QColliderDestroyTimer,
+						FTimerDelegate::CreateLambda([=]()
+							{
+								Collider->Destroy();
+							}
+
+					), 1.0f, false);
+
+					Collider->CollisionComponent->SetGenerateOverlapEvents(false);
+				}
+			}
+		}
+
 		skillState = Null;
 		break;
 	case W_Ready:

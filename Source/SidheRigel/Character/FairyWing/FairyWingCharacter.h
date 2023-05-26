@@ -40,9 +40,14 @@ protected:	//Skill
 	virtual void UseSkill(FHitResult HitResult);
 
 private:	//State
-	E_SkillState skillState;
+	E_SkillState skillState; 
+	UPROPERTY()
+		FTimerHandle destroyTimer;
 
 protected:	//Skill Projectile
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AFairyWingEProjectile> EProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AFairyWingQCollider> QColliderClass;
 };
