@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ColdQProjectile.h"
+#include "ColdWProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
 
 // Sets default values
-AColdQProjectile::AColdQProjectile()
+AColdWProjectile::AColdWProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	if (!RootComponent)
@@ -30,7 +30,7 @@ AColdQProjectile::AColdQProjectile()
 		ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 		ProjectileMesh->SetupAttachment(CollisionComponent);
 
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/Skill/SM_ColdQProjectile"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/Skill/SM_ColdWProjectile"));
 		if (Mesh.Succeeded())
 		{
 			ProjectileMesh->SetStaticMesh(Mesh.Object);
@@ -42,8 +42,8 @@ AColdQProjectile::AColdQProjectile()
 		// Use this component to drive this projectile's movement.
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 5.f;
-		ProjectileMovementComponent->MaxSpeed = 5.f;
+		ProjectileMovementComponent->InitialSpeed = 0.f;
+		ProjectileMovementComponent->MaxSpeed = 0.f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = false;
 		ProjectileMovementComponent->Bounciness = 0.f;
@@ -52,26 +52,43 @@ AColdQProjectile::AColdQProjectile()
 }
 
 // Called when the game starts or when spawned
-void AColdQProjectile::BeginPlay()
+void AColdWProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ProjectileMesh->OnComponentBeginOverlap.AddDynamic(this, &AColdWProjectile::OnColliderOverlap);
 	
+	FTimerHandle WProjectileTimer;
+	GetWorldTimerManager().SetTimer(WProjectileTimer, 
+		FTimerDelegate::CreateLambda([=]()
+			{
+				Destroy();
+			}
+	), 0.2f, false);
 }
 
 // Called every frame
-void AColdQProjectile::Tick(float DeltaTime)
+void AColdWProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Target)
+}
+
+void AColdWProjectile::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor != projectileOwner)
 	{
-		FVector Forward = Target->GetActorLocation() - GetActorLocation();
-		ProjectileMovementComponent->Velocity = Forward * ProjectileMovementComponent->InitialSpeed;
-		
-		if ((this->GetDistanceTo(Target)) < 100.f)
+		const FString OtherActorName = OtherActor->GetName();
+		if (GEngine)
 		{
-			Cast<IDamagable>(Target)->TakeDamage(10.f, projectileOwner);
-			Destroy();
+			GEngine->AddOnScreenDebugMessage(1, 30.0f, FColor::Red, OtherActorName);
+		}
+
+		if (OtherActor)
+		{
+			IDamagable* test = Cast<IDamagable>(OtherActor);
+			if (test)
+				test->TakeDamage(10.f, projectileOwner);
 		}
 	}
 }

@@ -36,7 +36,7 @@ protected:	//Skill
 	void QImplement(FHitResult HitResult);
 
 	virtual void SkillTwo();
-	void WImplement();
+	void WImplement(FHitResult HitResult);
 
 	virtual	void SkillThree();
 
@@ -51,6 +51,8 @@ private:	//State
 protected:	//Skill Projectile
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AColdQProjectile> QProjectileClass;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AColdWProjectile> WProjectileClass;
 
 private:	//Skill Variable
 	int32 QCount = 10;

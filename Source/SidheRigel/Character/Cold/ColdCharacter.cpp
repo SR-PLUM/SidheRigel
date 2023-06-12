@@ -3,6 +3,7 @@
 
 #include "ColdCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdQProjectile.h"
+#include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
 #include "SidheRigel/Character/Cold/ColdAttackProjectile.h"
 
 // Sets default values
@@ -14,6 +15,12 @@ AColdCharacter::AColdCharacter()
 	if (QProjectile.Object)
 	{
 		QProjectileClass = (UClass*)QProjectile.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> WProjectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdWProjectile"));
+	if (WProjectile.Object)
+	{
+		WProjectileClass = (UClass*)WProjectile.Object->GeneratedClass;
 	}
 
 	InitAttackProjectile();
@@ -126,9 +133,26 @@ void AColdCharacter::SkillTwo()
 	skillState = W_Ready;
 }
 
-void AColdCharacter::WImplement()
+void AColdCharacter::WImplement(FHitResult HitResult)
 {
+	FVector MuzzleLocation = GetActorLocation();
+	FRotator MuzzleRotation = (HitResult.Location - GetActorLocation()).Rotation();
 
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		// Spawn the projectile at the muzzle.
+		AColdWProjectile* Projectile = World->SpawnActor<AColdWProjectile>(WProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+		if (Projectile)
+		{
+			Projectile->projectileOwner = this;
+			GEngine->AddOnScreenDebugMessage(2, 30.0f, FColor::Blue, Projectile->projectileOwner->GetName());
+		}
+	}
 }
 
 void AColdCharacter::SkillThree()
@@ -168,7 +192,7 @@ void AColdCharacter::UseSkill(FHitResult HitResult)
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use W"));
 
-		WImplement();
+		WImplement(HitResult);
 		skillState = Null;
 		break;
 	case E_Ready:
