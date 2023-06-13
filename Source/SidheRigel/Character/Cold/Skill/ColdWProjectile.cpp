@@ -74,21 +74,18 @@ void AColdWProjectile::Tick(float DeltaTime)
 
 }
 
+void AColdWProjectile::setProjectileOwner(AActor* _Owner)
+{
+	projectileOwner = _Owner;
+}
+
 void AColdWProjectile::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor != projectileOwner)
+	if (OtherActor)
 	{
-		const FString OtherActorName = OtherActor->GetName();
-		if (GEngine)
+		if (IDamagable* target = Cast<IDamagable>(OtherActor))
 		{
-			GEngine->AddOnScreenDebugMessage(1, 30.0f, FColor::Red, OtherActorName);
-		}
-
-		if (OtherActor)
-		{
-			IDamagable* test = Cast<IDamagable>(OtherActor);
-			if (test)
-				test->TakeDamage(10.f, projectileOwner);
+			target->TakeDamage(10.f, projectileOwner);
 		}
 	}
 }

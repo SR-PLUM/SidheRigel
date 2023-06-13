@@ -135,8 +135,9 @@ void AColdCharacter::SkillTwo()
 
 void AColdCharacter::WImplement(FHitResult HitResult)
 {
-	FVector MuzzleLocation = GetActorLocation();
-	FRotator MuzzleRotation = (HitResult.Location - GetActorLocation()).Rotation();
+	FVector PawnToTarget = (HitResult.Location - GetActorLocation()).GetSafeNormal();
+	FVector MuzzleLocation = GetActorLocation() + PawnToTarget*50;
+	FRotator MuzzleRotation = PawnToTarget.Rotation();
 
 	UWorld* World = GetWorld();
 	if (World)
@@ -149,8 +150,7 @@ void AColdCharacter::WImplement(FHitResult HitResult)
 		AColdWProjectile* Projectile = World->SpawnActor<AColdWProjectile>(WProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 		if (Projectile)
 		{
-			Projectile->projectileOwner = this;
-			GEngine->AddOnScreenDebugMessage(2, 30.0f, FColor::Blue, Projectile->projectileOwner->GetName());
+			Projectile->setProjectileOwner(this);
 		}
 	}
 }
