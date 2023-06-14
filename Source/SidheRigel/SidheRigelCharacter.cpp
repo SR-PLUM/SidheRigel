@@ -48,8 +48,6 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	InitAttackProjectile();
-
-	
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 }
 
@@ -70,6 +68,22 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 	if (target)
 	{
 		attackStateMachine->Run();
+	}
+
+	if (IsMoveVectorTrue)
+	{
+		FVector Location = GetActorLocation();
+		Location += moveDirection * (moveForce/10) * DeltaSeconds;
+		SetActorLocation(Location);
+		moveCnt++;
+		if (moveCnt <= 10)
+		{
+			moveDirection = FVector::ZeroVector;
+			moveForce = 0;
+			moveCnt = 0;
+
+			IsMoveVectorTrue = false;
+		}
 	}
 }
 
@@ -380,4 +394,12 @@ void ASidheRigelCharacter::RestoreHP(float value)
 	{
 		currentHP = var_MaxHP;
 	}
+}
+
+void ASidheRigelCharacter::MoveVector(FVector Direction, float Force)
+{
+	moveDirection = Direction.GetSafeNormal();
+	moveForce = Force;
+	moveCnt = 0;
+	IsMoveVectorTrue = true;
 }

@@ -6,10 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "../Interface/Damagable.h"
 #include "../Interface/CCable.h"
+#include "../Interface/Movable.h"
 #include "Dummy.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API ADummy : public AActor, public IDamagable, public ICCable
+class SIDHERIGEL_API ADummy : public AActor, public IDamagable, public ICCable, public IMovable
 {
 	GENERATED_BODY()
 	
@@ -17,7 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	ADummy();
 
-protected:	//인터페이스 구현
+protected:	//Interface Implement
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -37,11 +38,20 @@ protected:	//인터페이스 구현
 	UFUNCTION()
 		virtual void Airborne(float time) override;
 
-private:	//스텟
+	UFUNCTION()
+		virtual void MoveVector(FVector Direction, float Force) override;
+
+private:	//Stat
 	UPROPERTY()
-		TMap<FString, float> MaxHP;			//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 딕셔너리
+		TMap<FString, float> MaxHP;
 	UPROPERTY()
 		float currentHP;
+
+protected:	//Move
+	bool IsMoveVectorTrue = false;
+	FVector moveDirection = FVector::ZeroVector;
+	float moveForce = 0;
+	int32 moveCnt = 0;
 
 public:	
 	// Called every frame
