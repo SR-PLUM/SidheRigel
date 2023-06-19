@@ -82,10 +82,35 @@ void ADummy::Airborne(float time)
 	UE_LOG(LogTemp, Warning, TEXT("AIRBORNE : %fs"), time);
 }
 
+void ADummy::MoveVector(FVector Direction, float Force)
+{
+	moveDirection = Direction.GetSafeNormal();
+	moveDirection *= FVector(1, 1, 0);
+	moveForce = Force;
+	moveCnt = 0;
+
+	IsMoveVectorTrue = true;
+}
+
 // Called every frame
 void ADummy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (IsMoveVectorTrue)
+	{
+		FVector Location = GetActorLocation();
+		Location += moveDirection * (moveForce / 10) * DeltaTime;
+		SetActorLocation(Location);
+		moveCnt++;
+		if (moveCnt >= 10)
+		{
+			moveDirection = FVector::ZeroVector;
+			moveForce = 0;
+			moveCnt = 0;
+
+			IsMoveVectorTrue = false;
+		}
+	}
 }
 

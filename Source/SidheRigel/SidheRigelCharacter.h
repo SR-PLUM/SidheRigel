@@ -122,11 +122,11 @@ public:		//Getter, Setter
 
 	virtual void InitProperty();
 
-public:
+public:	//Attack State
 	void ChangeAttackState();
 	void WaitAttackDelay();
 
-public:
+public:	//Attack
 	virtual void InitAttackProjectile();
 	virtual void SpawnAttackProjectile();
 	UFUNCTION()
@@ -136,7 +136,13 @@ public:
 	UFUNCTION()
 		void LifeSteal(float damage);
 
-protected:
+protected:	//Move
+	bool IsMoveVectorTrue = false;
+	FVector moveDirection = FVector::ZeroVector;
+	float moveForce = 0;
+	int32 moveCnt = 0;
+
+protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
  
 public:		//Interface Implement
@@ -158,5 +164,8 @@ public:		//Interface Implement
 		virtual void TakeDamage(float damage, AActor* damageCauser) override;
 	UFUNCTION()
 		virtual void RestoreHP(float value) override;
+
+	UFUNCTION()
+		virtual void MoveVector(FVector Direction, float Force) override;
 };
 
