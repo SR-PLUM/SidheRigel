@@ -143,15 +143,20 @@ void AColdCharacter::WImplement(FHitResult HitResult)
 	if (World)
 	{
 		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(MuzzleLocation);
+		SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
 		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		// Spawn the projectile at the muzzle.
-		AColdWProjectile* Projectile = World->SpawnActor<AColdWProjectile>(WProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+		AColdWProjectile* Projectile = World->SpawnActorDeferred<AColdWProjectile>(WProjectileClass, SpawnTransform);
 		if (Projectile)
 		{
-			Projectile->setProjectileOwner(this);
+			Projectile->projectileOwner = this;
 		}
+
+		Projectile->FinishSpawning(SpawnTransform);
 	}
 }
 

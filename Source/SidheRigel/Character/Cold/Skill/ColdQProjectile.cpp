@@ -67,10 +67,14 @@ void AColdQProjectile::Tick(float DeltaTime)
 	{
 		FVector Forward = Target->GetActorLocation() - GetActorLocation();
 		ProjectileMovementComponent->Velocity = Forward * ProjectileMovementComponent->InitialSpeed;
-		
+
 		if ((this->GetDistanceTo(Target)) < 100.f)
 		{
-			Cast<IDamagable>(Target)->TakeDamage(10.f, projectileOwner);
+			if (IDamagable* target = Cast<IDamagable>(Target))
+			{
+				target->TakeDamage(10.f, projectileOwner);
+			}
+
 			Destroy();
 		}
 	}

@@ -5,6 +5,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
+#include "SidheRigel/Interface/Movable.h"
 
 // Sets default values
 AColdWProjectile::AColdWProjectile()
@@ -57,7 +58,7 @@ void AColdWProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	ProjectileMesh->OnComponentBeginOverlap.AddDynamic(this, &AColdWProjectile::OnColliderOverlap);
-	
+
 	FTimerHandle WProjectileTimer;
 	GetWorldTimerManager().SetTimer(WProjectileTimer, 
 		FTimerDelegate::CreateLambda([=]()
@@ -74,11 +75,6 @@ void AColdWProjectile::Tick(float DeltaTime)
 
 }
 
-void AColdWProjectile::setProjectileOwner(AActor* _Owner)
-{
-	projectileOwner = _Owner;
-}
-
 void AColdWProjectile::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor)
@@ -86,6 +82,15 @@ void AColdWProjectile::OnColliderOverlap(UPrimitiveComponent* OverlappedComponen
 		if (IDamagable* target = Cast<IDamagable>(OtherActor))
 		{
 			target->TakeDamage(10.f, projectileOwner);
+		}
+		if (IMovable* target = Cast<IMovable>(OtherActor))
+		{
+			if (projectileOwner)
+			{
+				FVector moveDirection = (OtherActor->GetActorLocation() - projectileOwner->GetActorLocation()) * FVector(1, 1, 0);
+
+				target->MoveVector(moveDirection, 10000);
+			}
 		}
 	}
 }
