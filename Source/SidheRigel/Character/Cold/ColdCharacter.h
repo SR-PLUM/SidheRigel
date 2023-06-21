@@ -41,6 +41,7 @@ protected:	//Skill
 	virtual	void SkillThree();
 
 	virtual void SkillFour();
+	void R1Implement(FHitResult HitResult);
 
 	virtual void SkillCancel();
 	virtual void UseSkill(FHitResult HitResult);
@@ -53,6 +54,8 @@ protected:	//Skill Projectile
 		TSubclassOf<class AColdQProjectile> QProjectileClass;
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AColdWProjectile> WProjectileClass;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AColdR1Projectile>R1ProjectileClass;
 
 private:	//Skill Variable
 	int32 QCount = 10;

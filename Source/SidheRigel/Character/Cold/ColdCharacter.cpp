@@ -2,8 +2,10 @@
 
 
 #include "ColdCharacter.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "SidheRigel/Character/Cold/Skill/ColdQProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
+#include "SidheRigel/Character/Cold/Skill/ColdR1Projectile.h"
 #include "SidheRigel/Character/Cold/ColdAttackProjectile.h"
 
 // Sets default values
@@ -21,6 +23,12 @@ AColdCharacter::AColdCharacter()
 	if (WProjectile.Object)
 	{
 		WProjectileClass = (UClass*)WProjectile.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> R1Projectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdR1Projectile"));
+	if (R1Projectile.Object)
+	{
+		R1ProjectileClass = (UClass*)R1Projectile.Object->GeneratedClass;
 	}
 
 	InitAttackProjectile();
@@ -171,13 +179,51 @@ void AColdCharacter::SkillFour()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Cold Ready R"));
 
+	GetCameraBoom()->TargetArmLength = 1600.f;
 	skillState = R_Ready;
 }
+
+void AColdCharacter::R1Implement(FHitResult HitResult)
+{
+	if (AActor* _target = HitResult.GetActor())
+	{
+		if (_target->Tags.Contains("Hero"))
+		{
+			if (R1ProjectileClass)
+			{
+				FVector MuzzleLocation = GetActorLocation();
+				FRotator MuzzleRotation = GetActorRotation();
+
+				UWorld* World = GetWorld();
+				if (World)
+				{
+					FActorSpawnParameters SpawnParams;
+					SpawnParams.Owner = this;
+					SpawnParams.Instigator = GetInstigator();
+
+					// Spawn the projectile at the muzzle.
+					AColdR1Projectile* Projectile = World->SpawnActor<AColdR1Projectile>(R1ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+					if (Projectile)
+					{
+						Projectile->Target = _target;
+						Projectile->projectileOwner = this;
+					}
+				}
+			}
+		}
+	}
+}
+
+
 
 void AColdCharacter::SkillCancel()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Cold SkillCancel"));
 
+	if (skillState == R_Ready)
+	{
+		GetCameraBoom()->TargetArmLength = 800.f;
+	}
 	skillState = Null;
 }
 
@@ -206,7 +252,10 @@ void AColdCharacter::UseSkill(FHitResult HitResult)
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use R"));
+
+		R1Implement(HitResult);
 		skillState = Null;
+		GetCameraBoom()->TargetArmLength = 800.f;
 		break;
 	default:
 		break;
