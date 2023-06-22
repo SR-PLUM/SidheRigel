@@ -6,12 +6,14 @@
 #include "SidheRigel/Character/Cold/Skill/ColdQProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdR1Projectile.h"
+#include "SidheRigel/Character/Cold/Skill/ColdR2Projectile.h"
 #include "SidheRigel/Character/Cold/ColdAttackProjectile.h"
 
 // Sets default values
 AColdCharacter::AColdCharacter()
 {
-	skillState = Null;
+	skillState = E_SkillState::Null;
+	ultType = E_UltType::Ult2;
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> QProjectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdQProjectile"));
 	if (QProjectile.Object)
@@ -29,6 +31,12 @@ AColdCharacter::AColdCharacter()
 	if (R1Projectile.Object)
 	{
 		R1ProjectileClass = (UClass*)R1Projectile.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> R2Projectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdR2Projectile"));
+	if (R2Projectile.Object)
+	{
+		R2ProjectileClass = (UClass*)R2Projectile.Object->GeneratedClass;
 	}
 
 	InitAttackProjectile();
@@ -183,6 +191,23 @@ void AColdCharacter::SkillFour()
 	skillState = R_Ready;
 }
 
+void AColdCharacter::RImplement(FHitResult HitResult)
+{
+	switch (ultType)
+	{
+	case None:
+		break;
+	case Ult1:
+		R1Implement(HitResult);
+		break;
+	case Ult2:
+		R2Implement(HitResult);
+		break;
+	default:
+		break;
+	}
+}
+
 void AColdCharacter::R1Implement(FHitResult HitResult)
 {
 	if (AActor* _target = HitResult.GetActor())
@@ -211,6 +236,35 @@ void AColdCharacter::R1Implement(FHitResult HitResult)
 				}
 			}
 		}
+	}
+}
+
+void AColdCharacter::R2Implement(FHitResult HitResult)
+{
+	FVector PawnToTarget = (HitResult.Location - GetActorLocation()).GetSafeNormal();
+	FVector MuzzleLocation = GetActorLocation() + PawnToTarget * 50;
+	FRotator MuzzleRotation = PawnToTarget.Rotation();
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(MuzzleLocation);
+		SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		AColdR2Projectile* Projectile = World->SpawnActorDeferred<AColdR2Projectile>(R2ProjectileClass, SpawnTransform);
+		if (Projectile)
+		{
+			Projectile->projectileOwner = this;
+			Projectile->startLocation = MuzzleLocation;
+			Projectile->forwardVector = PawnToTarget;
+		}
+
+		Projectile->FinishSpawning(SpawnTransform);
 	}
 }
 
@@ -253,8 +307,9 @@ void AColdCharacter::UseSkill(FHitResult HitResult)
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use R"));
 
-		R1Implement(HitResult);
+		RImplement(HitResult);
 		skillState = Null;
+
 		GetCameraBoom()->TargetArmLength = 800.f;
 		break;
 	default:
