@@ -48,6 +48,21 @@ void AFairyWingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 }
 
+void AFairyWingCharacter::InitProperty()
+{
+	range.Add("Debug", 1000.f);
+	attackDamage.Add("Debug", 5.f);
+	attackSpeed.Add("Debug", 1.f);
+	criticalRate.Add("Debug", 50);
+	criticalDamage.Add("Debug", 50);
+	MaxHP.Add("Debug", 100.f);
+	generateHealthPoint.Add("Debug", 0.2f);
+	lifeSteal.Add("Debug", 5.f);
+	protectPower.Add("Debug", 20);
+
+	currentHP = GetMaxHP();
+}
+
 void AFairyWingCharacter::InitAttackProjectile()
 {
 	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/FairyWing/BP_FairyWingAttackProjectile"));
