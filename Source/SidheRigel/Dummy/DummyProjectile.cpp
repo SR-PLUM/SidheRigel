@@ -4,6 +4,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
+#include "SidheRigel/Interface/Movable.h"
 #include "Math/UnrealMathUtility.h"
 
 // Sets default values
@@ -85,7 +86,11 @@ void ADummyProjectile::Tick(float DeltaTime)
 				totalAttackDamage *= criticalDamage;
 			}
 
-			Cast<IDamagable>(Target)->TakeDamage(totalAttackDamage, projectileOwner);
+			if (IDamagable* damagableTarget = Cast<IDamagable>(Target))
+			{
+				damagableTarget->TakeDamage(totalAttackDamage, projectileOwner);
+			}
+			
 			Destroy();
 		}
 	}
