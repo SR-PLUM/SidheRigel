@@ -1,14 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "BlackWizardCharacter.h"
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Character/BlackWizard/Skill/BlackWizardRCollider.h"
-//#include "SidheRigel/Character/BlackWizard/BlackWizardAttackProjectile.h"
+#include "SidheRigel/Character/BlackWizard/BlackWizardAttackProjectile.h"
 
 // Sets default values
 ABlackWizardCharacter::ABlackWizardCharacter()
 {
+
+	skillState = Null;
+
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -18,6 +18,7 @@ ABlackWizardCharacter::ABlackWizardCharacter()
 		RColliderClass = (UClass*)RCollider.Object->GeneratedClass;
 	}
 
+	InitAttackProjectile();
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +40,54 @@ void ABlackWizardCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ABlackWizardCharacter::InitProperty()
+{
+	range.Add("Debug", 150.f);
+	attackDamage.Add("Debug", 5.f);
+	attackSpeed.Add("Debug", 1.f);
+	criticalRate.Add("Debug", 50);
+	criticalDamage.Add("Debug", 50);
+	MaxHP.Add("Debug", 100.f);
+	generateHealthPoint.Add("Debug", 0.2f);
+	lifeSteal.Add("Debug", 5.f);
+	protectPower.Add("Debug", 20);
+
+	currentHP = GetMaxHP();
+}
+
+void ABlackWizardCharacter::InitAttackProjectile()
+{
+	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/BlackWizard/BP_BlackWizardAttackProjectile"));
+	if (Projectile.Object)
+	{
+		attackProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
+}
+
+void ABlackWizardCharacter::SpawnAttackProjectile()
+{
+	if (attackProjectileClass)
+	{
+		FVector MuzzleLocation = GetActorLocation();
+		FRotator MuzzleRotation = GetActorRotation();
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			ABlackWizardAttackProjectile* Projectile = World->SpawnActor<ABlackWizardAttackProjectile>(attackProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			if (Projectile)
+			{
+				InitProjectileProperty(Projectile);
+			}
+		}
+	}
 }
 
 void ABlackWizardCharacter::SkillOne()

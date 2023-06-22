@@ -21,6 +21,16 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	virtual void InitProperty() override;
+
+protected:	//Attack
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ABlackWizardAttackProjectile> attackProjectileClass;
+
+	virtual void InitAttackProjectile() override;
+	virtual void SpawnAttackProjectile() override;
+
 protected:	
 	virtual void SkillOne();
 	virtual void SkillTwo();
