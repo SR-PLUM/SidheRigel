@@ -76,6 +76,8 @@ void AKerunCharacter::SpawnAttackProjectile()
 			{
 				KerunQSkillRef->AttackCount += 1;
 			}
+
+			ImproveEStack(1);
 			
 		}
 	}
@@ -101,4 +103,43 @@ void AKerunCharacter::InitAttackProjectile()
 void AKerunCharacter::SkillOne()
 {
 	KerunQSkillRef->ImproveAttackSpeed(attackSpeed, this);
+}
+
+void AKerunCharacter::ImproveEStack(int Count)
+{
+
+	ECurrentStack += Count;
+
+	if (ECurrentStack > EMaxStack)
+	{
+		ECurrentStack = EMaxStack;
+	}
+
+	StartETimer();
+}
+
+void AKerunCharacter::StartETimer()
+{
+	QuitETimer();
+
+	float GenerateAmount = ECurrentStack * EHealthRate;
+
+	generateHealthPoint.Add("ESkill", GenerateAmount);
+
+	GetWorld()->GetTimerManager().SetTimer(
+		ETimer,
+		FTimerDelegate::CreateLambda([&]() {
+			QuitETimer();
+			ECurrentStack = 0;
+			UE_LOG(LogTemp, Warning, TEXT("ECurrentStack Initialized"));
+			}),
+		EDuration,
+		false
+		);
+}
+
+void AKerunCharacter::QuitETimer()
+{
+	GetWorldTimerManager().ClearTimer(ETimer);
+	generateHealthPoint.Remove("ESkill");
 }

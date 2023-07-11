@@ -39,8 +39,29 @@ private:
 
 	class UKerunAnimInstance* AnimInstance;
 
+	UPROPERTY()
+	class UKerunQSkill* KerunQSkillRef;
+
 protected:	//Skill
 	virtual void SkillOne();
+
+protected: //Passive E
+
+	const int EMaxStack = 25;
+	const float EDuration = 3.5f;
+	const float EHealthRate = 1.0f;
+
+	UPROPERTY()
+	int ECurrentStack = 0;
+
+	UPROPERTY()
+	FTimerHandle ETimer;
+
+	void ImproveEStack(int Count);
+
+	void StartETimer();
+	void QuitETimer();
+
 
 /*
 	virtual void SkillTwo();
@@ -54,7 +75,4 @@ private:	//State
 	E_SkillState skillState;
 
 */
-private:
-	UPROPERTY()
-	class UKerunQSkill* KerunQSkillRef;
 };
