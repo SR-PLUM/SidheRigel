@@ -106,7 +106,7 @@ protected:	//Stat
 public:		//Getter, Setter
 	void SetTarget(AActor* target);
 	void SetLevel(int32 _level);
-	void SetCurrentHP(float _hp);
+	virtual void SetCurrentHP(float _hp);
 	float GetCurrentHP();
 	void IE_GenerateHP();
 

@@ -35,13 +35,39 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AKerunAttackProjectile> ProjectileClass;
 
-private:
-	void InitAttackAnimation();
+	virtual void SetCurrentHP(float _hp) override;
 
-	class UAnimMontage* AttackAnim;
+private:
+
+	class UKerunAnimInstance* AnimInstance;
+
+	UPROPERTY()
+	class UKerunQSkill* KerunQSkillRef;
+
+	UPROPERTY()
+	class UKerunR2Skill* KerunR2SkillRef;
 
 protected:	//Skill
 	virtual void SkillOne();
+	virtual void SkillFour();
+
+protected: //Passive E
+
+	const int EMaxStack = 25;
+	const float EDuration = 3.5f;
+	const float EHealthRate = 1.0f;
+
+	UPROPERTY()
+	int ECurrentStack = 0;
+
+	UPROPERTY()
+	FTimerHandle ETimer;
+
+	void ImproveEStack(int Count);
+
+	void StartETimer();
+	void QuitETimer();
+
 
 /*
 	virtual void SkillTwo();
@@ -55,7 +81,4 @@ private:	//State
 	E_SkillState skillState;
 
 */
-private:
-	UPROPERTY()
-	class UKerunQSkill* KerunQSkillRef;
 };
