@@ -2,7 +2,10 @@
 
 #include "KerunCharacter.h"
 #include "../../Dummy/DummyProjectile.h"
+
 #include "Skills/KerunQSkill.h"
+#include "Skills/KerunR2Skill.h"
+
 #include "KerunAttackProjectile.h"
 #include "KerunAnimInstance.h"
 
@@ -16,6 +19,7 @@ void AKerunCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	KerunQSkillRef = NewObject<UKerunQSkill>();
+	KerunR2SkillRef = NewObject<UKerunR2Skill>();
 
 	//AnimInstance = Cast<UKerunAnimInstance>(GetMesh()->GetAnimInstance());
 	
@@ -100,9 +104,28 @@ void AKerunCharacter::InitAttackProjectile()
 	}
 }
 
+void AKerunCharacter::SetCurrentHP(float _hp)
+{
+	Super::SetCurrentHP(_hp);
+
+	if (KerunR2SkillRef->GetIsWorking())
+	{
+		if (KerunR2SkillRef->CheckCurrentHP(currentHP))
+		{
+			currentHP = KerunR2SkillRef->GetMinHP();
+		}
+	}
+}
+
 void AKerunCharacter::SkillOne()
 {
 	KerunQSkillRef->ImproveAttackSpeed(attackSpeed, this);
+}
+
+void AKerunCharacter::SkillFour()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Kerun R2Skill"));
+	KerunR2SkillRef->StartR2Buff(this);
 }
 
 void AKerunCharacter::ImproveEStack(int Count)

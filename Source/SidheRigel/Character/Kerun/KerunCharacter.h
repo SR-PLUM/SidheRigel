@@ -35,6 +35,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AKerunAttackProjectile> ProjectileClass;
 
+	virtual void SetCurrentHP(float _hp) override;
+
 private:
 
 	class UKerunAnimInstance* AnimInstance;
@@ -42,8 +44,12 @@ private:
 	UPROPERTY()
 	class UKerunQSkill* KerunQSkillRef;
 
+	UPROPERTY()
+	class UKerunR2Skill* KerunR2SkillRef;
+
 protected:	//Skill
 	virtual void SkillOne();
+	virtual void SkillFour();
 
 protected: //Passive E
 

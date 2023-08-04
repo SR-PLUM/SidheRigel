@@ -14,10 +14,6 @@ class SIDHERIGEL_API UKerunQSkill : public UObject
 
 	GENERATED_BODY()
 
-public:
-	UKerunQSkill();
-	~UKerunQSkill();
-
 public :
 	int32 AttackCount = 0;
 	int32 MaxAttackCount = 2;

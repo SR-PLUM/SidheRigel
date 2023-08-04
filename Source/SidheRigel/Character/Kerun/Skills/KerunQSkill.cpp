@@ -4,15 +4,6 @@
 #include "../KerunCharacter.h"
 #include "TimerManager.h"
 
-
-UKerunQSkill::UKerunQSkill()
-{
-}
-
-UKerunQSkill::~UKerunQSkill()
-{
-}
-
 void UKerunQSkill::ImproveAttackSpeed(TMap<FString, float>& AttackSpeed, AKerunCharacter * Owner)
 {
 	if (!(IsWorking) && !(IsCoolingDown))
