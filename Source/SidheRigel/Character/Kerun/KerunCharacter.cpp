@@ -4,6 +4,7 @@
 #include "../../Dummy/DummyProjectile.h"
 
 #include "Skills/KerunQSkill.h"
+#include "Skills/KerunR1Skill.h"
 #include "Skills/KerunR2Skill.h"
 
 #include "KerunAttackProjectile.h"
@@ -19,6 +20,7 @@ void AKerunCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	KerunQSkillRef = NewObject<UKerunQSkill>();
+	KerunR1SkillRef = NewObject<UKerunR1Skill>();
 	KerunR2SkillRef = NewObject<UKerunR2Skill>();
 
 	//AnimInstance = Cast<UKerunAnimInstance>(GetMesh()->GetAnimInstance());
@@ -124,8 +126,49 @@ void AKerunCharacter::SkillOne()
 
 void AKerunCharacter::SkillFour()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Kerun R2Skill"));
-	KerunR2SkillRef->StartR2Buff(this);
+	//R1 Skill
+
+	UE_LOG(LogTemp, Warning, TEXT("Kerun R1Skill"));
+
+	skillState = R_Ready;
+
+
+	//R2 Skill
+	/*UE_LOG(LogTemp, Warning, TEXT("Kerun R2Skill"));
+	KerunR2SkillRef->StartR2Buff(this);*/
+}
+
+void AKerunCharacter::SkillCancel()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Skill Cancel"));
+
+	skillState = Null;
+}
+
+void AKerunCharacter::UseSkill(FHitResult HitResult)
+{
+	switch (skillState)
+	{
+	case Null:
+		UE_LOG(LogTemp, Warning, TEXT("skillState is Null"));
+		break;
+	
+	case W_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("skillState is W"));
+		break;
+
+	case R_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("skillState is R"));
+
+		if (AActor* Actor = HitResult.GetActor())
+		{
+			if (Actor->Tags.Contains("Hero"))
+			{
+				KerunR1SkillRef->StunTarget(Actor, this);
+			}
+		}
+		break;
+	}
 }
 
 void AKerunCharacter::ImproveEStack(int Count)
