@@ -46,16 +46,22 @@ private:
 	class UKerunQSkill* KerunQSkillRef;
 
 	UPROPERTY()
+	class UKerunWSkill* KerunWSkillRef;
+
+	UPROPERTY()
 	class UKerunR1Skill* KerunR1SkillRef;
 
 	UPROPERTY()
 	class UKerunR2Skill* KerunR2SkillRef;
 
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UProjectileMovementComponent* ProjectileMovementComponent;
 
 
 protected:	//Skill
 	virtual void SkillOne();	//Q
-	//virtual void SkillTwo();	//W
+	virtual void SkillTwo();	//W
 	virtual void SkillFour();	//R
 
 	virtual void SkillCancel();

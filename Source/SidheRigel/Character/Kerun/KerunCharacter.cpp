@@ -4,15 +4,21 @@
 #include "../../Dummy/DummyProjectile.h"
 
 #include "Skills/KerunQSkill.h"
+#include "Skills/KerunWSkill.h"
 #include "Skills/KerunR1Skill.h"
 #include "Skills/KerunR2Skill.h"
 
 #include "KerunAttackProjectile.h"
 #include "KerunAnimInstance.h"
 
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 AKerunCharacter::AKerunCharacter()
 {
 	InitAttackProjectile();
+
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 }
 
 void AKerunCharacter::BeginPlay()
@@ -20,6 +26,7 @@ void AKerunCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	KerunQSkillRef = NewObject<UKerunQSkill>();
+	KerunWSkillRef = NewObject<UKerunWSkill>();
 	KerunR1SkillRef = NewObject<UKerunR1Skill>();
 	KerunR2SkillRef = NewObject<UKerunR2Skill>();
 
@@ -36,6 +43,12 @@ void AKerunCharacter::Tick(float DeltaTime)
 	{
 		KerunQSkillRef->QuitQSkill(attackSpeed);
 	}
+
+	//Kerun WSkill
+	/*if (KerunWSkillRef->GetIsWorking())
+	{
+		GetCharacterMovement()->AddImpulse(KerunWSkillRef->GetVelocity());
+	}*/
 }
 
 void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -124,6 +137,13 @@ void AKerunCharacter::SkillOne()
 	KerunQSkillRef->ImproveAttackSpeed(attackSpeed, this);
 }
 
+void AKerunCharacter::SkillTwo()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Kerun WSkill"));
+
+	skillState = W_Ready;
+}
+
 void AKerunCharacter::SkillFour()
 {
 	//R1 Skill
@@ -155,6 +175,17 @@ void AKerunCharacter::UseSkill(FHitResult HitResult)
 	
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("skillState is W"));
+
+		if (AActor* Actor = HitResult.GetActor())
+		{
+			if (Actor->Tags.Contains("Hero"))
+			{
+				KerunWSkillRef->JumpIntoTarget(Actor, this);
+
+				ImproveEStack(3);
+			}
+		}
+
 		break;
 
 	case R_Ready:
@@ -165,6 +196,8 @@ void AKerunCharacter::UseSkill(FHitResult HitResult)
 			if (Actor->Tags.Contains("Hero"))
 			{
 				KerunR1SkillRef->StunTarget(Actor, this);
+
+				ImproveEStack(6);
 			}
 		}
 		break;
