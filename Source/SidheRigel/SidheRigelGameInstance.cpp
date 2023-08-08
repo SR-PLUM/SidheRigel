@@ -5,6 +5,8 @@
 
 #include "Blueprint/UserWidget.h"
 #include "MainMenu/MainMenu.h"
+#include "MainMenu/InGameMenu.h"
+#include "MainMenu/MenuWidget.h"
 
 USidheRigelGameInstance::USidheRigelGameInstance(const FObjectInitializer& ObjectInitializer)
 {
@@ -13,6 +15,12 @@ USidheRigelGameInstance::USidheRigelGameInstance(const FObjectInitializer& Objec
 		return;
 
 	MenuClass = MainMenuBPClass.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget>InGameMenuBPClass(TEXT("/Game/UIBlueprints/WBP_InGameMenu"));
+	if (InGameMenuBPClass.Class == nullptr)
+		return;
+
+	InGameMenuClass = InGameMenuBPClass.Class;
 }
 
 void USidheRigelGameInstance::LoadMenu()
@@ -27,8 +35,18 @@ void USidheRigelGameInstance::LoadMenu()
 	Menu->Setup();
 
 	Menu->SetMenuInterface(this);
+}
 
-	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
+void USidheRigelGameInstance::LoadInGameMenu()
+{
+	if (InGameMenuClass == nullptr) return;
+
+	UInGameMenu* menu = CreateWidget<UInGameMenu>(this, InGameMenuClass);
+	if (menu == nullptr) return;
+
+	menu->Setup();
+
+	menu->SetMenuInterface(this);
 }
 
 void USidheRigelGameInstance::Host()
@@ -55,4 +73,12 @@ void USidheRigelGameInstance::Join(const FString& Address)
 	if (PlayerController == nullptr) return;
 
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+}
+
+void USidheRigelGameInstance::LoadMainMenu()
+{
+	APlayerController* PlayerController = GetFirstLocalPlayerController();
+	if (PlayerController == nullptr) return;
+
+	PlayerController->ClientTravel("/Game/Maps/Mainmenu", ETravelType::TRAVEL_Absolute);
 }

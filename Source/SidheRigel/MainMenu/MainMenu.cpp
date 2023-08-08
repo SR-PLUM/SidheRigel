@@ -7,20 +7,6 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableText.h"
 
-void UMainMenu::SetMenuInterface(IMenuInterface* menuInterface)
-{
-	MenuInterface = menuInterface;
-}
-
-void UMainMenu::Setup()
-{
-	this->AddToViewport();
-}
-
-void UMainMenu::Teardown()
-{
-	this->RemoveFromViewport();
-}
 
 bool UMainMenu::Initialize()
 {
@@ -32,6 +18,9 @@ bool UMainMenu::Initialize()
 
 	if (!JoinButton) return false;
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenJoinMenu);
+
+	if (!QuitButton) return false;
+	QuitButton->OnClicked.AddDynamic(this, &UMainMenu::QuitPressed);
 	
 	if (!Join_CancelButton) return false;
 	Join_CancelButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
@@ -76,4 +65,15 @@ void UMainMenu::OpenMainMenu()
 	if (MainMenu == nullptr) return;
 
 	MenuSwitcher->SetActiveWidget(MainMenu);
+}
+
+void UMainMenu::QuitPressed()
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr) return;
+
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (PlayerController == nullptr)return;
+
+	PlayerController->ConsoleCommand("quit");
 }
