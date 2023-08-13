@@ -45,10 +45,16 @@ void AKerunCharacter::Tick(float DeltaTime)
 	}
 
 	//Kerun WSkill
-	/*if (KerunWSkillRef->GetIsWorking())
+	if (KerunWSkillRef->GetIsWorking())
 	{
-		GetCharacterMovement()->AddImpulse(KerunWSkillRef->GetVelocity());
-	}*/
+		FVector Loc = GetActorLocation();
+
+		if (Loc.Z >= KerunWSkillRef->GetLimitZValue())
+		{
+			KerunWSkillRef->KnockDownTarget(this);
+		}
+		
+	}
 }
 
 void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

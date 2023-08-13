@@ -16,7 +16,13 @@ private:
 
 	bool IsWorking = false;
 	bool IsCoolingDown = false;
-	FVector Velocity = FVector::ZeroVector;
+	FVector TargetLocation = FVector::ZeroVector;
+
+	//Z value
+	double ZValue = 300.0f;
+
+	//Speed
+	int32 Speed = 5;
 
 	//CoolTime
 	float CoolDownDuration = 10.f;
@@ -28,5 +34,6 @@ public:
 	void JumpIntoTarget(AActor* Actor, class AKerunCharacter* Owner);
 	bool GetIsWorking();
 	void SetIsWorking(bool flag);
-	FVector GetVelocity();
+	void KnockDownTarget(class AKerunCharacter* Owner);
+	double GetLimitZValue();
 };
