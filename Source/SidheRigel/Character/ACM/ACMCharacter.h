@@ -18,9 +18,23 @@ public:
 	// Sets default values for this character's properties
 	AACMCharacter();
 
+protected:
+
 	virtual void BeginPlay() override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	virtual void InitProperty() override;
 	
+protected:
+	virtual void SpawnAttackProjectile() override;
+	virtual void InitAttackProjectile() override;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AACMAttackProjectile> ProjectileClass;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UProjectileMovementComponent* ProjectileMovementComponent;
 };
