@@ -14,11 +14,19 @@ class SIDHERIGEL_API UMainMenu : public UMenuWidget
 {
 	GENERATED_BODY()
 
+public:
+	UMainMenu(const FObjectInitializer& ObjectInitializer);
+
+	void SetServerList(TArray<FString> ServerNames);
+
+	void SelectIndex(uint32 Index);
 
 protected:
 	virtual bool Initialize() override;
 
 private:
+	TSubclassOf<class UUserWidget> ServerRowClass;
+
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* MainMenu;
 
@@ -38,13 +46,15 @@ private:
 		class UWidget* JoinMenu;
 
 	UPROPERTY(meta = (BindWidget))
-		class UEditableText* IPAddress;
+		class UPanelWidget* ServerList;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join_CancelButton;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join_JoinButton;
+
+	TOptional<uint32> SelectedIndex;
 
 	UFUNCTION()
 		void HostServer();
