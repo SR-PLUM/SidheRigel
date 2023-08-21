@@ -31,10 +31,11 @@ protected:
 	virtual void SpawnAttackProjectile() override;
 	virtual void InitAttackProjectile() override;
 
+	//AttackProjectile
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AACMAttackProjectile> ProjectileClass;
 
-public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	class UProjectileMovementComponent* ProjectileMovementComponent;
+protected: //Skill Collider
+	UPROPERTY()
+	TSubclassOf<class AACMQCollider> ACMQCollider;
 };
