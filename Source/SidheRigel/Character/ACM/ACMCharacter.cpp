@@ -4,18 +4,23 @@
 #include "ACMCharacter.h"
 #include "ACMAttackProjectile.h"
 
-#include "GameFramework/ProjectileMovementComponent.h"
+//Skill Collider
+#include "Skills/ACMQCollider.h"
 
 AACMCharacter::AACMCharacter()
 {
 	InitAttackProjectile();
-
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 }
 
 void AACMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> QCollider(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardRCollider"));
+	if (QCollider.Object)
+	{
+		ACMQCollider = (UClass*)QCollider.Object->GeneratedClass;
+	}
 }
 
 void AACMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
