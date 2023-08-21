@@ -119,7 +119,7 @@ void USidheRigelGameInstance::RefreshServerList()
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	if (SessionSearch.IsValid())
 	{
-		SessionSearch->MaxSearchResults = 100;
+		SessionSearch->MaxSearchResults = 100000;
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 		SessionSearch->bIsLanQuery = false;
 		UE_LOG(LogTemp, Warning, TEXT("Starting Find Session"));
@@ -196,6 +196,10 @@ void USidheRigelGameInstance::CreateSession()
 		FOnlineSessionSettings SessionSettings;
 		SessionSettings.bIsLANMatch = false;
 		SessionSettings.NumPublicConnections = 6;
+
+		SessionSettings.bAllowJoinInProgress = true;
+		SessionSettings.bAllowJoinViaPresence = true;
+
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 
