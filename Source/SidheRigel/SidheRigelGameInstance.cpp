@@ -196,7 +196,7 @@ void USidheRigelGameInstance::OnSessionInviteReceived(const FUniqueNetId& UserId
 
 	UE_LOG(LogTemp, Warning, TEXT("Invite Received!"));
 
-	SessionInterface->JoinSession(0, SESSION_NAME, OnlineSessionSearchResult);
+	SessionInterface->JoinSession(20, SESSION_NAME, OnlineSessionSearchResult);
 }
 
 void USidheRigelGameInstance::OnSessionUserInviteAccepted(bool bWasSuccessful, int ControllerId, TSharedPtr<const FUniqueNetId, ESPMode::Fast> UserId, const FOnlineSessionSearchResult& OnlineSessionSearchResult)
@@ -212,7 +212,7 @@ void USidheRigelGameInstance::OnSessionUserInviteAccepted(bool bWasSuccessful, i
 
 	if (SessionInterface == nullptr) return;
 
-	SessionInterface->JoinSession(0, SESSION_NAME, OnlineSessionSearchResult);
+	SessionInterface->JoinSession(20, SESSION_NAME, OnlineSessionSearchResult);
 }
 
 void USidheRigelGameInstance::CreateSession()
