@@ -26,7 +26,7 @@ public:
 		void LoadInGameMenu();
 
 	UFUNCTION()
-		void Host() override;
+		void Host(FString ServerName) override;
 
 	UFUNCTION(Exec)
 		void Join(uint32 Index) override;
@@ -52,6 +52,7 @@ private:
 	void OnFindSessionComplete(bool Success);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
+	FString DesiredServerName;
 	void CreateSession();
 
 	const FString GameMapURL = "/Game/TopDown/Maps/TopDownMap?listen";

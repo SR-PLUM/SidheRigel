@@ -9,6 +9,18 @@
 /**
  * 
  */
+USTRUCT()
+struct FServerData
+{
+	GENERATED_BODY()
+
+public:
+	FString Name;
+	uint16 CurrentPlayer;
+	uint16 MaxPlayer;
+	FString HostUsername;
+};
+
 UCLASS()
 class SIDHERIGEL_API UMainMenu : public UMenuWidget
 {
@@ -17,7 +29,7 @@ class SIDHERIGEL_API UMainMenu : public UMenuWidget
 public:
 	UMainMenu(const FObjectInitializer& ObjectInitializer);
 
-	void SetServerList(TArray<FString> ServerNames);
+	void SetServerList(TArray<FServerData> ServerNames);
 
 	void SelectIndex(uint32 Index);
 
@@ -71,4 +83,5 @@ private:
 	UFUNCTION()
 		void QuitPressed();
 	
+	void UpdateChildren();
 };
