@@ -11,7 +11,7 @@
 #include "MainMenu/InGameMenu.h"
 #include "MainMenu/MenuWidget.h"
 
-const static FName SESSION_NAME = TEXT("My Session Game");
+const static FName SESSION_NAME = TEXT("SidheRigel");
 
 USidheRigelGameInstance::USidheRigelGameInstance(const FObjectInitializer& ObjectInitializer)
 {
@@ -82,7 +82,7 @@ void USidheRigelGameInstance::Join(uint32 Index)
 
 	UE_LOG(LogTemp, Warning, TEXT("JOIN"));
 
-	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
+	SessionInterface->JoinSession(20, SESSION_NAME, SessionSearch->SearchResults[Index]);
 }
 
 void USidheRigelGameInstance::LoadMainMenu()
@@ -119,11 +119,11 @@ void USidheRigelGameInstance::RefreshServerList()
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	if (SessionSearch.IsValid())
 	{
-		SessionSearch->MaxSearchResults = 100;
+		SessionSearch->MaxSearchResults = 100000;
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 		SessionSearch->bIsLanQuery = false;
 		UE_LOG(LogTemp, Warning, TEXT("Starting Find Session"));
-		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+		SessionInterface->FindSessions(20, SessionSearch.ToSharedRef());
 	}
 }
 
@@ -164,7 +164,8 @@ void USidheRigelGameInstance::OnFindSessionComplete(bool Success)
 
 		for (const FOnlineSessionSearchResult& SearchResult : SessionSearch->SearchResults)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Fount Session Name : %s"), *SearchResult.GetSessionIdStr());
+			//UE_LOG(LogTemp, Warning, TEXT("Fount Session Name : %s"), *SearchResult.GetSessionIdStr());
+			UE_LOG(LogTemp, Warning, TEXT("User Name : %s"), *SearchResult.Session.OwningUserName);
 			ServerNames.Add(SearchResult.GetSessionIdStr());
 		}
 
@@ -189,16 +190,47 @@ void USidheRigelGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSe
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
 
+void USidheRigelGameInstance::OnSessionInviteReceived(const FUniqueNetId& UserId, const FUniqueNetId& FromId, const FString& AppId, const FOnlineSessionSearchResult& OnlineSessionSearchResult)
+{
+	if (SessionInterface == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("Invite Received!"));
+
+	SessionInterface->JoinSession(20, SESSION_NAME, OnlineSessionSearchResult);
+}
+
+void USidheRigelGameInstance::OnSessionUserInviteAccepted(bool bWasSuccessful, int ControllerId, TSharedPtr<const FUniqueNetId, ESPMode::Fast> UserId, const FOnlineSessionSearchResult& OnlineSessionSearchResult)
+{
+	if (bWasSuccessful)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Session invite accepted successfully!!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Session invite not accepted"));
+	}
+
+	if (SessionInterface == nullptr) return;
+
+	SessionInterface->JoinSession(20, SESSION_NAME, OnlineSessionSearchResult);
+}
+
 void USidheRigelGameInstance::CreateSession()
 {
 	if (SessionInterface.IsValid())
 	{
 		FOnlineSessionSettings SessionSettings;
 		SessionSettings.bIsLANMatch = false;
-		SessionSettings.NumPublicConnections = 6;
+		SessionSettings.NumPublicConnections = 4;
+
+		SessionSettings.bUseLobbiesIfAvailable = true;
+		SessionSettings.bAllowInvites = true;
+		SessionSettings.bAllowJoinInProgress = true;
+		SessionSettings.bAllowJoinViaPresence = true;
+
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 
-		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
+		SessionInterface->CreateSession(20, SESSION_NAME, SessionSettings);
 	}
 }
