@@ -4,14 +4,21 @@
 #include "../../Dummy/DummyProjectile.h"
 
 #include "Skills/KerunQSkill.h"
+#include "Skills/KerunWSkill.h"
+#include "Skills/KerunR1Skill.h"
 #include "Skills/KerunR2Skill.h"
 
 #include "KerunAttackProjectile.h"
 #include "KerunAnimInstance.h"
 
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 AKerunCharacter::AKerunCharacter()
 {
 	InitAttackProjectile();
+
+	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 }
 
 void AKerunCharacter::BeginPlay()
@@ -19,6 +26,8 @@ void AKerunCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	KerunQSkillRef = NewObject<UKerunQSkill>();
+	KerunWSkillRef = NewObject<UKerunWSkill>();
+	KerunR1SkillRef = NewObject<UKerunR1Skill>();
 	KerunR2SkillRef = NewObject<UKerunR2Skill>();
 
 	//AnimInstance = Cast<UKerunAnimInstance>(GetMesh()->GetAnimInstance());
@@ -33,6 +42,18 @@ void AKerunCharacter::Tick(float DeltaTime)
 	if (KerunQSkillRef->CheckAttackCount())
 	{
 		KerunQSkillRef->QuitQSkill(attackSpeed);
+	}
+
+	//Kerun WSkill
+	if (KerunWSkillRef->GetIsWorking())
+	{
+		FVector Loc = GetActorLocation();
+
+		if (Loc.Z >= KerunWSkillRef->GetLimitZValue())
+		{
+			KerunWSkillRef->KnockDownTarget(this);
+		}
+		
 	}
 }
 
@@ -122,10 +143,71 @@ void AKerunCharacter::SkillOne()
 	KerunQSkillRef->ImproveAttackSpeed(attackSpeed, this);
 }
 
+void AKerunCharacter::SkillTwo()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Kerun WSkill"));
+
+	skillState = W_Ready;
+}
+
 void AKerunCharacter::SkillFour()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Kerun R2Skill"));
-	KerunR2SkillRef->StartR2Buff(this);
+	//R1 Skill
+
+	UE_LOG(LogTemp, Warning, TEXT("Kerun R1Skill"));
+
+	skillState = R_Ready;
+
+
+	//R2 Skill
+	/*UE_LOG(LogTemp, Warning, TEXT("Kerun R2Skill"));
+	KerunR2SkillRef->StartR2Buff(this);*/
+}
+
+void AKerunCharacter::SkillCancel()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Skill Cancel"));
+
+	skillState = Null;
+}
+
+void AKerunCharacter::UseSkill(FHitResult HitResult)
+{
+	switch (skillState)
+	{
+	case Null:
+		UE_LOG(LogTemp, Warning, TEXT("skillState is Null"));
+		break;
+	
+	case W_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("skillState is W"));
+
+		if (AActor* Actor = HitResult.GetActor())
+		{
+			if (Actor->Tags.Contains("Hero"))
+			{
+				KerunWSkillRef->JumpIntoTarget(Actor, this);
+
+				ImproveEStack(3);
+			}
+		}
+
+		break;
+
+	case R_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("skillState is R"));
+
+		if (AActor* Actor = HitResult.GetActor())
+		{
+			if (Actor->Tags.Contains("Hero"))
+			{
+				KerunR1SkillRef->StunTarget(Actor, this);
+
+				ImproveEStack(6);
+			}
+		}
+		break;
+	}
 }
 
 void AKerunCharacter::ImproveEStack(int Count)

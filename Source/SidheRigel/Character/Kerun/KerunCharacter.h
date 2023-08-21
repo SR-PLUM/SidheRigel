@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "../../Enum/E_SkillState.h"
 #include "KerunCharacter.generated.h"
 
 /**
@@ -45,11 +46,29 @@ private:
 	class UKerunQSkill* KerunQSkillRef;
 
 	UPROPERTY()
+	class UKerunWSkill* KerunWSkillRef;
+
+	UPROPERTY()
+	class UKerunR1Skill* KerunR1SkillRef;
+
+	UPROPERTY()
 	class UKerunR2Skill* KerunR2SkillRef;
 
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UProjectileMovementComponent* ProjectileMovementComponent;
+
+
 protected:	//Skill
-	virtual void SkillOne();
-	virtual void SkillFour();
+	virtual void SkillOne();	//Q
+	virtual void SkillTwo();	//W
+	virtual void SkillFour();	//R
+
+	virtual void SkillCancel();
+	virtual void UseSkill(FHitResult HitResult);
+
+private:	//State
+	E_SkillState skillState = E_SkillState::Null;
 
 protected: //Passive E
 
@@ -70,15 +89,6 @@ protected: //Passive E
 
 
 /*
-	virtual void SkillTwo();
 	virtual	void SkillThree();
-	virtual void SkillFour();
-
-	virtual void SkillCancel();
-	virtual void UseSkill(AActor* target);
-
-private:	//State
-	E_SkillState skillState;
-
 */
 };
