@@ -123,7 +123,7 @@ void USidheRigelGameInstance::RefreshServerList()
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 		SessionSearch->bIsLanQuery = false;
 		UE_LOG(LogTemp, Warning, TEXT("Starting Find Session"));
-		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+		SessionInterface->FindSessions(20, SessionSearch.ToSharedRef());
 	}
 }
 
@@ -204,6 +204,6 @@ void USidheRigelGameInstance::CreateSession()
 		SessionSettings.bUsesPresence = true;
 
 		const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
+		SessionInterface->CreateSession(20, SESSION_NAME, SessionSettings);
 	}
 }
