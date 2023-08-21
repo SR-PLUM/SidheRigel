@@ -3,27 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "MenuInterface.h"
+#include "MenuWidget.h"
 #include "MainMenu.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIDHERIGEL_API UMainMenu : public UUserWidget
+class SIDHERIGEL_API UMainMenu : public UMenuWidget
 {
 	GENERATED_BODY()
-public:
-	void SetMenuInterface(IMenuInterface* menuInterface);
 
-	void Setup();
-	void Teardown();
+public:
+	UMainMenu(const FObjectInitializer& ObjectInitializer);
+
+	void SetServerList(TArray<FString> ServerNames);
+
+	void SelectIndex(uint32 Index);
 
 protected:
 	virtual bool Initialize() override;
 
 private:
+	TSubclassOf<class UUserWidget> ServerRowClass;
+
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* MainMenu;
 
@@ -34,19 +37,24 @@ private:
 		class UButton* JoinButton;
 
 	UPROPERTY(meta = (BindWidget))
+		class UButton* QuitButton;
+
+	UPROPERTY(meta = (BindWidget))
 		class UWidgetSwitcher* MenuSwitcher;
 
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* JoinMenu;
 
 	UPROPERTY(meta = (BindWidget))
-		class UEditableText* IPAddress;
+		class UPanelWidget* ServerList;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join_CancelButton;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join_JoinButton;
+
+	TOptional<uint32> SelectedIndex;
 
 	UFUNCTION()
 		void HostServer();
@@ -60,5 +68,7 @@ private:
 	UFUNCTION()
 		void OpenMainMenu();
 
-	IMenuInterface* MenuInterface;
+	UFUNCTION()
+		void QuitPressed();
+	
 };

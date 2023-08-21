@@ -6,20 +6,46 @@
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableText.h"
+#include "Components/TextBlock.h"
 
-void UMainMenu::SetMenuInterface(IMenuInterface* menuInterface)
+#include "ServerRow.h"
+
+
+UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer)
 {
-	MenuInterface = menuInterface;
+	ConstructorHelpers::FClassFinder<UUserWidget> ServerRowBPClass(TEXT("/Game/UIBlueprints/WBP_ServerRow"));
+	if (ServerRowBPClass.Class == nullptr)
+		return;
+
+	ServerRowClass = ServerRowBPClass.Class;
 }
 
-void UMainMenu::Setup()
+void UMainMenu::SetServerList(TArray<FString> ServerNames)
 {
-	this->AddToViewport();
+	ServerList->ClearChildren();
+
+	uint32 i = 0;
+	for (const FString& ServerName : ServerNames)
+	{
+		if (ServerRowClass != nullptr)
+		{
+			UServerRow* Row = CreateWidget<UServerRow>(this, ServerRowClass);
+
+			if (Row != nullptr && ServerList != nullptr)
+			{
+				Row->ServerName->SetText(FText::FromString(ServerName));
+				Row->Setup(this, i);
+				++i;
+
+				ServerList->AddChild(Row);
+			}
+		}
+	}
 }
 
-void UMainMenu::Teardown()
+void UMainMenu::SelectIndex(uint32 Index)
 {
-	this->RemoveFromViewport();
+	SelectedIndex = Index;
 }
 
 bool UMainMenu::Initialize()
@@ -32,6 +58,9 @@ bool UMainMenu::Initialize()
 
 	if (!JoinButton) return false;
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenJoinMenu);
+
+	if (!QuitButton) return false;
+	QuitButton->OnClicked.AddDynamic(this, &UMainMenu::QuitPressed);
 	
 	if (!Join_CancelButton) return false;
 	Join_CancelButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
@@ -52,12 +81,15 @@ void UMainMenu::HostServer()
 
 void UMainMenu::JoinServer()
 {
-	if (MenuInterface != nullptr)
+	if (SelectedIndex.IsSet() && MenuInterface != nullptr)
 	{
-		if (IPAddress == nullptr) return;
+		UE_LOG(LogTemp, Warning, TEXT("Selected index %d."), SelectedIndex.GetValue());
 
-		const FString& Address = IPAddress->GetText().ToString();
-		MenuInterface->Join(Address);
+		MenuInterface->Join(SelectedIndex.GetValue());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Selected index not set."));
 	}
 }
 
@@ -68,6 +100,10 @@ void UMainMenu::OpenJoinMenu()
 
 	MenuSwitcher->SetActiveWidget(JoinMenu);
 
+	if (MenuInterface != nullptr)
+	{
+		MenuInterface->RefreshServerList();
+	}
 }
 
 void UMainMenu::OpenMainMenu()
@@ -76,4 +112,15 @@ void UMainMenu::OpenMainMenu()
 	if (MainMenu == nullptr) return;
 
 	MenuSwitcher->SetActiveWidget(MainMenu);
+}
+
+void UMainMenu::QuitPressed()
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr) return;
+
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (PlayerController == nullptr)return;
+
+	PlayerController->ConsoleCommand("quit");
 }

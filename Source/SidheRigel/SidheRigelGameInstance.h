@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "MainMenu/MenuInterface.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "SidheRigelGameInstance.generated.h"
 
 /**
@@ -21,16 +22,37 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void LoadMenu();
 
+	UFUNCTION(BlueprintCallable)
+		void LoadInGameMenu();
+
 	UFUNCTION()
-		void Host();
+		void Host() override;
 
 	UFUNCTION(Exec)
-		void Join(const FString& Address);
+		void Join(uint32 Index) override;
+
+	virtual void LoadMainMenu() override;
+
+	UFUNCTION()
+		virtual void Init() override;
+
+	virtual void RefreshServerList() override;
 
 private:
 	TSubclassOf<class UUserWidget> MenuClass;
+	TSubclassOf<class UUserWidget> InGameMenuClass;
 
 	class UMainMenu* Menu;
+
+	IOnlineSessionPtr SessionInterface;
+	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+
+	void OnCreateSessionComplete(FName SessionName, bool Success);
+	void OnDestroySessionComplete(FName SessionName, bool Success);
+	void OnFindSessionComplete(bool Success);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+
+	void CreateSession();
 
 	const FString GameMapURL = "/Game/TopDown/Maps/TopDownMap?listen";
 };
