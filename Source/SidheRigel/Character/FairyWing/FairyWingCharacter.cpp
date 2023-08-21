@@ -24,6 +24,12 @@ AFairyWingCharacter::AFairyWingCharacter()
 		QColliderClass = (UClass*)QCollider.Object->GeneratedClass;
 	}
 
+	/*static ConstructorHelpers::FObjectFinder<UBlueprint> WCollider(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingWCollider"));
+	if (WCollider.Object)
+	{
+		WColliderClass = (UClass*)WCollider.Object->GeneratedClass;
+	}  BP만들고 주석해제 */
+
 	InitAttackProjectile();
 }
 
@@ -178,6 +184,42 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 		break;
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing use W"));
+
+		UE_LOG(LogTemp, Warning, TEXT("FairyWing use Q"));
+
+		//if (WColliderClass)  BP만들고 주석해제, 도트뎀 추가 BlockAllDynamic? 설정 바꾸기
+		//{
+		//	FVector MuzzleLocation = HitResult.Location;
+		//	FRotator MuzzleRotation = GetActorRotation();
+
+		//	UWorld* World = GetWorld();
+		//	if (World)
+		//	{
+		//		FActorSpawnParameters SpawnParams;
+		//		SpawnParams.Owner = this;
+		//		SpawnParams.Instigator = GetInstigator();
+
+		//		// Spawn the projectile at the muzzle.
+		//		AFairyWingWCollider* Collider = World->SpawnActor<AFairyWingWCollider>(WColliderClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+		//		if (Collider)
+		//		{
+		//			// Set the projectile's initial trajectory.
+		//			Collider->colliderOwner = this;
+
+		//			FTimerHandle WColliderDestroyTimer;
+		//			GetWorldTimerManager().SetTimer(WColliderDestroyTimer,
+		//				FTimerDelegate::CreateLambda([=]()
+		//					{
+		//						Collider->Destroy();
+		//					}
+
+		//			), 1.0f, false);
+
+		//			Collider->CollisionComponent->SetGenerateOverlapEvents(false);
+		//		}
+		//	}
+		//}
+
 		skillState = Null;
 		break;
 	case E_Ready:
