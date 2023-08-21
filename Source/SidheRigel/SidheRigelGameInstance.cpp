@@ -11,7 +11,7 @@
 #include "MainMenu/InGameMenu.h"
 #include "MainMenu/MenuWidget.h"
 
-const static FName SESSION_NAME = TEXT("My Session Game");
+const static FName SESSION_NAME = TEXT("SidheRigel");
 
 USidheRigelGameInstance::USidheRigelGameInstance(const FObjectInitializer& ObjectInitializer)
 {
@@ -203,6 +203,7 @@ void USidheRigelGameInstance::CreateSession()
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 
-		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
+		const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+		SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), SESSION_NAME, SessionSettings);
 	}
 }
