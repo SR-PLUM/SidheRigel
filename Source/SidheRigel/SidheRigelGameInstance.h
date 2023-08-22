@@ -26,7 +26,7 @@ public:
 		void LoadInGameMenu();
 
 	UFUNCTION()
-		void Host() override;
+		void Host(FString ServerName) override;
 
 	UFUNCTION(Exec)
 		void Join(uint32 Index) override;
@@ -54,6 +54,9 @@ private:
 	void OnSessionInviteReceived(const FUniqueNetId& UserId, const FUniqueNetId& FromId, const FString& AppId, const FOnlineSessionSearchResult& OnlineSessionSearchResult);
 	void OnSessionUserInviteAccepted(bool bWasSuccessful, int ControllerId, TSharedPtr<const FUniqueNetId, ESPMode::Fast> UserId, const FOnlineSessionSearchResult& OnlineSessionSearchResult);
 
+	void OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString);
+
+	FString DesiredServerName;
 	void CreateSession();
 
 	const FString GameMapURL = "/Game/TopDown/Maps/TopDownMap?listen";
