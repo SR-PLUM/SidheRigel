@@ -66,6 +66,18 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join_JoinButton;
 
+	UPROPERTY(meta = (BindWidget))
+		class UWidget* HostMenu;
+
+	UPROPERTY(meta = (BindWidget))
+		class UEditableText* ServerHostName;
+
+	UPROPERTY(meta = (BindWidget))
+		class UButton* Host_HostButton;
+
+	UPROPERTY(meta = (BindWidget))
+		class UButton* Host_CancelButton;
+
 	TOptional<uint32> SelectedIndex;
 
 	UFUNCTION()
@@ -79,6 +91,9 @@ private:
 
 	UFUNCTION()
 		void OpenMainMenu();
+
+	UFUNCTION()
+		void OpenHostMenu();
 
 	UFUNCTION()
 		void QuitPressed();
