@@ -113,6 +113,11 @@ void USidheRigelGameInstance::Init()
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &USidheRigelGameInstance::OnFindSessionComplete);
 			SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &USidheRigelGameInstance::OnJoinSessionComplete);
 		}
+
+		if (GEngine != nullptr)
+		{
+			GEngine->OnNetworkFailure().AddUObject(this, &USidheRigelGameInstance::OnNetworkFailure);
+		}
 	}
 }
 
@@ -230,6 +235,11 @@ void USidheRigelGameInstance::OnSessionUserInviteAccepted(bool bWasSuccessful, i
 	if (SessionInterface == nullptr) return;
 
 	SessionInterface->JoinSession(20, SESSION_NAME, OnlineSessionSearchResult);
+}
+
+void USidheRigelGameInstance::OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString)
+{
+	LoadMainMenu();
 }
 
 void USidheRigelGameInstance::CreateSession()
