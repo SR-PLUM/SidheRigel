@@ -56,4 +56,7 @@ protected:	//Skill Projectile
 
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AFairyWingWCollider> WColliderClass;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AFairyWingRCollider> RColliderClass;
 };

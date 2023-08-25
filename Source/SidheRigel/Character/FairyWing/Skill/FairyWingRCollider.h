@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "FairyWingWCollider.generated.h"
+#include "FairyWingRCollider.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API AFairyWingWCollider : public AActor
+class SIDHERIGEL_API AFairyWingRCollider : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AFairyWingWCollider();
+	AFairyWingRCollider();
 
 protected:
 	// Called when the game starts or when spawned
