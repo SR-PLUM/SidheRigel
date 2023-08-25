@@ -1,9 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "ColdEProjectile.h"
+
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "ColdEDamageField.h"
 
 // Sets default values
 AColdEProjectile::AColdEProjectile()
@@ -15,38 +17,31 @@ AColdEProjectile::AColdEProjectile()
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
 	}
-	if (!CollisionComponent)
-	{
-		// Use a sphere as a simple collision representation.
-		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		// Set the sphere's collision radius.
-		CollisionComponent->InitSphereRadius(15.0f);
-		// Set the root component to be the collision component.
-		RootComponent = CollisionComponent;
-	}
 	if (!ProjectileMesh)
 	{
 		ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-		ProjectileMesh->SetupAttachment(CollisionComponent);
 
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/Skill/SM_ColdWProjectile"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/Skill/SM_ColdEProjectile"));
 		if (Mesh.Succeeded())
 		{
 			ProjectileMesh->SetStaticMesh(Mesh.Object);
 		}
 
+		ProjectileMesh->SetSimulatePhysics(true);
+
+		RootComponent = ProjectileMesh;
 	}
 	if (!ProjectileMovementComponent)
 	{
 		// Use this component to drive this projectile's movement.
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
+		ProjectileMovementComponent->SetUpdatedComponent(ProjectileMesh);
 		ProjectileMovementComponent->InitialSpeed = 0.f;
 		ProjectileMovementComponent->MaxSpeed = 0.f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = false;
 		ProjectileMovementComponent->Bounciness = 0.f;
-		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+		ProjectileMovementComponent->ProjectileGravityScale = 1.0f;
 	}
 }
 
@@ -61,26 +56,26 @@ void AColdEProjectile::BeginPlay()
 void AColdEProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (isReadyToFire)
+	
+	if (GetActorLocation().Z <= 0)
 	{
-		
+		UE_LOG(LogTemp, Warning, TEXT("Location Z is 0"));
+
+		damageField->Explosion();
+
+		Destroy();
 	}
 }
 
-void AColdEProjectile::SetLocation(FVector location)
+void AColdEProjectile::Launch(FVector startLoc, FVector targetLoc)
 {
-	start = projectileOwner->GetActorLocation();
+	FVector outVelocity = FVector::ZeroVector;   // °á°ú Velocity
 
-	destination = location;
+	UWorld* World = GetWorld();
 
-	direction = destination - start;
-
-	direction.Y = start.Y;
-
-	totalLength = direction.Length();
-	
-
-	isReadyToFire = true;
+	if (World != nullptr && UGameplayStatics::SuggestProjectileVelocity_CustomArc(this, outVelocity, startLoc, targetLoc, World->GetGravityZ(), ARC_VALUE))
+	{
+		ProjectileMesh->AddImpulse(outVelocity);
+	}
 }
 

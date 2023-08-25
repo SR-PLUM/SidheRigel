@@ -10,6 +10,8 @@ UCLASS()
 class SIDHERIGEL_API AColdEProjectile : public AActor
 {
 	GENERATED_BODY()
+
+	const float ARC_VALUE = 0.2f;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -25,31 +27,19 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere)
-		class USphereComponent* CollisionComponent;
-
-	UPROPERTY(VisibleAnywhere)
 		class UProjectileMovementComponent* ProjectileMovementComponent;
 
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* ProjectileMesh;
 
 private:
-	UPROPERTY()
-		FVector start;
-	UPROPERTY()
-		FVector destination;
-	UPROPERTY()
-		FVector direction;
-	UPROPERTY()
-		double totalLength;
-
-	UPROPERTY()
-		bool isReadyToFire = false;
 
 public:
 	UPROPERTY()
 		AActor* projectileOwner;
 
 	UFUNCTION()
-		void SetLocation(FVector location);
+		void Launch(FVector startLoc, FVector targetLoc);
+
+	class AColdEDamageField* damageField;
 };
