@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Enum/E_SkillState.h"
 #include "ACMCharacter.generated.h"
 
 /**
@@ -26,6 +27,8 @@ protected:
 
 public:
 	virtual void InitProperty() override;
+
+	void InitColliderPath();
 	
 protected:
 	virtual void SpawnAttackProjectile() override;
@@ -35,7 +38,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AACMAttackProjectile> ProjectileClass;
 
+protected: //Skills
+	virtual void SkillOne();
+	void QSkill(FHitResult HitResult);
+
+
+	virtual void SkillCancel();
+	virtual void UseSkill(FHitResult HitResult);
+
+private:
+	E_SkillState skillState = E_SkillState::Null;
+
+	bool UpgradeNextSkill= false;
+
 protected: //Skill Collider
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AACMQCollider> ACMQCollider;
 };

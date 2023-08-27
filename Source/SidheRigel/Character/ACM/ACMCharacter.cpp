@@ -10,17 +10,13 @@
 AACMCharacter::AACMCharacter()
 {
 	InitAttackProjectile();
+	
+	InitColliderPath();
 }
 
 void AACMCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	static ConstructorHelpers::FObjectFinder<UBlueprint> QCollider(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardRCollider"));
-	if (QCollider.Object)
-	{
-		ACMQCollider = (UClass*)QCollider.Object->GeneratedClass;
-	}
 }
 
 void AACMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -41,6 +37,15 @@ void AACMCharacter::InitProperty()
 	protectPower.Add("Debug", 20);
 
 	currentHP = GetMaxHP();
+}
+
+void AACMCharacter::InitColliderPath()
+{
+	static ConstructorHelpers::FObjectFinder<UBlueprint> QCollider(TEXT("/Game/Heros/ACM/Skills/BP_ACMQCollider"));
+	if (QCollider.Object)
+	{
+		ACMQCollider = (UClass*)QCollider.Object->GeneratedClass;
+	}
 }
 
 void AACMCharacter::SpawnAttackProjectile()
@@ -72,5 +77,101 @@ void AACMCharacter::InitAttackProjectile()
 	if (Projectile.Object)
 	{
 		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+	}
+}
+
+void AACMCharacter::SkillOne()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ACM Ready Q"));
+
+	skillState = Q_Ready;
+}
+
+void AACMCharacter::QSkill(FHitResult HitResult)
+{
+	if (ACMQCollider)
+	{
+		FVector PawnToTarget = (HitResult.Location - GetActorLocation()).GetSafeNormal();
+		PawnToTarget *= FVector(75, 75, 0);
+		FVector MuzzleLocation = (GetActorLocation() + PawnToTarget) * FVector(1,1,0);
+		FRotator MuzzleRotation = PawnToTarget.Rotation();
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			FTransform SpawnTransform;
+			SpawnTransform.SetLocation(MuzzleLocation);
+			SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+			SpawnParams.Owner = this;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			//SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			AACMQCollider* Collider = World->SpawnActorDeferred<AACMQCollider>(ACMQCollider, SpawnTransform);
+
+			UE_LOG(LogTemp, Warning, TEXT("ACM QSkill Collider :: %s"), *(Collider->GetActorLabel()));
+			if (Collider)
+			{
+				// Set the projectile's initial trajectory.
+				Collider->ColliderOwner = this;
+
+				Collider->IsUpgraded = UpgradeNextSkill;
+				if (UpgradeNextSkill)
+				{
+					UpgradeNextSkill = false;
+				}
+
+				FTimerHandle EColliderDestroyTimer;
+				GetWorldTimerManager().SetTimer(EColliderDestroyTimer,
+					FTimerDelegate::CreateLambda([=]()
+						{
+							Collider->Destroy();
+						}
+
+				), 1.0f, false);
+
+				Collider->FinishSpawning(SpawnTransform);
+
+				UE_LOG(LogTemp, Warning, TEXT("ACM QSkill Spawned"));
+
+				Collider->MeshComponent->SetGenerateOverlapEvents(false);
+			}
+		}
+	}
+}
+
+void AACMCharacter::SkillCancel()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ACM SkillCancel"));
+
+	skillState = Null;
+}
+
+void AACMCharacter::UseSkill(FHitResult HitResult)
+{
+	switch (skillState)
+	{
+	case Null:
+		UE_LOG(LogTemp, Warning, TEXT("ACM SkillState is Null"));
+		break;
+	case Q_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("ACM use Q"));
+		QSkill(HitResult);
+		skillState = Null;
+		break;
+	case W_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("ACM use W"));
+		skillState = Null;
+		break;
+	case E_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("ACM use E"));
+		skillState = Null;
+		break;
+	case R_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("ACM use R"));
+		skillState = Null;
+		break;
+	default:
+		break;
 	}
 }
