@@ -23,6 +23,9 @@ protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	virtual void InitProperty() override;
+
 protected:	//Attack
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AFairyWingAttackProjectile> attackProjectileClass;
@@ -50,4 +53,10 @@ protected:	//Skill Projectile
 
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AFairyWingQCollider> QColliderClass;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AFairyWingWCollider> WColliderClass;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AFairyWingRCollider> RColliderClass;
 };

@@ -1,10 +1,11 @@
-#include "FairyWingQCollider.h"
+#include "FairyWingRCollider.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
+#include "SidheRigel/Interface/CCable.h"
 
 // Sets default values
-AFairyWingQCollider::AFairyWingQCollider()
+AFairyWingRCollider::AFairyWingRCollider()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,7 +28,7 @@ AFairyWingQCollider::AFairyWingQCollider()
 		ColliderMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ColliderMesh"));
 		ColliderMesh->SetupAttachment(CollisionComponent);
 
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/FairyWing/Skill/SM_FairyWingQCollider"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/FairyWing/Skill/SM_FairyWingRCollider"));
 		if (Mesh.Succeeded())
 		{
 			ColliderMesh->SetStaticMesh(Mesh.Object);
@@ -36,21 +37,21 @@ AFairyWingQCollider::AFairyWingQCollider()
 }
 
 // Called when the game starts or when spawned
-void AFairyWingQCollider::BeginPlay()
+void AFairyWingRCollider::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingQCollider::OnColliderOverlap);
+	
+	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingRCollider::OnColliderOverlap);
 }
 
 // Called every frame
-void AFairyWingQCollider::Tick(float DeltaTime)
+void AFairyWingRCollider::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AFairyWingRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	const FString OtherActorName = OtherActor->GetName();
 	if (GEngine)
@@ -61,8 +62,11 @@ void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 	if (OtherActor)
 	{
 		IDamagable* test = Cast<IDamagable>(OtherActor);
-		if(test)
+		if (test)
 			test->TakeDamage(10.f, colliderOwner);
+
+		ICCable* CC = Cast<ICCable>(OtherActor);
+		if (CC)
+			CC->Stop(1.0f);
 	}
 }
-

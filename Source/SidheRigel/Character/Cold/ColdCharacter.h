@@ -40,6 +40,7 @@ protected:	//Skill
 	void WImplement(FHitResult HitResult);
 
 	virtual	void SkillThree();
+	void EImplement(FHitResult HitResult);
 
 	virtual void SkillFour();
 	void RImplement(FHitResult HitResult);
@@ -59,6 +60,10 @@ protected:	//Skill Projectile
 		TSubclassOf<class AColdQProjectile> QProjectileClass;
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AColdWProjectile> WProjectileClass;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AColdEProjectile> EProjectileClass;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AColdEDamageField>EDamageFieldClass;
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AColdR1Projectile>R1ProjectileClass;
 	UPROPERTY(EditDefaultsOnly)

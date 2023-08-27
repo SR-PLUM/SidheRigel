@@ -270,6 +270,48 @@ int32 ASidheRigelCharacter::GetProtectPower()
 	return res;
 }
 
+float ASidheRigelCharacter::GetDefencePoint()
+{
+	float res = 0.f;
+	for (auto value : defencePoint)
+	{
+		res += value.Value;
+	}
+
+	res *= (1 - GetDecreseDefence());
+
+	return res;
+}
+
+void ASidheRigelCharacter::AddDecreseDefencePercent(FString name, float value, float time)
+{
+	decreseDefencePoint.Add(name, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle DebuffTimer;
+	GetWorldTimerManager().SetTimer(DebuffTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (decreseDefencePoint.Find(name))
+			{
+				decreseDefencePoint.Remove(name);
+			}
+		})
+		, time, false);
+}
+
+float ASidheRigelCharacter::GetDecreseDefence()
+{
+	float res = 0.f;
+	for (auto value : decreseDefencePoint)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
 void ASidheRigelCharacter::InitProperty()
 {
 	range.Add("Debug", 500.f);
@@ -281,6 +323,8 @@ void ASidheRigelCharacter::InitProperty()
 	generateHealthPoint.Add("Debug", 0.2f);
 	lifeSteal.Add("Debug", 5.f);
 	protectPower.Add("Debug", 20);
+
+	defencePoint.Add("Debug", 100);
 
 	currentHP = GetMaxHP();
 }

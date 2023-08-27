@@ -4,6 +4,8 @@
 #include "FairyWingCharacter.h"
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingQCollider.h"
+#include "SidheRigel/Character/FairyWing/Skill/FairyWingWCollider.h"
+#include "SidheRigel/Character/FairyWing/Skill/FairyWingRCollider.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingEProjectile.h"
 #include "SidheRigel/Character/FairyWing/FairyWingAttackProjectile.h"
 
@@ -22,6 +24,18 @@ AFairyWingCharacter::AFairyWingCharacter()
 	if (QCollider.Object)
 	{
 		QColliderClass = (UClass*)QCollider.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> WCollider(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingWCollider"));
+	if (WCollider.Object)
+	{
+		WColliderClass = (UClass*)WCollider.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> RCollider(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingRCollider"));
+	if (RCollider.Object)
+	{
+		RColliderClass = (UClass*)RCollider.Object->GeneratedClass;
 	}
 
 	InitAttackProjectile();
@@ -46,6 +60,21 @@ void AFairyWingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AFairyWingCharacter::InitProperty()
+{
+	range.Add("Debug", 1000.f);
+	attackDamage.Add("Debug", 5.f);
+	attackSpeed.Add("Debug", 1.f);
+	criticalRate.Add("Debug", 50);
+	criticalDamage.Add("Debug", 50);
+	MaxHP.Add("Debug", 100.f);
+	generateHealthPoint.Add("Debug", 0.2f);
+	lifeSteal.Add("Debug", 5.f);
+	protectPower.Add("Debug", 20);
+
+	currentHP = GetMaxHP();
 }
 
 void AFairyWingCharacter::InitAttackProjectile()
@@ -163,6 +192,40 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 		break;
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing use W"));
+
+		if (WColliderClass)			//도트뎀 추가 BlockAllDynamic? 설정 바꾸기
+		{
+			FVector MuzzleLocation = HitResult.Location;
+			FRotator MuzzleRotation = GetActorRotation();
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = GetInstigator();
+
+				// Spawn the projectile at the muzzle.
+				AFairyWingWCollider* Collider = World->SpawnActor<AFairyWingWCollider>(WColliderClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				if (Collider)
+				{
+					// Set the projectile's initial trajectory.
+					Collider->colliderOwner = this;
+
+					FTimerHandle WColliderDestroyTimer;
+					GetWorldTimerManager().SetTimer(WColliderDestroyTimer,
+						FTimerDelegate::CreateLambda([=]()
+							{
+								Collider->Destroy();
+							}
+
+					), 1.0f, false);
+
+					Collider->CollisionComponent->SetGenerateOverlapEvents(false);
+				}
+			}
+		}
+
 		skillState = Null;
 		break;
 	case E_Ready:
@@ -202,6 +265,40 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing use R"));
+
+		if (RColliderClass)
+		{
+			FVector MuzzleLocation = HitResult.Location;
+			FRotator MuzzleRotation = GetActorRotation();
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = GetInstigator();
+
+				// Spawn the projectile at the muzzle.
+				AFairyWingRCollider* Collider = World->SpawnActor<AFairyWingRCollider>(RColliderClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				if (Collider)
+				{
+					// Set the projectile's initial trajectory.
+					Collider->colliderOwner = this;
+
+					FTimerHandle RColliderDestroyTimer;
+					GetWorldTimerManager().SetTimer(RColliderDestroyTimer,
+						FTimerDelegate::CreateLambda([=]()
+							{
+								Collider->Destroy();
+							}
+
+					), 1.0f, false);
+
+					Collider->CollisionComponent->SetGenerateOverlapEvents(false);
+				}
+			}
+		}
+
 		skillState = Null;
 		break;
 	default:

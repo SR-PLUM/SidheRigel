@@ -3,27 +3,42 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "MenuInterface.h"
+#include "MenuWidget.h"
 #include "MainMenu.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class SIDHERIGEL_API UMainMenu : public UUserWidget
+USTRUCT()
+struct FServerData
 {
 	GENERATED_BODY()
-public:
-	void SetMenuInterface(IMenuInterface* menuInterface);
 
-	void Setup();
-	void Teardown();
+public:
+	FString Name;
+	uint16 CurrentPlayer;
+	uint16 MaxPlayer;
+	FString HostUsername;
+};
+
+UCLASS()
+class SIDHERIGEL_API UMainMenu : public UMenuWidget
+{
+	GENERATED_BODY()
+
+public:
+	UMainMenu(const FObjectInitializer& ObjectInitializer);
+
+	void SetServerList(TArray<FServerData> ServerNames);
+
+	void SelectIndex(uint32 Index);
 
 protected:
 	virtual bool Initialize() override;
 
 private:
+	TSubclassOf<class UUserWidget> ServerRowClass;
+
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* MainMenu;
 
@@ -34,19 +49,36 @@ private:
 		class UButton* JoinButton;
 
 	UPROPERTY(meta = (BindWidget))
+		class UButton* QuitButton;
+
+	UPROPERTY(meta = (BindWidget))
 		class UWidgetSwitcher* MenuSwitcher;
 
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* JoinMenu;
 
 	UPROPERTY(meta = (BindWidget))
-		class UEditableText* IPAddress;
+		class UPanelWidget* ServerList;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join_CancelButton;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Join_JoinButton;
+
+	UPROPERTY(meta = (BindWidget))
+		class UWidget* HostMenu;
+
+	UPROPERTY(meta = (BindWidget))
+		class UEditableText* ServerHostName;
+
+	UPROPERTY(meta = (BindWidget))
+		class UButton* Host_HostButton;
+
+	UPROPERTY(meta = (BindWidget))
+		class UButton* Host_CancelButton;
+
+	TOptional<uint32> SelectedIndex;
 
 	UFUNCTION()
 		void HostServer();
@@ -60,5 +92,11 @@ private:
 	UFUNCTION()
 		void OpenMainMenu();
 
-	IMenuInterface* MenuInterface;
+	UFUNCTION()
+		void OpenHostMenu();
+
+	UFUNCTION()
+		void QuitPressed();
+	
+	void UpdateChildren();
 };

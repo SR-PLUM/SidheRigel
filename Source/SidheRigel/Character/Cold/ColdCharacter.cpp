@@ -5,6 +5,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "SidheRigel/Character/Cold/Skill/ColdQProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
+#include "SidheRigel/Character/Cold/Skill/ColdEProjectile.h"
+#include "SidheRigel/Character/Cold/Skill/ColdEDamageField.h"
 #include "SidheRigel/Character/Cold/Skill/ColdR1Projectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdR2Projectile.h"
 #include "SidheRigel/Character/Cold/ColdAttackProjectile.h"
@@ -13,7 +15,7 @@
 AColdCharacter::AColdCharacter()
 {
 	skillState = E_SkillState::Null;
-	ultType = E_UltType::Ult2;
+	ultType = E_UltType::Ult1;
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> QProjectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdQProjectile"));
 	if (QProjectile.Object)
@@ -25,6 +27,18 @@ AColdCharacter::AColdCharacter()
 	if (WProjectile.Object)
 	{
 		WProjectileClass = (UClass*)WProjectile.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> EProjectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdEProjectile"));
+	if (EProjectile.Object)
+	{
+		EProjectileClass = (UClass*)EProjectile.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> EDamageField(TEXT("/Game/Heros/Cold/Skill/BP_ColdEDamageField"));
+	if (EDamageField.Object)
+	{
+		EDamageFieldClass = (UClass*)EDamageField.Object->GeneratedClass;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> R1Projectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdR1Projectile"));
@@ -183,6 +197,31 @@ void AColdCharacter::SkillThree()
 	skillState = E_Ready;
 }
 
+void AColdCharacter::EImplement(FHitResult HitResult)
+{
+	FVector MuzzleLocation = GetActorLocation() + FVector::UpVector * 50;
+	FRotator MuzzleRotation = GetActorRotation();
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		// Spawn the projectile at the muzzle.
+		AColdEProjectile* Projectile = World->SpawnActor<AColdEProjectile>(EProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+		if (Projectile)
+		{
+			Projectile->projectileOwner = this;
+			Projectile->Launch(MuzzleLocation, HitResult.Location);
+		}
+
+		Projectile->damageField = World->SpawnActor<AColdEDamageField>(EDamageFieldClass, HitResult.Location * FVector(1,1,0), MuzzleRotation, SpawnParams);
+		Projectile->damageField->projectileOwner = this;
+	}
+}
+
 void AColdCharacter::SkillFour()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Cold Ready R"));
@@ -302,7 +341,8 @@ void AColdCharacter::UseSkill(FHitResult HitResult)
 		break;
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use E"));
-		skillState = Null;
+		//skillState = Null;
+		EImplement(HitResult);
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use R"));

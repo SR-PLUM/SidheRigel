@@ -6,20 +6,51 @@
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableText.h"
+#include "Components/TextBlock.h"
 
-void UMainMenu::SetMenuInterface(IMenuInterface* menuInterface)
+#include "ServerRow.h"
+
+
+UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer)
 {
-	MenuInterface = menuInterface;
+	ConstructorHelpers::FClassFinder<UUserWidget> ServerRowBPClass(TEXT("/Game/UIBlueprints/WBP_ServerRow"));
+	if (ServerRowBPClass.Class == nullptr)
+		return;
+
+	ServerRowClass = ServerRowBPClass.Class;
 }
 
-void UMainMenu::Setup()
+void UMainMenu::SetServerList(TArray<FServerData> ServerNames)
 {
-	this->AddToViewport();
+	ServerList->ClearChildren();
+
+	uint32 i = 0;
+	for (const FServerData& ServerData : ServerNames)
+	{
+		if (ServerRowClass != nullptr)
+		{
+			UServerRow* Row = CreateWidget<UServerRow>(this, ServerRowClass);
+
+			if (Row != nullptr && ServerList != nullptr)
+			{
+				Row->ServerName->SetText(FText::FromString(ServerData.Name));
+				Row->HostUser->SetText(FText::FromString(ServerData.HostUsername));
+				FString FractionText = FString::Printf(TEXT("%d/%d"), ServerData.CurrentPlayer, ServerData.MaxPlayer);
+				Row->ConnectionFraction->SetText(FText::FromString(FractionText));
+				Row->Setup(this, i);
+				++i;
+
+				ServerList->AddChild(Row);
+			}
+		}
+	}
 }
 
-void UMainMenu::Teardown()
+void UMainMenu::SelectIndex(uint32 Index)
 {
-	this->RemoveFromViewport();
+	SelectedIndex = Index;
+
+	UpdateChildren();
 }
 
 bool UMainMenu::Initialize()
@@ -28,10 +59,19 @@ bool UMainMenu::Initialize()
 	if(!Success) return false;
 
 	if (!HostButton) return false;
-	HostButton->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
+	HostButton->OnClicked.AddDynamic(this, &UMainMenu::OpenHostMenu);
+
+	if (!Host_CancelButton) return false;
+	Host_CancelButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
+
+	if (!Host_HostButton) return false;
+	Host_HostButton->OnClicked.AddDynamic(this, &UMainMenu::HostServer);
 
 	if (!JoinButton) return false;
 	JoinButton->OnClicked.AddDynamic(this, &UMainMenu::OpenJoinMenu);
+
+	if (!QuitButton) return false;
+	QuitButton->OnClicked.AddDynamic(this, &UMainMenu::QuitPressed);
 	
 	if (!Join_CancelButton) return false;
 	Join_CancelButton->OnClicked.AddDynamic(this, &UMainMenu::OpenMainMenu);
@@ -46,18 +86,23 @@ void UMainMenu::HostServer()
 {
 	if (MenuInterface != nullptr)
 	{
-		MenuInterface->Host();
+		FString ServerName = ServerHostName->Text.ToString();
+
+		MenuInterface->Host(ServerName);
 	}
 }
 
 void UMainMenu::JoinServer()
 {
-	if (MenuInterface != nullptr)
+	if (SelectedIndex.IsSet() && MenuInterface != nullptr)
 	{
-		if (IPAddress == nullptr) return;
+		UE_LOG(LogTemp, Warning, TEXT("Selected index %d."), SelectedIndex.GetValue());
 
-		const FString& Address = IPAddress->GetText().ToString();
-		MenuInterface->Join(Address);
+		MenuInterface->Join(SelectedIndex.GetValue());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Selected index not set."));
 	}
 }
 
@@ -68,6 +113,10 @@ void UMainMenu::OpenJoinMenu()
 
 	MenuSwitcher->SetActiveWidget(JoinMenu);
 
+	if (MenuInterface != nullptr)
+	{
+		MenuInterface->RefreshServerList();
+	}
 }
 
 void UMainMenu::OpenMainMenu()
@@ -76,4 +125,34 @@ void UMainMenu::OpenMainMenu()
 	if (MainMenu == nullptr) return;
 
 	MenuSwitcher->SetActiveWidget(MainMenu);
+}
+
+void UMainMenu::OpenHostMenu()
+{
+	if (MenuSwitcher == nullptr) return;
+
+	MenuSwitcher->SetActiveWidget(HostMenu);
+}
+
+void UMainMenu::QuitPressed()
+{
+	UWorld* World = GetWorld();
+	if (World == nullptr) return;
+
+	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (PlayerController == nullptr)return;
+
+	PlayerController->ConsoleCommand("quit");
+}
+
+void UMainMenu::UpdateChildren()
+{
+	for (int32 i = 0; i < ServerList->GetChildrenCount(); i++)
+	{
+		auto Row = Cast<UServerRow>(ServerList->GetChildAt(i));
+		if (Row != nullptr)
+		{
+			Row->Selected = (SelectedIndex.IsSet() && SelectedIndex.GetValue() == i);
+		}
+	}
 }
