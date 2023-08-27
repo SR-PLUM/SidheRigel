@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "FairyWingQCollider.generated.h"
+#include "FairyWingRCollider.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API AFairyWingQCollider : public AActor
+class SIDHERIGEL_API AFairyWingRCollider : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AFairyWingQCollider();
+	AFairyWingRCollider();
 
 protected:
 	// Called when the game starts or when spawned
@@ -25,7 +25,7 @@ public:
 	UPROPERTY()
 		AActor* Target;
 	UPROPERTY()
-		AActor* colliderOwner; 
+		AActor* colliderOwner;
 	UPROPERTY(EditAnywhere)
 		class USphereComponent* CollisionComponent;
 
