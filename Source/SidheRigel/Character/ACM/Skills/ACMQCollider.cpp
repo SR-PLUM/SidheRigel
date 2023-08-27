@@ -64,7 +64,7 @@ void AACMQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, 
 			ASidheRigelCharacter* characterTarget = Cast<ASidheRigelCharacter>(OtherActor);
 			if (characterTarget)
 			{
-				//characterTarget->AddDecreseDefencePercent("DebuffName", 0.1f, 1f);
+				characterTarget->AddDecreseDefencePercent("ACMQSkill", 0.15f, 1.5f);
 			}
 		}
 
