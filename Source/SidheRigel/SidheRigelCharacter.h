@@ -102,7 +102,8 @@ protected:	//Stat
 		TMap<FString, int32> protectPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 회복 및 보호막 효과 딕셔너리
 	UPROPERTY()
 		TMap<FString, int32> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
-
+	UPROPERTY()
+		TMap<FString, float> decreseDefencePoint;//방깍
 public:		//Getter, Setter
 	void SetTarget(AActor* target);
 	void SetLevel(int32 _level);
@@ -119,6 +120,10 @@ public:		//Getter, Setter
 	float GetGenerateHealthPoint();
 	int32 GetLifeSteal();
 	int32 GetProtectPower();
+	float GetDefencePoint();
+
+	void AddDecreseDefencePercent(FString name, float value, float time);
+	float GetDecreseDefence();
 
 	virtual void InitProperty();
 
