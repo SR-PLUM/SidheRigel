@@ -56,7 +56,15 @@ private:
 
 	E_SkillState LastSkill = E_SkillState::Null;
 
-	bool UpgradeNextSkill= false;
+	//Upgrading Passive
+	int32 SkillCount= 0;
+	bool UpgradeNextSkill = false;
+	float CountDuration = 8.f;
+	FTimerHandle UpgradingPassiveTimer;
+
+protected:
+	void AddSkillCount();
+	void InitializeSkillCount();
 
 protected: //Skill Collider
 	UPROPERTY(EditDefaultsOnly)

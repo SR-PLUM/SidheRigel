@@ -119,13 +119,15 @@ void AACMCharacter::QSkill(FHitResult HitResult)
 			UE_LOG(LogTemp, Warning, TEXT("ACM QSkill Collider :: %s"), *(Collider->GetActorLabel()));
 			if (Collider)
 			{
+				AddSkillCount();
 				// Set the projectile's initial trajectory.
 				Collider->ColliderOwner = this;
 
 				Collider->IsUpgraded = UpgradeNextSkill;
 				if (UpgradeNextSkill)
 				{
-					UpgradeNextSkill = false;
+					UE_LOG(LogTemp, Warning, TEXT("Skill Upgraded"));
+					InitializeSkillCount();
 				}
 
 				FTimerHandle QColliderDestroyTimer;
@@ -179,13 +181,15 @@ void AACMCharacter::ESkill(FHitResult HitResult)
 			UE_LOG(LogTemp, Warning, TEXT("ACM ESkill Collider :: %s"), *(Collider->GetActorLabel()));
 			if (Collider)
 			{
+				AddSkillCount();
 				// Set the projectile's initial trajectory.
 				Collider->ColliderOwner = this;
 
 				Collider->IsUpgraded = UpgradeNextSkill;
 				if (UpgradeNextSkill)
 				{
-					UpgradeNextSkill = false;
+					UE_LOG(LogTemp, Warning, TEXT("Skill Upgraded"));
+					InitializeSkillCount();
 				}
 
 				FTimerHandle EColliderDestroyTimer;
@@ -287,4 +291,37 @@ void AACMCharacter::UseSkill(FHitResult HitResult)
 	default:
 		break;
 	}
+}
+
+void AACMCharacter::AddSkillCount()
+{
+	SkillCount++;
+
+	if (SkillCount == 1)
+	{
+		GetWorld()->GetTimerManager().SetTimer(
+			UpgradingPassiveTimer,
+			FTimerDelegate::CreateLambda([&]() {
+
+				InitializeSkillCount();
+				UE_LOG(LogTemp, Warning, TEXT("SkillCount Initialized"));
+				}),
+			CountDuration,
+			false
+			);
+	}
+	else if (SkillCount >=3)
+	{
+		UpgradeNextSkill = true;
+	}
+}
+
+void AACMCharacter::InitializeSkillCount()
+{
+	SkillCount = 0;
+	UpgradeNextSkill = false;
+
+	GetWorld()->GetTimerManager().ClearTimer(UpgradingPassiveTimer);
+	UE_LOG(LogTemp, Warning, TEXT("ClearTimer"));
+
 }
