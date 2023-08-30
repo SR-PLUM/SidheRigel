@@ -6,6 +6,7 @@
 
 //Skill Collider
 #include "Skills/ACMQCollider.h"
+#include "Skills/ACMECollider.h"
 
 AACMCharacter::AACMCharacter()
 {
@@ -45,6 +46,12 @@ void AACMCharacter::InitColliderPath()
 	if (QCollider.Object)
 	{
 		ACMQCollider = (UClass*)QCollider.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ECollider(TEXT("/Game/Heros/ACM/Skills/BP_ACMECollider"));
+	if (ECollider.Object)
+	{
+		ACMECollider = (UClass*)ECollider.Object->GeneratedClass;
 	}
 }
 
@@ -121,6 +128,66 @@ void AACMCharacter::QSkill(FHitResult HitResult)
 					UpgradeNextSkill = false;
 				}
 
+				FTimerHandle QColliderDestroyTimer;
+				GetWorldTimerManager().SetTimer(QColliderDestroyTimer,
+					FTimerDelegate::CreateLambda([=]()
+						{
+							Collider->Destroy();
+						}
+
+				), 1.0f, false);
+
+				Collider->FinishSpawning(SpawnTransform);
+
+				UE_LOG(LogTemp, Warning, TEXT("ACM QSkill Spawned"));
+
+				Collider->MeshComponent->SetGenerateOverlapEvents(false);
+			}
+		}
+	}
+}
+
+void AACMCharacter::SkillThree()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ACM Ready E"));
+
+	skillState = E_Ready;
+}
+
+void AACMCharacter::ESkill(FHitResult HitResult)
+{
+	if (ACMECollider)
+	{
+		FVector PawnToTarget = (HitResult.Location - GetActorLocation()).GetSafeNormal();
+		PawnToTarget *= FVector(1, 1, 0);
+		FVector MuzzleLocation = (GetActorLocation() + PawnToTarget) * FVector(1, 1, 0);
+		FRotator MuzzleRotation = PawnToTarget.Rotation();
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			FTransform SpawnTransform;
+			SpawnTransform.SetLocation(MuzzleLocation);
+			SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+			SpawnParams.Owner = this;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			//SpawnParams.Instigator = GetInstigator();
+
+			// Spawn the projectile at the muzzle.
+			AACMECollider* Collider = World->SpawnActorDeferred<AACMECollider>(ACMECollider, SpawnTransform);
+
+			UE_LOG(LogTemp, Warning, TEXT("ACM ESkill Collider :: %s"), *(Collider->GetActorLabel()));
+			if (Collider)
+			{
+				// Set the projectile's initial trajectory.
+				Collider->ColliderOwner = this;
+
+				Collider->IsUpgraded = UpgradeNextSkill;
+				if (UpgradeNextSkill)
+				{
+					UpgradeNextSkill = false;
+				}
+
 				FTimerHandle EColliderDestroyTimer;
 				GetWorldTimerManager().SetTimer(EColliderDestroyTimer,
 					FTimerDelegate::CreateLambda([=]()
@@ -132,7 +199,7 @@ void AACMCharacter::QSkill(FHitResult HitResult)
 
 				Collider->FinishSpawning(SpawnTransform);
 
-				UE_LOG(LogTemp, Warning, TEXT("ACM QSkill Spawned"));
+				UE_LOG(LogTemp, Warning, TEXT("ACM ESkill Spawned"));
 
 				Collider->MeshComponent->SetGenerateOverlapEvents(false);
 			}
@@ -165,6 +232,7 @@ void AACMCharacter::UseSkill(FHitResult HitResult)
 		break;
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("ACM use E"));
+		ESkill(HitResult);
 		skillState = Null;
 		break;
 	case R_Ready:

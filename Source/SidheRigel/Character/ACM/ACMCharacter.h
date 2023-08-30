@@ -41,6 +41,8 @@ protected:
 protected: //Skills
 	virtual void SkillOne();
 	void QSkill(FHitResult HitResult);
+	virtual void SkillThree();
+	void ESkill(FHitResult HitResult);
 
 
 	virtual void SkillCancel();
@@ -54,4 +56,7 @@ private:
 protected: //Skill Collider
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AACMQCollider> ACMQCollider;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AACMECollider> ACMECollider;
 };
