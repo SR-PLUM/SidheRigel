@@ -60,13 +60,11 @@ void AACMECollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, 
 		if (CCableTarget && (OtherActor != ColliderOwner))
 		{
 			CCableTarget->Stun(StunTime);
+			if (IsUpgraded)
+			{
+				CCableTarget->Airborne(AirBoneTime);
+			}
 		}
-
-		if (IsUpgraded)
-		{
-			CCableTarget->Airborne(AirBoneTime);
-		}
-
 	}
 }
 
