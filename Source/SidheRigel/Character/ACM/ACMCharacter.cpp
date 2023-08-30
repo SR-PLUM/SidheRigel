@@ -207,6 +207,47 @@ void AACMCharacter::ESkill(FHitResult HitResult)
 	}
 }
 
+void AACMCharacter::SkillFour()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ACM Ready R"));
+
+	skillState = R_Ready;
+}
+
+void AACMCharacter::RSkill(FHitResult HitResult)
+{
+	//R1Skill
+	R1Skill(HitResult);
+
+	//R2Skill TODO
+}
+
+void AACMCharacter::R1Skill(FHitResult HitResult)
+{
+	switch (LastSkill)
+	{
+	case Null:
+		UE_LOG(LogTemp, Warning, TEXT("ACM LastSkill is Null"));
+		break;
+	case Q_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: Q"));
+		QSkill(HitResult);
+		skillState = Null;
+		break;
+	case W_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: W"));
+		skillState = Null;
+		break;
+	case E_Ready:
+		UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: E"));
+		ESkill(HitResult);
+		skillState = Null;
+		break;
+	default:
+		break;
+	}
+}
+
 void AACMCharacter::SkillCancel()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ACM SkillCancel"));
@@ -225,18 +266,22 @@ void AACMCharacter::UseSkill(FHitResult HitResult)
 		UE_LOG(LogTemp, Warning, TEXT("ACM use Q"));
 		QSkill(HitResult);
 		skillState = Null;
+		LastSkill = Q_Ready;
 		break;
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("ACM use W"));
 		skillState = Null;
+		LastSkill = W_Ready;
 		break;
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("ACM use E"));
 		ESkill(HitResult);
 		skillState = Null;
+		LastSkill = E_Ready;
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("ACM use R"));
+		RSkill(HitResult);
 		skillState = Null;
 		break;
 	default:

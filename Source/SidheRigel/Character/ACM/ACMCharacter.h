@@ -43,6 +43,9 @@ protected: //Skills
 	void QSkill(FHitResult HitResult);
 	virtual void SkillThree();
 	void ESkill(FHitResult HitResult);
+	virtual void SkillFour();
+	void RSkill(FHitResult HitResult);
+	void R1Skill(FHitResult HitResult);
 
 
 	virtual void SkillCancel();
@@ -50,6 +53,8 @@ protected: //Skills
 
 private:
 	E_SkillState skillState = E_SkillState::Null;
+
+	E_SkillState LastSkill = E_SkillState::Null;
 
 	bool UpgradeNextSkill= false;
 
