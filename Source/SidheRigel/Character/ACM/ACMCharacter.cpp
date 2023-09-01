@@ -20,6 +20,57 @@ void AACMCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AACMCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (QCoolDownRemain > 0.f)
+	{
+		QCoolDownRemain -= DeltaTime;
+		if (QCoolDownRemain < 0.f)
+		{
+			QCoolDownRemain = 0.f;
+		}
+	}
+
+	if (WCoolDownRemain > 0.f)
+	{
+		WCoolDownRemain -= DeltaTime;
+		if (WCoolDownRemain < 0.f)
+		{
+			WCoolDownRemain = 0.f;
+		}
+	}
+
+	if (ECoolDownRemain > 0.f)
+	{
+		ECoolDownRemain -= DeltaTime;
+		if (ECoolDownRemain < 0.f)
+		{
+			ECoolDownRemain = 0.f;
+		}
+	}
+
+	if (R1CoolDownRemain > 0.f)
+	{
+		R1CoolDownRemain -= DeltaTime;
+		if (R1CoolDownRemain < 0.f)
+		{
+			R1CoolDownRemain = 0.f;
+		}
+	}
+
+	if (R2CoolDownRemain > 0.f)
+	{
+		R2CoolDownRemain -= DeltaTime;
+		if (R2CoolDownRemain < 0.f)
+		{
+			R2CoolDownRemain = 0.f;
+		}
+	}
+
+}
+
 void AACMCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -96,11 +147,24 @@ void AACMCharacter::SkillOne()
 
 void AACMCharacter::QSkill(FHitResult HitResult)
 {
+	if (QCoolDownRemain > 0.f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ACM Q is CoolDowning"));
+	}
+	else
+	{
+		QImplement(HitResult);
+		QCoolDownRemain = QCoolDown;
+	}
+}
+
+void AACMCharacter::QImplement(FHitResult HitResult)
+{
 	if (ACMQCollider)
 	{
 		FVector PawnToTarget = (HitResult.Location - GetActorLocation()).GetSafeNormal();
 		PawnToTarget *= FVector(75, 75, 0);
-		FVector MuzzleLocation = (GetActorLocation() + PawnToTarget) * FVector(1,1,0);
+		FVector MuzzleLocation = (GetActorLocation() + PawnToTarget) * FVector(1, 1, 0);
 		FRotator MuzzleRotation = PawnToTarget.Rotation();
 		UWorld* World = GetWorld();
 		if (World)
@@ -157,6 +221,19 @@ void AACMCharacter::SkillThree()
 }
 
 void AACMCharacter::ESkill(FHitResult HitResult)
+{
+	if (ECoolDownRemain > 0.f)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ACM E is CoolDowning"));
+	}
+	else
+	{
+		EImplement(HitResult);
+		ECoolDownRemain = ECoolDown;
+	}
+}
+
+void AACMCharacter::EImplement(FHitResult HitResult)
 {
 	if (ACMECollider)
 	{
@@ -228,27 +305,37 @@ void AACMCharacter::RSkill(FHitResult HitResult)
 
 void AACMCharacter::R1Skill(FHitResult HitResult)
 {
-	switch (LastSkill)
+	if (R1CoolDownRemain > 0.f)
 	{
-	case Null:
-		UE_LOG(LogTemp, Warning, TEXT("ACM LastSkill is Null"));
-		break;
-	case Q_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: Q"));
-		QSkill(HitResult);
-		skillState = Null;
-		break;
-	case W_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: W"));
-		skillState = Null;
-		break;
-	case E_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: E"));
-		ESkill(HitResult);
-		skillState = Null;
-		break;
-	default:
-		break;
+		UE_LOG(LogTemp, Warning, TEXT("ACM R1 is CoolDowning"));
+	}
+	else
+	{
+		switch (LastSkill)
+		{
+		case Null:
+			UE_LOG(LogTemp, Warning, TEXT("ACM LastSkill is Null"));
+			break;
+		case Q_Ready:
+			UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: Q"));
+			QImplement(HitResult);
+			skillState = Null;
+			R1CoolDownRemain = R1CoolDown;
+			break;
+		case W_Ready:
+			UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: W"));
+			skillState = Null;
+			R1CoolDownRemain = R1CoolDown;
+			break;
+		case E_Ready:
+			UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: E"));
+			EImplement(HitResult);
+			skillState = Null;
+			R1CoolDownRemain = R1CoolDown;
+			break;
+		default:
+			break;
+		}
 	}
 }
 
