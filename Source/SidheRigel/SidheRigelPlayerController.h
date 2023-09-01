@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
+
+#include "State/StateMachine.h"
+
 #include "SidheRigelPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -26,6 +29,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UNiagaraSystem* FXCursor;
 
+	StateMachine* stateMachine;
+
+	FHitResult GetHitResult();
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
@@ -36,7 +43,6 @@ protected:
 	// End PlayerController interface
 
 	/** Input handlers for SetDestination action. */
-	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
 
 	void ClickedRightMouseButton();
@@ -45,8 +51,6 @@ protected:
 private:
 	bool bInputPressed; // Input is bring pressed
 	float FollowTime; // For how long it has been pressed
-
-	bool bAttacking;
 };
 
 

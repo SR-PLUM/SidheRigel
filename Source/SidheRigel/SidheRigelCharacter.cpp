@@ -2,7 +2,6 @@
 
 #include "SidheRigelCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "State/Attack/attackStateMachine.h"
 #include "Dummy/DummyProjectile.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -56,19 +55,12 @@ void ASidheRigelCharacter::BeginPlay()
 	Super::BeginPlay();
 	InitProperty();
 
-	attackStateMachine = new AttackStateMachine(this);
-
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-
-	if (target)
-	{
-		attackStateMachine->Run();
-	}
 
 	if (IsMoveVectorTrue)
 	{
@@ -166,7 +158,7 @@ void ASidheRigelCharacter::SetTarget(AActor* _target)
 float ASidheRigelCharacter::GetRange()
 {
 	float res = 0;
-	for (auto value : range)
+	for (auto& value : range)
 	{
 		res += value.Value;
 	}
@@ -177,7 +169,7 @@ float ASidheRigelCharacter::GetRange()
 float ASidheRigelCharacter::GetAttackDamage()
 {
 	float res = 0;
-	for (auto value : attackDamage)
+	for (auto& value : attackDamage)
 	{
 		res += value.Value;
 	}
@@ -188,7 +180,7 @@ float ASidheRigelCharacter::GetAttackDamage()
 int32 ASidheRigelCharacter::GetCriticalRate()
 {
 	int32 res = 0;
-	for (auto value : criticalRate)
+	for (auto& value : criticalRate)
 	{
 		res += value.Value;
 	}
@@ -203,7 +195,7 @@ int32 ASidheRigelCharacter::GetCriticalRate()
 int32 ASidheRigelCharacter::GetCriticalDamage()
 {
 	int32 res = 0;
-	for (auto value : criticalDamage)
+	for (auto& value : criticalDamage)
 	{
 		res += value.Value;
 	}
@@ -214,7 +206,8 @@ int32 ASidheRigelCharacter::GetCriticalDamage()
 float ASidheRigelCharacter::GetAttackSpeed()
 {
 	float res = 0;
-	for (auto value : attackSpeed)
+
+	for (auto& value : attackSpeed)
 	{
 		res += value.Value;
 	}
@@ -229,7 +222,7 @@ float ASidheRigelCharacter::GetAttackSpeed()
 float ASidheRigelCharacter::GetMaxHP()
 {
 	float res = 0;
-	for (auto value : MaxHP)
+	for (auto& value : MaxHP)
 	{
 		res += value.Value;
 	}
@@ -240,7 +233,7 @@ float ASidheRigelCharacter::GetMaxHP()
 float ASidheRigelCharacter::GetGenerateHealthPoint()
 {
 	float res = 0;
-	for (auto value : generateHealthPoint)
+	for (auto& value : generateHealthPoint)
 	{
 		res += value.Value;
 	}
@@ -251,7 +244,7 @@ float ASidheRigelCharacter::GetGenerateHealthPoint()
 int32 ASidheRigelCharacter::GetLifeSteal()
 {
 	int32 res = 0;
-	for (auto value : lifeSteal)
+	for (auto& value : lifeSteal)
 	{
 		res += value.Value;
 	}
@@ -262,7 +255,7 @@ int32 ASidheRigelCharacter::GetLifeSteal()
 int32 ASidheRigelCharacter::GetProtectPower()
 {
 	int32 res = 0;
-	for (auto value : protectPower)
+	for (auto& value : protectPower)
 	{
 		res += value.Value;
 	}
@@ -273,7 +266,7 @@ int32 ASidheRigelCharacter::GetProtectPower()
 float ASidheRigelCharacter::GetDefencePoint()
 {
 	float res = 0.f;
-	for (auto value : defencePoint)
+	for (auto& value : defencePoint)
 	{
 		res += value.Value;
 	}
@@ -304,7 +297,7 @@ void ASidheRigelCharacter::AddDecreseDefencePercent(FString name, float value, f
 float ASidheRigelCharacter::GetDecreseDefence()
 {
 	float res = 0.f;
-	for (auto value : decreseDefencePoint)
+	for (auto& value : decreseDefencePoint)
 	{
 		res += value.Value;
 	}
@@ -337,7 +330,7 @@ void ASidheRigelCharacter::WaitAttackDelay()
 
 void ASidheRigelCharacter::ChangeAttackState()
 {
-	attackStateMachine->ChangeState(attackStateMachine->moveToAttackState);
+	
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()
