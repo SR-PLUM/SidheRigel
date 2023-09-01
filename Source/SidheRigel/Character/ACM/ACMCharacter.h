@@ -16,11 +16,12 @@ class SIDHERIGEL_API AACMCharacter : public ASidheRigelCharacter
 	GENERATED_BODY()
 
 private :
-	const int32 QCoolDown = 5;
-	const int32 WCoolDown = 12;
-	const int32 ECoolDown = 4;
-	const int32 R1CoolDown = 20;
-	const int32 R2CoolDown = 65;
+	int32 QCoolDown = 5;
+	int32 WCoolDown = 12;
+	int32 ECoolDown = 4;
+	int32 R1CoolDown = 20;
+	int32 R2CoolDown = 65;
+	float ReduceCoolDownAmount = 0.8f;
 
 public:
 	// Sets default values for this character's properties
@@ -83,6 +84,8 @@ private:
 protected:
 	void AddSkillCount();
 	void InitializeSkillCount();
+
+	void ReduceCoolDownRemain();
 
 protected: //Skill Collider
 	UPROPERTY(EditDefaultsOnly)

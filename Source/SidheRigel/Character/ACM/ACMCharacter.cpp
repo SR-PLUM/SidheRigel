@@ -31,6 +31,7 @@ void AACMCharacter::Tick(float DeltaTime)
 		{
 			QCoolDownRemain = 0.f;
 		}
+		UE_LOG(LogTemp, Warning, TEXT("QCoolDownRemain :: %f"), QCoolDownRemain);
 	}
 
 	if (WCoolDownRemain > 0.f)
@@ -125,6 +126,7 @@ void AACMCharacter::SpawnAttackProjectile()
 			// Set the projectile's initial trajectory.
 			InitProjectileProperty(Projectile);
 
+			ReduceCoolDownRemain();
 		}
 	}
 }
@@ -411,4 +413,21 @@ void AACMCharacter::InitializeSkillCount()
 	GetWorld()->GetTimerManager().ClearTimer(UpgradingPassiveTimer);
 	UE_LOG(LogTemp, Warning, TEXT("ClearTimer"));
 
+}
+
+void AACMCharacter::ReduceCoolDownRemain()
+{
+	QCoolDownRemain -= ReduceCoolDownAmount;
+	WCoolDownRemain -= ReduceCoolDownAmount;
+	ECoolDownRemain -= ReduceCoolDownAmount;
+	R1CoolDownRemain -= ReduceCoolDownAmount;
+	R2CoolDownRemain -= ReduceCoolDownAmount;
+
+	if (QCoolDownRemain < 0.f) QCoolDownRemain = 0.f;
+	if (WCoolDownRemain < 0.f) WCoolDownRemain = 0.f;
+	if (ECoolDownRemain < 0.f) ECoolDownRemain = 0.f;
+	if (R1CoolDownRemain < 0.f) R1CoolDownRemain = 0.f;
+	if (R2CoolDownRemain < 0.f) R2CoolDownRemain = 0.f;
+
+	UE_LOG(LogTemp, Warning, TEXT("QCoolDownRemain :: %f"), QCoolDownRemain);
 }
