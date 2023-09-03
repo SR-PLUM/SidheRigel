@@ -66,8 +66,6 @@ void MoveState::Update(float DeltaTime)
 
 void MoveState::OnRightClick()
 {
-	bInputPressed = false;
-
 	stateMachine->Idle->OnRightClick();
 }
 
@@ -77,10 +75,12 @@ void MoveState::OnRightRelease()
 	// Player is no longer pressing the input
 	bInputPressed = false;
 
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
+
 	// If it was a short press
 	if (FollowTime <= ShortPressThreshold)
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
+		
 	}
 }
 
@@ -88,8 +88,13 @@ void MoveState::OnLeftClick()
 {
 }
 
-void MoveState::OnKeyboard()
+void MoveState::OnKeyboard(E_SkillState SkillState)
 {
+	//Check Cooldown
+	//if true
+	stateMachine->currentSkill = SkillState;
+
+	stateMachine->ChangeState(stateMachine->SkillReady);
 }
 
 void MoveState::OnEnd()

@@ -47,6 +47,11 @@ void ASidheRigelPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("RIghtClick", IE_Pressed, this, &ASidheRigelPlayerController::ClickedRightMouseButton);
 	InputComponent->BindAction("LeftClick", IE_Pressed, this, &ASidheRigelPlayerController::ClickedLeftMouseButton);
+
+	InputComponent->BindAction("QPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedQButton);
+	InputComponent->BindAction("WPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedWButton);
+	InputComponent->BindAction("EPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedEButton);
+	InputComponent->BindAction("RPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedRButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
@@ -82,4 +87,24 @@ void ASidheRigelPlayerController::ClickedLeftMouseButton()
 	{
 		MyPawn->UseSkill(HitResult);
 	}*/
+}
+
+void ASidheRigelPlayerController::PressedQButton()
+{
+	stateMachine->OnKeyboard(E_SkillState::Q_Ready);
+}
+
+void ASidheRigelPlayerController::PressedWButton()
+{
+	stateMachine->OnKeyboard(E_SkillState::W_Ready);
+}
+
+void ASidheRigelPlayerController::PressedEButton()
+{
+	stateMachine->OnKeyboard(E_SkillState::E_Ready);
+}
+
+void ASidheRigelPlayerController::PressedRButton()
+{
+	stateMachine->OnKeyboard(E_SkillState::R_Ready);
 }

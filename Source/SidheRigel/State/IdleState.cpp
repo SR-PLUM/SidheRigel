@@ -64,8 +64,13 @@ void IdleState::OnLeftClick()
 {
 }
 
-void IdleState::OnKeyboard()
+void IdleState::OnKeyboard(E_SkillState SkillState)
 {
+	//Check Cooldown
+	//if true
+	stateMachine->currentSkill = SkillState;
+
+	stateMachine->ChangeState(stateMachine->SkillReady);
 }
 
 void IdleState::OnEnd()

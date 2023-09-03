@@ -9,14 +9,11 @@
 /**
  * 
  */
-class SIDHERIGEL_API AttackWaitState : public State
+class SIDHERIGEL_API UseSkillState : public State
 {
 public:
-	AttackWaitState(StateMachine* StateMachine);
-	~AttackWaitState();
-
-private:
-	class ASidheRigelCharacter* myCharacter;
+	UseSkillState(StateMachine* StateMachine);
+	~UseSkillState();
 
 public:
 	void OnBegin() override;

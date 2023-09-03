@@ -83,30 +83,30 @@ void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 {
 	check(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("SkillOne", IE_Pressed, this, &ASidheRigelCharacter::SkillOne);
+	/*PlayerInputComponent->BindAction("SkillOne", IE_Pressed, this, &ASidheRigelCharacter::SkillOne);
 	PlayerInputComponent->BindAction("SkillTwo", IE_Pressed, this, &ASidheRigelCharacter::SkillTwo);
 	PlayerInputComponent->BindAction("SkillThree", IE_Pressed, this, &ASidheRigelCharacter::SkillThree);
-	PlayerInputComponent->BindAction("SkillFour", IE_Pressed, this, &ASidheRigelCharacter::SkillFour);
+	PlayerInputComponent->BindAction("SkillFour", IE_Pressed, this, &ASidheRigelCharacter::SkillFour);*/
 }
 
 void ASidheRigelCharacter::SkillOne()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Q"));
+	UE_LOG(LogTemp, Warning, TEXT("ASidheRigelCharacter Q"));
 }
 
 void ASidheRigelCharacter::SkillTwo()
 {
-	UE_LOG(LogTemp, Warning, TEXT("W"));
+	UE_LOG(LogTemp, Warning, TEXT("ASidheRigelCharacter W"));
 }
 
 void ASidheRigelCharacter::SkillThree()
 {
-	UE_LOG(LogTemp, Warning, TEXT("E"));
+	UE_LOG(LogTemp, Warning, TEXT("ASidheRigelCharacter E"));
 }
 
 void ASidheRigelCharacter::SkillFour()
 {
-	UE_LOG(LogTemp, Warning, TEXT("R"));
+	UE_LOG(LogTemp, Warning, TEXT("ASidheRigelCharacter R"));
 }
 
 void ASidheRigelCharacter::SkillCancel()

@@ -9,6 +9,8 @@
 #include "MoveState.h"
 #include "AttackWaitState.h"
 #include "AttackState.h"
+#include "SkillReadyState.h"
+#include "UseSkillState.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
 StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
@@ -18,6 +20,8 @@ StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 	Move = new MoveState(this);
 	AttackWait = new AttackWaitState(this);
 	Attack = new AttackState(this);
+	SkillReady = new SkillReadyState(this);
+	UseSkill = new UseSkillState(this);
 
 	currentState = Idle;
 
@@ -64,7 +68,7 @@ void StateMachine::OnLeftClick()
 	currentState->OnLeftClick();
 }
 
-void StateMachine::OnKeyboard()
+void StateMachine::OnKeyboard(E_SkillState SkillState)
 {
-	currentState->OnKeyboard();
+	currentState->OnKeyboard(SkillState);
 }

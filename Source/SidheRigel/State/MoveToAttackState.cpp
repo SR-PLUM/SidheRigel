@@ -43,6 +43,11 @@ void MoveToAttackState::Update(float DeltaTime)
 				UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->target->GetActorLocation());
 			}
 		}
+
+		if (stateMachine->bAttackWithSkillReady)
+		{
+			//Show Skill Range
+		}
 	}
 }
 
@@ -50,6 +55,9 @@ void MoveToAttackState::OnRightClick()
 {
 	if (stateMachine)
 	{
+		stateMachine->bAttackWithSkillReady = false;
+		stateMachine->currentSkill = E_SkillState::Null;
+
 		stateMachine->Idle->OnRightClick();
 	}
 }
@@ -60,10 +68,21 @@ void MoveToAttackState::OnRightRelease()
 
 void MoveToAttackState::OnLeftClick()
 {
+	if (stateMachine->bAttackWithSkillReady)
+	{
+		stateMachine->bAttackWithSkillReady = false;
+		stateMachine->ChangeState(stateMachine->UseSkill);
+	}
 }
 
-void MoveToAttackState::OnKeyboard()
+void MoveToAttackState::OnKeyboard(E_SkillState SkillState)
 {
+	//Check Cooldown
+	if (true)
+	{
+		stateMachine->bAttackWithSkillReady = true;
+		stateMachine->currentSkill = SkillState;
+	}
 }
 
 void MoveToAttackState::OnEnd()

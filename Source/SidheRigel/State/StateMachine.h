@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 
 #include "../SidheRigelPlayerController.h"
+#include "../Enum/E_SkillState.h"
 
 
 /**
@@ -25,6 +26,8 @@ public:
 	class State* Move;
 	class State* AttackWait;
 	class State* Attack;
+	class State* SkillReady;
+	class State* UseSkill;
 
 public:
 	ASidheRigelPlayerController* playerController;
@@ -37,6 +40,14 @@ public:
 	//Delay between cast to attack
 	float frontDelay = 0;
 
+	//Delay During use Skill
+	float SkillDelay = 0;
+
+	bool bAttackWithSkillReady = false;
+
+	//casting keyboard
+	E_SkillState currentSkill = E_SkillState::Null;
+
 	void ChangeState(State* NextState);
 
 public:
@@ -44,5 +55,5 @@ public:
 	void OnRightClick();
 	void OnRightRelease();
 	void OnLeftClick();
-	void OnKeyboard();
+	void OnKeyboard(E_SkillState SkillState);
 };

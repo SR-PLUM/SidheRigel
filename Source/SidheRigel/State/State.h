@@ -22,6 +22,6 @@ public:
 	virtual void OnRightClick() = 0;
 	virtual void OnRightRelease() = 0;
 	virtual void OnLeftClick() = 0;
-	virtual void OnKeyboard() = 0;
+	virtual void OnKeyboard(E_SkillState SkillState) = 0;
 	virtual void OnEnd() = 0;
 };

@@ -41,6 +41,10 @@ void AttackState::Update(float DeltaTime)
 
 void AttackState::OnRightClick()
 {
+	stateMachine->bAttackWithSkillReady = false;
+	stateMachine->currentSkill = E_SkillState::Null;
+
+	stateMachine->Idle->OnRightClick();
 }
 
 void AttackState::OnRightRelease()
@@ -49,10 +53,21 @@ void AttackState::OnRightRelease()
 
 void AttackState::OnLeftClick()
 {
+	if (stateMachine->bAttackWithSkillReady)
+	{
+		stateMachine->bAttackWithSkillReady = false;
+		stateMachine->ChangeState(stateMachine->UseSkill);
+	}
 }
 
-void AttackState::OnKeyboard()
+void AttackState::OnKeyboard(E_SkillState SkillState)
 {
+	//Check Cooldown
+	if (true)
+	{
+		stateMachine->bAttackWithSkillReady = true;
+		stateMachine->currentSkill = SkillState;
+	}
 }
 
 void AttackState::OnEnd()

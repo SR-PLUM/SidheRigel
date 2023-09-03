@@ -24,6 +24,6 @@ public:
 	void OnRightClick() override;
 	void OnRightRelease() override;
 	void OnLeftClick() override;
-	void OnKeyboard() override;
+	void OnKeyboard(E_SkillState SkillState) override;
 	void OnEnd() override;
 };

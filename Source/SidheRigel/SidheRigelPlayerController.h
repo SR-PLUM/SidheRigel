@@ -48,6 +48,10 @@ protected:
 	void ClickedRightMouseButton();
 	void ClickedLeftMouseButton();
 
+	void PressedQButton();
+	void PressedWButton();
+	void PressedEButton();
+	void PressedRButton();
 private:
 	bool bInputPressed; // Input is bring pressed
 	float FollowTime; // For how long it has been pressed

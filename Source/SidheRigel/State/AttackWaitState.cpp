@@ -38,11 +38,19 @@ void AttackWaitState::Update(float DeltaTime)
 				stateMachine->ChangeState(stateMachine->MoveToAttack);
 			}
 		}
+
+		if (stateMachine->bAttackWithSkillReady)
+		{
+			//Show Skill Range
+		}
 	}
 }
 
 void AttackWaitState::OnRightClick()
 {
+	stateMachine->bAttackWithSkillReady = false;
+	stateMachine->currentSkill = E_SkillState::Null;
+
 	stateMachine->Idle->OnRightClick();
 }
 
@@ -52,10 +60,21 @@ void AttackWaitState::OnRightRelease()
 
 void AttackWaitState::OnLeftClick()
 {
+	if (stateMachine->bAttackWithSkillReady)
+	{
+		stateMachine->bAttackWithSkillReady = false;
+		stateMachine->ChangeState(stateMachine->UseSkill);
+	}
 }
 
-void AttackWaitState::OnKeyboard()
+void AttackWaitState::OnKeyboard(E_SkillState SkillState)
 {
+	//Check Cooldown
+	if (true)
+	{
+		stateMachine->bAttackWithSkillReady = true;
+		stateMachine->currentSkill = SkillState;
+	}
 }
 
 void AttackWaitState::OnEnd()
