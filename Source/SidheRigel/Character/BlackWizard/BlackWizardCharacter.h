@@ -47,5 +47,9 @@ private:
 
 protected:	//Skill Projectile
 	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ABlackWizardQCollider> QColliderClass;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ABlackWizardECollider> EColliderClass;
+	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class ABlackWizardRCollider> RColliderClass;
 };
