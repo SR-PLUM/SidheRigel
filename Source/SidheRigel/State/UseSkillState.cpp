@@ -19,15 +19,24 @@ void UseSkillState::OnBegin()
 	UE_LOG(LogTemp, Warning, TEXT("USE SKILL BEGIN"));
 	stateMachine->playerController->StopMovement();
 
-	//TODO : Change Function
-	float GetDelay = 1;
-	stateMachine->SkillDelay = GetDelay;
-
 	//USE SKILL
-	ASidheRigelCharacter* myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+	myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
 	if (myCharacter)
 	{
-		//myCharacter->
+		//Get SkillDelay
+		stateMachine->SkillDelay = myCharacter->GetSkillDelay(stateMachine->currentSkill);
+
+		//Cast Skill
+		FHitResult Hit;
+		stateMachine->playerController->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
+		
+		myCharacter->UseSkill(Hit, stateMachine->currentSkill);
+		
+		FVector ForwardDirection = (Hit.Location - myCharacter->GetActorLocation()).GetSafeNormal();
+		myCharacter->SetActorRotation(ForwardDirection.Rotation());
+
+		//Skill Cooldown
+		myCharacter->SetCooldown(stateMachine->currentSkill);
 	}
 }
 

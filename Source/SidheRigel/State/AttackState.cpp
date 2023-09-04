@@ -34,7 +34,7 @@ void AttackState::Update(float DeltaTime)
 	if (stateMachine && stateMachine->frontDelay <= 0)
 	{
 		//Attack to Target
-		//myCharacter->Attack(target);
+		myCharacter->Attack(stateMachine->target);
 		stateMachine->ChangeState(stateMachine->MoveToAttack);
 	}
 }
@@ -63,10 +63,14 @@ void AttackState::OnLeftClick()
 void AttackState::OnKeyboard(E_SkillState SkillState)
 {
 	//Check Cooldown
-	if (true)
+	if (myCharacter->GetCooldown(SkillState) <= 0)
 	{
 		stateMachine->bAttackWithSkillReady = true;
 		stateMachine->currentSkill = SkillState;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
 	}
 }
 

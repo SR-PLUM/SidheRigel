@@ -15,6 +15,9 @@ public:
 	SkillReadyState(StateMachine* StateMachine);
 	~SkillReadyState();
 
+private:
+	class ASidheRigelCharacter* myCharacter;
+
 public:
 	void OnBegin() override;
 	void Update(float DeltaTime) override;

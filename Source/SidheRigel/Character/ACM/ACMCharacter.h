@@ -40,7 +40,7 @@ public:
 	void InitColliderPath();
 	
 protected:
-	virtual void SpawnAttackProjectile() override;
+	virtual void Attack(AActor* target) override;
 	virtual void InitAttackProjectile() override;
 
 	//AttackProjectile
@@ -48,24 +48,18 @@ protected:
 	TSubclassOf<class AACMAttackProjectile> ProjectileClass;
 
 protected: //Skills
-	virtual void SkillOne();
 	void QSkill(FHitResult HitResult);
 	void QImplement(FHitResult HitResult);
-	virtual void SkillThree();
 	void ESkill(FHitResult HitResult);
 	void EImplement(FHitResult HitResult);
-	virtual void SkillFour();
 	void RSkill(FHitResult HitResult);
 	void R1Skill(FHitResult HitResult);
 
 
-	virtual void SkillCancel();
-	virtual void UseSkill(FHitResult HitResult);
+	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 
 private:
-	E_SkillState skillState = E_SkillState::Null;
-
 	E_SkillState LastSkill = E_SkillState::Null;
 
 	//Upgrading Passive

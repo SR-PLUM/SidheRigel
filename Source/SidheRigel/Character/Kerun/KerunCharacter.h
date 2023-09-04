@@ -30,7 +30,7 @@ public:
 	virtual void InitProperty() override;
 
 protected:
-	virtual void SpawnAttackProjectile() override;
+	virtual void Attack(AActor* target) override;
 	virtual void InitAttackProjectile() override;
 
 	UPROPERTY(EditDefaultsOnly)
@@ -61,14 +61,9 @@ public:
 
 protected:	//Skill
 	virtual void SkillOne();	//Q
-	virtual void SkillTwo();	//W
-	virtual void SkillFour();	//R
-
-	virtual void SkillCancel();
-	virtual void UseSkill(FHitResult HitResult);
+	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 private:	//State
-	E_SkillState skillState = E_SkillState::Null;
 
 protected: //Passive E
 
@@ -86,9 +81,4 @@ protected: //Passive E
 
 	void StartETimer();
 	void QuitETimer();
-
-
-/*
-	virtual	void SkillThree();
-*/
 };

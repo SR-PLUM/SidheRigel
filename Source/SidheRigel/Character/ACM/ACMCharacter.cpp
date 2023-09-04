@@ -106,7 +106,7 @@ void AACMCharacter::InitColliderPath()
 	}
 }
 
-void AACMCharacter::SpawnAttackProjectile()
+void AACMCharacter::Attack(AActor* target)
 {
 	FVector MuzzleLocation = GetActorLocation();
 	FRotator MuzzleRotation = GetActorRotation();
@@ -123,6 +123,7 @@ void AACMCharacter::SpawnAttackProjectile()
 		if (Projectile)
 		{
 			// Set the projectile's initial trajectory.
+			Projectile->Target = target;
 			InitProjectileProperty(Projectile);
 
 			ReduceCoolDownRemain();
@@ -137,13 +138,6 @@ void AACMCharacter::InitAttackProjectile()
 	{
 		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
 	}
-}
-
-void AACMCharacter::SkillOne()
-{
-	UE_LOG(LogTemp, Warning, TEXT("ACM Ready Q"));
-
-	skillState = Q_Ready;
 }
 
 void AACMCharacter::QSkill(FHitResult HitResult)
@@ -214,13 +208,6 @@ void AACMCharacter::QImplement(FHitResult HitResult)
 	}
 }
 
-void AACMCharacter::SkillThree()
-{
-	UE_LOG(LogTemp, Warning, TEXT("ACM Ready E"));
-
-	skillState = E_Ready;
-}
-
 void AACMCharacter::ESkill(FHitResult HitResult)
 {
 	if (ECoolDownRemain > 0.f)
@@ -289,13 +276,6 @@ void AACMCharacter::EImplement(FHitResult HitResult)
 	}
 }
 
-void AACMCharacter::SkillFour()
-{
-	UE_LOG(LogTemp, Warning, TEXT("ACM Ready R"));
-
-	skillState = R_Ready;
-}
-
 void AACMCharacter::RSkill(FHitResult HitResult)
 {
 	//R1Skill
@@ -320,18 +300,15 @@ void AACMCharacter::R1Skill(FHitResult HitResult)
 		case Q_Ready:
 			UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: Q"));
 			QImplement(HitResult);
-			skillState = Null;
 			R1CoolDownRemain = R1CoolDown;
 			break;
 		case W_Ready:
 			UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: W"));
-			skillState = Null;
 			R1CoolDownRemain = R1CoolDown;
 			break;
 		case E_Ready:
 			UE_LOG(LogTemp, Warning, TEXT("ACM R1Skill :: E"));
 			EImplement(HitResult);
-			skillState = Null;
 			R1CoolDownRemain = R1CoolDown;
 			break;
 		default:
@@ -340,16 +317,9 @@ void AACMCharacter::R1Skill(FHitResult HitResult)
 	}
 }
 
-void AACMCharacter::SkillCancel()
+void AACMCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ACM SkillCancel"));
-
-	skillState = Null;
-}
-
-void AACMCharacter::UseSkill(FHitResult HitResult)
-{
-	switch (skillState)
+	switch (SkillState)
 	{
 	case Null:
 		UE_LOG(LogTemp, Warning, TEXT("ACM SkillState is Null"));
@@ -357,24 +327,20 @@ void AACMCharacter::UseSkill(FHitResult HitResult)
 	case Q_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("ACM use Q"));
 		QSkill(HitResult);
-		skillState = Null;
 		LastSkill = Q_Ready;
 		break;
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("ACM use W"));
-		skillState = Null;
 		LastSkill = W_Ready;
 		break;
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("ACM use E"));
 		ESkill(HitResult);
-		skillState = Null;
 		LastSkill = E_Ready;
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("ACM use R"));
 		RSkill(HitResult);
-		skillState = Null;
 		break;
 	default:
 		break;

@@ -29,19 +29,12 @@ protected:	//Attack
 		TSubclassOf<class ABlackWizardAttackProjectile> attackProjectileClass;
 
 	virtual void InitAttackProjectile() override;
-	virtual void SpawnAttackProjectile() override;
+	virtual void Attack(AActor* target) override;
 
-protected:	
-	virtual void SkillOne();
-	virtual void SkillTwo();
-	virtual	void SkillThree();
-	virtual void SkillFour();
-
-	virtual void SkillCancel();
-	virtual void UseSkill(FHitResult HitResult);
+protected:
+	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 private:
-	E_SkillState skillState;
 	UPROPERTY()
 		FTimerHandle destroyTimer;
 

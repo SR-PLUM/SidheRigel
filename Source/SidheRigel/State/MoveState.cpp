@@ -91,10 +91,16 @@ void MoveState::OnLeftClick()
 void MoveState::OnKeyboard(E_SkillState SkillState)
 {
 	//Check Cooldown
-	//if true
-	stateMachine->currentSkill = SkillState;
+	if (myCharacter->GetCooldown(SkillState) <= 0)
+	{
+		stateMachine->currentSkill = SkillState;
 
-	stateMachine->ChangeState(stateMachine->SkillReady);
+		stateMachine->ChangeState(stateMachine->SkillReady);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
+	}
 }
 
 void MoveState::OnEnd()

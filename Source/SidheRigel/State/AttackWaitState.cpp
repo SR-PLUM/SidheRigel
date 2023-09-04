@@ -70,10 +70,14 @@ void AttackWaitState::OnLeftClick()
 void AttackWaitState::OnKeyboard(E_SkillState SkillState)
 {
 	//Check Cooldown
-	if (true)
+	if (myCharacter->GetCooldown(SkillState) <= 0)
 	{
 		stateMachine->bAttackWithSkillReady = true;
 		stateMachine->currentSkill = SkillState;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
 	}
 }
 
