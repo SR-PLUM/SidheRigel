@@ -127,11 +127,13 @@ public:	//Attack
 public:	//Skill
 	float GetSkillDelay(E_SkillState SkillState);
 	float GetCooldown(E_SkillState SkillState);
+	bool IsInstantCast(E_SkillState SkillState);
 	void SetCooldown(E_SkillState SkillState);
 protected:
 	float SkillDelay[4];
 	float SkillCooldown[4];
 	float SkillMaxCooldown[4];
+	bool bIsInstantCast[4];
 
 protected:	//Move
 	bool IsMoveVectorTrue = false;

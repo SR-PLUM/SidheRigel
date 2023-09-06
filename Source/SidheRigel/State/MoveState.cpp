@@ -76,12 +76,6 @@ void MoveState::OnRightRelease()
 	bInputPressed = false;
 
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
-
-	// If it was a short press
-	if (FollowTime <= ShortPressThreshold)
-	{
-		
-	}
 }
 
 void MoveState::OnLeftClick()

@@ -22,6 +22,12 @@ void SkillReadyState::OnBegin()
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
 	}
+
+	//Check Instant cast
+	if (myCharacter->IsInstantCast(stateMachine->currentSkill))
+	{
+		stateMachine->ChangeState(stateMachine->UseSkill);
+	}
 }
 
 void SkillReadyState::Update(float DeltaTime)

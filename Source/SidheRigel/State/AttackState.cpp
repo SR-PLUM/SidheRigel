@@ -35,6 +35,8 @@ void AttackState::Update(float DeltaTime)
 	{
 		//Attack to Target
 		myCharacter->Attack(stateMachine->target);
+		stateMachine->attackDelay = 1 / myCharacter->GetAttackSpeed();
+
 		stateMachine->ChangeState(stateMachine->MoveToAttack);
 	}
 }
@@ -65,8 +67,16 @@ void AttackState::OnKeyboard(E_SkillState SkillState)
 	//Check Cooldown
 	if (myCharacter->GetCooldown(SkillState) <= 0)
 	{
-		stateMachine->bAttackWithSkillReady = true;
 		stateMachine->currentSkill = SkillState;
+
+		//Check Instant cast
+		if (myCharacter->IsInstantCast(stateMachine->currentSkill))
+		{
+			stateMachine->ChangeState(stateMachine->UseSkill);
+			return;
+		}
+
+		stateMachine->bAttackWithSkillReady = true;
 	}
 	else
 	{
@@ -76,8 +86,5 @@ void AttackState::OnKeyboard(E_SkillState SkillState)
 
 void AttackState::OnEnd()
 {
-	if (stateMachine && myCharacter)
-	{
-		stateMachine->attackDelay = 1 / myCharacter->GetAttackSpeed();
-	}
+	
 }

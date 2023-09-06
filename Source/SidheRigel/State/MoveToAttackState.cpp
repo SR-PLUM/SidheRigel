@@ -80,8 +80,16 @@ void MoveToAttackState::OnKeyboard(E_SkillState SkillState)
 	//Check Cooldown
 	if (myCharacter->GetCooldown(SkillState) <= 0)
 	{
-		stateMachine->bAttackWithSkillReady = true;
 		stateMachine->currentSkill = SkillState;
+
+		//Check Instant cast
+		if (myCharacter->IsInstantCast(stateMachine->currentSkill))
+		{
+			stateMachine->ChangeState(stateMachine->UseSkill);
+			return;
+		}
+
+		stateMachine->bAttackWithSkillReady = true;
 	}
 	else
 	{

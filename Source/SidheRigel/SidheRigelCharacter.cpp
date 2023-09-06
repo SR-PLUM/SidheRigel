@@ -309,6 +309,11 @@ void ASidheRigelCharacter::InitProperty()
 	SkillCooldown[1] = 0;
 	SkillCooldown[2] = 0;
 	SkillCooldown[3] = 0;
+
+	bIsInstantCast[0] = true;
+	bIsInstantCast[1] = false;
+	bIsInstantCast[2] = false;
+	bIsInstantCast[3] = false;
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()
@@ -410,6 +415,11 @@ float ASidheRigelCharacter::GetCooldown(E_SkillState SkillState)
 	}
 
 	return res;
+}
+
+bool ASidheRigelCharacter::IsInstantCast(E_SkillState SkillState)
+{
+	return false;
 }
 
 void ASidheRigelCharacter::SetCooldown(E_SkillState SkillState)
