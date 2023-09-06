@@ -419,7 +419,28 @@ float ASidheRigelCharacter::GetCooldown(E_SkillState SkillState)
 
 bool ASidheRigelCharacter::IsInstantCast(E_SkillState SkillState)
 {
-	return false;
+	bool res = false;
+	switch (SkillState)
+	{
+	case Null:
+		break;
+	case Q_Ready:
+		res = bIsInstantCast[0];
+		break;
+	case W_Ready:
+		res = bIsInstantCast[1];
+		break;
+	case E_Ready:
+		res = bIsInstantCast[2];
+		break;
+	case R_Ready:
+		res = bIsInstantCast[3];
+		break;
+	default:
+		break;
+	}
+
+	return res;
 }
 
 void ASidheRigelCharacter::SetCooldown(E_SkillState SkillState)
