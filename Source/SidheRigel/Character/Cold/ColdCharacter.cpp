@@ -14,7 +14,6 @@
 // Sets default values
 AColdCharacter::AColdCharacter()
 {
-	skillState = E_SkillState::Null;
 	ultType = E_UltType::Ult1;
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> QProjectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdQProjectile"));
@@ -86,7 +85,7 @@ void AColdCharacter::InitAttackProjectile()
 	}
 }
 
-void AColdCharacter::SpawnAttackProjectile()
+void AColdCharacter::Attack(AActor* target)
 {
 	if (attackProjectileClass)
 	{
@@ -104,17 +103,11 @@ void AColdCharacter::SpawnAttackProjectile()
 			AColdAttackProjectile* Projectile = World->SpawnActor<AColdAttackProjectile>(attackProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
+				Projectile->Target = target;
 				InitProjectileProperty(Projectile);
 			}
 		}
 	}
-}
-
-void AColdCharacter::SkillOne()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Cold Ready Q"));
-
-	skillState = Q_Ready;
 }
 
 void AColdCharacter::QImplement(FHitResult HitResult)
@@ -156,13 +149,6 @@ void AColdCharacter::QImplement(FHitResult HitResult)
 	}
 }
 
-void AColdCharacter::SkillTwo()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Cold Ready W"));
-
-	skillState = W_Ready;
-}
-
 void AColdCharacter::WImplement(FHitResult HitResult)
 {
 	FVector PawnToTarget = (HitResult.Location - GetActorLocation()).GetSafeNormal();
@@ -190,13 +176,6 @@ void AColdCharacter::WImplement(FHitResult HitResult)
 	}
 }
 
-void AColdCharacter::SkillThree()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Cold Ready E"));
-
-	skillState = E_Ready;
-}
-
 void AColdCharacter::EImplement(FHitResult HitResult)
 {
 	FVector MuzzleLocation = GetActorLocation() + FVector::UpVector * 50;
@@ -220,14 +199,6 @@ void AColdCharacter::EImplement(FHitResult HitResult)
 		Projectile->damageField = World->SpawnActor<AColdEDamageField>(EDamageFieldClass, HitResult.Location * FVector(1,1,0), MuzzleRotation, SpawnParams);
 		Projectile->damageField->projectileOwner = this;
 	}
-}
-
-void AColdCharacter::SkillFour()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Cold Ready R"));
-
-	GetCameraBoom()->TargetArmLength = 1600.f;
-	skillState = R_Ready;
 }
 
 void AColdCharacter::RImplement(FHitResult HitResult)
@@ -308,21 +279,10 @@ void AColdCharacter::R2Implement(FHitResult HitResult)
 }
 
 
-
-void AColdCharacter::SkillCancel()
+//TODO E,RSkill Refactor
+void AColdCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Cold SkillCancel"));
-
-	if (skillState == R_Ready)
-	{
-		GetCameraBoom()->TargetArmLength = 800.f;
-	}
-	skillState = Null;
-}
-
-void AColdCharacter::UseSkill(FHitResult HitResult)
-{
-	switch (skillState)
+	switch (SkillState)
 	{
 	case Null:
 		UE_LOG(LogTemp, Warning, TEXT("Cold SkillState is Null"));
@@ -331,26 +291,21 @@ void AColdCharacter::UseSkill(FHitResult HitResult)
 		UE_LOG(LogTemp, Warning, TEXT("Cold use Q"));
 
 		QImplement(HitResult);
-		skillState = Null;
 		break;
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use W"));
 
 		WImplement(HitResult);
-		skillState = Null;
 		break;
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use E"));
-		//skillState = Null;
 		EImplement(HitResult);
+
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("Cold use R"));
 
 		RImplement(HitResult);
-		skillState = Null;
-
-		GetCameraBoom()->TargetArmLength = 800.f;
 		break;
 	default:
 		break;

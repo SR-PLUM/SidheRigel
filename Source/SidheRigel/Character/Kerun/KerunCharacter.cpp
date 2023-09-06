@@ -77,7 +77,7 @@ void AKerunCharacter::InitProperty()
 	currentHP = GetMaxHP();
 }
 
-void AKerunCharacter::SpawnAttackProjectile()
+void AKerunCharacter::Attack(AActor* target)
 {
 	FVector MuzzleLocation = GetActorLocation();
 	FRotator MuzzleRotation = GetActorRotation();
@@ -94,6 +94,7 @@ void AKerunCharacter::SpawnAttackProjectile()
 		if (Projectile)
 		{
 			// Set the projectile's initial trajectory.
+			Projectile->Target = target;
 			InitProjectileProperty(Projectile);
 
 			//Kerun QSkill
@@ -138,42 +139,15 @@ void AKerunCharacter::SetCurrentHP(float _hp)
 	}
 }
 
+//TODO::REFECTOR THIS
 void AKerunCharacter::SkillOne()
 {
 	KerunQSkillRef->ImproveAttackSpeed(attackSpeed, this);
 }
 
-void AKerunCharacter::SkillTwo()
+void AKerunCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Kerun WSkill"));
-
-	skillState = W_Ready;
-}
-
-void AKerunCharacter::SkillFour()
-{
-	//R1 Skill
-
-	UE_LOG(LogTemp, Warning, TEXT("Kerun R1Skill"));
-
-	skillState = R_Ready;
-
-
-	//R2 Skill
-	/*UE_LOG(LogTemp, Warning, TEXT("Kerun R2Skill"));
-	KerunR2SkillRef->StartR2Buff(this);*/
-}
-
-void AKerunCharacter::SkillCancel()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Skill Cancel"));
-
-	skillState = Null;
-}
-
-void AKerunCharacter::UseSkill(FHitResult HitResult)
-{
-	switch (skillState)
+	switch (SkillState)
 	{
 	case Null:
 		UE_LOG(LogTemp, Warning, TEXT("skillState is Null"));

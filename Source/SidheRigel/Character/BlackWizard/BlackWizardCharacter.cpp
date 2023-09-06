@@ -8,9 +8,6 @@
 // Sets default values
 ABlackWizardCharacter::ABlackWizardCharacter()
 {
-
-	skillState = Null;
-
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -80,7 +77,7 @@ void ABlackWizardCharacter::InitAttackProjectile()
 	}
 }
 
-void ABlackWizardCharacter::SpawnAttackProjectile()
+void ABlackWizardCharacter::Attack(AActor* target)
 {
 	if (attackProjectileClass)
 	{
@@ -98,50 +95,16 @@ void ABlackWizardCharacter::SpawnAttackProjectile()
 			ABlackWizardAttackProjectile* Projectile = World->SpawnActor<ABlackWizardAttackProjectile>(attackProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
+				Projectile->Target = target;
 				InitProjectileProperty(Projectile);
 			}
 		}
 	}
 }
 
-void ABlackWizardCharacter::SkillOne()
+void ABlackWizardCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard Ready Q"));
-
-	skillState = Q_Ready;
-}
-
-void ABlackWizardCharacter::SkillTwo()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard Ready W"));
-
-	skillState = W_Ready;
-}
-
-void ABlackWizardCharacter::SkillThree()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard Ready E"));
-
-	skillState = E_Ready;
-}
-
-void ABlackWizardCharacter::SkillFour()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard Ready R"));
-
-	skillState = R_Ready;
-}
-
-void ABlackWizardCharacter::SkillCancel()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard SkillCancel"));
-
-	skillState = Null;
-}
-
-void ABlackWizardCharacter::UseSkill(FHitResult HitResult)
-{
-	switch (skillState)
+	switch (SkillState)
 	{
 	case Null:
 		UE_LOG(LogTemp, Warning, TEXT("BlackWizard SkillState is Null"));
@@ -182,12 +145,10 @@ void ABlackWizardCharacter::UseSkill(FHitResult HitResult)
 			}
 		}
 
-		skillState = Null;
 		break;
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("BlackWizard use W"));	
 
-		skillState = Null;
 		break;
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("BlackWizard use E"));
@@ -225,7 +186,6 @@ void ABlackWizardCharacter::UseSkill(FHitResult HitResult)
 			}
 		}
 
-		skillState = Null;
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("BlackWizard use R"));
@@ -270,7 +230,6 @@ void ABlackWizardCharacter::UseSkill(FHitResult HitResult)
 			}
 		}
 
-		skillState = Null;
 		break;
 	default:
 		break;

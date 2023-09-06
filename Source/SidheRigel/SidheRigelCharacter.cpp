@@ -2,7 +2,6 @@
 
 #include "SidheRigelCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "State/Attack/attackStateMachine.h"
 #include "Dummy/DummyProjectile.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
@@ -56,19 +55,12 @@ void ASidheRigelCharacter::BeginPlay()
 	Super::BeginPlay();
 	InitProperty();
 
-	attackStateMachine = new AttackStateMachine(this);
-
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-
-	if (target)
-	{
-		attackStateMachine->Run();
-	}
 
 	if (IsMoveVectorTrue)
 	{
@@ -85,44 +77,23 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 			IsMoveVectorTrue = false;
 		}
 	}
+
+	for (float& cooldown : SkillCooldown)
+	{
+		if (cooldown > 0)
+		{
+			cooldown -= DeltaSeconds;
+		}
+	}
 }
 
 void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("SkillOne", IE_Pressed, this, &ASidheRigelCharacter::SkillOne);
-	PlayerInputComponent->BindAction("SkillTwo", IE_Pressed, this, &ASidheRigelCharacter::SkillTwo);
-	PlayerInputComponent->BindAction("SkillThree", IE_Pressed, this, &ASidheRigelCharacter::SkillThree);
-	PlayerInputComponent->BindAction("SkillFour", IE_Pressed, this, &ASidheRigelCharacter::SkillFour);
 }
 
-void ASidheRigelCharacter::SkillOne()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Q"));
-}
-
-void ASidheRigelCharacter::SkillTwo()
-{
-	UE_LOG(LogTemp, Warning, TEXT("W"));
-}
-
-void ASidheRigelCharacter::SkillThree()
-{
-	UE_LOG(LogTemp, Warning, TEXT("E"));
-}
-
-void ASidheRigelCharacter::SkillFour()
-{
-	UE_LOG(LogTemp, Warning, TEXT("R"));
-}
-
-void ASidheRigelCharacter::SkillCancel()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Cancel"));
-}
-
-void ASidheRigelCharacter::UseSkill(FHitResult HitResult)
+void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
 }
@@ -158,15 +129,10 @@ void ASidheRigelCharacter::IE_GenerateHP()
 	RestoreHP(GetGenerateHealthPoint());
 }
 
-void ASidheRigelCharacter::SetTarget(AActor* _target)
-{
-	target = _target;
-}
-
 float ASidheRigelCharacter::GetRange()
 {
 	float res = 0;
-	for (auto value : range)
+	for (auto& value : range)
 	{
 		res += value.Value;
 	}
@@ -177,7 +143,7 @@ float ASidheRigelCharacter::GetRange()
 float ASidheRigelCharacter::GetAttackDamage()
 {
 	float res = 0;
-	for (auto value : attackDamage)
+	for (auto& value : attackDamage)
 	{
 		res += value.Value;
 	}
@@ -188,7 +154,7 @@ float ASidheRigelCharacter::GetAttackDamage()
 int32 ASidheRigelCharacter::GetCriticalRate()
 {
 	int32 res = 0;
-	for (auto value : criticalRate)
+	for (auto& value : criticalRate)
 	{
 		res += value.Value;
 	}
@@ -203,7 +169,7 @@ int32 ASidheRigelCharacter::GetCriticalRate()
 int32 ASidheRigelCharacter::GetCriticalDamage()
 {
 	int32 res = 0;
-	for (auto value : criticalDamage)
+	for (auto& value : criticalDamage)
 	{
 		res += value.Value;
 	}
@@ -214,7 +180,8 @@ int32 ASidheRigelCharacter::GetCriticalDamage()
 float ASidheRigelCharacter::GetAttackSpeed()
 {
 	float res = 0;
-	for (auto value : attackSpeed)
+
+	for (auto& value : attackSpeed)
 	{
 		res += value.Value;
 	}
@@ -229,7 +196,7 @@ float ASidheRigelCharacter::GetAttackSpeed()
 float ASidheRigelCharacter::GetMaxHP()
 {
 	float res = 0;
-	for (auto value : MaxHP)
+	for (auto& value : MaxHP)
 	{
 		res += value.Value;
 	}
@@ -240,7 +207,7 @@ float ASidheRigelCharacter::GetMaxHP()
 float ASidheRigelCharacter::GetGenerateHealthPoint()
 {
 	float res = 0;
-	for (auto value : generateHealthPoint)
+	for (auto& value : generateHealthPoint)
 	{
 		res += value.Value;
 	}
@@ -251,7 +218,7 @@ float ASidheRigelCharacter::GetGenerateHealthPoint()
 int32 ASidheRigelCharacter::GetLifeSteal()
 {
 	int32 res = 0;
-	for (auto value : lifeSteal)
+	for (auto& value : lifeSteal)
 	{
 		res += value.Value;
 	}
@@ -262,7 +229,7 @@ int32 ASidheRigelCharacter::GetLifeSteal()
 int32 ASidheRigelCharacter::GetProtectPower()
 {
 	int32 res = 0;
-	for (auto value : protectPower)
+	for (auto& value : protectPower)
 	{
 		res += value.Value;
 	}
@@ -273,7 +240,7 @@ int32 ASidheRigelCharacter::GetProtectPower()
 float ASidheRigelCharacter::GetDefencePoint()
 {
 	float res = 0.f;
-	for (auto value : defencePoint)
+	for (auto& value : defencePoint)
 	{
 		res += value.Value;
 	}
@@ -304,7 +271,7 @@ void ASidheRigelCharacter::AddDecreseDefencePercent(FString name, float value, f
 float ASidheRigelCharacter::GetDecreseDefence()
 {
 	float res = 0.f;
-	for (auto value : decreseDefencePoint)
+	for (auto& value : decreseDefencePoint)
 	{
 		res += value.Value;
 	}
@@ -327,17 +294,26 @@ void ASidheRigelCharacter::InitProperty()
 	defencePoint.Add("Debug", 100);
 
 	currentHP = GetMaxHP();
-}
 
-void ASidheRigelCharacter::WaitAttackDelay()
-{
-	FTimerHandle AttackDelayTimer;
-	GetWorldTimerManager().SetTimer(AttackDelayTimer, this, &ASidheRigelCharacter::ChangeAttackState, 1 / GetAttackSpeed(), false);
-}
+	SkillDelay[0] = 1;
+	SkillDelay[1] = 1;
+	SkillDelay[2] = 1;
+	SkillDelay[3] = 1;
 
-void ASidheRigelCharacter::ChangeAttackState()
-{
-	attackStateMachine->ChangeState(attackStateMachine->moveToAttackState);
+	SkillMaxCooldown[0] = 2;
+	SkillMaxCooldown[1] = 2;
+	SkillMaxCooldown[2] = 2;
+	SkillMaxCooldown[3] = 2;
+
+	SkillCooldown[0] = 0;
+	SkillCooldown[1] = 0;
+	SkillCooldown[2] = 0;
+	SkillCooldown[3] = 0;
+
+	bIsInstantCast[0] = true;
+	bIsInstantCast[1] = false;
+	bIsInstantCast[2] = false;
+	bIsInstantCast[3] = false;
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()
@@ -349,7 +325,7 @@ void ASidheRigelCharacter::InitAttackProjectile()
 	}
 }
 
-void ASidheRigelCharacter::SpawnAttackProjectile()
+void ASidheRigelCharacter::Attack(AActor* target)
 {
 	if (baseProjectileClass)
 	{
@@ -367,6 +343,7 @@ void ASidheRigelCharacter::SpawnAttackProjectile()
 			ADummyProjectile* Projectile = World->SpawnActor<ADummyProjectile>(baseProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
+				Projectile->Target = target;
 				InitProjectileProperty(Projectile);
 			}
 		}
@@ -375,7 +352,6 @@ void ASidheRigelCharacter::SpawnAttackProjectile()
 
 void ASidheRigelCharacter::InitProjectileProperty(ADummyProjectile* projectile)
 {
-	projectile->Target = target;
 	projectile->projectileOwner = this;
 	projectile->AttackDamage = GetAttackDamage();
 	projectile->criticalRate = (float)GetCriticalRate() / 100.f;
@@ -389,9 +365,105 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 	RestoreHP(damage * _lifeSteal);
 }
 
-void ASidheRigelCharacter::Attack(AActor* _target)
+float ASidheRigelCharacter::GetSkillDelay(E_SkillState SkillState)
 {
-	target = _target;
+	float res = 0;
+	switch (SkillState)
+	{
+	case Null:
+		break;
+	case Q_Ready:
+		res = SkillDelay[0];
+		break;
+	case W_Ready:
+		res = SkillDelay[1];
+		break;
+	case E_Ready:
+		res = SkillDelay[2];
+		break;
+	case R_Ready:
+		res = SkillDelay[3];
+		break;
+	default:
+		break;
+	}
+
+	return res;
+}
+
+float ASidheRigelCharacter::GetCooldown(E_SkillState SkillState)
+{
+	float res = 0;
+	switch (SkillState)
+	{
+	case Null:
+		break;
+	case Q_Ready:
+		res = SkillCooldown[0];
+		break;
+	case W_Ready:
+		res = SkillCooldown[1];
+		break;
+	case E_Ready:
+		res = SkillCooldown[2];
+		break;
+	case R_Ready:
+		res = SkillCooldown[3];
+		break;
+	default:
+		break;
+	}
+
+	return res;
+}
+
+bool ASidheRigelCharacter::IsInstantCast(E_SkillState SkillState)
+{
+	bool res = false;
+	switch (SkillState)
+	{
+	case Null:
+		break;
+	case Q_Ready:
+		res = bIsInstantCast[0];
+		break;
+	case W_Ready:
+		res = bIsInstantCast[1];
+		break;
+	case E_Ready:
+		res = bIsInstantCast[2];
+		break;
+	case R_Ready:
+		res = bIsInstantCast[3];
+		break;
+	default:
+		break;
+	}
+
+	return res;
+}
+
+void ASidheRigelCharacter::SetCooldown(E_SkillState SkillState)
+{
+	switch (SkillState)
+	{
+	case Null:
+		break;
+	case Q_Ready:
+		SkillCooldown[0] = SkillMaxCooldown[0];
+		break;
+	case W_Ready:
+		SkillCooldown[1] = SkillMaxCooldown[1];
+		break;
+	case E_Ready:
+		SkillCooldown[2] = SkillMaxCooldown[2];
+		break;
+	case R_Ready:
+		SkillCooldown[3] = SkillMaxCooldown[3];
+		break;
+	default:
+		break;
+	}
 }
 
 void ASidheRigelCharacter::Stun(float time)

@@ -30,28 +30,22 @@ protected:	//Attack
 		TSubclassOf<class AColdAttackProjectile> attackProjectileClass;
 	
 	virtual void InitAttackProjectile() override;
-	virtual void SpawnAttackProjectile() override;
+	virtual void Attack(AActor* target) override;
 
 protected:	//Skill
-	virtual void SkillOne();
 	void QImplement(FHitResult HitResult);
 
-	virtual void SkillTwo();
 	void WImplement(FHitResult HitResult);
 
-	virtual	void SkillThree();
 	void EImplement(FHitResult HitResult);
 
-	virtual void SkillFour();
 	void RImplement(FHitResult HitResult);
 	void R1Implement(FHitResult HitResult);
 	void R2Implement(FHitResult HitResult);
 
-	virtual void SkillCancel();
-	virtual void UseSkill(FHitResult HitResult);
+	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 private:	//State
-	E_SkillState skillState;
 	E_UltType ultType;
 
 
