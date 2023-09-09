@@ -7,6 +7,7 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 
@@ -28,7 +29,6 @@ void MoveState::OnBegin()
 
 		// We flag that the input is being pressed
 		bInputPressed = true;
-		FollowTime = 0.f;
 		// Just in case the character was moving because of a previous short press we stop it
 		stateMachine->playerController->StopMovement();
 	}
@@ -46,19 +46,15 @@ void MoveState::Update(float DeltaTime)
 		{
 			if (bInputPressed)	//LongClick
 			{
-				FollowTime += DeltaTime;
-
 				// Refresh the Location
 				FHitResult Hit;
 				stateMachine->playerController->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 				stateMachine->location = Hit.Location;
 
 				FVector WorldDirection = (stateMachine->location - myCharacter->GetActorLocation()).GetSafeNormal();
-				myCharacter->AddMovementInput(WorldDirection, 1.f, false);
-			}
-			else
-			{
-				FollowTime = 0.f;
+				float Velocity = 100;
+				
+				UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
 			}
 		}
 	}
