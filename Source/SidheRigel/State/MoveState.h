@@ -18,11 +18,6 @@ public:
 private:
 	class ASidheRigelCharacter* myCharacter;
 
-	//Duartion that Pressing Right Click
-	float FollowTime = 0.f;
-	//Decision interval
-	float ShortPressThreshold = 0.1f;
-
 	//Check ShortClick When Move
 	bool bInputPressed = false;
 
