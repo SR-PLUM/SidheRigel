@@ -13,5 +13,12 @@ UCLASS()
 class SIDHERIGEL_API UInGameUI : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(meta = (BindWidget))
+		class UCharacterStatus* CharacterStatus;
+
+	UPROPERTY(meta = (BindWidget))
+		class UCombatSummary* CombatSummary;
 	
 };
