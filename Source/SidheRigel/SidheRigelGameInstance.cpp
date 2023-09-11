@@ -150,7 +150,7 @@ void USidheRigelGameInstance::OnCreateSessionComplete(FName SessionName, bool Su
 	UWorld* World = GetWorld();
 	if (World == nullptr) return;
 
-	World->ServerTravel(GameMapURL);
+	World->ServerTravel(LobbyURL);
 }
 
 void USidheRigelGameInstance::OnDestroySessionComplete(FName SessionName, bool Success)

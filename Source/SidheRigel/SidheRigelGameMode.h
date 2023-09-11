@@ -13,6 +13,10 @@ class ASidheRigelGameMode : public AGameModeBase
 
 public:
 	ASidheRigelGameMode();
+
+	virtual void InitGameState() override;
+
+	TMap<FString, TSubclassOf<APawn>> CharacterPath;
 };
 
 
