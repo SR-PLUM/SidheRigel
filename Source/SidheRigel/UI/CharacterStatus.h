@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "../Enum/E_Character.h"
 #include "CharacterStatus.generated.h"
 
 /**
@@ -85,5 +86,54 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* MoneyText;
+
+	UFUNCTION(BlueprintCallable)
+		void InitIconImage(E_Character Character);
+
+	UFUNCTION(BlueprintCallable)
+		UTexture2D* CastPathToTexture2D(FString Path);
+
+
+
+	//IconPath
+	TMap<E_Character, FString> CharacterIconPath = {
+		TPair<E_Character, FString>(E_Character::ACM, TEXT("/Game/Heros/ACM/Icons/Icon_ACM")),
+		TPair<E_Character, FString>(E_Character::BlackWizard, TEXT("/Game/Heros/BlackWizard/Icons/Icon_BlackWizard")),
+		TPair<E_Character, FString>(E_Character::Cold, TEXT("/Game/Heros/Cold/Icons/Icon_Cold")),
+		TPair<E_Character, FString>(E_Character::FairyWing, TEXT("/Game/Heros/FairyWing/Icons/Icon_FairyWing")),
+		TPair<E_Character, FString>(E_Character::Kerun, TEXT("/Game/Heros/Kerun/Icons/Icon_Kerun"))
+	};
+
+	TMap<E_Character, FString> QSkillIconPath = {
+		TPair<E_Character, FString>(E_Character::ACM, TEXT("/Game/Heros/ACM/Icons/Icon_ACMQSkill")),
+		TPair<E_Character, FString>(E_Character::BlackWizard, TEXT("/Game/Heros/BlackWizard/Icons/Icon_BlackWizardQSkill")),
+		TPair<E_Character, FString>(E_Character::Cold, TEXT("/Game/Heros/Cold/Icons/Icon_ColdQSkill")),
+		TPair<E_Character, FString>(E_Character::FairyWing, TEXT("/Game/Heros/FairyWing/Icons/Icon_FairyWingQSkill")),
+		TPair<E_Character, FString>(E_Character::Kerun, TEXT("/Game/Heros/Kerun/Icons/Icon_KerunQSkill"))
+	};
+
+	TMap<E_Character, FString> WSkillIconPath = {
+		TPair<E_Character, FString>(E_Character::ACM, TEXT("/Game/Heros/ACM/Icons/Icon_ACMWSkill")),
+		TPair<E_Character, FString>(E_Character::BlackWizard, TEXT("/Game/Heros/BlackWizard/Icons/Icon_BlackWizardWSkill")),
+		TPair<E_Character, FString>(E_Character::Cold, TEXT("/Game/Heros/Cold/Icons/Icon_ColdWSkill")),
+		TPair<E_Character, FString>(E_Character::FairyWing, TEXT("/Game/Heros/FairyWing/Icons/Icon_FairyWingWSkill")),
+		TPair<E_Character, FString>(E_Character::Kerun, TEXT("/Game/Heros/Kerun/Icons/Icon_KerunWSkill"))
+	};
+
+	TMap<E_Character, FString> ESkillIconPath = {
+		TPair<E_Character, FString>(E_Character::ACM, TEXT("/Game/Heros/ACM/Icons/Icon_ACMESkill")),
+		TPair<E_Character, FString>(E_Character::BlackWizard, TEXT("/Game/Heros/BlackWizard/Icons/Icon_BlackWizardESkill")),
+		TPair<E_Character, FString>(E_Character::Cold, TEXT("/Game/Heros/Cold/Icons/Icon_ColdESkill")),
+		TPair<E_Character, FString>(E_Character::FairyWing, TEXT("/Game/Heros/FairyWing/Icons/Icon_FairyWingESkill")),
+		TPair<E_Character, FString>(E_Character::Kerun, TEXT("/Game/Heros/Kerun/Icons/Icon_KerunESkill"))
+	};
+
+	TMap<E_Character, FString> RSkillIconPath = {
+		TPair<E_Character, FString>(E_Character::ACM, TEXT("/Game/Heros/ACM/Icons/Icon_ACMRSkill")),
+		TPair<E_Character, FString>(E_Character::BlackWizard, TEXT("/Game/Heros/BlackWizard/Icons/Icon_BlackWizardRSkill")),
+		TPair<E_Character, FString>(E_Character::Cold, TEXT("/Game/Heros/Cold/Icons/Icon_ColdRSkill")),
+		TPair<E_Character, FString>(E_Character::FairyWing, TEXT("/Game/Heros/FairyWing/Icons/Icon_FairyWingRSkill")),
+		TPair<E_Character, FString>(E_Character::Kerun, TEXT("/Game/Heros/Kerun/Icons/Icon_KerunRSkill"))
+	};
 	
 };

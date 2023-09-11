@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "../Enum/E_Character.h"
 #include "InGameUI.generated.h"
 
 /**
@@ -21,4 +22,7 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UCombatSummary* CombatSummary;
 	
+
+	UFUNCTION(BlueprintCallable)
+	void InitCharacterData(E_Character Character);
 };
