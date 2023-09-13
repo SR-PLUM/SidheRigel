@@ -22,7 +22,5 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UCombatSummary* CombatSummary;
 	
-
-	UFUNCTION(BlueprintCallable)
 	void InitCharacterData(E_Character Character);
 };

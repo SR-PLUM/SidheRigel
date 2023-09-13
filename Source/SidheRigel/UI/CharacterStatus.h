@@ -87,11 +87,10 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* MoneyText;
 
-	UFUNCTION(BlueprintCallable)
-		void InitIconImage(E_Character Character);
+	void InitIconImage(E_Character Character);
 
-	UFUNCTION(BlueprintCallable)
-		UTexture2D* CastPathToTexture2D(FString Path);
+	UFUNCTION()
+	UTexture2D* CastPathToTexture2D(FString Path);
 
 
 

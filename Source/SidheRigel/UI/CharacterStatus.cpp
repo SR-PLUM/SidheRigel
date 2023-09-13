@@ -9,10 +9,10 @@ void UCharacterStatus::InitIconImage(E_Character Character)
 {
 	CharacterImage->SetBrushFromTexture(CastPathToTexture2D(CharacterIconPath[Character]));
 
-	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(QSkillIconPath[Character]));
+	/*Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(QSkillIconPath[Character]));
 	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(WSkillIconPath[Character]));
 	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(ESkillIconPath[Character]));
-	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(RSkillIconPath[Character]));
+	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(RSkillIconPath[Character]));*/
 
 }
 
