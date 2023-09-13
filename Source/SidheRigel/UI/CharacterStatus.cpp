@@ -4,15 +4,16 @@
 #include "CharacterStatus.h"
 #include "Components/Image.h"
 #include "Components/Button.h"
+#include "Styling/SlateBrush.h"
 
 void UCharacterStatus::InitIconImage(E_Character Character)
 {
 	CharacterImage->SetBrushFromTexture(CastPathToTexture2D(CharacterIconPath[Character]));
 
-	/*Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(QSkillIconPath[Character]));
-	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(WSkillIconPath[Character]));
-	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(ESkillIconPath[Character]));
-	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(RSkillIconPath[Character]));*/
+	Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(QSkillIconPath[Character]));
+	Btn_WSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(WSkillIconPath[Character]));
+	Btn_ESkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(ESkillIconPath[Character]));
+	Btn_RSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(RSkillIconPath[Character]));
 
 }
 
