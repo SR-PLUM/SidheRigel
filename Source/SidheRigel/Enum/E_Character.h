@@ -2,7 +2,7 @@
 
 enum E_Character
 {
-	Null = 0,
+	Empty = 0,
 	ACM = 1,
 	BlackWizard = 2,
 	Cold = 3,
