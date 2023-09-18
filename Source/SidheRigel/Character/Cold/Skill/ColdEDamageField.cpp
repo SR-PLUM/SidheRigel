@@ -23,7 +23,7 @@ AColdEDamageField::AColdEDamageField()
 		// Use a sphere as a simple collision representation.
 		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 		// Set the sphere's collision radius.
-		CollisionComponent->InitSphereRadius(FIELD_AREA);
+		CollisionComponent->InitSphereRadius(fieldArea);
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
 	}
@@ -76,7 +76,7 @@ void AColdEDamageField::Explosion()
 {
 	for (auto target : targets)
 	{
-		target->TakeDamage(DAMAGE, projectileOwner);
+		target->TakeDamage(damage, projectileOwner);
 	}
 
 	Destroy();

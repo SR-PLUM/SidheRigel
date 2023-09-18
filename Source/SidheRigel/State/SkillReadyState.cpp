@@ -24,7 +24,7 @@ void SkillReadyState::OnBegin()
 	}
 
 	//Check Instant cast
-	if (myCharacter->IsInstantCast(stateMachine->currentSkill))
+	if (myCharacter->skills[stateMachine->currentSkill]->IsInstantCast())
 	{
 		stateMachine->ChangeState(stateMachine->UseSkill);
 	}
@@ -54,7 +54,7 @@ void SkillReadyState::OnLeftClick()
 void SkillReadyState::OnKeyboard(E_SkillState SkillState)
 {
 	//Check Cooldown
-	if (myCharacter->GetCooldown(SkillState) <= 0)
+	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
 	{
 		stateMachine->currentSkill = SkillState;
 

@@ -25,9 +25,6 @@ public:
 
 private:
 	UPROPERTY(VisibleAnywhere)
-		class USphereComponent* CollisionComponent;
-
-	UPROPERTY(VisibleAnywhere)
 		class UProjectileMovementComponent* ProjectileMovementComponent;
 
 	UPROPERTY(VisibleAnywhere)
@@ -40,5 +37,9 @@ protected:
 public:
 	UPROPERTY()
 		AActor* projectileOwner;
+
+	float duration;
+	float force;
+	float damage;
 
 };

@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Enum/E_SkillState.h"
 #include "SidheRigel/Enum/E_UltType.h"
+
 #include "ColdCharacter.generated.h"
 
 UCLASS()
@@ -33,17 +35,6 @@ protected:	//Attack
 	virtual void Attack(AActor* target) override;
 
 protected:	//Skill
-	void QImplement(FHitResult HitResult);
-
-	void WImplement(FHitResult HitResult);
-
-	void EImplement(FHitResult HitResult);
-
-	void RImplement(FHitResult HitResult);
-	void R1Implement(FHitResult HitResult);
-	void R2Implement(FHitResult HitResult);
-
-	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 private:	//State
 	E_UltType ultType;
@@ -62,6 +53,8 @@ protected:	//Skill Projectile
 		TSubclassOf<class AColdR1Projectile>R1ProjectileClass;
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AColdR2Projectile>R2ProjectileClass;
+
+public:
 
 private:	//Skill Variable
 	int32 QCount = 10;

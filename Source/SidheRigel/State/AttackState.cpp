@@ -65,12 +65,12 @@ void AttackState::OnLeftClick()
 void AttackState::OnKeyboard(E_SkillState SkillState)
 {
 	//Check Cooldown
-	if (myCharacter->GetCooldown(SkillState) <= 0)
+	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
 	{
 		stateMachine->currentSkill = SkillState;
 
 		//Check Instant cast
-		if (myCharacter->IsInstantCast(stateMachine->currentSkill))
+		if (myCharacter->skills[SkillState]->IsInstantCast())
 		{
 			stateMachine->ChangeState(stateMachine->UseSkill);
 			return;
