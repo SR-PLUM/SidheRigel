@@ -5,6 +5,7 @@
 
 #include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Character/Skill.h"
 
 UseSkillState::UseSkillState(StateMachine* StateMachine) : State(StateMachine)
 {
@@ -24,19 +25,23 @@ void UseSkillState::OnBegin()
 	if (myCharacter)
 	{
 		//Get SkillDelay
-		stateMachine->SkillDelay = myCharacter->GetSkillDelay(stateMachine->currentSkill);
+		stateMachine->SkillDelay = myCharacter->skills[stateMachine->currentSkill]->GetSkillDelay();
 
 		//Cast Skill
 		FHitResult Hit;
 		stateMachine->playerController->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 		
-		myCharacter->UseSkill(Hit, stateMachine->currentSkill);
+		if (myCharacter->skills.Contains(stateMachine->currentSkill))
+		{
+			myCharacter->skills[stateMachine->currentSkill]->OnUse(Hit);
+		}
 		
+		//Set Character Rotation
 		FVector ForwardDirection = (Hit.Location - myCharacter->GetActorLocation()).GetSafeNormal();
 		myCharacter->SetActorRotation(ForwardDirection.Rotation());
 
 		//Skill Cooldown
-		myCharacter->SetCooldown(stateMachine->currentSkill);
+		myCharacter->skills[stateMachine->currentSkill]->SetCooldown();
 	}
 }
 

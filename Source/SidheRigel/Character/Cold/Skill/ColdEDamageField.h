@@ -10,8 +10,6 @@ UCLASS()
 class SIDHERIGEL_API AColdEDamageField : public AActor
 {
 	GENERATED_BODY()
-	const float FIELD_AREA = 105.f;
-	const float DAMAGE = 10.f;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -38,6 +36,9 @@ public:
 
 	UPROPERTY()
 		AActor* projectileOwner;
+
+	float fieldArea;
+	float damage;
 
 	void Explosion();
 };

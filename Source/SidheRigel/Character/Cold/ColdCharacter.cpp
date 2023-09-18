@@ -3,7 +3,10 @@
 
 #include "ColdCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "SidheRigel/Character/Cold/Skill/ColdQProjectile.h"
+#include "SidheRigel/Character/Cold/Skill/ColdQSkill.h"
+#include "SidheRigel/Character/Cold/Skill/ColdWSkill.h"
+#include "SidheRigel/Character/Cold/Skill/ColdESkill.h"
+#include "SidheRigel/Character/Cold/Skill/ColdR1Skill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEDamageField.h"
@@ -15,30 +18,6 @@
 AColdCharacter::AColdCharacter()
 {
 	ultType = E_UltType::Ult1;
-
-	static ConstructorHelpers::FObjectFinder<UBlueprint> QProjectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdQProjectile"));
-	if (QProjectile.Object)
-	{
-		QProjectileClass = (UClass*)QProjectile.Object->GeneratedClass;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UBlueprint> WProjectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdWProjectile"));
-	if (WProjectile.Object)
-	{
-		WProjectileClass = (UClass*)WProjectile.Object->GeneratedClass;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UBlueprint> EProjectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdEProjectile"));
-	if (EProjectile.Object)
-	{
-		EProjectileClass = (UClass*)EProjectile.Object->GeneratedClass;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UBlueprint> EDamageField(TEXT("/Game/Heros/Cold/Skill/BP_ColdEDamageField"));
-	if (EDamageField.Object)
-	{
-		EDamageFieldClass = (UClass*)EDamageField.Object->GeneratedClass;
-	}
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> R1Projectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdR1Projectile"));
 	if (R1Projectile.Object)
@@ -53,6 +32,27 @@ AColdCharacter::AColdCharacter()
 	}
 
 	InitAttackProjectile();
+
+	skills.Add({ E_SkillState::Q_Ready, new ColdQSkill });
+	if (skills[E_SkillState::Q_Ready] != nullptr)
+	{
+		skills[E_SkillState::Q_Ready]->SetSkillProperty(this);
+	}
+	skills.Add({ E_SkillState::W_Ready, new ColdWSkill });
+	if (skills[E_SkillState::W_Ready] != nullptr)
+	{
+		skills[E_SkillState::W_Ready]->SetSkillProperty(this);
+	}
+	skills.Add({ E_SkillState::E_Ready, new ColdESkill });
+	if (skills[E_SkillState::E_Ready] != nullptr)
+	{
+		skills[E_SkillState::E_Ready]->SetSkillProperty(this);
+	}
+	skills.Add({ E_SkillState::R_Ready, new ColdR1Skill });
+	if (skills[E_SkillState::R_Ready] != nullptr)
+	{
+		skills[E_SkillState::R_Ready]->SetSkillProperty(this);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -66,7 +66,6 @@ void AColdCharacter::BeginPlay()
 void AColdCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -110,205 +109,34 @@ void AColdCharacter::Attack(AActor* target)
 	}
 }
 
-void AColdCharacter::QImplement(FHitResult HitResult)
-{
-	if (AActor* _target = HitResult.GetActor())
-	{
-		if (_target->Tags.Contains("Hero"))
-		{
-			if (QProjectileClass)
-			{
-				for (int32 i = 0; i < QCount; i++)
-				{
-					FTimerHandle QProjectileGenerateTimer;
-					GetWorldTimerManager().SetTimer(QProjectileGenerateTimer,
-						FTimerDelegate::CreateLambda([=]()
-							{
-								FVector MuzzleLocation = GetActorLocation();
-								FRotator MuzzleRotation = GetActorRotation();
+//void AColdCharacter::EImplement(FHitResult HitResult)
+//{
+//	
+//}
+//
+//void AColdCharacter::RImplement(FHitResult HitResult)
+//{
+//	switch (ultType)
+//	{
+//	case None:
+//		break;
+//	case Ult1:
+//		R1Implement(HitResult);
+//		break;
+//	case Ult2:
+//		R2Implement(HitResult);
+//		break;
+//	default:
+//		break;
+//	}
+//}
+//
+//void AColdCharacter::R1Implement(FHitResult HitResult)
+//{
+//	
+//}
+//
+//void AColdCharacter::R2Implement(FHitResult HitResult)
+//{
 
-								UWorld* World = GetWorld();
-								if (World)
-								{
-									FActorSpawnParameters SpawnParams;
-									SpawnParams.Owner = this;
-									SpawnParams.Instigator = GetInstigator();
-
-									// Spawn the projectile at the muzzle.
-									AColdQProjectile* Projectile = World->SpawnActor<AColdQProjectile>(QProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-									if (Projectile)
-									{
-										Projectile->Target = _target;
-										Projectile->projectileOwner = this;
-									}
-								}
-							}), (float)i * 0.1f, false);
-				}
-			}
-		}
-	}
-}
-
-void AColdCharacter::WImplement(FHitResult HitResult)
-{
-	FVector PawnToTarget = (HitResult.Location - GetActorLocation()).GetSafeNormal();
-	FVector MuzzleLocation = GetActorLocation() + PawnToTarget*50;
-	FRotator MuzzleRotation = PawnToTarget.Rotation();
-
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		FActorSpawnParameters SpawnParams;
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(MuzzleLocation);
-		SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
-		SpawnParams.Owner = this;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		// Spawn the projectile at the muzzle.
-		AColdWProjectile* Projectile = World->SpawnActorDeferred<AColdWProjectile>(WProjectileClass, SpawnTransform);
-		if (Projectile)
-		{
-			Projectile->projectileOwner = this;
-		}
-
-		Projectile->FinishSpawning(SpawnTransform);
-	}
-}
-
-void AColdCharacter::EImplement(FHitResult HitResult)
-{
-	FVector MuzzleLocation = GetActorLocation() + FVector::UpVector * 50;
-	FRotator MuzzleRotation = GetActorRotation();
-
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
-
-		// Spawn the projectile at the muzzle.
-		AColdEProjectile* Projectile = World->SpawnActor<AColdEProjectile>(EProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-		if (Projectile)
-		{
-			Projectile->projectileOwner = this;
-			Projectile->Launch(MuzzleLocation, HitResult.Location);
-		}
-
-		Projectile->damageField = World->SpawnActor<AColdEDamageField>(EDamageFieldClass, HitResult.Location * FVector(1,1,0), MuzzleRotation, SpawnParams);
-		Projectile->damageField->projectileOwner = this;
-	}
-}
-
-void AColdCharacter::RImplement(FHitResult HitResult)
-{
-	switch (ultType)
-	{
-	case None:
-		break;
-	case Ult1:
-		R1Implement(HitResult);
-		break;
-	case Ult2:
-		R2Implement(HitResult);
-		break;
-	default:
-		break;
-	}
-}
-
-void AColdCharacter::R1Implement(FHitResult HitResult)
-{
-	if (AActor* _target = HitResult.GetActor())
-	{
-		if (_target->Tags.Contains("Hero"))
-		{
-			if (R1ProjectileClass)
-			{
-				FVector MuzzleLocation = GetActorLocation();
-				FRotator MuzzleRotation = GetActorRotation();
-
-				UWorld* World = GetWorld();
-				if (World)
-				{
-					FActorSpawnParameters SpawnParams;
-					SpawnParams.Owner = this;
-					SpawnParams.Instigator = GetInstigator();
-
-					// Spawn the projectile at the muzzle.
-					AColdR1Projectile* Projectile = World->SpawnActor<AColdR1Projectile>(R1ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-					if (Projectile)
-					{
-						Projectile->Target = _target;
-						Projectile->projectileOwner = this;
-					}
-				}
-			}
-		}
-	}
-}
-
-void AColdCharacter::R2Implement(FHitResult HitResult)
-{
-	FVector PawnToTarget = (HitResult.Location - GetActorLocation()).GetSafeNormal();
-	FVector MuzzleLocation = GetActorLocation() + PawnToTarget * 50;
-	FRotator MuzzleRotation = PawnToTarget.Rotation();
-
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		FActorSpawnParameters SpawnParams;
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(MuzzleLocation);
-		SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
-		SpawnParams.Owner = this;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		// Spawn the projectile at the muzzle.
-		AColdR2Projectile* Projectile = World->SpawnActorDeferred<AColdR2Projectile>(R2ProjectileClass, SpawnTransform);
-		if (Projectile)
-		{
-			Projectile->projectileOwner = this;
-			Projectile->startLocation = MuzzleLocation;
-			Projectile->forwardVector = PawnToTarget;
-		}
-
-		Projectile->FinishSpawning(SpawnTransform);
-	}
-}
-
-
-//TODO E,RSkill Refactor
-void AColdCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
-{
-	switch (SkillState)
-	{
-	case Null:
-		UE_LOG(LogTemp, Warning, TEXT("Cold SkillState is Null"));
-		break;
-	case Q_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("Cold use Q"));
-
-		QImplement(HitResult);
-		break;
-	case W_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("Cold use W"));
-
-		WImplement(HitResult);
-		break;
-	case E_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("Cold use E"));
-		EImplement(HitResult);
-
-		break;
-	case R_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("Cold use R"));
-
-		RImplement(HitResult);
-		break;
-	default:
-		break;
-	}
-}
-
+//}

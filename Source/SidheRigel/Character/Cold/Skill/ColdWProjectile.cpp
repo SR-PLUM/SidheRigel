@@ -17,19 +17,10 @@ AColdWProjectile::AColdWProjectile()
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
 	}
-	if (!CollisionComponent)
-	{
-		// Use a sphere as a simple collision representation.
-		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		// Set the sphere's collision radius.
-		CollisionComponent->InitSphereRadius(15.0f);
-		// Set the root component to be the collision component.
-		RootComponent = CollisionComponent;
-	}
 	if (!ProjectileMesh)
 	{
 		ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-		ProjectileMesh->SetupAttachment(CollisionComponent);
+		ProjectileMesh->SetupAttachment(RootComponent);
 
 		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/Skill/SM_ColdWProjectile"));
 		if (Mesh.Succeeded())
@@ -42,7 +33,7 @@ AColdWProjectile::AColdWProjectile()
 	{
 		// Use this component to drive this projectile's movement.
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
+		ProjectileMovementComponent->SetUpdatedComponent(RootComponent);
 		ProjectileMovementComponent->InitialSpeed = 0.f;
 		ProjectileMovementComponent->MaxSpeed = 0.f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
@@ -65,7 +56,7 @@ void AColdWProjectile::BeginPlay()
 			{
 				Destroy();
 			}
-	), 0.2f, false);
+	), duration, false);
 }
 
 // Called every frame
@@ -81,7 +72,7 @@ void AColdWProjectile::OnColliderOverlap(UPrimitiveComponent* OverlappedComponen
 	{
 		if (IDamagable* target = Cast<IDamagable>(OtherActor))
 		{
-			target->TakeDamage(10.f, projectileOwner);
+			target->TakeDamage(damage, projectileOwner);
 		}
 		if (IMovable* target = Cast<IMovable>(OtherActor))
 		{
@@ -89,7 +80,7 @@ void AColdWProjectile::OnColliderOverlap(UPrimitiveComponent* OverlappedComponen
 			{
 				FVector moveDirection = (OtherActor->GetActorLocation() - projectileOwner->GetActorLocation()) * FVector(1, 1, 0);
 
-				target->MoveVector(moveDirection, 10000);
+				target->MoveVector(moveDirection, force);
 			}
 		}
 	}

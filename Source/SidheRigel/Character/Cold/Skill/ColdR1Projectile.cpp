@@ -64,16 +64,16 @@ void AColdR1Projectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Target)
+	if (target)
 	{
-		FVector Forward = Target->GetActorLocation() - GetActorLocation();
+		FVector Forward = target->GetActorLocation() - GetActorLocation();
 		ProjectileMovementComponent->Velocity = Forward * ProjectileMovementComponent->InitialSpeed;
 
-		if ((this->GetDistanceTo(Target)) < 100.f)
+		if ((this->GetDistanceTo(target)) < 100.f)
 		{
-			if (IDamagable* target = Cast<IDamagable>(Target))
+			if (IDamagable* damagableTarget = Cast<IDamagable>(target))
 			{
-				target->TakeDamage(10.f, projectileOwner);
+				damagableTarget->TakeDamage(damage, projectileOwner);
 			}
 
 			Destroy();

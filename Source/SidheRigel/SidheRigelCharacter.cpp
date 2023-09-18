@@ -78,12 +78,9 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	for (float& cooldown : SkillCooldown)
+	for (auto skill : skills)
 	{
-		if (cooldown > 0)
-		{
-			cooldown -= DeltaSeconds;
-		}
+		skill.Value->OnTick(DeltaSeconds);
 	}
 }
 
@@ -294,26 +291,6 @@ void ASidheRigelCharacter::InitProperty()
 	defencePoint.Add("Debug", 100);
 
 	currentHP = GetMaxHP();
-
-	SkillDelay[0] = 1;
-	SkillDelay[1] = 1;
-	SkillDelay[2] = 1;
-	SkillDelay[3] = 1;
-
-	SkillMaxCooldown[0] = 2;
-	SkillMaxCooldown[1] = 2;
-	SkillMaxCooldown[2] = 2;
-	SkillMaxCooldown[3] = 2;
-
-	SkillCooldown[0] = 0;
-	SkillCooldown[1] = 0;
-	SkillCooldown[2] = 0;
-	SkillCooldown[3] = 0;
-
-	bIsInstantCast[0] = true;
-	bIsInstantCast[1] = false;
-	bIsInstantCast[2] = false;
-	bIsInstantCast[3] = false;
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()
@@ -363,107 +340,6 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 	float _lifeSteal = (float)GetLifeSteal() / 100.f;
 	
 	RestoreHP(damage * _lifeSteal);
-}
-
-float ASidheRigelCharacter::GetSkillDelay(E_SkillState SkillState)
-{
-	float res = 0;
-	switch (SkillState)
-	{
-	case Null:
-		break;
-	case Q_Ready:
-		res = SkillDelay[0];
-		break;
-	case W_Ready:
-		res = SkillDelay[1];
-		break;
-	case E_Ready:
-		res = SkillDelay[2];
-		break;
-	case R_Ready:
-		res = SkillDelay[3];
-		break;
-	default:
-		break;
-	}
-
-	return res;
-}
-
-float ASidheRigelCharacter::GetCooldown(E_SkillState SkillState)
-{
-	float res = 0;
-	switch (SkillState)
-	{
-	case Null:
-		break;
-	case Q_Ready:
-		res = SkillCooldown[0];
-		break;
-	case W_Ready:
-		res = SkillCooldown[1];
-		break;
-	case E_Ready:
-		res = SkillCooldown[2];
-		break;
-	case R_Ready:
-		res = SkillCooldown[3];
-		break;
-	default:
-		break;
-	}
-
-	return res;
-}
-
-bool ASidheRigelCharacter::IsInstantCast(E_SkillState SkillState)
-{
-	bool res = false;
-	switch (SkillState)
-	{
-	case Null:
-		break;
-	case Q_Ready:
-		res = bIsInstantCast[0];
-		break;
-	case W_Ready:
-		res = bIsInstantCast[1];
-		break;
-	case E_Ready:
-		res = bIsInstantCast[2];
-		break;
-	case R_Ready:
-		res = bIsInstantCast[3];
-		break;
-	default:
-		break;
-	}
-
-	return res;
-}
-
-void ASidheRigelCharacter::SetCooldown(E_SkillState SkillState)
-{
-	switch (SkillState)
-	{
-	case Null:
-		break;
-	case Q_Ready:
-		SkillCooldown[0] = SkillMaxCooldown[0];
-		break;
-	case W_Ready:
-		SkillCooldown[1] = SkillMaxCooldown[1];
-		break;
-	case E_Ready:
-		SkillCooldown[2] = SkillMaxCooldown[2];
-		break;
-	case R_Ready:
-		SkillCooldown[3] = SkillMaxCooldown[3];
-		break;
-	default:
-		break;
-	}
 }
 
 void ASidheRigelCharacter::Stun(float time)

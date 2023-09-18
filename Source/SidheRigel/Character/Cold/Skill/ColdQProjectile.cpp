@@ -16,32 +16,22 @@ AColdQProjectile::AColdQProjectile()
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
 	}
-	if (!CollisionComponent)
-	{
-		// Use a sphere as a simple collision representation.
-		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		// Set the sphere's collision radius.
-		CollisionComponent->InitSphereRadius(15.0f);
-		// Set the root component to be the collision component.
-		RootComponent = CollisionComponent;
-	}
 	if (!ProjectileMesh)
 	{
 		ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-		ProjectileMesh->SetupAttachment(CollisionComponent);
+		ProjectileMesh->SetupAttachment(RootComponent);
 
 		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/Skill/SM_ColdQProjectile"));
 		if (Mesh.Succeeded())
 		{
 			ProjectileMesh->SetStaticMesh(Mesh.Object);
 		}
-
 	}
 	if (!ProjectileMovementComponent)
 	{
 		// Use this component to drive this projectile's movement.
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
+		ProjectileMovementComponent->SetUpdatedComponent(ProjectileMesh);
 		ProjectileMovementComponent->InitialSpeed = 5.f;
 		ProjectileMovementComponent->MaxSpeed = 5.f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
@@ -63,16 +53,16 @@ void AColdQProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Target)
+	if (target)
 	{
-		FVector Forward = Target->GetActorLocation() - GetActorLocation();
-		ProjectileMovementComponent->Velocity = Forward * ProjectileMovementComponent->InitialSpeed;
+		FVector Forward = target->GetActorLocation() - GetActorLocation();
+		ProjectileMovementComponent->Velocity = Forward * speed;
 
-		if ((this->GetDistanceTo(Target)) < 100.f)
+		if ((this->GetDistanceTo(target)) < 100.f)
 		{
-			if (IDamagable* target = Cast<IDamagable>(Target))
+			if (IDamagable* damagableTarget = Cast<IDamagable>(target))
 			{
-				target->TakeDamage(10.f, projectileOwner);
+				damagableTarget->TakeDamage(damage, projectileOwner);
 			}
 
 			Destroy();
