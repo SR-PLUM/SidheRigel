@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -344,6 +345,11 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 
 void ASidheRigelCharacter::Stun(float time)
 {
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (controller && controller->stateMachine)
+	{
+		controller->stateMachine->ChangeState(controller->stateMachine->Stun);
+	}
 }
 
 void ASidheRigelCharacter::Stop(float time)
