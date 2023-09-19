@@ -16,6 +16,9 @@ class SIDHERIGEL_API UInGameUI : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	/*virtual void NativeConstruct();*/
+
+
 	UPROPERTY(meta = (BindWidget))
 		class UCharacterStatus* CharacterStatus;
 

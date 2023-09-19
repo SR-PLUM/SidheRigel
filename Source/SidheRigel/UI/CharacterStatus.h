@@ -17,6 +17,9 @@ class SIDHERIGEL_API UCharacterStatus : public UUserWidget
 
 public:
 
+	UFUNCTION()
+		virtual bool Initialize() override;
+
 	UPROPERTY(meta = (BindWidget))
 		class UImage* CharacterImage;
 
