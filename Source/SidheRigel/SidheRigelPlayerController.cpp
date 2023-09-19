@@ -57,18 +57,6 @@ void ASidheRigelPlayerController::SetupInputComponent()
 void ASidheRigelPlayerController::OnSetDestinationReleased()
 {
 	stateMachine->OnRightRelease();
-
-	//// If it was a short press
-	//if(FollowTime <= ShortPressThreshold)
-	//{
-	//	// We look for the location in the world where the player has pressed the input
-	//	FVector HitLocation = FVector::ZeroVector;
-	//	FHitResult Hit;
-	//	GetHitResultUnderCursor(ECC_Visibility, true, Hit);
-	//	HitLocation = Hit.Location;
-	//	
-	//	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitLocation, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
-	//}
 }
 
 void ASidheRigelPlayerController::ClickedRightMouseButton()
@@ -79,14 +67,6 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 void ASidheRigelPlayerController::ClickedLeftMouseButton()
 {
 	stateMachine->OnLeftClick();
-	/*FHitResult HitResult;
-	GetHitResultUnderCursor(ECollisionChannel::ECC_Pawn, false, HitResult);
-
-	auto MyPawn = Cast<ASidheRigelCharacter>(GetPawn());
-	if (MyPawn)
-	{
-		MyPawn->UseSkill(HitResult);
-	}*/
 }
 
 void ASidheRigelPlayerController::PressedQButton()

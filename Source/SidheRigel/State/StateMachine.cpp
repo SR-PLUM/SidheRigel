@@ -11,6 +11,7 @@
 #include "AttackState.h"
 #include "SkillReadyState.h"
 #include "UseSkillState.h"
+#include "StunState.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
 StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
@@ -22,6 +23,8 @@ StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 	Attack = new AttackState(this);
 	SkillReady = new SkillReadyState(this);
 	UseSkill = new UseSkillState(this);
+
+	Stun = new StunState(this);
 
 	currentState = Idle;
 
@@ -49,6 +52,14 @@ void StateMachine::Update(float DeltaTime)
 	{
 		frontDelay -= DeltaTime;
 	}
+	if (stunTime > 0)
+	{
+		stunTime -= DeltaTime;
+	}
+	if (stopTime > 0)
+	{
+		stopTime -= DeltaTime;
+	}
 
 	currentState->Update(DeltaTime);
 }
@@ -71,4 +82,10 @@ void StateMachine::OnLeftClick()
 void StateMachine::OnKeyboard(E_SkillState SkillState)
 {
 	currentState->OnKeyboard(SkillState);
+}
+
+void StateMachine::OnStun(float _stunTime)
+{
+	stunTime = _stunTime;
+	ChangeState(Stun);
 }

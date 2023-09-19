@@ -29,6 +29,8 @@ public:
 	class State* SkillReady;
 	class State* UseSkill;
 
+	class State* Stun;
+
 public:
 	ASidheRigelPlayerController* playerController;
 	AActor* target;
@@ -43,6 +45,12 @@ public:
 	//Delay During use Skill
 	float SkillDelay = 0;
 
+	//During Stun
+	float stunTime = 0;
+
+	//During Stop
+	float stopTime = 0;
+
 	bool bAttackWithSkillReady = false;
 
 	//casting keyboard
@@ -56,4 +64,6 @@ public:
 	void OnRightRelease();
 	void OnLeftClick();
 	void OnKeyboard(E_SkillState SkillState);
+
+	void OnStun(float stunTime);
 };
