@@ -19,7 +19,8 @@ IdleState::~IdleState()
 void IdleState::OnBegin()
 {
 	UE_LOG(LogTemp, Warning, TEXT("IDLE BEGIN"));
-	if (stateMachine && stateMachine->playerController)
+
+	if (stateMachine->playerController)
 	{
 		stateMachine->playerController->StopMovement();
 
@@ -33,30 +34,7 @@ void IdleState::Update(float DeltaTime)
 
 void IdleState::OnRightClick()
 {
-	if (stateMachine && stateMachine->playerController)
-	{
-		AActor* HitActor = stateMachine->playerController->GetHitResult().GetActor();
-		if (HitActor)
-		{
-			IDamagable* DamagableActor = Cast<IDamagable>(HitActor);
-			if (DamagableActor)
-			{
-				if (stateMachine)
-				{
-					stateMachine->target = HitActor;
-					stateMachine->ChangeState(stateMachine->MoveToAttack);
-				}
-			}
-			else
-			{
-				if (stateMachine)
-				{
-					stateMachine->location = stateMachine->playerController->GetHitResult().Location;
-					stateMachine->ChangeState(stateMachine->Move);
-				}
-			}
-		}
-	}
+	stateMachine->HasAttackEnemy();
 }
 
 void IdleState::OnRightRelease()
@@ -65,21 +43,15 @@ void IdleState::OnRightRelease()
 
 void IdleState::OnLeftClick()
 {
+	if (stateMachine->bSkillReady)
+	{
+		stateMachine->ChangeState(stateMachine->UseSkill);
+	}
 }
 
 void IdleState::OnKeyboard(E_SkillState SkillState)
 {
-	//Check Cooldown
-	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
-	{
-		stateMachine->currentSkill = SkillState;
-
-		stateMachine->ChangeState(stateMachine->SkillReady);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
-	}
+	stateMachine->ChangeCurrentSkill(SkillState);
 }
 
 void IdleState::OnEnd()

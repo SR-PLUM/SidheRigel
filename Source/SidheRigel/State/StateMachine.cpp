@@ -9,10 +9,11 @@
 #include "MoveState.h"
 #include "AttackWaitState.h"
 #include "AttackState.h"
-#include "SkillReadyState.h"
 #include "UseSkillState.h"
 #include "StunState.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
+#include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Interface/Damagable.h"
 
 StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 {
@@ -21,7 +22,6 @@ StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 	Move = new MoveState(this);
 	AttackWait = new AttackWaitState(this);
 	Attack = new AttackState(this);
-	SkillReady = new SkillReadyState(this);
 	UseSkill = new UseSkillState(this);
 
 	Stun = new StunState(this);
@@ -37,11 +37,26 @@ StateMachine::~StateMachine()
 
 void StateMachine::ChangeState(State* NextState)
 {
+	previousState = currentState;
 	currentState->OnEnd();
 	NextState->OnBegin();
 	currentState = NextState;
 }
 
+void StateMachine::ChangePreviousState()
+{
+	currentState->OnEnd();
+	previousState->OnBegin();
+
+	if (previousState == UseSkill)
+	{
+		previousState = Idle;
+	}
+
+	currentState = previousState;
+}
+
+//Timer
 void StateMachine::Update(float DeltaTime)
 {
 	if (attackDelay > 0)
@@ -52,6 +67,10 @@ void StateMachine::Update(float DeltaTime)
 	{
 		frontDelay -= DeltaTime;
 	}
+	if (skillDelay > 0)
+	{
+		skillDelay -= DeltaTime;
+	}
 	if (stunTime > 0)
 	{
 		stunTime -= DeltaTime;
@@ -61,26 +80,43 @@ void StateMachine::Update(float DeltaTime)
 		stopTime -= DeltaTime;
 	}
 
+	//Show Skill Range
+	if (bSkillReady && currentSkill != E_SkillState::Null)
+	{
+
+	}
+
 	currentState->Update(DeltaTime);
 }
 
+//Move Or Attack Or SkillCancel
 void StateMachine::OnRightClick()
 {
+	//SkillCancel
+	bSkillReady = false;
+	currentSkill = E_SkillState::Null;
+
 	currentState->OnRightClick();
 }
 
+//Move
 void StateMachine::OnRightRelease()
 {
 	currentState->OnRightRelease();
 }
 
+//SkillUse
 void StateMachine::OnLeftClick()
 {
 	currentState->OnLeftClick();
 }
 
+//SkillReady
 void StateMachine::OnKeyboard(E_SkillState SkillState)
 {
+	bSkillReady = true;
+	currentSkill = SkillState;
+
 	currentState->OnKeyboard(SkillState);
 }
 
@@ -88,4 +124,49 @@ void StateMachine::OnStun(float _stunTime)
 {
 	stunTime = _stunTime;
 	ChangeState(Stun);
+}
+
+void StateMachine::HasAttackEnemy()
+{
+	//Move & Attack
+	if (playerController)
+	{
+		AActor* HitActor = playerController->GetHitResult().GetActor();
+		if (HitActor)
+		{
+			IDamagable* DamagableActor = Cast<IDamagable>(HitActor);
+			if (DamagableActor)
+			{
+				target = HitActor;
+				ChangeState(MoveToAttack);
+			}
+			else
+			{
+				location = playerController->GetHitResult().Location;
+				ChangeState(Move);
+			}
+		}
+	}
+}
+
+void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
+{
+	myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
+
+	//Check Cooldown
+	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
+	{
+		currentSkill = SkillState;
+		bSkillReady = true;
+
+		//Check Instant cast
+		if (myCharacter->skills[SkillState]->IsInstantCast())
+		{
+			ChangeState(UseSkill);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
+	}
 }

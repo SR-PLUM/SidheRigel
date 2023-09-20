@@ -18,43 +18,51 @@ UseSkillState::~UseSkillState()
 void UseSkillState::OnBegin()
 {
 	UE_LOG(LogTemp, Warning, TEXT("USE SKILL BEGIN"));
-	stateMachine->playerController->StopMovement();
 
-	//USE SKILL
-	myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
-	if (myCharacter)
+	//Stop To Use Skill
+	if (stateMachine->playerController)
 	{
-		//Get SkillDelay
-		stateMachine->SkillDelay = myCharacter->skills[stateMachine->currentSkill]->GetSkillDelay();
+		stateMachine->playerController->StopMovement();
 
-		//Cast Skill
-		FHitResult Hit;
-		stateMachine->playerController->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
-		
-		if (myCharacter->skills.Contains(stateMachine->currentSkill))
+		//USE SKILL
+		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+		if (myCharacter)
 		{
-			myCharacter->skills[stateMachine->currentSkill]->OnUse(Hit);
-		}
-		
-		//Set Character Rotation
-		FVector ForwardDirection = (Hit.Location - myCharacter->GetActorLocation()).GetSafeNormal();
-		myCharacter->SetActorRotation(ForwardDirection.Rotation());
+			//Get SkillDelay
+			stateMachine->skillDelay = myCharacter->skills[stateMachine->currentSkill]->GetSkillDelay();
 
-		//Skill Cooldown
-		myCharacter->skills[stateMachine->currentSkill]->SetCooldown();
+			//Cast Skill
+			FHitResult Hit;
+			stateMachine->playerController->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
+
+			if (myCharacter->skills.Contains(stateMachine->currentSkill))
+			{
+				myCharacter->skills[stateMachine->currentSkill]->OnUse(Hit);
+			}
+
+			//Set Character Rotation
+			FVector ForwardDirection = (Hit.Location - myCharacter->GetActorLocation()).GetSafeNormal();
+			myCharacter->SetActorRotation(ForwardDirection.Rotation());
+
+			//Skill Cooldown
+			myCharacter->skills[stateMachine->currentSkill]->SetCooldown();
+
+			//Return Flag
+			stateMachine->bSkillReady = false;
+			stateMachine->currentSkill = E_SkillState::Null;
+		}
 	}
 }
 
 void UseSkillState::Update(float DeltaTime)
 {
-	if (stateMachine->SkillDelay > 0)
+	if (stateMachine->skillDelay > 0)
 	{
-		stateMachine->SkillDelay -= DeltaTime;
+		stateMachine->skillDelay -= DeltaTime;
 	}
 	else
 	{
-		stateMachine->currentSkill = E_SkillState::Null;
-		stateMachine->ChangeState(stateMachine->Idle);
+		stateMachine->ChangePreviousState();
 	}
 }
 

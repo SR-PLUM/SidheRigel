@@ -20,7 +20,7 @@ void MoveToAttackState::OnBegin()
 {
 	UE_LOG(LogTemp, Warning, TEXT("MOVETOATTACK BEGIN"));
 
-	if (stateMachine && stateMachine->playerController)
+	if (stateMachine->playerController)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
 	}
@@ -28,7 +28,7 @@ void MoveToAttackState::OnBegin()
 
 void MoveToAttackState::Update(float DeltaTime)
 {
-	if (myCharacter && stateMachine)
+	if (myCharacter)
 	{
 		//Can Attack Target
 		if ((myCharacter->GetRange() >= myCharacter->GetDistanceTo(stateMachine->target)))
@@ -38,28 +38,18 @@ void MoveToAttackState::Update(float DeltaTime)
 		}
 		else
 		{
+			//Move
 			if (stateMachine->target)
 			{
 				UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->target->GetActorLocation());
 			}
-		}
-
-		if (stateMachine->bAttackWithSkillReady)
-		{
-			//Show Skill Range
 		}
 	}
 }
 
 void MoveToAttackState::OnRightClick()
 {
-	if (stateMachine)
-	{
-		stateMachine->bAttackWithSkillReady = false;
-		stateMachine->currentSkill = E_SkillState::Null;
-
-		stateMachine->Idle->OnRightClick();
-	}
+	stateMachine->HasAttackEnemy();
 }
 
 void MoveToAttackState::OnRightRelease()
@@ -68,33 +58,15 @@ void MoveToAttackState::OnRightRelease()
 
 void MoveToAttackState::OnLeftClick()
 {
-	if (stateMachine->bAttackWithSkillReady)
+	if (stateMachine->bSkillReady)
 	{
-		stateMachine->bAttackWithSkillReady = false;
 		stateMachine->ChangeState(stateMachine->UseSkill);
 	}
 }
 
 void MoveToAttackState::OnKeyboard(E_SkillState SkillState)
 {
-	//Check Cooldown
-	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
-	{
-		stateMachine->currentSkill = SkillState;
-
-		//Check Instant cast
-		if (myCharacter->skills[SkillState]->IsInstantCast())
-		{
-			stateMachine->ChangeState(stateMachine->UseSkill);
-			return;
-		}
-
-		stateMachine->bAttackWithSkillReady = true;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
-	}
+	stateMachine->ChangeCurrentSkill(SkillState);
 }
 
 void MoveToAttackState::OnEnd()
