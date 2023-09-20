@@ -17,7 +17,8 @@ AttackWaitState::~AttackWaitState()
 void AttackWaitState::OnBegin()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ATTACKWAIT BEGIN"));
-	if (stateMachine && stateMachine->playerController)
+
+	if (stateMachine->playerController)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
 	}
@@ -25,33 +26,25 @@ void AttackWaitState::OnBegin()
 
 void AttackWaitState::Update(float DeltaTime)
 {
-	if (stateMachine)
+	//Can Attack
+	if (stateMachine->attackDelay <= 0)
 	{
-		if (stateMachine->attackDelay <= 0)
-		{
-			stateMachine->ChangeState(stateMachine->Attack);
-		}
-		if (myCharacter)
-		{
-			if (myCharacter->GetRange() < myCharacter->GetDistanceTo(stateMachine->target))
-			{
-				stateMachine->ChangeState(stateMachine->MoveToAttack);
-			}
-		}
+		stateMachine->ChangeState(stateMachine->Attack);
+	}
 
-		if (stateMachine->bAttackWithSkillReady)
+	//Have to Move
+	if (myCharacter)
+	{
+		if (myCharacter->GetRange() < myCharacter->GetDistanceTo(stateMachine->target))
 		{
-			//Show Skill Range
+			stateMachine->ChangeState(stateMachine->MoveToAttack);
 		}
 	}
 }
 
 void AttackWaitState::OnRightClick()
 {
-	stateMachine->bAttackWithSkillReady = false;
-	stateMachine->currentSkill = E_SkillState::Null;
-
-	stateMachine->Idle->OnRightClick();
+	stateMachine->HasAttackEnemy();
 }
 
 void AttackWaitState::OnRightRelease()
@@ -60,33 +53,15 @@ void AttackWaitState::OnRightRelease()
 
 void AttackWaitState::OnLeftClick()
 {
-	if (stateMachine->bAttackWithSkillReady)
+	if (stateMachine->bSkillReady)
 	{
-		stateMachine->bAttackWithSkillReady = false;
 		stateMachine->ChangeState(stateMachine->UseSkill);
 	}
 }
 
 void AttackWaitState::OnKeyboard(E_SkillState SkillState)
 {
-	//Check Cooldown
-	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
-	{
-		stateMachine->currentSkill = SkillState;
-
-		//Check Instant cast
-		if (myCharacter->skills[SkillState]->IsInstantCast())
-		{
-			stateMachine->ChangeState(stateMachine->UseSkill);
-			return;
-		}
-
-		stateMachine->bAttackWithSkillReady = true;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
-	}
+	stateMachine->ChangeCurrentSkill(SkillState);
 }
 
 void AttackWaitState::OnEnd()
