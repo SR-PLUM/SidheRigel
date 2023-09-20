@@ -31,19 +31,12 @@ protected:	//Attack
 		TSubclassOf<class AFairyWingAttackProjectile> attackProjectileClass;
 
 	virtual void InitAttackProjectile() override;
-	virtual void SpawnAttackProjectile() override;
+	virtual void Attack(AActor* target) override;
 
 protected:	//Skill
-	virtual void SkillOne();
-	virtual void SkillTwo();
-	virtual	void SkillThree();
-	virtual void SkillFour();
-
-	virtual void SkillCancel();
-	virtual void UseSkill(FHitResult HitResult);
+	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 private:	//State
-	E_SkillState skillState; 
 	UPROPERTY()
 		FTimerHandle destroyTimer;
 

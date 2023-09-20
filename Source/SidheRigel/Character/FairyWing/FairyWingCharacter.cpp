@@ -12,8 +12,6 @@
 // Sets default values
 AFairyWingCharacter::AFairyWingCharacter()
 {
- 	skillState = Null;
-
 	static ConstructorHelpers::FObjectFinder<UBlueprint> EProjectile(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingEProjectile"));
 	if (EProjectile.Object)
 	{
@@ -86,7 +84,7 @@ void AFairyWingCharacter::InitAttackProjectile()
 	}
 }
 
-void AFairyWingCharacter::SpawnAttackProjectile()
+void AFairyWingCharacter::Attack(AActor* target)
 {
 	if (attackProjectileClass)
 	{
@@ -104,50 +102,16 @@ void AFairyWingCharacter::SpawnAttackProjectile()
 			AFairyWingAttackProjectile* Projectile = World->SpawnActor<AFairyWingAttackProjectile>(attackProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
+				Projectile->Target = target;
 				InitProjectileProperty(Projectile);
 			}
 		}
 	}
 }
 
-void AFairyWingCharacter::SkillOne()
+void AFairyWingCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("FairyWing Ready Q"));
-
-	skillState = Q_Ready;
-}
-
-void AFairyWingCharacter::SkillTwo()
-{
-	UE_LOG(LogTemp, Warning, TEXT("FairyWing Ready W"));
-
-	skillState = W_Ready;
-}
-
-void AFairyWingCharacter::SkillThree()
-{
-	UE_LOG(LogTemp, Warning, TEXT("FairyWing Ready E"));
-
-	skillState = E_Ready;
-}
-
-void AFairyWingCharacter::SkillFour()
-{
-	UE_LOG(LogTemp, Warning, TEXT("FairyWing Ready R"));
-
-	skillState = R_Ready;
-}
-
-void AFairyWingCharacter::SkillCancel()
-{
-	UE_LOG(LogTemp, Warning, TEXT("FairyWing SkillCancel"));
-
-	skillState = Null;
-}
-
-void AFairyWingCharacter::UseSkill(FHitResult HitResult)
-{
-	switch (skillState)
+	switch (SkillState)
 	{
 	case Null:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing SkillState is Null"));
@@ -188,7 +152,6 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 			}
 		}
 
-		skillState = Null;
 		break;
 	case W_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing use W"));
@@ -226,7 +189,6 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 			}
 		}
 
-		skillState = Null;
 		break;
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing use E"));
@@ -261,7 +223,6 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 		}
 		
 
-		skillState = Null;
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing use R"));
@@ -299,7 +260,6 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult)
 			}
 		}
 
-		skillState = Null;
 		break;
 	default:
 		break;

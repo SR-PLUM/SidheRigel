@@ -8,6 +8,8 @@
 #include "Interface/CCable.h"
 #include "Interface/Damagable.h"
 #include "Interface/Movable.h"
+#include "Enum/E_SkillState.h"
+#include "Character/Skill.h"
 #include "SidheRigelCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -43,21 +45,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class ADummyProjectile> baseProjectileClass;
 
-	class AttackStateMachine* attackStateMachine;
-
-protected:	//Skill
-	UFUNCTION()
-		virtual void SkillOne();
-	UFUNCTION()
-		virtual void SkillTwo();
-	UFUNCTION()
-		virtual void SkillThree();
-	UFUNCTION()
-		virtual void SkillFour();
-	UFUNCTION()
-		virtual void SkillCancel();
-	UFUNCTION()
-		virtual void UseSkill(FHitResult HitResult);
+public:	//Skill
+	TMap<E_SkillState, Skill*> skills;
+	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 protected:	//Stat
 	UPROPERTY()
@@ -104,8 +94,8 @@ protected:	//Stat
 		TMap<FString, int32> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> decreseDefencePoint;//방깍
+
 public:		//Getter, Setter
-	void SetTarget(AActor* target);
 	void SetLevel(int32 _level);
 	virtual void SetCurrentHP(float _hp);
 	float GetCurrentHP();
@@ -127,16 +117,11 @@ public:		//Getter, Setter
 
 	virtual void InitProperty();
 
-public:	//Attack State
-	void ChangeAttackState();
-	void WaitAttackDelay();
-
 public:	//Attack
 	virtual void InitAttackProjectile();
-	virtual void SpawnAttackProjectile();
+	virtual void Attack(AActor* target) override;
 	UFUNCTION()
 		void InitProjectileProperty(ADummyProjectile* projectile);
-	AActor* target;
 
 	UFUNCTION()
 		void LifeSteal(float damage);
@@ -151,9 +136,6 @@ protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
  
 public:		//Interface Implement
-	UFUNCTION()
-		virtual void Attack(AActor* Target) override;
-
 	UFUNCTION()
 		virtual void Stun(float time) override;
 	UFUNCTION()

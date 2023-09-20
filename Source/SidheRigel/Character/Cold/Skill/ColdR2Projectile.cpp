@@ -82,7 +82,7 @@ void AColdR2Projectile::OnColliderOverlap(UPrimitiveComponent* OverlappedCompone
 	{
 		if (IDamagable* target = Cast<IDamagable>(OtherActor))
 		{
-			target->TakeDamage(10.f, projectileOwner);
+			target->TakeDamage(damage, projectileOwner);
 
 			Destroy();
 		}

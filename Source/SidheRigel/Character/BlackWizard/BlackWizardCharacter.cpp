@@ -1,14 +1,13 @@
 #include "BlackWizardCharacter.h"
 #include "Components/SphereComponent.h"
+#include "SidheRigel/Character/BlackWizard/Skill/BlackWizardQCollider.h"
+#include "SidheRigel/Character/BlackWizard/Skill/BlackWizardECollider.h"
 #include "SidheRigel/Character/BlackWizard/Skill/BlackWizardRCollider.h"
 #include "SidheRigel/Character/BlackWizard/BlackWizardAttackProjectile.h"
 
 // Sets default values
 ABlackWizardCharacter::ABlackWizardCharacter()
 {
-
-	skillState = Null;
-
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -16,6 +15,18 @@ ABlackWizardCharacter::ABlackWizardCharacter()
 	if (RCollider.Object)
 	{
 		RColliderClass = (UClass*)RCollider.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> QCollider(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardQCollider"));
+	if (QCollider.Object)
+	{
+		QColliderClass = (UClass*)QCollider.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> ECollider(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardECollider"));
+	if (ECollider.Object)
+	{
+		EColliderClass = (UClass*)ECollider.Object->GeneratedClass;
 	}
 
 	InitAttackProjectile();
@@ -66,7 +77,7 @@ void ABlackWizardCharacter::InitAttackProjectile()
 	}
 }
 
-void ABlackWizardCharacter::SpawnAttackProjectile()
+void ABlackWizardCharacter::Attack(AActor* target)
 {
 	if (attackProjectileClass)
 	{
@@ -84,65 +95,97 @@ void ABlackWizardCharacter::SpawnAttackProjectile()
 			ABlackWizardAttackProjectile* Projectile = World->SpawnActor<ABlackWizardAttackProjectile>(attackProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 			if (Projectile)
 			{
+				Projectile->Target = target;
 				InitProjectileProperty(Projectile);
 			}
 		}
 	}
 }
 
-void ABlackWizardCharacter::SkillOne()
+void ABlackWizardCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard Ready Q"));
-
-	skillState = Q_Ready;
-}
-
-void ABlackWizardCharacter::SkillTwo()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard Ready W"));
-
-	skillState = W_Ready;
-}
-
-void ABlackWizardCharacter::SkillThree()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard Ready E"));
-
-	skillState = E_Ready;
-}
-
-void ABlackWizardCharacter::SkillFour()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard Ready R"));
-
-	skillState = R_Ready;
-}
-
-void ABlackWizardCharacter::SkillCancel()
-{
-	UE_LOG(LogTemp, Warning, TEXT("BlackWizard SkillCancel"));
-
-	skillState = Null;
-}
-
-void ABlackWizardCharacter::UseSkill(FHitResult HitResult)
-{
-	switch (skillState)
+	switch (SkillState)
 	{
 	case Null:
 		UE_LOG(LogTemp, Warning, TEXT("BlackWizard SkillState is Null"));
 		break;
 	case Q_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("BlackWizard use Q"));
-		skillState = Null;
+
+		if (QColliderClass)
+		{
+			FVector MuzzleLocation = HitResult.Location;
+			FRotator MuzzleRotation = GetActorRotation();
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = GetInstigator();
+
+				// Spawn the projectile at the muzzle.
+				ABlackWizardQCollider* Collider = World->SpawnActor<ABlackWizardQCollider>(QColliderClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				if (Collider)
+				{
+					// Set the projectile's initial trajectory.
+					Collider->colliderOwner = this;
+
+					FTimerHandle QColliderDestroyTimer;
+					GetWorldTimerManager().SetTimer(QColliderDestroyTimer,
+						FTimerDelegate::CreateLambda([=]()
+							{
+								Collider->Destroy();
+							}
+
+					), 1.0f, false);
+
+					Collider->CollisionComponent->SetGenerateOverlapEvents(false);
+				}
+			}
+		}
+
 		break;
 	case W_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("BlackWizard use W"));
-		skillState = Null;
+		UE_LOG(LogTemp, Warning, TEXT("BlackWizard use W"));	
+
 		break;
 	case E_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("BlackWizard use E"));
-		skillState = Null;
+
+		if (EColliderClass)
+		{
+			FVector MuzzleLocation = HitResult.Location;
+			FRotator MuzzleRotation = GetActorRotation();
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				SpawnParams.Instigator = GetInstigator();
+
+				// Spawn the projectile at the muzzle.
+				ABlackWizardECollider* Collider = World->SpawnActor<ABlackWizardECollider>(EColliderClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				if (Collider)
+				{
+					// Set the projectile's initial trajectory.
+					Collider->colliderOwner = this;
+
+					FTimerHandle EColliderDestroyTimer;
+					GetWorldTimerManager().SetTimer(EColliderDestroyTimer,
+						FTimerDelegate::CreateLambda([=]()
+							{
+								Collider->Destroy();
+							}
+
+					), 1.0f, false);
+
+					Collider->CollisionComponent->SetGenerateOverlapEvents(false);
+				}
+			}
+		}
+
 		break;
 	case R_Ready:
 		UE_LOG(LogTemp, Warning, TEXT("BlackWizard use R"));
@@ -178,7 +221,7 @@ void ABlackWizardCharacter::UseSkill(FHitResult HitResult)
 								Collider->Destroy();
 							}
 
-					), 1.0f, false);					
+					), 1.0f, false);
 
 					Collider->FinishSpawning(SpawnTransform);
 
@@ -187,7 +230,6 @@ void ABlackWizardCharacter::UseSkill(FHitResult HitResult)
 			}
 		}
 
-		skillState = Null;
 		break;
 	default:
 		break;

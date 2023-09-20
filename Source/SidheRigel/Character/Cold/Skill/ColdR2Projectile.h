@@ -30,9 +30,10 @@ public:
 		FVector startLocation;
 	UPROPERTY()
 		FVector forwardVector;
-
 	UPROPERTY()
 		float range;
+	UPROPERTY()
+		float damage;
 
 protected:
 	UFUNCTION()
