@@ -28,9 +28,6 @@ void UCharacterStatus::InitIconImage(E_Character Character)
 		UE_LOG(LogTemp, Warning, TEXT("No!"));
 	}
 
-	
-	
-
 }
 
 UTexture2D* UCharacterStatus::CastPathToTexture2D(FString Path)

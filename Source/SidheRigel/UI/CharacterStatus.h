@@ -7,6 +7,7 @@
 #include "../Enum/E_Character.h"
 #include "CharacterStatus.generated.h"
 
+
 /**
  * 
  */
