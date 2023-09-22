@@ -23,4 +23,7 @@ public:
 	void OnLeftClick() override;
 	void OnKeyboard(E_SkillState SkillState) override;
 	void OnEnd() override;
+
+private:
+	class ASidheRigelCharacter* myCharacter;
 };

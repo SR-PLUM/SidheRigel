@@ -33,7 +33,7 @@ public:
 
 public:
 	ASidheRigelPlayerController* playerController;
-	ASidheRigelCharacter* myCharacter;
+	class ASidheRigelCharacter* myCharacter;
 	AActor* target;
 	FVector location;
 
@@ -71,4 +71,6 @@ public:
 
 	void HasAttackEnemy();
 	void ChangeCurrentSkill(E_SkillState SkillState);
+
+	void ChangeCharacterSpeed(float speed);
 };

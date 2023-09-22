@@ -15,6 +15,8 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Interface/Damagable.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 {
 	Idle = new IdleState(this);
@@ -169,4 +171,11 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
 	}
+}
+
+void StateMachine::ChangeCharacterSpeed(float speed)
+{
+	myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
+
+	UE_LOG(LogTemp,Warning,TEXT("speed : %d"),myCharacter->GetCharacterMovement()->GetMaxAcceleration());
 }
