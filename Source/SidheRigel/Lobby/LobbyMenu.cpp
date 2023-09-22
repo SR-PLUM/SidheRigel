@@ -108,5 +108,5 @@ void ULobbyMenu::StartGame()
 	UWorld* World = GetWorld();
 	if (World == nullptr) return;
 
-	World->ServerTravel("/Game/TopDown/Maps/TopDownMap?listen");
+	World->ServerTravel("/Game/Maps/TwistedDesert?listen");
 }
