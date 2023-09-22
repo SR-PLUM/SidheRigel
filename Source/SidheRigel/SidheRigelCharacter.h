@@ -111,6 +111,7 @@ public:		//Getter, Setter
 	int32 GetLifeSteal();
 	int32 GetProtectPower();
 	float GetDefencePoint();
+	float GetSpeed();
 
 	void AddDecreseDefencePercent(FString name, float value, float time);
 	float GetDecreseDefence();

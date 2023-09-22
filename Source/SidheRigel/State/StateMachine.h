@@ -68,6 +68,7 @@ public:
 	void OnKeyboard(E_SkillState SkillState);
 
 	void OnStun(float stunTime);
+	void OnStop(float stopTime);
 
 	void HasAttackEnemy();
 	void ChangeCurrentSkill(E_SkillState SkillState);

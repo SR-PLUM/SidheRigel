@@ -248,6 +248,17 @@ float ASidheRigelCharacter::GetDefencePoint()
 	return res;
 }
 
+float ASidheRigelCharacter::GetSpeed()
+{
+	float res = 0.f;
+	for (auto& value : speed)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
 void ASidheRigelCharacter::AddDecreseDefencePercent(FString name, float value, float time)
 {
 	decreseDefencePoint.Add(name, value);
@@ -284,12 +295,15 @@ void ASidheRigelCharacter::InitProperty()
 	attackSpeed.Add("Debug", 1.f);
 	criticalRate.Add("Debug", 50);
 	criticalDamage.Add("Debug", 50);
+
 	MaxHP.Add("Debug", 100.f);
 	generateHealthPoint.Add("Debug", 0.2f);
 	lifeSteal.Add("Debug", 5.f);
 	protectPower.Add("Debug", 20);
 
 	defencePoint.Add("Debug", 100);
+
+	speed.Add("Debug", 600.f);
 
 	currentHP = GetMaxHP();
 }

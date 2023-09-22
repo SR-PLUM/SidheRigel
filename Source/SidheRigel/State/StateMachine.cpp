@@ -31,6 +31,8 @@ StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 	currentState = Idle;
 
 	playerController = PlayerController;
+
+	myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
 }
 
 StateMachine::~StateMachine()
@@ -80,6 +82,11 @@ void StateMachine::Update(float DeltaTime)
 	if (stopTime > 0)
 	{
 		stopTime -= DeltaTime;
+		ChangeCharacterSpeed(0);
+	}
+	else
+	{
+		ChangeCharacterSpeed(myCharacter->GetSpeed());
 	}
 
 	//Show Skill Range
@@ -128,6 +135,11 @@ void StateMachine::OnStun(float _stunTime)
 	ChangeState(Stun);
 }
 
+void StateMachine::OnStop(float _stopTime)
+{
+	stopTime = _stopTime;
+}
+
 void StateMachine::HasAttackEnemy()
 {
 	//Move & Attack
@@ -153,8 +165,6 @@ void StateMachine::HasAttackEnemy()
 
 void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 {
-	myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
-
 	//Check Cooldown
 	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
 	{
@@ -175,7 +185,7 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 
 void StateMachine::ChangeCharacterSpeed(float speed)
 {
-	myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
+	myCharacter->GetCharacterMovement()->MaxWalkSpeed = speed;
 
-	UE_LOG(LogTemp,Warning,TEXT("speed : %d"),myCharacter->GetCharacterMovement()->GetMaxAcceleration());
+	UE_LOG(LogTemp,Warning,TEXT("speed : %f"), myCharacter->GetCharacterMovement()->MaxWalkSpeed);
 }
