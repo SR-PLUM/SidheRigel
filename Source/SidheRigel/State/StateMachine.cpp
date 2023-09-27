@@ -95,6 +95,10 @@ void StateMachine::Update(float DeltaTime)
 			myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
 		}
 	}
+	if (silenceTime > 0)
+	{
+		silenceTime -= DeltaTime;
+	}
 
 	//Show Skill Range
 	if (bSkillReady && currentSkill != E_SkillState::Null)
@@ -130,6 +134,11 @@ void StateMachine::OnLeftClick()
 //SkillReady
 void StateMachine::OnKeyboard(E_SkillState SkillState)
 {
+	if (silenceTime > 0)
+	{
+		return;
+	}
+
 	bSkillReady = true;
 	currentSkill = SkillState;
 
@@ -145,6 +154,11 @@ void StateMachine::OnStun(float _stunTime)
 void StateMachine::OnStop(float _stopTime)
 {
 	stopTime = _stopTime;
+}
+
+void StateMachine::OnSilence(float _silenceTime)
+{
+	silenceTime = _silenceTime;
 }
 
 void StateMachine::HasAttackEnemy()

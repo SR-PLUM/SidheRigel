@@ -35,8 +35,6 @@ protected:	//Interface Implement
 		virtual void Slow(float time, float value, FString key) override;
 	UFUNCTION()
 		virtual void Silence(float time) override;
-	UFUNCTION()
-		virtual void Airborne(float time) override;
 
 	UFUNCTION()
 		virtual void MoveVector(FVector Direction, float Force) override;

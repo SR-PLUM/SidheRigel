@@ -77,11 +77,6 @@ void ADummy::Silence(float time)
 	UE_LOG(LogTemp, Warning, TEXT("SILENCE : %fs"), time);
 }
 
-void ADummy::Airborne(float time)
-{
-	UE_LOG(LogTemp, Warning, TEXT("AIRBORNE : %fs"), time);
-}
-
 void ADummy::MoveVector(FVector Direction, float Force)
 {
 	moveDirection = Direction.GetSafeNormal();

@@ -30,6 +30,4 @@ public:
 		virtual void Slow(float time, float value, FString key) = 0;
 	UFUNCTION()
 		virtual void Silence(float time) = 0;
-	UFUNCTION()
-		virtual void Airborne(float time) = 0;
 };

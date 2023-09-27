@@ -261,6 +261,9 @@ float ASidheRigelCharacter::GetSpeed()
 
 void ASidheRigelCharacter::AddDecreseDefencePercent(FString name, float value, float time)
 {
+	if (decreseDefencePoint.Contains(name))
+		return;
+
 	decreseDefencePoint.Add(name, value);
 
 	if (time == -1)
@@ -377,17 +380,34 @@ void ASidheRigelCharacter::Stop(float time)
 
 void ASidheRigelCharacter::Slow(float time, float value, FString key)
 {
-	
+	if (speedRate.Contains(key))
+	{
+		return;
+	}
+
+	speedRate.Add(key, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle SlowTimer;
+	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (speedRate.Find(key))
+			{
+				speedRate.Remove(key);
+			}
+		})
+		, time, false);
 }
 
 void ASidheRigelCharacter::Silence(float time)
 {
-
-}
-
-void ASidheRigelCharacter::Airborne(float time)
-{
-
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (controller && controller->stateMachine)
+	{
+		controller->stateMachine->OnSilence(time);
+	}
 }
 
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
