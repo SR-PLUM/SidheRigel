@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "MainMenu/MenuInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Enum/E_Character.h"
 #include "SidheRigelGameInstance.generated.h"
 
 /**
@@ -63,5 +64,5 @@ private:
 	const FString LobbyURL = "/Game/Maps/Lobby?listen";
 
 public:
-	int32 CharacterNum = 0;
+	E_Character CharacterNum = Empty;
 };

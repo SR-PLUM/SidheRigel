@@ -7,6 +7,7 @@
 #include "../Enum/E_Character.h"
 #include "CharacterStatus.generated.h"
 
+
 /**
  * 
  */
@@ -16,6 +17,9 @@ class SIDHERIGEL_API UCharacterStatus : public UUserWidget
 	GENERATED_BODY()
 
 public:
+
+	UFUNCTION()
+		virtual bool Initialize() override;
 
 	UPROPERTY(meta = (BindWidget))
 		class UImage* CharacterImage;

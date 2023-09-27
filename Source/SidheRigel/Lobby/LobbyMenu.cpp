@@ -7,6 +7,8 @@
 
 #include "SidheRigel/SidheRigelGameInstance.h"
 
+#include "SidheRigel/Enum/E_Character.h"
+
 bool ULobbyMenu::Initialize()
 {
 	bool Success = Super::Initialize();
@@ -42,7 +44,7 @@ void ULobbyMenu::SetCharacterACM()
 
 		if (SidheRigelInstance)
 		{
-			SidheRigelInstance->CharacterNum = 1;
+			SidheRigelInstance->CharacterNum = ACM;
 		}
 	}
 }
@@ -56,7 +58,7 @@ void ULobbyMenu::SetCharacterBlackWizard()
 
 		if (SidheRigelInstance)
 		{
-			SidheRigelInstance->CharacterNum = 2;
+			SidheRigelInstance->CharacterNum = BlackWizard;
 		}
 	}
 }
@@ -70,7 +72,7 @@ void ULobbyMenu::SetCharacterCold()
 
 		if (SidheRigelInstance)
 		{
-			SidheRigelInstance->CharacterNum = 3;
+			SidheRigelInstance->CharacterNum = Cold;
 		}
 	}
 }
@@ -84,7 +86,7 @@ void ULobbyMenu::SetCharacterFairyWing()
 
 		if (SidheRigelInstance)
 		{
-			SidheRigelInstance->CharacterNum = 4;
+			SidheRigelInstance->CharacterNum = FairyWing;
 		}
 	}
 }
@@ -98,7 +100,7 @@ void ULobbyMenu::SetCharacterKerun()
 
 		if (SidheRigelInstance)
 		{
-			SidheRigelInstance->CharacterNum = 5;
+			SidheRigelInstance->CharacterNum = Kerun;
 		}
 	}
 }
