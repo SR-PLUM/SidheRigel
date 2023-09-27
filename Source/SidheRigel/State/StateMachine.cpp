@@ -86,7 +86,14 @@ void StateMachine::Update(float DeltaTime)
 	}
 	else
 	{
-		ChangeCharacterSpeed(myCharacter->GetSpeed());
+		if (myCharacter)
+		{
+			ChangeCharacterSpeed(myCharacter->GetSpeed());
+		}
+		else
+		{
+			myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
+		}
 	}
 
 	//Show Skill Range
@@ -186,6 +193,4 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 void StateMachine::ChangeCharacterSpeed(float speed)
 {
 	myCharacter->GetCharacterMovement()->MaxWalkSpeed = speed;
-
-	UE_LOG(LogTemp,Warning,TEXT("speed : %f"), myCharacter->GetCharacterMovement()->MaxWalkSpeed);
 }

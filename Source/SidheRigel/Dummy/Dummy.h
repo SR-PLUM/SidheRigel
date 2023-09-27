@@ -32,7 +32,7 @@ protected:	//Interface Implement
 	UFUNCTION()
 		virtual void Stop(float time) override;
 	UFUNCTION()
-		virtual void Slow(float time, float value) override;
+		virtual void Slow(float time, float value, FString key) override;
 	UFUNCTION()
 		virtual void Silence(float time) override;
 	UFUNCTION()

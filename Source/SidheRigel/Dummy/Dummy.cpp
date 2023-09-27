@@ -67,7 +67,7 @@ void ADummy::Stop(float time)
 	UE_LOG(LogTemp, Warning, TEXT("STOP : %fs"), time);
 }
 
-void ADummy::Slow(float time, float value)
+void ADummy::Slow(float time, float value, FString key)
 {
 	UE_LOG(LogTemp, Warning, TEXT("SLOW : %fs, %f%%"), time, value);
 }

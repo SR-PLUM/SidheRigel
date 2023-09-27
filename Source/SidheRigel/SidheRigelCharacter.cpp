@@ -362,24 +362,32 @@ void ASidheRigelCharacter::Stun(float time)
 	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (controller && controller->stateMachine)
 	{
-		controller->stateMachine->ChangeState(controller->stateMachine->Stun);
+		controller->stateMachine->OnStun(time);
 	}
 }
 
 void ASidheRigelCharacter::Stop(float time)
 {
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (controller && controller->stateMachine)
+	{
+		controller->stateMachine->OnStop(time);
+	}
 }
 
-void ASidheRigelCharacter::Slow(float time, float value)
+void ASidheRigelCharacter::Slow(float time, float value, FString key)
 {
+	
 }
 
 void ASidheRigelCharacter::Silence(float time)
 {
+
 }
 
 void ASidheRigelCharacter::Airborne(float time)
 {
+
 }
 
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
