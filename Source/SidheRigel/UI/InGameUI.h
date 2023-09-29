@@ -24,6 +24,14 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 		class UCombatSummary* CombatSummary;
+
+	UPROPERTY()
+		class USidheRigelGameInstance* GameInstanceRef;
+
+	UPROPERTY()
+		class ASidheRigelCharacter* CharacterRef;
+
 	
-	void InitCharacterData(E_Character Character);
+	void InitCharacterData(class USidheRigelGameInstance* GameInstance);
+
 };

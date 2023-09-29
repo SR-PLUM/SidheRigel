@@ -20,6 +20,11 @@ AInGameMapScriptActor::AInGameMapScriptActor()
 	UE_LOG(LogTemp, Warning, TEXT("InGameUIWidget"))
 }
 
+UInGameUI* AInGameMapScriptActor::GetInGameUI()
+{
+	return InGameUI;
+}
+
 void AInGameMapScriptActor::BeginPlay()
 {
 	Super::BeginPlay();
@@ -36,7 +41,7 @@ void AInGameMapScriptActor::BeginPlay()
 		{
 			USidheRigelGameInstance* GameInstance = GetWorld()->GetGameInstance<USidheRigelGameInstance>();
 
-			InGameUI->InitCharacterData(GameInstance->CharacterNum);
+			InGameUI->InitCharacterData(GameInstance);
 
 			InGameUI->AddToViewport();
 		}

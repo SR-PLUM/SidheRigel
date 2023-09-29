@@ -13,6 +13,9 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
+#include "SidheRigel/InGameMapScriptActor.h"
+#include "SidheRigel/UI/InGameUI.h"
+#include "SidheRigel/UI/CharacterStatus.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -56,6 +59,12 @@ void ASidheRigelCharacter::BeginPlay()
 	Super::BeginPlay();
 	InitProperty();
 
+	AInGameMapScriptActor* LevelScriptActor = Cast<AInGameMapScriptActor>(GetWorld()->GetLevelScriptActor());
+
+	LevelScriptActor->InGameUI->CharacterStatus->InitCharacterStatus(this);
+	
+
+	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
 
@@ -104,6 +113,11 @@ void ASidheRigelCharacter::SetLevel(int32 _level)
 	{
 		//특성 띄우기
 	}
+}
+
+int32 ASidheRigelCharacter::GetCurrentLevel()
+{
+	return level;
 }
 
 void ASidheRigelCharacter::SetCurrentHP(float _hp)
@@ -203,6 +217,17 @@ float ASidheRigelCharacter::GetMaxHP()
 }
 
 float ASidheRigelCharacter::GetGenerateHealthPoint()
+{
+	float res = 0;
+	for (auto& value : generateHealthPoint)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
+float ASidheRigelCharacter::GetManaPoint()
 {
 	float res = 0;
 	for (auto& value : generateHealthPoint)

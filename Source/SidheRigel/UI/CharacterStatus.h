@@ -91,7 +91,19 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* MoneyText;
 
+public :
+	UPROPERTY()
+		class ASidheRigelCharacter* CharacterRef;
+
+	void InitCharacterStatus(class ASidheRigelCharacter* Character);
 	void InitIconImage(E_Character Character);
+
+	void UpdateLevel();
+	void UpdateHp();
+	void UpdateMP();
+	void UpdateMoney();
+
+
 
 	UFUNCTION()
 	UTexture2D* CastPathToTexture2D(FString Path);
