@@ -99,7 +99,7 @@ public :
 	void InitIconImage(E_Character Character);
 
 	void UpdateLevel();
-	void UpdateHp();
+	void UpdateHP();
 	void UpdateMP();
 	void UpdateMoney();
 

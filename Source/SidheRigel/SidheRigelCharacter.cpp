@@ -141,6 +141,16 @@ void ASidheRigelCharacter::IE_GenerateHP()
 	RestoreHP(GetGenerateHealthPoint());
 }
 
+float ASidheRigelCharacter::GetCurrentMP()
+{
+	return currentMP;
+}
+
+int32 ASidheRigelCharacter::GetMoney()
+{
+	return money;
+}
+
 float ASidheRigelCharacter::GetRange()
 {
 	float res = 0;
@@ -227,10 +237,10 @@ float ASidheRigelCharacter::GetGenerateHealthPoint()
 	return res;
 }
 
-float ASidheRigelCharacter::GetManaPoint()
+float ASidheRigelCharacter::GetMaxMP()
 {
 	float res = 0;
-	for (auto& value : generateHealthPoint)
+	for (auto& value : MaxMP)
 	{
 		res += value.Value;
 	}
@@ -304,6 +314,7 @@ float ASidheRigelCharacter::GetDecreseDefence()
 
 void ASidheRigelCharacter::InitProperty()
 {
+	level = 1;
 	range.Add("Debug", 500.f);
 	attackDamage.Add("Debug", 5.f);
 	attackSpeed.Add("Debug", 1.f);
@@ -311,12 +322,14 @@ void ASidheRigelCharacter::InitProperty()
 	criticalDamage.Add("Debug", 50);
 	MaxHP.Add("Debug", 100.f);
 	generateHealthPoint.Add("Debug", 0.2f);
+	MaxMP.Add("Debug", 100.f);
 	lifeSteal.Add("Debug", 5.f);
 	protectPower.Add("Debug", 20);
 
 	defencePoint.Add("Debug", 100);
 
 	currentHP = GetMaxHP();
+	currentMP = GetMaxMP();
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()

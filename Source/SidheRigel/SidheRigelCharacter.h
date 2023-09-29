@@ -59,6 +59,8 @@ protected:	//Stat
 	UPROPERTY()
 		float currentHP;						//현재 체력
 	UPROPERTY()
+		float currentMP;
+	UPROPERTY()
 		int32 money;
 	UPROPERTY()
 		TMap<FString, float> range;				//레벨업을 제외한 다른 요인들에 의해 증가되는 사거리 딕셔너리
@@ -79,7 +81,7 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, float> generateHealthPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 재생량 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> manaPoint;			//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 딕셔너리
+		TMap<FString, float> MaxMP;			//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> defencePoint;		//레벨업을 제외한 다른 요인들에 의해 증가되는 방어력 딕셔너리
 	UPROPERTY()
@@ -105,6 +107,8 @@ public:		//Getter, Setter
 	virtual void SetCurrentHP(float _hp);
 	float GetCurrentHP();
 	void IE_GenerateHP();
+	float GetCurrentMP();
+	int32 GetMoney();
 
 	float GetRange();
 	float GetAttackDamage();
@@ -113,7 +117,7 @@ public:		//Getter, Setter
 	float GetAttackSpeed();
 	float GetMaxHP();
 	float GetGenerateHealthPoint();
-	float GetManaPoint();
+	float GetMaxMP();
 	int32 GetLifeSteal();
 	int32 GetProtectPower();
 	float GetDefencePoint();

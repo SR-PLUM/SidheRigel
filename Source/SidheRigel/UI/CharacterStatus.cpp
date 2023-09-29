@@ -20,19 +20,11 @@ void UCharacterStatus::InitCharacterStatus(ASidheRigelCharacter* Character)
 {
 	CharacterRef = Character;
 
-	CurrentLevelText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetCurrentLevel())));
+	UpdateLevel();
 
-	float hp = CharacterRef->GetMaxHP();
+	UpdateHP();
 
-	UE_LOG(LogTemp, Warning, TEXT("MaxHP :: %f"), hp);
-
-	MaxHpText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetMaxHP())));
-	CurrentHPText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetCurrentHP())));
-	HPBar->SetPercent(CharacterRef->GetCurrentHP()/CharacterRef->GetMaxHP());
-
-	MaxMpText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetManaPoint())));
-	//CurrentMPText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetLevel())));
-	//HPBar->SetPercent(CharacterRef->GetCurrentHP()/CharacterRef->GetMaxHP());
+	UpdateMP();
 }
 
 void UCharacterStatus::InitIconImage(E_Character Character)
@@ -60,7 +52,7 @@ void UCharacterStatus::UpdateLevel()
 	//TODO : Level Percentage
 }
 
-void UCharacterStatus::UpdateHp()
+void UCharacterStatus::UpdateHP()
 {
 	MaxHpText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetMaxHP())));
 	CurrentHPText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetCurrentHP())));
@@ -69,15 +61,14 @@ void UCharacterStatus::UpdateHp()
 
 void UCharacterStatus::UpdateMP()
 {
-	MaxMpText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetManaPoint())));
-	//CurrentMPText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetCurrentMP())));
-	//MPBar->SetPercent(CharacterRef->GetCurrentMP()/CharacterRef->GetMaxMP());
+	MaxMpText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetMaxMP())));
+	CurrentMPText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetCurrentMP())));
+	MPBar->SetPercent(CharacterRef->GetCurrentMP() / CharacterRef->GetMaxMP());
 }
 
 void UCharacterStatus::UpdateMoney()
 {
-	//TODO : Money
-	//MoneyText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetMoney())));
+	MoneyText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetMoney())));
 }
 
 UTexture2D* UCharacterStatus::CastPathToTexture2D(FString Path)
