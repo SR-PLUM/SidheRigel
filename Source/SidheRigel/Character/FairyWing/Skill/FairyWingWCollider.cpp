@@ -67,6 +67,6 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 
 		ICCable* CC = Cast<ICCable>(OtherActor);
 		if (CC)
-			CC->Slow(1.0f, 50.0f);
+			CC->Slow(1.0f, 50.0f, "FairyWing_W");
 	}
 }

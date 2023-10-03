@@ -23,7 +23,7 @@ void StunState::Update(float DeltaTime)
 {
 	if (stateMachine->stunTime <= 0)
 	{
-		stateMachine->ChangeState(stateMachine->Idle);
+		stateMachine->ChangePreviousState();
 	}
 }
 

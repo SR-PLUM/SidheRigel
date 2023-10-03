@@ -38,6 +38,9 @@ void AttackState::Update(float DeltaTime)
 		myCharacter->Attack(stateMachine->target);
 		stateMachine->attackDelay = 1 / myCharacter->GetAttackSpeed();
 
+		//DEBUG
+		myCharacter->Stop(2.f);
+
 		stateMachine->ChangeState(stateMachine->MoveToAttack);
 	}
 }
