@@ -5,20 +5,26 @@
 #include "CharacterStatus.h"
 #include "CombatSummary.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
+#include "SidheRigel/SidheRigelCharacter.h"
 
 
-void UInGameUI::InitCharacterData(E_Character Character)
+void UInGameUI::InitCharacterData(USidheRigelGameInstance* GameInstance)
 {
+
+	GameInstanceRef = GameInstance;
+
+	APlayerController* PlayerController = GameInstanceRef->GetFirstLocalPlayerController();
+
+	CharacterRef = Cast<ASidheRigelCharacter>(PlayerController->GetCharacter());
 
 	if (CharacterStatus != nullptr)
 	{
-		CharacterStatus->InitIconImage(Character);
+		CharacterStatus->InitIconImage(GameInstanceRef->CharacterNum);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CharacterStatus is null"));
 	}
 	
-
-	
 }
+

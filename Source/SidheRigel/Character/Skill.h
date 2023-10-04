@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 
+#include "../Enum/E_SkillState.h"
+
 /**
  * 
  */
@@ -13,7 +15,7 @@ public:
 	Skill();
 	~Skill();
 
-	virtual void SetSkillProperty(class ASidheRigelCharacter* Character);
+	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState);
 
 	void OnTick(float DeltaTime);
 	virtual void OnUse(FHitResult Hit);
@@ -29,4 +31,5 @@ protected:
 	bool bIsInstantCast;
 
 	class ASidheRigelCharacter* character;
+	E_SkillState skillstate;
 };

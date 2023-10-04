@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "../Enum/E_Character.h"
+#include "../Enum/E_SkillState.h"
 #include "CharacterStatus.generated.h"
 
 
@@ -21,6 +22,11 @@ public:
 	UFUNCTION()
 		virtual bool Initialize() override;
 
+protected:
+	virtual void NativeOnInitialized();
+
+public:
+
 	UPROPERTY(meta = (BindWidget))
 		class UImage* CharacterImage;
 
@@ -30,7 +36,10 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* LevelProgress;
 
+	TMap<E_SkillState, class USkillBtn*> SkillButtons;
+
 	//Skill Button
+	/*
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Btn_QSkill;
 
@@ -42,7 +51,7 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Btn_RSkill;
-
+*/
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Btn_BSkill;
 
@@ -91,7 +100,19 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* MoneyText;
 
+public :
+	UPROPERTY()
+		class ASidheRigelCharacter* CharacterRef;
+
+	void InitCharacterStatus(class ASidheRigelCharacter* Character);
 	void InitIconImage(E_Character Character);
+
+	void UpdateLevel();
+	void UpdateHP();
+	void UpdateMP();
+	void UpdateMoney();
+
+
 
 	UFUNCTION()
 	UTexture2D* CastPathToTexture2D(FString Path);
