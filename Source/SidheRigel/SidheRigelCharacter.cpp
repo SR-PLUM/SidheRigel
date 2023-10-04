@@ -394,6 +394,11 @@ void ASidheRigelCharacter::RestoreHP(float value)
 	}
 }
 
+float ASidheRigelCharacter::GetHP()
+{
+	return currentHP;
+}
+
 void ASidheRigelCharacter::MoveVector(FVector Direction, float Force)
 {
 	moveDirection = Direction.GetSafeNormal();

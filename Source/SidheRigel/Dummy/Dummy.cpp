@@ -57,6 +57,11 @@ void ADummy::RestoreHP(float value)
 	}
 }
 
+float ADummy::GetHP()
+{
+	return currentHP;
+}
+
 void ADummy::Stun(float time)
 {
 	UE_LOG(LogTemp, Warning, TEXT("STUN : %fs"), time);

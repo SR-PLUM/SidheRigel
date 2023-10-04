@@ -26,6 +26,8 @@ protected:	//Interface Implement
 		virtual void TakeDamage(float damage, AActor* damageCauser) override;
 	UFUNCTION()
 		virtual void RestoreHP(float value) override;
+	UFUNCTION()
+		virtual float GetHP() override;
 	
 	UFUNCTION()
 		virtual void Stun(float time) override;

@@ -25,5 +25,6 @@ class SIDHERIGEL_API ITeam
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual E_Team GetTeam() = 0;
+	UFUNCTION()
+		virtual E_Team GetTeam() = 0;
 };

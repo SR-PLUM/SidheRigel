@@ -8,6 +8,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AMinion::AMinion()
@@ -15,12 +16,14 @@ AMinion::AMinion()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	if (!sphereComponent)
+	if (!detectArea)
 	{
-		sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		sphereComponent->InitSphereRadius(500.0f);
-		sphereComponent->SetupAttachment(RootComponent);
+		detectArea = CreateDefaultSubobject<USphereComponent>(TEXT("detectArea"));
+		detectArea->InitSphereRadius(500.0f);
+		detectArea->SetupAttachment(RootComponent);
 	}
+
+	GetCharacterMovement()->MaxWalkSpeed = 400.f;
 }
 
 // Called when the game starts or when spawned
@@ -33,8 +36,10 @@ void AMinion::BeginPlay()
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWayPoint::StaticClass(), WayPoints);
 
-	sphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AMinion::OnEnterEnemy);
-	sphereComponent->OnComponentEndOverlap.AddDynamic(this, &AMinion::OnExitEnemy);
+	detectArea->OnComponentBeginOverlap.AddDynamic(this, &AMinion::OnEnterEnemy);
+	detectArea->OnComponentEndOverlap.AddDynamic(this, &AMinion::OnExitEnemy);
+
+	AIController = Cast<AAIController>(GetController());
 
 	MoveToWayPoint();
 }
@@ -45,7 +50,7 @@ void AMinion::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//If Goal WayPoint Move To Next WayPoint
-	/*if (currentWayPoint)
+	if (currentWayPoint)
 	{
 		if (currentWayPointOrder < WayPoints.Num())
 		{
@@ -55,7 +60,45 @@ void AMinion::Tick(float DeltaTime)
 				MoveToWayPoint();
 			}
 		}
-	}*/
+	}
+
+	if (attackDelay > 0)
+	{
+		attackDelay -= DeltaTime;
+	}
+
+	if (currentTarget)
+	{
+		IDamagable* damagableTarget = Cast<IDamagable>(currentTarget);
+		if (damagableTarget)
+		{
+			if (damagableTarget->GetHP() <= 0)
+			{
+				attackList.Remove(currentTarget);
+
+				if (attackList.Num() == 0)
+				{
+					currentTarget = nullptr;
+				}
+				else
+				{
+					currentTarget = attackList.Top();
+				}
+			}
+			else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0)
+			{
+				damagableTarget->TakeDamage(damage, this);
+
+				attackDelay = maxAttackDelay;
+			}
+			else
+			{
+				AIController->MoveToActor(currentTarget, range);
+			}
+		}
+
+		
+	}
 }
 
 // Called to bind functionality to input
@@ -67,8 +110,6 @@ void AMinion::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMinion::MoveToWayPoint()
 {
-	auto AIController = Cast<AAIController>(GetController());
-
 	if (AIController)
 	{
 		for (auto wayPoint : WayPoints)
@@ -80,7 +121,7 @@ void AMinion::MoveToWayPoint()
 				if (wayPointItr->wayPointOrder == currentWayPointOrder)
 				{
 					currentWayPoint = wayPointItr;
-					AIController->MoveToActor(wayPointItr, 100.f);
+					AIController->MoveToActor(wayPointItr);
 				}
 			}
 		}
@@ -89,9 +130,23 @@ void AMinion::MoveToWayPoint()
 
 void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
+	if (ITeam* Enemy = Cast<ITeam>(OtherActor))
 	{
-		attackList.Add(DamagableActor);
+		if (Enemy->GetTeam() == E_Team::Blue)
+		{
+			if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
+			{
+				AIController->StopMovement();
+
+				if (attackList.Num() == 0)
+				{
+					currentTarget = OtherActor;
+				}
+
+				attackList.Add(OtherActor);
+				UE_LOG(LogTemp, Warning, TEXT("ENTER ENEMY : %s"), *OtherActor->GetName());
+			}
+		}
 	}
 }
 
@@ -99,7 +154,24 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
 	{
-		attackList.Remove(DamagableActor);
+		AIController->StopMovement();
+
+		attackList.Remove(OtherActor);
+
+		if (currentTarget == OtherActor)
+		{
+			if (attackList.IsEmpty())
+			{
+				currentTarget = nullptr;
+
+				MoveToWayPoint();
+			}
+			else
+			{
+				currentTarget = attackList.Top();
+			}
+		}
+		UE_LOG(LogTemp, Warning, TEXT("EXIT ENEMY : %s"), *OtherActor->GetName());
 	}
 }
 
@@ -108,3 +180,43 @@ E_Team AMinion::GetTeam()
 	return team;
 }
 
+void AMinion::Attack(AActor* Target)
+{
+}
+
+void AMinion::Stun(float time)
+{
+}
+
+void AMinion::Stop(float time)
+{
+}
+
+void AMinion::Slow(float time, float value)
+{
+}
+
+void AMinion::Silence(float time)
+{
+}
+
+void AMinion::Airborne(float time)
+{
+}
+
+void AMinion::TakeDamage(float _damage, AActor* damageCauser)
+{
+}
+
+void AMinion::RestoreHP(float value)
+{
+}
+
+float AMinion::GetHP()
+{
+	return 0.0f;
+}
+
+void AMinion::MoveVector(FVector Direction, float Force)
+{
+}

@@ -157,6 +157,8 @@ public:		//Interface Implement
 		virtual void TakeDamage(float damage, AActor* damageCauser) override;
 	UFUNCTION()
 		virtual void RestoreHP(float value) override;
+	UFUNCTION()
+		virtual float GetHP();
 
 	UFUNCTION()
 		virtual void MoveVector(FVector Direction, float Force) override;
