@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "../Enum/E_Character.h"
+#include "../Enum/E_SkillState.h"
 #include "CharacterStatus.generated.h"
 
 
@@ -21,6 +22,11 @@ public:
 	UFUNCTION()
 		virtual bool Initialize() override;
 
+protected:
+	virtual void NativeOnInitialized() ;
+
+public:
+
 	UPROPERTY(meta = (BindWidget))
 		class UImage* CharacterImage;
 
@@ -29,6 +35,8 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* LevelProgress;
+
+	TMap<E_SkillState, class USkillBtn*> SkillButtons;
 
 	//Skill Button
 	UPROPERTY(meta = (BindWidget))

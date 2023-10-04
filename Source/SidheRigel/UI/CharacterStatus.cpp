@@ -8,12 +8,25 @@
 #include "Components/TextBlock.h"
 #include "Components/ProgressBar.h"
 
+#include "SkillBtn.h"
+
 #include "Styling/SlateBrush.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 
 bool UCharacterStatus::Initialize()
 {
 	return Super::Initialize();
+}
+
+void UCharacterStatus::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	//USkillBtn* Tmp = Cast<USkillBtn>(GetWidgetFromName(TEXT("Btn_QSkill")));
+
+	//SkillButtons.Add(E_SkillState::Q_Ready, Tmp);
+	
+	//
 }
 
 void UCharacterStatus::InitCharacterStatus(ASidheRigelCharacter* Character)

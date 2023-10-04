@@ -24,6 +24,11 @@ void Skill::OnTick(float DeltaTime)
 	if (skillCooldown > 0)
 	{
 		skillCooldown -= DeltaTime;
+
+		if (skillCooldown <= 0)
+		{
+			//TODO :: UI ~
+		}
 	}
 }
 
