@@ -72,7 +72,7 @@ void ADummy::Stop(float time)
 	UE_LOG(LogTemp, Warning, TEXT("STOP : %fs"), time);
 }
 
-void ADummy::Slow(float time, float value)
+void ADummy::Slow(float time, float value, FString key)
 {
 	UE_LOG(LogTemp, Warning, TEXT("SLOW : %fs, %f%%"), time, value);
 }
@@ -80,11 +80,6 @@ void ADummy::Slow(float time, float value)
 void ADummy::Silence(float time)
 {
 	UE_LOG(LogTemp, Warning, TEXT("SILENCE : %fs"), time);
-}
-
-void ADummy::Airborne(float time)
-{
-	UE_LOG(LogTemp, Warning, TEXT("AIRBORNE : %fs"), time);
 }
 
 void ADummy::MoveVector(FVector Direction, float Force)
