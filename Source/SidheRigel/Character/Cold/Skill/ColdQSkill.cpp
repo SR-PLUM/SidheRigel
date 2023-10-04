@@ -19,7 +19,7 @@ ColdQSkill::~ColdQSkill()
 {
 }
 
-void ColdQSkill::SetSkillProperty(class ASidheRigelCharacter* Character)
+void ColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -27,6 +27,7 @@ void ColdQSkill::SetSkillProperty(class ASidheRigelCharacter* Character)
 	bIsInstantCast = false;
 
 	character = Character;
+	skillstate = SkillState;
 }
 
 void ColdQSkill::OnUse(FHitResult Hit)

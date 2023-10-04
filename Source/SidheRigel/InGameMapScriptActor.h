@@ -22,6 +22,8 @@ public:
 	UPROPERTY(VisibleInstanceOnly, Category = "Widget")
 		class UInGameUI* InGameUI;
 
+	class UInGameUI* GetInGameUI();
+
 protected:
 	virtual void BeginPlay() override;
 };
