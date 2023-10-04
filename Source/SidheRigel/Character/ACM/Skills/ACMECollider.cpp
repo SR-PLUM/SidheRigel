@@ -62,7 +62,7 @@ void AACMECollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, 
 			CCableTarget->Stun(StunTime);
 			if (IsUpgraded)
 			{
-				CCableTarget->Airborne(AirBoneTime);
+				CCableTarget->Stun(AirBoneTime);
 			}
 		}
 	}

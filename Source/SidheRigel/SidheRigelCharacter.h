@@ -74,6 +74,8 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, float> speed;				//레벨업을 제외한 다른 요인들에 의해 증가되는 이동속도 딕셔너리
 	UPROPERTY()
+		TMap<FString, float> speedRate;			//이동속도의 비율 증감
+	UPROPERTY()
 		TMap<FString, float> attackDamage;		//레벨업을 제외한 다른 요인들에 의해 증가되는 공격력 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> abiltyPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 주문력 딕셔너리
@@ -128,6 +130,7 @@ public:		//Getter, Setter
 	int32 GetLifeSteal();
 	int32 GetProtectPower();
 	float GetDefencePoint();
+	float GetSpeed();
 
 	void AddDecreseDefencePercent(FString name, float value, float time);
 	float GetDecreseDefence();
@@ -137,6 +140,7 @@ public:		//Getter, Setter
 public:	//Attack
 	virtual void InitAttackProjectile();
 	virtual void Attack(AActor* target) override;
+	
 	UFUNCTION()
 		void InitProjectileProperty(ADummyProjectile* projectile);
 
@@ -158,11 +162,9 @@ public:		//Interface Implement
 	UFUNCTION()
 		virtual void Stop(float time) override;
 	UFUNCTION()
-		virtual void Slow(float time, float value) override;
+		virtual void Slow(float time, float value, FString key) override;
 	UFUNCTION()
 		virtual void Silence(float time) override;
-	UFUNCTION()
-		virtual void Airborne(float time) override;
 
 	UFUNCTION()
 		virtual void TakeDamage(float damage, AActor* damageCauser) override;

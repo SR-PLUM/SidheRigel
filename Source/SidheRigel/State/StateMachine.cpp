@@ -15,6 +15,8 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Interface/Damagable.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 {
 	Idle = new IdleState(this);
@@ -29,6 +31,8 @@ StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 	currentState = Idle;
 
 	playerController = PlayerController;
+
+	myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
 }
 
 StateMachine::~StateMachine()
@@ -78,6 +82,22 @@ void StateMachine::Update(float DeltaTime)
 	if (stopTime > 0)
 	{
 		stopTime -= DeltaTime;
+		ChangeCharacterSpeed(0);
+	}
+	else
+	{
+		if (myCharacter)
+		{
+			ChangeCharacterSpeed(myCharacter->GetSpeed());
+		}
+		else
+		{
+			myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
+		}
+	}
+	if (silenceTime > 0)
+	{
+		silenceTime -= DeltaTime;
 	}
 
 	//Show Skill Range
@@ -114,6 +134,11 @@ void StateMachine::OnLeftClick()
 //SkillReady
 void StateMachine::OnKeyboard(E_SkillState SkillState)
 {
+	if (silenceTime > 0)
+	{
+		return;
+	}
+
 	bSkillReady = true;
 	currentSkill = SkillState;
 
@@ -124,6 +149,16 @@ void StateMachine::OnStun(float _stunTime)
 {
 	stunTime = _stunTime;
 	ChangeState(Stun);
+}
+
+void StateMachine::OnStop(float _stopTime)
+{
+	stopTime = _stopTime;
+}
+
+void StateMachine::OnSilence(float _silenceTime)
+{
+	silenceTime = _silenceTime;
 }
 
 void StateMachine::HasAttackEnemy()
@@ -151,8 +186,6 @@ void StateMachine::HasAttackEnemy()
 
 void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 {
-	myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
-
 	//Check Cooldown
 	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
 	{
@@ -169,4 +202,9 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
 	}
+}
+
+void StateMachine::ChangeCharacterSpeed(float speed)
+{
+	myCharacter->GetCharacterMovement()->MaxWalkSpeed = speed;
 }

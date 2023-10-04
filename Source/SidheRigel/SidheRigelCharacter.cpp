@@ -296,8 +296,22 @@ float ASidheRigelCharacter::GetDefencePoint()
 	return res;
 }
 
+float ASidheRigelCharacter::GetSpeed()
+{
+	float res = 0.f;
+	for (auto& value : speed)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
 void ASidheRigelCharacter::AddDecreseDefencePercent(FString name, float value, float time)
 {
+	if (decreseDefencePoint.Contains(name))
+		return;
+
 	decreseDefencePoint.Add(name, value);
 
 	if (time == -1)
@@ -333,6 +347,7 @@ void ASidheRigelCharacter::InitProperty()
 	attackSpeed.Add("Debug", 1.f);
 	criticalRate.Add("Debug", 50);
 	criticalDamage.Add("Debug", 50);
+
 	MaxHP.Add("Debug", 100.f);
 	generateHealthPoint.Add("Debug", 0.2f);
 	MaxMP.Add("Debug", 100.f);
@@ -340,6 +355,8 @@ void ASidheRigelCharacter::InitProperty()
 	protectPower.Add("Debug", 20);
 
 	defencePoint.Add("Debug", 100);
+
+	speed.Add("Debug", 600.f);
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
@@ -399,24 +416,49 @@ void ASidheRigelCharacter::Stun(float time)
 	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (controller && controller->stateMachine)
 	{
-		controller->stateMachine->ChangeState(controller->stateMachine->Stun);
+		controller->stateMachine->OnStun(time);
 	}
 }
 
 void ASidheRigelCharacter::Stop(float time)
 {
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (controller && controller->stateMachine)
+	{
+		controller->stateMachine->OnStop(time);
+	}
 }
 
-void ASidheRigelCharacter::Slow(float time, float value)
+void ASidheRigelCharacter::Slow(float time, float value, FString key)
 {
+	if (speedRate.Contains(key))
+	{
+		return;
+	}
+
+	speedRate.Add(key, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle SlowTimer;
+	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (speedRate.Find(key))
+			{
+				speedRate.Remove(key);
+			}
+		})
+		, time, false);
 }
 
 void ASidheRigelCharacter::Silence(float time)
 {
-}
-
-void ASidheRigelCharacter::Airborne(float time)
-{
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (controller && controller->stateMachine)
+	{
+		controller->stateMachine->OnSilence(time);
+	}
 }
 
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)

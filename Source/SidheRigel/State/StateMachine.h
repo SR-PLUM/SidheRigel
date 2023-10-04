@@ -33,7 +33,7 @@ public:
 
 public:
 	ASidheRigelPlayerController* playerController;
-	ASidheRigelCharacter* myCharacter;
+	class ASidheRigelCharacter* myCharacter;
 	AActor* target;
 	FVector location;
 
@@ -57,6 +57,9 @@ public:	//Timer
 	//During Stop
 	float stopTime = 0;
 
+	//During Silence
+	float silenceTime = 0;
+
 	void ChangeState(State* NextState);
 	void ChangePreviousState();
 
@@ -68,7 +71,11 @@ public:
 	void OnKeyboard(E_SkillState SkillState);
 
 	void OnStun(float stunTime);
+	void OnStop(float stopTime);
+	void OnSilence(float silenceTime);
 
 	void HasAttackEnemy();
 	void ChangeCurrentSkill(E_SkillState SkillState);
+
+	void ChangeCharacterSpeed(float speed);
 };
