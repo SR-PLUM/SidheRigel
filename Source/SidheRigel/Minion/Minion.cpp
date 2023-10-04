@@ -152,26 +152,29 @@ void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
 void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
+	if (ITeam* Enemy = Cast<ITeam>(OtherActor))
 	{
-		AIController->StopMovement();
-
-		attackList.Remove(OtherActor);
-
-		if (currentTarget == OtherActor)
+		if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
 		{
-			if (attackList.IsEmpty())
-			{
-				currentTarget = nullptr;
+			AIController->StopMovement();
 
-				MoveToWayPoint();
-			}
-			else
+			attackList.Remove(OtherActor);
+
+			if (currentTarget == OtherActor)
 			{
-				currentTarget = attackList.Top();
+				if (attackList.IsEmpty())
+				{
+					currentTarget = nullptr;
+
+					MoveToWayPoint();
+				}
+				else
+				{
+					currentTarget = attackList.Top();
+				}
 			}
+			UE_LOG(LogTemp, Warning, TEXT("EXIT ENEMY : %s"), *OtherActor->GetName());
 		}
-		UE_LOG(LogTemp, Warning, TEXT("EXIT ENEMY : %s"), *OtherActor->GetName());
 	}
 }
 
