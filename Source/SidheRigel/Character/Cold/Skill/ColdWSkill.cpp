@@ -27,6 +27,7 @@ void ColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState 
 	bIsInstantCast = false;
 
 	character = Character;
+	skillstate = SkillState;
 }
 
 void ColdWSkill::OnUse(FHitResult Hit)

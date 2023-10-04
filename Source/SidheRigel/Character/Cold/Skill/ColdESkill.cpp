@@ -34,6 +34,7 @@ void ColdESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState 
 	bIsInstantCast = false;
 
 	character = Character;
+	skillstate = SkillState;
 }
 
 void ColdESkill::OnUse(FHitResult Hit)

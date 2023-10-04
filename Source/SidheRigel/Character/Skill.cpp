@@ -29,11 +29,11 @@ void Skill::OnTick(float DeltaTime)
 
 		if (skillCooldown <= 0)
 		{
-			character->SetUISkillCoolDown(skillstate, skillCooldown / skillMaxCooldown, skillCooldown);
+			character->ClearUISkillCoolDown(skillstate);
 		}
 		else
 		{
-			character->ClearUISkillCoolDown(skillstate);
+			character->SetUISkillCoolDown(skillstate, skillCooldown / skillMaxCooldown, skillCooldown);
 		}
 	}
 }

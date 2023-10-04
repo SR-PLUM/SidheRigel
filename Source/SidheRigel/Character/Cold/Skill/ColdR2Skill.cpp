@@ -27,6 +27,7 @@ void ColdR2Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 	bIsInstantCast = false;
 
 	character = Character;
+	skillstate = SkillState;
 }
 
 void ColdR2Skill::OnUse(FHitResult Hit)
