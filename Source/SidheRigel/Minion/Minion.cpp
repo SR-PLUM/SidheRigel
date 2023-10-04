@@ -195,7 +195,7 @@ void AMinion::Stop(float time)
 {
 }
 
-void AMinion::Slow(float time, float value)
+void AMinion::Slow(float time, float value, FString key)
 {
 }
 

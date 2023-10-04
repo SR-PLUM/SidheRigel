@@ -76,7 +76,7 @@ public:
 	UFUNCTION()
 		virtual void Stop(float time);
 	UFUNCTION()
-		virtual void Slow(float time, float value);
+		virtual void Slow(float time, float value, FString key);
 	UFUNCTION()
 		virtual void Silence(float time);
 	UFUNCTION()
