@@ -2,6 +2,7 @@
 
 
 #include "Skill.h"
+#include "SidheRigel/SidheRigelCharacter.h"
 
 Skill::Skill()
 {
@@ -11,12 +12,13 @@ Skill::~Skill()
 {
 }
 
-void Skill::SetSkillProperty(ASidheRigelCharacter* Character)
+void Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
 	skillMaxCooldown = 2.f;
 	character = Character;
+	skillstate = SkillState;
 }
 
 void Skill::OnTick(float DeltaTime)
@@ -27,7 +29,11 @@ void Skill::OnTick(float DeltaTime)
 
 		if (skillCooldown <= 0)
 		{
-			//TODO :: UI ~
+			character->SetUISkillCoolDown(skillstate, skillCooldown / skillMaxCooldown, skillCooldown);
+		}
+		else
+		{
+			character->ClearUISkillCoolDown(skillstate);
 		}
 	}
 }

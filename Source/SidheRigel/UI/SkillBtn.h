@@ -17,7 +17,6 @@ class SIDHERIGEL_API USkillBtn : public UUserWidget
 protected:
 	virtual void NativeOnInitialized();
 
-
 public:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* SkillBtn;
@@ -27,4 +26,10 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* CoolDownBar;
+
+public:
+	void SetCoolDownProgress(float Percentage, float CurrentCoolDown);
+
+	void ClearCoolDownProgress();
+
 };

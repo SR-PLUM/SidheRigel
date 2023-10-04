@@ -16,6 +16,7 @@
 #include "SidheRigel/InGameMapScriptActor.h"
 #include "SidheRigel/UI/InGameUI.h"
 #include "SidheRigel/UI/CharacterStatus.h"
+#include "SidheRigel/UI/SkillBtn.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -61,7 +62,9 @@ void ASidheRigelCharacter::BeginPlay()
 
 	AInGameMapScriptActor* LevelScriptActor = Cast<AInGameMapScriptActor>(GetWorld()->GetLevelScriptActor());
 
-	LevelScriptActor->InGameUI->CharacterStatus->InitCharacterStatus(this);
+	InGameUI = LevelScriptActor->InGameUI;
+
+	InGameUI->CharacterStatus->InitCharacterStatus(this);
 	
 
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
@@ -103,6 +106,16 @@ void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
+}
+
+void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown)
+{
+	InGameUI->CharacterStatus->SkillButtons[SkillState]->SetCoolDownProgress(Percentage, CurrentCoolDown);
+}
+
+void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
+{
+	InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)

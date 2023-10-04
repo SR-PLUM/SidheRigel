@@ -49,6 +49,13 @@ public:	//Skill
 	TMap<E_SkillState, Skill*> skills;
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
+public: //UI
+	UPROPERTY()
+		class UInGameUI* InGameUI;
+
+	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
+	void ClearUISkillCoolDown(E_SkillState SkillState);
+
 protected:	//Stat
 	UPROPERTY()
 		int32 level;							//레벨

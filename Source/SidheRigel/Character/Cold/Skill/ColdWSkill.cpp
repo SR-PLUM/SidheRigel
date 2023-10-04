@@ -19,7 +19,7 @@ ColdWSkill::~ColdWSkill()
 {
 }
 
-void ColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character)
+void ColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
