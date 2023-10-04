@@ -45,6 +45,15 @@ void ABlackWizardRCollider::BeginPlay()
 	Super::BeginPlay();
 
 	ColliderMesh->OnComponentBeginOverlap.AddDynamic(this, &ABlackWizardRCollider::OnColliderOverlap);
+
+	FTimerHandle RColliderDestroyTimer;
+	GetWorldTimerManager().SetTimer(RColliderDestroyTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				Destroy();
+			}
+
+	), duration, false);
 }
 
 // Called every frame
@@ -56,24 +65,21 @@ void ABlackWizardRCollider::Tick(float DeltaTime)
 
 void ABlackWizardRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 30.0f, FColor::Red, OtherActorName);
-	}
-
 	if (OtherActor)
 	{
-		IDamagable* DamagableTarget = Cast<IDamagable>(OtherActor);
-		if (DamagableTarget && (OtherActor != colliderOwner))
-			DamagableTarget->TakeDamage(10.f, colliderOwner);
-
-		IMovable* MovableTarget = Cast<IMovable>(OtherActor);
-		if (MovableTarget && (OtherActor != colliderOwner))
+		if (IDamagable* DamagableTarget = Cast<IDamagable>(OtherActor))
 		{
-			FVector moveDirection = (OtherActor->GetActorLocation() - colliderOwner->GetActorLocation()) * FVector(1, 1, 0);
+			DamagableTarget->TakeDamage(damage, colliderOwner);
+		}		
 
-			MovableTarget->MoveVector(moveDirection, 5000);
+		if (IMovable* MovableTarget = Cast<IMovable>(OtherActor))
+		{
+			if (OtherActor != colliderOwner)
+			{
+				FVector moveDirection = (OtherActor->GetActorLocation() - colliderOwner->GetActorLocation()) * FVector(1, 1, 0);
+
+				MovableTarget->MoveVector(moveDirection, force);
+			}
 		}
 	}
 }
