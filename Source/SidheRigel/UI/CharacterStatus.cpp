@@ -22,11 +22,10 @@ void UCharacterStatus::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	//USkillBtn* Tmp = Cast<USkillBtn>(GetWidgetFromName(TEXT("Btn_QSkill")));
-
-	//SkillButtons.Add(E_SkillState::Q_Ready, Tmp);
-	
-	//
+	SkillButtons.Add(E_SkillState::Q_Ready, Cast<USkillBtn>(GetWidgetFromName(TEXT("QSkillBtn"))));
+	SkillButtons.Add(E_SkillState::W_Ready, Cast<USkillBtn>(GetWidgetFromName(TEXT("WSkillBtn"))));
+	SkillButtons.Add(E_SkillState::E_Ready, Cast<USkillBtn>(GetWidgetFromName(TEXT("ESkillBtn"))));
+	SkillButtons.Add(E_SkillState::R_Ready, Cast<USkillBtn>(GetWidgetFromName(TEXT("RSkillBtn"))));
 }
 
 void UCharacterStatus::InitCharacterStatus(ASidheRigelCharacter* Character)
@@ -46,11 +45,11 @@ void UCharacterStatus::InitIconImage(E_Character Character)
 	{
 		CharacterImage->SetBrushFromTexture(CastPathToTexture2D(CharacterIconPath[Character]));
 
-		Btn_QSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(QSkillIconPath[Character]));
-		Btn_WSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(WSkillIconPath[Character]));
-		Btn_ESkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(ESkillIconPath[Character]));
-		Btn_RSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(RSkillIconPath[Character]));
-
+		SkillButtons[Q_Ready]->SkillBtn->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(QSkillIconPath[Character]));
+		SkillButtons[W_Ready]->SkillBtn->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(WSkillIconPath[Character]));
+		SkillButtons[E_Ready]->SkillBtn->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(ESkillIconPath[Character]));
+		SkillButtons[R_Ready]->SkillBtn->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(RSkillIconPath[Character]));
+		
 	}
 	else
 	{

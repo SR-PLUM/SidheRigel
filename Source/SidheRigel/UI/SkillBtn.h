@@ -14,6 +14,10 @@ class SIDHERIGEL_API USkillBtn : public UUserWidget
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void NativeOnInitialized();
+
+
 public:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* SkillBtn;

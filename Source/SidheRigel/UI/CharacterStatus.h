@@ -23,7 +23,7 @@ public:
 		virtual bool Initialize() override;
 
 protected:
-	virtual void NativeOnInitialized() ;
+	virtual void NativeOnInitialized();
 
 public:
 
@@ -39,6 +39,7 @@ public:
 	TMap<E_SkillState, class USkillBtn*> SkillButtons;
 
 	//Skill Button
+	/*
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Btn_QSkill;
 
@@ -50,7 +51,7 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Btn_RSkill;
-
+*/
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Btn_BSkill;
 
