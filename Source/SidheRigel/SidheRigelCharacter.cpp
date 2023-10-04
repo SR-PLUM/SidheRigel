@@ -401,3 +401,8 @@ void ASidheRigelCharacter::MoveVector(FVector Direction, float Force)
 	moveCnt = 0;
 	IsMoveVectorTrue = true;
 }
+
+E_Team ASidheRigelCharacter::GetTeam()
+{
+	return team;
+}

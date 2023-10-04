@@ -294,7 +294,7 @@ void AACMCharacter::R1Skill(FHitResult HitResult)
 	{
 		switch (LastSkill)
 		{
-		case Null:
+		case Skill_Null:
 			UE_LOG(LogTemp, Warning, TEXT("ACM LastSkill is Null"));
 			break;
 		case Q_Ready:
@@ -321,7 +321,7 @@ void AACMCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	switch (SkillState)
 	{
-	case Null:
+	case Skill_Null:
 		UE_LOG(LogTemp, Warning, TEXT("ACM SkillState is Null"));
 		break;
 	case Q_Ready:

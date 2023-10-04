@@ -7,6 +7,7 @@
 #include "WayPoint.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 AMinion::AMinion()
@@ -14,7 +15,12 @@ AMinion::AMinion()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-
+	if (!sphereComponent)
+	{
+		sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+		sphereComponent->InitSphereRadius(500.0f);
+		sphereComponent->SetupAttachment(RootComponent);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +33,9 @@ void AMinion::BeginPlay()
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWayPoint::StaticClass(), WayPoints);
 
+	sphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AMinion::OnEnterEnemy);
+	sphereComponent->OnComponentEndOverlap.AddDynamic(this, &AMinion::OnExitEnemy);
+
 	MoveToWayPoint();
 }
 
@@ -35,7 +44,8 @@ void AMinion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (currentWayPoint)
+	//If Goal WayPoint Move To Next WayPoint
+	/*if (currentWayPoint)
 	{
 		if (currentWayPointOrder < WayPoints.Num())
 		{
@@ -45,7 +55,7 @@ void AMinion::Tick(float DeltaTime)
 				MoveToWayPoint();
 			}
 		}
-	}
+	}*/
 }
 
 // Called to bind functionality to input
@@ -70,10 +80,31 @@ void AMinion::MoveToWayPoint()
 				if (wayPointItr->wayPointOrder == currentWayPointOrder)
 				{
 					currentWayPoint = wayPointItr;
-					AIController->MoveToActor(wayPointItr);
+					AIController->MoveToActor(wayPointItr, 100.f);
 				}
 			}
 		}
 	}
+}
+
+void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
+	{
+		attackList.Add(DamagableActor);
+	}
+}
+
+void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
+	{
+		attackList.Remove(DamagableActor);
+	}
+}
+
+E_Team AMinion::GetTeam()
+{
+	return team;
 }
 

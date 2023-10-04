@@ -60,7 +60,7 @@ protected: //Skills
 
 
 private:
-	E_SkillState LastSkill = E_SkillState::Null;
+	E_SkillState LastSkill = E_SkillState::Skill_Null;
 
 	//Upgrading Passive
 	int32 SkillCount= 0;

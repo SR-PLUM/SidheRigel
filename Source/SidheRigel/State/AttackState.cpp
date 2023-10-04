@@ -53,7 +53,7 @@ void AttackState::OnRightRelease()
 
 void AttackState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Null)
+	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null)
 	{
 		stateMachine->ChangeState(stateMachine->UseSkill);
 	}

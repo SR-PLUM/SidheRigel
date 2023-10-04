@@ -4,16 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "Interface/Attackable.h"
 #include "Interface/CCable.h"
 #include "Interface/Damagable.h"
 #include "Interface/Movable.h"
+#include "Interface/Team.h"
 #include "Enum/E_SkillState.h"
 #include "Character/Skill.h"
+
 #include "SidheRigelCharacter.generated.h"
 
 UCLASS(Blueprintable)
-class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable
+class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable, public ITeam
 {
 	GENERATED_BODY()
 
@@ -95,6 +98,9 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, float> decreseDefencePoint;//방깍
 
+	//DEBUG RED=MINION, BLUE = PLAYER
+	E_Team team = E_Team::Blue;
+
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
 	virtual void SetCurrentHP(float _hp);
@@ -154,5 +160,7 @@ public:		//Interface Implement
 
 	UFUNCTION()
 		virtual void MoveVector(FVector Direction, float Force) override;
+
+	virtual E_Team GetTeam();
 };
 
