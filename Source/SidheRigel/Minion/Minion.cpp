@@ -133,7 +133,7 @@ void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	if (ITeam* Enemy = Cast<ITeam>(OtherActor))
 	{
-		if (Enemy->GetTeam() == E_Team::Blue)
+		if (Enemy->GetTeam() != GetTeam())
 		{
 			if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
 			{
