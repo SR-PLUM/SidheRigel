@@ -19,16 +19,10 @@ AColdCharacter::AColdCharacter()
 {
 	ultType = E_UltType::Ult1;
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> R1Projectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdR1Projectile"));
-	if (R1Projectile.Object)
+	for (int i = 0; i < 5; i++)
 	{
-		R1ProjectileClass = (UClass*)R1Projectile.Object->GeneratedClass;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UBlueprint> R2Projectile(TEXT("/Game/Heros/Cold/Skill/BP_ColdR2Projectile"));
-	if (R2Projectile.Object)
-	{
-		R2ProjectileClass = (UClass*)R2Projectile.Object->GeneratedClass;
+		QMuzzle.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Muzzle ") + i));
+		QMuzzle[i]->SetupAttachment(GetMesh());
 	}
 
 	InitAttackProjectile();
@@ -108,35 +102,3 @@ void AColdCharacter::Attack(AActor* target)
 		}
 	}
 }
-
-//void AColdCharacter::EImplement(FHitResult HitResult)
-//{
-//	
-//}
-//
-//void AColdCharacter::RImplement(FHitResult HitResult)
-//{
-//	switch (ultType)
-//	{
-//	case None:
-//		break;
-//	case Ult1:
-//		R1Implement(HitResult);
-//		break;
-//	case Ult2:
-//		R2Implement(HitResult);
-//		break;
-//	default:
-//		break;
-//	}
-//}
-//
-//void AColdCharacter::R1Implement(FHitResult HitResult)
-//{
-//	
-//}
-//
-//void AColdCharacter::R2Implement(FHitResult HitResult)
-//{
-
-//}

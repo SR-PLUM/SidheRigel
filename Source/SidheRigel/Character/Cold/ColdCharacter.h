@@ -27,14 +27,16 @@ protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	UPROPERTY(VisibleAnywhere)
+		TArray<class UStaticMeshComponent*> QMuzzle;
+
 protected:	//Attack
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AColdAttackProjectile> attackProjectileClass;
 	
 	virtual void InitAttackProjectile() override;
 	virtual void Attack(AActor* target) override;
-
-protected:	//Skill
 
 private:	//State
 	E_UltType ultType;

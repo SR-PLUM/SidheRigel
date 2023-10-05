@@ -4,6 +4,7 @@
 #include "ColdQSkill.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Character/Cold/ColdCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdQProjectile.h"
 
 ColdQSkill::ColdQSkill()
@@ -33,18 +34,22 @@ void ColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState 
 void ColdQSkill::OnUse(FHitResult Hit)
 {
 	if (character == nullptr) return;
+	if (projectileClass == nullptr) return;
 
+	//Get Actor
 	if (AActor* _target = Hit.GetActor())
 	{
-		if (Cast<IDamagable>(_target) && projectileClass)
+		//if Damagable
+		if (Cast<IDamagable>(_target))
 		{
+			auto ColdCharacter = Cast<AColdCharacter>(character);
 			for (int32 i = 0; i < count; i++)
 			{
 				FTimerHandle projectileGenerateTimer;
 				character->GetWorldTimerManager().SetTimer(projectileGenerateTimer,
 					FTimerDelegate::CreateLambda([=]()
 					{
-						FVector MuzzleLocation = character->GetActorLocation();
+						FVector MuzzleLocation = ColdCharacter->QMuzzle[i%5]->GetComponentLocation();
 						FRotator MuzzleRotation = character->GetActorRotation();
 
 						UWorld* World = character->GetWorld();
