@@ -201,6 +201,8 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
+		currentSkill = E_SkillState::Skill_Null;
+		bSkillReady = false;
 	}
 }
 
