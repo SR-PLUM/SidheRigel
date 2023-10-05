@@ -41,7 +41,7 @@ void UseSkillState::OnBegin()
 			}
 
 			//Set Character Rotation
-			FVector ForwardDirection = (Hit.Location - myCharacter->GetActorLocation()).GetSafeNormal();
+			FVector ForwardDirection = ((Hit.Location - myCharacter->GetActorLocation()) * FVector(1, 1, 0)).GetSafeNormal();
 			myCharacter->SetActorRotation(ForwardDirection.Rotation());
 
 			//Skill Cooldown

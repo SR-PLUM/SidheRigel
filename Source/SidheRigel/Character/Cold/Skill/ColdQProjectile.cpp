@@ -12,20 +12,19 @@ AColdQProjectile::AColdQProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	if (!RootComponent)
-	{
-		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
-	}
 	if (!ProjectileMesh)
 	{
 		ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-		ProjectileMesh->SetupAttachment(RootComponent);
 
 		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/Skill/SM_ColdQProjectile"));
 		if (Mesh.Succeeded())
 		{
 			ProjectileMesh->SetStaticMesh(Mesh.Object);
 		}
+
+		RootComponent = ProjectileMesh;
+
+		CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"))->SetupAttachment(RootComponent);
 	}
 	if (!ProjectileMovementComponent)
 	{
@@ -33,7 +32,7 @@ AColdQProjectile::AColdQProjectile()
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(ProjectileMesh);
 		ProjectileMovementComponent->InitialSpeed = 5.f;
-		ProjectileMovementComponent->MaxSpeed = 5.f;
+		ProjectileMovementComponent->MaxSpeed = 5000.f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
 		ProjectileMovementComponent->bShouldBounce = false;
 		ProjectileMovementComponent->Bounciness = 0.f;
@@ -55,10 +54,10 @@ void AColdQProjectile::Tick(float DeltaTime)
 
 	if (target)
 	{
-		FVector Forward = target->GetActorLocation() - GetActorLocation();
-		ProjectileMovementComponent->Velocity = Forward * speed;
+		FVector Forward = (target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		ProjectileMovementComponent->AddForce(Forward * speed);
 
-		if ((this->GetDistanceTo(target)) < 100.f)
+		if (GetDistanceTo(target) < 100.f)
 		{
 			if (IDamagable* damagableTarget = Cast<IDamagable>(target))
 			{
@@ -67,6 +66,10 @@ void AColdQProjectile::Tick(float DeltaTime)
 
 			Destroy();
 		}
+	}
+	else
+	{
+		Destroy();
 	}
 }
 
