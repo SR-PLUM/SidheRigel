@@ -149,7 +149,7 @@ void AKerunCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	switch (SkillState)
 	{
-	case Null:
+	case Skill_Null:
 		UE_LOG(LogTemp, Warning, TEXT("skillState is Null"));
 		break;
 	

@@ -64,5 +64,5 @@ private:
 	const FString LobbyURL = "/Game/Maps/Lobby?listen";
 
 public:
-	E_Character CharacterNum = Empty;
+	E_Character CharacterNum = E_Character::Character_Null;
 };

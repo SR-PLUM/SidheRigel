@@ -36,10 +36,18 @@ void AttackState::Update(float DeltaTime)
 	{
 		//Attack
 		myCharacter->Attack(stateMachine->target);
+
 		stateMachine->attackDelay = 1 / myCharacter->GetAttackSpeed();
 
-		//DEBUG
-		myCharacter->Stop(2.f);
+		if (stateMachine->target != nullptr)
+		{
+			if (Cast<IDamagable>(stateMachine->target)->GetHP() <= 0)
+			{
+				stateMachine->target = nullptr;
+				stateMachine->ChangeState(stateMachine->Idle);
+				return;
+			}
+		}
 
 		stateMachine->ChangeState(stateMachine->MoveToAttack);
 	}
@@ -56,7 +64,7 @@ void AttackState::OnRightRelease()
 
 void AttackState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Null)
+	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null)
 	{
 		stateMachine->ChangeState(stateMachine->UseSkill);
 	}

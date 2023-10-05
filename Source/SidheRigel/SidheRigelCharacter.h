@@ -4,16 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "Interface/Attackable.h"
 #include "Interface/CCable.h"
 #include "Interface/Damagable.h"
 #include "Interface/Movable.h"
+#include "Interface/Team.h"
 #include "Enum/E_SkillState.h"
 #include "Character/Skill.h"
+
 #include "SidheRigelCharacter.generated.h"
 
 UCLASS(Blueprintable)
-class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable
+class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable, public ITeam
 {
 	GENERATED_BODY()
 
@@ -110,6 +113,9 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, float> decreseDefencePoint;//방깍
 
+	//DEBUG RED=MINION, BLUE = PLAYER
+	E_Team team = E_Team::Blue;
+
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
 	int32 GetCurrentLevel();
@@ -118,6 +124,9 @@ public:		//Getter, Setter
 	void IE_GenerateHP();
 	float GetCurrentMP();
 	int32 GetMoney();
+	void GiveMoney(int32 _money);
+	int32 GetExp();
+	void GiveExp(int32 _exp);
 
 	float GetRange();
 	float GetAttackDamage();
@@ -170,8 +179,12 @@ public:		//Interface Implement
 		virtual void TakeDamage(float damage, AActor* damageCauser) override;
 	UFUNCTION()
 		virtual void RestoreHP(float value) override;
+	UFUNCTION()
+		virtual float GetHP();
 
 	UFUNCTION()
 		virtual void MoveVector(FVector Direction, float Force) override;
+
+	virtual E_Team GetTeam();
 };
 

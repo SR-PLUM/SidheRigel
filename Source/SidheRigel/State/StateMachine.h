@@ -32,14 +32,14 @@ public:
 	class State* Stun;
 
 public:
-	ASidheRigelPlayerController* playerController;
+	class ASidheRigelPlayerController* playerController;
 	class ASidheRigelCharacter* myCharacter;
 	AActor* target;
 	FVector location;
 
 	bool bSkillReady = false;
 
-	E_SkillState currentSkill = E_SkillState::Null;
+	E_SkillState currentSkill = E_SkillState::Skill_Null;
 
 public:	//Timer
 	//Delay between attack to attack

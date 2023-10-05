@@ -26,4 +26,6 @@ public:
 		virtual void TakeDamage(float damage, AActor* damageCauser) = 0;
 	UFUNCTION()
 		virtual void RestoreHP(float value) = 0;
+	UFUNCTION()
+		virtual float GetHP() = 0;
 };

@@ -101,7 +101,7 @@ void StateMachine::Update(float DeltaTime)
 	}
 
 	//Show Skill Range
-	if (bSkillReady && currentSkill != E_SkillState::Null)
+	if (bSkillReady && currentSkill != E_SkillState::Skill_Null)
 	{
 
 	}
@@ -114,7 +114,7 @@ void StateMachine::OnRightClick()
 {
 	//SkillCancel
 	bSkillReady = false;
-	currentSkill = E_SkillState::Null;
+	currentSkill = E_SkillState::Skill_Null;
 
 	currentState->OnRightClick();
 }
