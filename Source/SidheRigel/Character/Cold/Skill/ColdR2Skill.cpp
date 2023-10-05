@@ -19,7 +19,7 @@ ColdR2Skill::~ColdR2Skill()
 {
 }
 
-void ColdR2Skill::SetSkillProperty(ASidheRigelCharacter* Character)
+void ColdR2Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -27,6 +27,7 @@ void ColdR2Skill::SetSkillProperty(ASidheRigelCharacter* Character)
 	bIsInstantCast = false;
 
 	character = Character;
+	skillstate = SkillState;
 }
 
 void ColdR2Skill::OnUse(FHitResult Hit)

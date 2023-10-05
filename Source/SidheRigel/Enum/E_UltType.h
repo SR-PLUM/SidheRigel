@@ -2,10 +2,12 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
+
+UENUM(BlueprintType)
 enum E_UltType
 {
-	None = 0,
+	Ult_Null = 0,
 	Ult1 = 1,
 	Ult2 = 2
 };
-

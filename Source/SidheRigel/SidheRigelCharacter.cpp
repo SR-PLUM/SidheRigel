@@ -13,6 +13,10 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
+#include "SidheRigel/InGameMapScriptActor.h"
+#include "SidheRigel/UI/InGameUI.h"
+#include "SidheRigel/UI/CharacterStatus.h"
+#include "SidheRigel/UI/SkillBtn.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -56,6 +60,14 @@ void ASidheRigelCharacter::BeginPlay()
 	Super::BeginPlay();
 	InitProperty();
 
+	AInGameMapScriptActor* LevelScriptActor = Cast<AInGameMapScriptActor>(GetWorld()->GetLevelScriptActor());
+
+	InGameUI = LevelScriptActor->InGameUI;
+
+	InGameUI->CharacterStatus->InitCharacterStatus(this);
+	
+
+	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
 
@@ -96,6 +108,16 @@ void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillStat
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
 }
 
+void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown)
+{
+	InGameUI->CharacterStatus->SkillButtons[SkillState]->SetCoolDownProgress(Percentage, CurrentCoolDown);
+}
+
+void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
+{
+	InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
+}
+
 void ASidheRigelCharacter::SetLevel(int32 _level)
 {
 	level = _level;
@@ -104,6 +126,11 @@ void ASidheRigelCharacter::SetLevel(int32 _level)
 	{
 		//특성 띄우기
 	}
+}
+
+int32 ASidheRigelCharacter::GetCurrentLevel()
+{
+	return level;
 }
 
 void ASidheRigelCharacter::SetCurrentHP(float _hp)
@@ -125,6 +152,36 @@ float ASidheRigelCharacter::GetCurrentHP()
 void ASidheRigelCharacter::IE_GenerateHP()
 {
 	RestoreHP(GetGenerateHealthPoint());
+}
+
+float ASidheRigelCharacter::GetCurrentMP()
+{
+	return currentMP;
+}
+
+int32 ASidheRigelCharacter::GetMoney()
+{
+	return money;
+}
+
+void ASidheRigelCharacter::GiveMoney(int32 _money)
+{
+	money += _money;
+}
+
+int32 ASidheRigelCharacter::GetExp()
+{
+	return experience;
+}
+
+void ASidheRigelCharacter::GiveExp(int32 _exp)
+{
+	experience += _exp;
+	if (experience >= MaxExperience)
+	{
+		experience -= MaxExperience;
+		level++;
+	}
 }
 
 float ASidheRigelCharacter::GetRange()
@@ -213,6 +270,17 @@ float ASidheRigelCharacter::GetGenerateHealthPoint()
 	return res;
 }
 
+float ASidheRigelCharacter::GetMaxMP()
+{
+	float res = 0;
+	for (auto& value : MaxMP)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
 int32 ASidheRigelCharacter::GetLifeSteal()
 {
 	int32 res = 0;
@@ -293,6 +361,7 @@ float ASidheRigelCharacter::GetDecreseDefence()
 
 void ASidheRigelCharacter::InitProperty()
 {
+	level = 1;
 	range.Add("Debug", 500.f);
 	attackDamage.Add("Debug", 5.f);
 	attackSpeed.Add("Debug", 1.f);
@@ -301,6 +370,7 @@ void ASidheRigelCharacter::InitProperty()
 
 	MaxHP.Add("Debug", 100.f);
 	generateHealthPoint.Add("Debug", 0.2f);
+	MaxMP.Add("Debug", 100.f);
 	lifeSteal.Add("Debug", 5.f);
 	protectPower.Add("Debug", 20);
 
@@ -309,6 +379,7 @@ void ASidheRigelCharacter::InitProperty()
 	speed.Add("Debug", 600.f);
 
 	currentHP = GetMaxHP();
+	currentMP = GetMaxMP();
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()
@@ -413,6 +484,7 @@ void ASidheRigelCharacter::Silence(float time)
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
 	currentHP -= damage;
+	UE_LOG(LogTemp, Warning, TEXT("CurrentHP : %f"), currentHP);
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{
 		causerCharacter->LifeSteal(damage);
@@ -436,10 +508,20 @@ void ASidheRigelCharacter::RestoreHP(float value)
 	}
 }
 
+float ASidheRigelCharacter::GetHP()
+{
+	return currentHP;
+}
+
 void ASidheRigelCharacter::MoveVector(FVector Direction, float Force)
 {
 	moveDirection = Direction.GetSafeNormal();
 	moveForce = Force;
 	moveCnt = 0;
 	IsMoveVectorTrue = true;
+}
+
+E_Team ASidheRigelCharacter::GetTeam()
+{
+	return team;
 }

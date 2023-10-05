@@ -4,16 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "Interface/Attackable.h"
 #include "Interface/CCable.h"
 #include "Interface/Damagable.h"
 #include "Interface/Movable.h"
+#include "Interface/Team.h"
 #include "Enum/E_SkillState.h"
 #include "Character/Skill.h"
+
 #include "SidheRigelCharacter.generated.h"
 
 UCLASS(Blueprintable)
-class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable
+class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable, public ITeam
 {
 	GENERATED_BODY()
 
@@ -49,13 +52,26 @@ public:	//Skill
 	TMap<E_SkillState, Skill*> skills;
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
+public: //UI
+	UPROPERTY()
+		class UInGameUI* InGameUI;
+
+	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
+	void ClearUISkillCoolDown(E_SkillState SkillState);
+
 protected:	//Stat
 	UPROPERTY()
 		int32 level;							//레벨
 	UPROPERTY()
 		int32 experience;						//현재 보유하고 있는 경험치
 	UPROPERTY()
+		int32 MaxExperience;					//최대 경험치
+	UPROPERTY()
 		float currentHP;						//현재 체력
+	UPROPERTY()
+		float currentMP;
+	UPROPERTY()
+		int32 money;
 	UPROPERTY()
 		TMap<FString, float> range;				//레벨업을 제외한 다른 요인들에 의해 증가되는 사거리 딕셔너리
 	UPROPERTY()
@@ -72,12 +88,12 @@ protected:	//Stat
 		TMap<FString, int32> criticalDamage;	//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 피해 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> attackSpeed;		//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 피해 딕셔너리
-	UPROPERTY()
+	UPROPERTY(VisibleAnyWhere)
 		TMap<FString, float> MaxHP;				//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> generateHealthPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 재생량 딕셔너리
 	UPROPERTY()
-		TMap<FString, float> manaPoint;			//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 딕셔너리
+		TMap<FString, float> MaxMP;			//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> defencePoint;		//레벨업을 제외한 다른 요인들에 의해 증가되는 방어력 딕셔너리
 	UPROPERTY()
@@ -97,11 +113,20 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, float> decreseDefencePoint;//방깍
 
+	//DEBUG RED=MINION, BLUE = PLAYER
+	E_Team team = E_Team::Blue;
+
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
+	int32 GetCurrentLevel();
 	virtual void SetCurrentHP(float _hp);
 	float GetCurrentHP();
 	void IE_GenerateHP();
+	float GetCurrentMP();
+	int32 GetMoney();
+	void GiveMoney(int32 _money);
+	int32 GetExp();
+	void GiveExp(int32 _exp);
 
 	float GetRange();
 	float GetAttackDamage();
@@ -110,6 +135,7 @@ public:		//Getter, Setter
 	float GetAttackSpeed();
 	float GetMaxHP();
 	float GetGenerateHealthPoint();
+	float GetMaxMP();
 	int32 GetLifeSteal();
 	int32 GetProtectPower();
 	float GetDefencePoint();
@@ -153,8 +179,12 @@ public:		//Interface Implement
 		virtual void TakeDamage(float damage, AActor* damageCauser) override;
 	UFUNCTION()
 		virtual void RestoreHP(float value) override;
+	UFUNCTION()
+		virtual float GetHP();
 
 	UFUNCTION()
 		virtual void MoveVector(FVector Direction, float Force) override;
+
+	virtual E_Team GetTeam();
 };
 

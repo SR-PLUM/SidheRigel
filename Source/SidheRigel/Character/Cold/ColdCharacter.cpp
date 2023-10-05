@@ -36,22 +36,22 @@ AColdCharacter::AColdCharacter()
 	skills.Add({ E_SkillState::Q_Ready, new ColdQSkill });
 	if (skills[E_SkillState::Q_Ready] != nullptr)
 	{
-		skills[E_SkillState::Q_Ready]->SetSkillProperty(this);
+		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
 	}
 	skills.Add({ E_SkillState::W_Ready, new ColdWSkill });
 	if (skills[E_SkillState::W_Ready] != nullptr)
 	{
-		skills[E_SkillState::W_Ready]->SetSkillProperty(this);
+		skills[E_SkillState::W_Ready]->SetSkillProperty(this, E_SkillState::W_Ready);
 	}
 	skills.Add({ E_SkillState::E_Ready, new ColdESkill });
 	if (skills[E_SkillState::E_Ready] != nullptr)
 	{
-		skills[E_SkillState::E_Ready]->SetSkillProperty(this);
+		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
 	}
 	skills.Add({ E_SkillState::R_Ready, new ColdR1Skill });
 	if (skills[E_SkillState::R_Ready] != nullptr)
 	{
-		skills[E_SkillState::R_Ready]->SetSkillProperty(this);
+		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
 }
 

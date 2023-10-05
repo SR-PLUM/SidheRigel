@@ -113,7 +113,7 @@ void AFairyWingCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState
 {
 	switch (SkillState)
 	{
-	case Null:
+	case Skill_Null:
 		UE_LOG(LogTemp, Warning, TEXT("FairyWing SkillState is Null"));
 		break;
 	case Q_Ready:

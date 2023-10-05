@@ -2,9 +2,12 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
+
+UENUM(BlueprintType)
 enum E_SkillState
 {
-	Null = 0,
+	Skill_Null = 0,
 	Q_Ready = 1,
 	W_Ready = 2,
 	E_Ready = 3,
