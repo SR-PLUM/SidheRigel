@@ -19,7 +19,7 @@ BlackWizardESkill::~BlackWizardESkill()
 {
 }
 
-void BlackWizardESkill::SetSkillProperty(ASidheRigelCharacter* Character)
+void BlackWizardESkill::SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -27,6 +27,7 @@ void BlackWizardESkill::SetSkillProperty(ASidheRigelCharacter* Character)
 	bIsInstantCast = false;
 
 	character = Character;
+	skillstate = SkillState;
 }
 
 void BlackWizardESkill::OnUse(FHitResult Hit)

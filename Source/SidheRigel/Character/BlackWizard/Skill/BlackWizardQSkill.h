@@ -14,7 +14,7 @@ public:
 	BlackWizardQSkill();
 	~BlackWizardQSkill();
 
-	virtual void SetSkillProperty(class ASidheRigelCharacter* Character) override;
+	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
 
 private:
