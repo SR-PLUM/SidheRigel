@@ -45,6 +45,15 @@ void ABlackWizardECollider::BeginPlay()
 	Super::BeginPlay();
 
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &ABlackWizardECollider::OnColliderOverlap);
+
+	FTimerHandle EColliderDestroyTimer;
+	GetWorldTimerManager().SetTimer(EColliderDestroyTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				Destroy();
+			}
+
+	), duration, false);
 }
 
 // Called every frame
@@ -56,21 +65,17 @@ void ABlackWizardECollider::Tick(float DeltaTime)
 
 void ABlackWizardECollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 30.0f, FColor::Red, OtherActorName);
-	}
-
 	if (OtherActor)
 	{
-		IDamagable* test = Cast<IDamagable>(OtherActor);
-		if (test)
+		if (IDamagable* test = Cast<IDamagable>(OtherActor))
+		{
 			test->TakeDamage(10.f, colliderOwner);
+		}			
 
-		ICCable* CC = Cast<ICCable>(OtherActor);
-		if (CC)
+		if (ICCable* CC = Cast<ICCable>(OtherActor))
+		{
 			CC->Stop(1.0f);
+		}			
 	}
 }
 
