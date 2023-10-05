@@ -1,0 +1,157 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Tower.h"
+
+#include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
+
+// Sets default values
+ATower::ATower()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+	if (!RootComponent)
+	{
+		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	}
+
+	if (!rangeArea)
+	{
+		rangeArea = CreateDefaultSubobject<USphereComponent>(TEXT("rangeArea"));
+		rangeArea->InitSphereRadius(500.0f);
+		RootComponent = rangeArea;
+	}
+
+	if (!mesh)
+	{
+		mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+		mesh->SetupAttachment(rangeArea);
+
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>meshRef(TEXT("/Game/Tower/MaterialSphere"));
+		if (meshRef.Succeeded())
+		{
+			mesh->SetStaticMesh(meshRef.Object);
+		}
+	}
+}
+
+// Called when the game starts or when spawned
+void ATower::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	rangeArea->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnEnterEnemy);
+	rangeArea->OnComponentEndOverlap.AddDynamic(this, &ATower::OnExitEnemy);
+}
+
+// Called every frame
+void ATower::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (attackDelay > 0)
+	{
+		attackDelay -= DeltaTime;
+	}
+
+	if (currentTarget)
+	{
+		IDamagable* damagableTarget = Cast<IDamagable>(currentTarget);
+		if (damagableTarget)
+		{
+			if (damagableTarget->GetHP() <= 0)
+			{
+				attackList.Remove(currentTarget);
+
+				if (attackList.Num() == 0)
+				{
+					currentTarget = nullptr;
+				}
+				else
+				{
+					currentTarget = attackList.Top();
+				}
+			}
+			else if (attackDelay <= 0)
+			{
+				damagableTarget->TakeDamage(damage, this);
+				UE_LOG(LogTemp, Warning, TEXT("Tower Attack ENEMY"));
+
+				attackDelay = maxAttackDelay;
+			}
+		}
+	}
+}
+
+void ATower::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ITeam* Enemy = Cast<ITeam>(OtherActor))
+	{
+		if (Enemy->GetTeam() != GetTeam())
+		{
+			if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
+			{
+				if (attackList.Num() == 0)
+				{
+					currentTarget = OtherActor;
+				}
+
+				attackList.Add(OtherActor);
+				UE_LOG(LogTemp, Warning, TEXT("ENTER ENEMY IN TOWER : %s"), *OtherActor->GetName());
+			}
+		}
+	}
+}
+
+void ATower::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (ITeam* Enemy = Cast<ITeam>(OtherActor))
+	{
+		if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
+		{
+			attackList.Remove(OtherActor);
+
+			if (currentTarget == OtherActor)
+			{
+				if (attackList.IsEmpty())
+				{
+					currentTarget = nullptr;
+				}
+				else
+				{
+					currentTarget = attackList.Top();
+				}
+			}
+			UE_LOG(LogTemp, Warning, TEXT("EXIT ENEMY IN TOWER : %s"), *OtherActor->GetName());
+		}
+	}
+}
+
+void ATower::TakeDamage(float _damage, AActor* damageCauser)
+{
+	HP -= _damage;
+
+	if (HP <= 0)
+	{
+		//Destroy Animation
+		Destroy();
+	}
+}
+
+void ATower::RestoreHP(float value)
+{
+	
+}
+
+float ATower::GetHP()
+{
+	return HP;
+}
+
+E_Team ATower::GetTeam()
+{
+	return team;
+}
+
