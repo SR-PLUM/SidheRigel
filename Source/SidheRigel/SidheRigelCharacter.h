@@ -53,6 +53,15 @@ public: //UI
 	UPROPERTY()
 		class UInGameUI* InGameUI;
 
+	UPROPERTY()
+		class UWidgetComponent* StatWidget;
+
+	UPROPERTY()
+		class UStatSummary* StatSummary;
+
+	void InitStatWidget();
+	void InitStatSummary();
+
 	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
 	void ClearUISkillCoolDown(E_SkillState SkillState);
 
