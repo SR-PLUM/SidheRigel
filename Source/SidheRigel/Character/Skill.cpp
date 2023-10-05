@@ -51,12 +51,10 @@ float Skill::GetSkillDelay()
 void Skill::SetCooldown()
 {
 	skillCooldown = skillMaxCooldown;
-	UE_LOG(LogTemp, Warning, TEXT("MAX COOL : %d"), skillMaxCooldown);
 }
 
 float Skill::GetCooldown()
 {
-	UE_LOG(LogTemp, Warning, TEXT("CUR COOL : %d"), skillCooldown);
 	return skillCooldown;
 }
 
