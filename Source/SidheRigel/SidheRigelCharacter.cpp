@@ -164,6 +164,26 @@ int32 ASidheRigelCharacter::GetMoney()
 	return money;
 }
 
+void ASidheRigelCharacter::GiveMoney(int32 _money)
+{
+	money += _money;
+}
+
+int32 ASidheRigelCharacter::GetExp()
+{
+	return experience;
+}
+
+void ASidheRigelCharacter::GiveExp(int32 _exp)
+{
+	experience += _exp;
+	if (experience >= MaxExperience)
+	{
+		experience -= MaxExperience;
+		level++;
+	}
+}
+
 float ASidheRigelCharacter::GetRange()
 {
 	float res = 0;

@@ -5,6 +5,7 @@
 
 #include "MinionAIController.h"
 #include "WayPoint.h"
+#include "SidheRigel/SidheRigelCharacter.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -23,7 +24,7 @@ AMinion::AMinion()
 		detectArea->SetupAttachment(RootComponent);
 	}
 
-	GetCharacterMovement()->MaxWalkSpeed = 400.f;
+	GetCharacterMovement()->MaxWalkSpeed = 325.f;
 }
 
 // Called when the game starts or when spawned
@@ -209,15 +210,40 @@ void AMinion::Airborne(float time)
 
 void AMinion::TakeDamage(float _damage, AActor* damageCauser)
 {
+	hp -= _damage;
+	UE_LOG(LogTemp, Warning, TEXT("Minion_HP : %f"), hp);
+	if (hp <= 0)
+	{
+		auto Character = Cast<ASidheRigelCharacter>(damageCauser);
+		if (Character)
+		{
+			Character->GiveMoney(gold);
+		}
+
+		for (auto enemy : attackList)
+		{
+			if (auto enemyPlayer = Cast<ASidheRigelCharacter>(enemy))
+			{
+				enemyPlayer->GiveExp(exp);
+			}
+		}
+
+		Destroy();
+	}
 }
 
 void AMinion::RestoreHP(float value)
 {
+	hp += value;
+	if (hp > maxHp)
+	{
+		hp = maxHp;
+	}
 }
 
 float AMinion::GetHP()
 {
-	return 0.0f;
+	return hp;
 }
 
 void AMinion::MoveVector(FVector Direction, float Force)

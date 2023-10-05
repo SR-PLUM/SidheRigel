@@ -67,6 +67,12 @@ public:
 	float attackDelay = 0.f;
 	float maxAttackDelay = 1.5f;
 
+	float hp = 477;
+	float maxHp = 477;
+
+	int32 gold = 20;
+	int32 exp = 60;
+
 public:
 	UFUNCTION()
 		virtual void Attack(AActor* Target);

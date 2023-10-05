@@ -91,6 +91,8 @@ void ADummyProjectile::Tick(float DeltaTime)
 				damagableTarget->TakeDamage(totalAttackDamage, projectileOwner);
 			}
 
+			Target = nullptr;
+
 			Destroy();
 		}
 	}

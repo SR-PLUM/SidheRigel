@@ -124,6 +124,9 @@ public:		//Getter, Setter
 	void IE_GenerateHP();
 	float GetCurrentMP();
 	int32 GetMoney();
+	void GiveMoney(int32 _money);
+	int32 GetExp();
+	void GiveExp(int32 _exp);
 
 	float GetRange();
 	float GetAttackDamage();
