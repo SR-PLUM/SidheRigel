@@ -49,6 +49,7 @@ void UCharacterStatus::InitIconImage(E_Character Character)
 		SkillButtons[W_Ready]->SkillBtn->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(WSkillIconPath[Character]));
 		SkillButtons[E_Ready]->SkillBtn->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(ESkillIconPath[Character]));
 		SkillButtons[R_Ready]->SkillBtn->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(RSkillIconPath[Character]));
+		Btn_BSkill->WidgetStyle.Normal.SetResourceObject(CastPathToTexture2D(BSkillIconPath));
 		
 	}
 	else
