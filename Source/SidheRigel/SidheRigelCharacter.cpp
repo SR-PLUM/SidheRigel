@@ -17,6 +17,8 @@
 #include "SidheRigel/UI/InGameUI.h"
 #include "SidheRigel/UI/CharacterStatus.h"
 #include "SidheRigel/UI/SkillBtn.h"
+#include "SidheRigel/UI/StatSummary.h"
+#include "Components/WidgetComponent.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -53,6 +55,9 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitAttackProjectile();
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
+
+	//StatWidget
+	InitStatWidget();
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -66,6 +71,7 @@ void ASidheRigelCharacter::BeginPlay()
 
 	InGameUI->CharacterStatus->InitCharacterStatus(this);
 	
+	InitStatSummary();
 
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
@@ -106,6 +112,31 @@ void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
+}
+
+void ASidheRigelCharacter::InitStatWidget()
+{
+	StatWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("StatWIDGET"));
+	StatWidget->SetupAttachment(GetMesh());
+
+	StatWidget->SetRelativeLocation(FVector(0, 0, 180));
+	StatWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_StatSummary"));
+	if (StatUI.Succeeded())
+	{
+		StatWidget->SetWidgetClass(StatUI.Class);
+		StatWidget->SetDrawSize(FVector2D(150, 30));
+	}
+}
+
+void ASidheRigelCharacter::InitStatSummary()
+{
+	auto TmpWidget = Cast<UStatSummary>(StatWidget->GetUserWidgetObject());
+	if (nullptr != TmpWidget)
+	{
+		StatSummary = TmpWidget;
+		StatSummary->InitStat();
+	}
 }
 
 void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown)
@@ -494,6 +525,9 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 		UE_LOG(LogTemp, Warning, TEXT("Die"));
 		currentHP = 0;
 	}
+
+	InGameUI->CharacterStatus->UpdateHP();
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
 }
 
 void ASidheRigelCharacter::RestoreHP(float value)
@@ -506,6 +540,9 @@ void ASidheRigelCharacter::RestoreHP(float value)
 	{
 		currentHP = var_MaxHP;
 	}
+
+	InGameUI->CharacterStatus->UpdateHP();
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
 }
 
 float ASidheRigelCharacter::GetHP()

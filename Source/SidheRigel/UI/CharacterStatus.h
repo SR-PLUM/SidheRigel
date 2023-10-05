@@ -38,20 +38,6 @@ public:
 
 	TMap<E_SkillState, class USkillBtn*> SkillButtons;
 
-	//Skill Button
-	/*
-	UPROPERTY(meta = (BindWidget))
-		class UButton* Btn_QSkill;
-
-	UPROPERTY(meta = (BindWidget))
-		class UButton* Btn_WSkill;
-
-	UPROPERTY(meta = (BindWidget))
-		class UButton* Btn_ESkill;
-
-	UPROPERTY(meta = (BindWidget))
-		class UButton* Btn_RSkill;
-*/
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Btn_BSkill;
 
@@ -160,4 +146,5 @@ public :
 		TPair<E_Character, FString>(E_Character::Kerun, TEXT("/Game/Heros/Kerun/Icons/Icon_KerunRSkill"))
 	};
 	
+	FString BSkillIconPath = TEXT("/Game/UIBlueprints/InGameUI/WhiteRecall");
 };
