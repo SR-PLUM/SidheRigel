@@ -484,6 +484,7 @@ void ASidheRigelCharacter::Silence(float time)
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
 	currentHP -= damage;
+	UE_LOG(LogTemp, Warning, TEXT("CurrentHP : %f"), currentHP);
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{
 		causerCharacter->LifeSteal(damage);

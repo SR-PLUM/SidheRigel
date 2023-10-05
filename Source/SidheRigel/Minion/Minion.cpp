@@ -94,7 +94,7 @@ void AMinion::Tick(float DeltaTime)
 			}
 			else
 			{
-				AIController->MoveToActor(currentTarget, range);
+				AIController->MoveToActor(currentTarget, range - 80);
 			}
 		}
 

@@ -167,7 +167,6 @@ void StateMachine::HasAttackEnemy()
 	if (playerController)
 	{
 		AActor* HitActor = playerController->GetHitResult().GetActor();
-		UE_LOG(LogTemp, Warning, TEXT("ActorName : %s"), *HitActor->GetName());
 		if (HitActor)
 		{
 			IDamagable* DamagableActor = Cast<IDamagable>(HitActor);
