@@ -8,7 +8,7 @@
 
 BlackWizardRSkill::BlackWizardRSkill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> colliderRef(TEXT("/Game/Heros/BlackWizard/Skill/BlackWizardRCollider"));
+	static ConstructorHelpers::FObjectFinder<UBlueprint> colliderRef(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardRCollider"));
 	if (colliderRef.Object)
 	{
 		colliderClass = (UClass*)colliderRef.Object->GeneratedClass;
@@ -46,7 +46,7 @@ void BlackWizardRSkill::OnUse(FHitResult Hit)
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		// Spawn the projectile at the muzzle.
-		ABlackWizardRCollider* collider = World->SpawnActorDeferred<ABlackWizardQCollider>(colliderClass, SpawnTransform);
+		ABlackWizardRCollider* collider = World->SpawnActorDeferred<ABlackWizardRCollider>(colliderClass, SpawnTransform);
 		if (collider)
 		{
 			collider->colliderOwner = character;
