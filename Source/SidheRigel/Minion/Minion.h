@@ -31,7 +31,8 @@ protected:
 	class AAIController* AIController;
 
 	//DEBUG RED=MINION, BLUE = PLAYER
-	E_Team team = E_Team::Red;
+	UPROPERTY(EditAnywhere)
+		TEnumAsByte<E_Team> team = E_Team::Red;
 
 public:	
 	// Called every frame

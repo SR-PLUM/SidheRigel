@@ -29,7 +29,8 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* mesh;
 
-	E_Team team = E_Team::Blue;
+	UPROPERTY(EditAnywhere)
+		TEnumAsByte<E_Team> team = E_Team::Team_Null;
 
 	float HP = 5000;
 public:	
