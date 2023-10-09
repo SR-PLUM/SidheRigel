@@ -119,7 +119,7 @@ void ASidheRigelCharacter::InitStatWidget()
 	StatWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("StatWIDGET"));
 	StatWidget->SetupAttachment(GetMesh());
 
-	StatWidget->SetRelativeLocation(FVector(0, 0, 180));
+	StatWidget->SetRelativeLocation(FVector(0, 0, 240));
 	StatWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_StatSummary"));
 	if (StatUI.Succeeded())
