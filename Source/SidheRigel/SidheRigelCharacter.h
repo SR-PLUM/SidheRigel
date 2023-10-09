@@ -136,6 +136,7 @@ public:		//Getter, Setter
 	void GiveMoney(int32 _money);
 	int32 GetExp();
 	void GiveExp(int32 _exp);
+	int32 GetMaxExp();
 
 	float GetRange();
 	float GetAttackDamage();
