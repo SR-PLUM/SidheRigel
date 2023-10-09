@@ -213,6 +213,15 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 		experience -= MaxExperience;
 		level++;
 	}
+
+	InGameUI->CharacterStatus->UpdateLevel();
+	StatSummary->SetLevel(level);
+	StatSummary->SetExpBar(float(experience) / MaxExperience);
+}
+
+int32 ASidheRigelCharacter::GetMaxExp()
+{
+	return MaxExperience;
 }
 
 float ASidheRigelCharacter::GetRange()
@@ -411,6 +420,8 @@ void ASidheRigelCharacter::InitProperty()
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
+
+	MaxExperience = 20;
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()

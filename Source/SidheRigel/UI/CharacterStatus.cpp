@@ -69,7 +69,7 @@ void UCharacterStatus::InitIconImage(E_Character Character)
 void UCharacterStatus::UpdateLevel()
 {
 	CurrentLevelText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetCurrentLevel())));
-	//TODO : Level Percentage
+	LevelProgress->SetPercent(float(CharacterRef->GetExp()) / CharacterRef->GetMaxExp());
 }
 
 void UCharacterStatus::UpdateHP()
