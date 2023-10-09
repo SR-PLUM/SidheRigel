@@ -26,3 +26,8 @@ void UStatSummary::SetExpBar(float Percentage)
 {
 	ExprienceBar->SetPercent(Percentage);
 }
+
+void UStatSummary::SetEnemyColor()
+{
+	HPBar->FillColorAndOpacity = FLinearColor(255.f, 0.f, 0.f, 1.f);
+}
