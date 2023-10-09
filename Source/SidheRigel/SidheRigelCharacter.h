@@ -12,6 +12,7 @@
 #include "Interface/Team.h"
 #include "Enum/E_SkillState.h"
 #include "Character/Skill.h"
+#include "Character/TalentList.h"
 
 #include "SidheRigelCharacter.generated.h"
 
@@ -51,6 +52,9 @@ protected:
 public:	//Skill
 	TMap<E_SkillState, Skill*> skills;
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
+
+public: //Talent
+	TArray<FTalentList> talentListArray;
 
 public: //UI
 	UPROPERTY()

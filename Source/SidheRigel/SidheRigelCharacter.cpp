@@ -212,6 +212,30 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 	{
 		experience -= MaxExperience;
 		level++;
+		if (level == 4)
+		{
+
+		}
+		if (level == 7)
+		{
+
+		}
+		if (level == 10)
+		{
+
+		}
+		if (level == 13)
+		{
+
+		}
+		if (level == 16)
+		{
+
+		}
+		if (level == 20)
+		{
+
+		}
 	}
 }
 
