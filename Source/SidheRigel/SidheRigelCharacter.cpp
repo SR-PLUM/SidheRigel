@@ -119,7 +119,7 @@ void ASidheRigelCharacter::InitStatWidget()
 	StatWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("StatWIDGET"));
 	StatWidget->SetupAttachment(GetMesh());
 
-	StatWidget->SetRelativeLocation(FVector(0, 0, 180));
+	StatWidget->SetRelativeLocation(FVector(0, 0, 240));
 	StatWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_StatSummary"));
 	if (StatUI.Succeeded())
@@ -213,6 +213,15 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 		experience -= MaxExperience;
 		level++;
 	}
+
+	InGameUI->CharacterStatus->UpdateLevel();
+	StatSummary->SetLevel(level);
+	StatSummary->SetExpBar(float(experience) / MaxExperience);
+}
+
+int32 ASidheRigelCharacter::GetMaxExp()
+{
+	return MaxExperience;
 }
 
 float ASidheRigelCharacter::GetRange()
@@ -411,6 +420,8 @@ void ASidheRigelCharacter::InitProperty()
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
+
+	MaxExperience = 20;
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()
