@@ -32,7 +32,18 @@ protected:
 	UPROPERTY(EditAnywhere)
 		TEnumAsByte<E_Team> team = E_Team::Team_Null;
 
-	float HP = 5000;
+	float HP;
+	float MaxHP = 5000;
+
+protected:
+	UPROPERTY()
+		class UWidgetComponent* TowerWidget;
+	UPROPERTY()
+		class UHPUI* TowerUIRef;
+
+	void InitTowerWidget();
+	void InitTowerUI();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
