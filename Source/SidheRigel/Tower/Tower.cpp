@@ -55,7 +55,7 @@ void ATower::BeginPlay()
 
 void ATower::InitTowerWidget()
 {
-	TowerWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("StatWIDGET"));
+	TowerWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TowerWIDGET"));
 	TowerWidget->SetupAttachment(mesh);
 
 	TowerWidget->SetRelativeLocation(FVector(0, 0, 240));
