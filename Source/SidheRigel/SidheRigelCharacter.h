@@ -54,7 +54,9 @@ public:	//Skill
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 public: //Talent
-	TArray<FTalentList> talentListArray;
+	TArray<FTalentList*> talentListArray;
+
+	void InitTalentLIst();
 
 public: //UI
 	UPROPERTY()

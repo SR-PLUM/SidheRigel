@@ -41,6 +41,9 @@ protected:	//Attack
 private:	//State
 	E_UltType ultType;
 
+public:		//Talent
+	void TestTalent();
+
 
 protected:	//Skill Projectile
 	UPROPERTY(EditDefaultsOnly)

@@ -10,8 +10,6 @@ public:
 	GENERATED_USTRUCT_BODY()
 
 public:
-	void* talnetFunc;
-
 	UPROPERTY()
 		FString imgPath;
 

@@ -102,3 +102,9 @@ void AColdCharacter::Attack(AActor* target)
 		}
 	}
 }
+
+void AColdCharacter::TestTalent()
+{
+
+}
+

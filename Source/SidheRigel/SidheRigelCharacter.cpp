@@ -73,6 +73,8 @@ void ASidheRigelCharacter::BeginPlay()
 	
 	InitStatSummary();
 
+	InitTalentLIst();
+
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
@@ -112,6 +114,36 @@ void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
+}
+
+void ASidheRigelCharacter::InitTalentLIst()
+{
+	//Talent Init
+	for (int i = 0; i < 7; i++)
+	{
+		talentListArray.Add(new FTalentList);
+
+		int iItemCount;
+		if (i == 3)	//if level 10 Talent
+		{
+			//Ultimate Skill Count
+			iItemCount = 1;
+		}
+		else if (i == 6)//if level 20 Talent
+		{
+			iItemCount = 3;
+		}
+		else
+		{
+			iItemCount = 3;
+		}
+
+		talentListArray[i]->itemCount = iItemCount;
+		for (int j = 0; j < iItemCount; j++)
+		{
+			talentListArray[i]->talentItems.Add(new FTalent{ "", "", "" });
+		}
+	}
 }
 
 void ASidheRigelCharacter::InitStatWidget()
