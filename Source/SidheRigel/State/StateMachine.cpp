@@ -172,8 +172,12 @@ void StateMachine::HasAttackEnemy()
 			IDamagable* DamagableActor = Cast<IDamagable>(HitActor);
 			if (DamagableActor)
 			{
-				target = HitActor;
-				ChangeState(MoveToAttack);
+				ITeam* TeamActor = Cast<ITeam>(HitActor);
+				if(TeamActor && TeamActor->GetTeam() != myCharacter->GetTeam())
+				{
+					target = HitActor;
+					ChangeState(MoveToAttack);
+				}
 			}
 			else
 			{
