@@ -197,7 +197,7 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 		bSkillReady = true;
 
 		//Check Instant cast
-		if (myCharacter->skills[SkillState]->IsInstantCast())
+		if (myCharacter->skills[SkillState]->IsInstantCast() && myCharacter->skills[SkillState]->CanUse())
 		{
 			ChangeState(UseSkill);
 		}

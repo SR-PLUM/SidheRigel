@@ -64,7 +64,7 @@ void AttackState::OnRightRelease()
 
 void AttackState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null)
+	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
 	{
 		stateMachine->ChangeState(stateMachine->UseSkill);
 	}

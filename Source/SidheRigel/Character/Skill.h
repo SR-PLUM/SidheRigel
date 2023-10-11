@@ -23,12 +23,16 @@ public:
 	void SetCooldown();
 	float GetCooldown();
 	bool IsInstantCast();
+	bool CanUse();
 
 protected:
 	float skillDelay;
 	float skillCooldown;
 	float skillMaxCooldown;
-	bool bIsInstantCast;
+	float range;
+
+	bool bIsInstantCast = false;
+	bool bIsTargeting = true;
 
 	class ASidheRigelCharacter* character;
 	E_SkillState skillstate;
