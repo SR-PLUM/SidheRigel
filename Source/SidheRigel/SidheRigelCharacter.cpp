@@ -12,6 +12,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "Components/SphereComponent.h"
+
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/InGameMapScriptActor.h"
 #include "SidheRigel/UI/InGameUI.h"
@@ -19,6 +21,8 @@
 #include "SidheRigel/UI/SkillBtn.h"
 #include "SidheRigel/UI/StatSummary.h"
 #include "Components/WidgetComponent.h"
+#include "SidheRigel/Minion/Minion.h"
+#include "SidheRigel/Tower/Tower.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -49,6 +53,10 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	detectRange = CreateDefaultSubobject<USphereComponent>(TEXT("DetectRange"));
+	detectRange->InitSphereRadius(500.0f);
+	detectRange->SetupAttachment(RootComponent);
+
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -74,6 +82,10 @@ void ASidheRigelCharacter::BeginPlay()
 	InitStatSummary();
 
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
+
+	detectRange->OnComponentBeginOverlap.AddDynamic(this, &ASidheRigelCharacter::OnEnterEnemy);
+	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
+
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 }
 
@@ -107,6 +119,44 @@ void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 {
 	check(PlayerInputComponent);
 
+}
+
+void ASidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ITeam* TeamEnemy = Cast<ITeam>(OtherActor))
+	{
+		if (TeamEnemy->GetTeam() != GetTeam())
+		{
+			if (AMinion* MinionEnemy = Cast<AMinion>(OtherActor))
+			{
+				InRangeActors.Add(OtherActor);
+			}
+			else if (ATower* TowerEnemy = Cast<ATower>(OtherActor))
+			{
+				InRangeActors.Add(OtherActor);
+			}
+		}
+	}
+}
+
+void ASidheRigelCharacter::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	InRangeActors.Remove(OtherActor);
+}
+
+void ASidheRigelCharacter::ChangeTarget()
+{
+	for (auto Enemy : InRangeActors)
+	{
+		if (AMinion* MinionEnemy = Cast<AMinion>(Enemy))
+		{
+			MinionEnemy->currentTarget = this;
+		}
+		else if (ATower* TowerEnemy = Cast<ATower>(Enemy))
+		{
+			TowerEnemy->currentTarget = this;
+		}
+	}
 }
 
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
@@ -453,6 +503,11 @@ void ASidheRigelCharacter::Attack(AActor* target)
 			{
 				Projectile->Target = target;
 				InitProjectileProperty(Projectile);
+
+				if (ASidheRigelCharacter* characterTarget = Cast<ASidheRigelCharacter>(target))
+				{
+					ChangeTarget();
+				}
 			}
 		}
 	}
