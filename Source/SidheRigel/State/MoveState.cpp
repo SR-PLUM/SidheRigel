@@ -75,7 +75,7 @@ void MoveState::OnRightRelease()
 
 void MoveState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady)
+	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
 	{
 		stateMachine->ChangeState(stateMachine->UseSkill);
 	}
