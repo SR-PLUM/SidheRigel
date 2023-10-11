@@ -5,6 +5,8 @@
 
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
+#include "SidheRigel/UI/HPUI.h"
 
 // Sets default values
 ATower::ATower()
@@ -35,6 +37,9 @@ ATower::ATower()
 			mesh->SetStaticMesh(meshRef.Object);
 		}
 	}
+
+	HP = MaxHP;
+	InitTowerWidget();
 }
 
 // Called when the game starts or when spawned
@@ -44,6 +49,33 @@ void ATower::BeginPlay()
 	
 	rangeArea->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnEnterEnemy);
 	rangeArea->OnComponentEndOverlap.AddDynamic(this, &ATower::OnExitEnemy);
+
+	InitTowerUI();
+}
+
+void ATower::InitTowerWidget()
+{
+	TowerWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TowerWIDGET"));
+	TowerWidget->SetupAttachment(mesh);
+
+	TowerWidget->SetRelativeLocation(FVector(0, 0, 240));
+	TowerWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_HPUI"));
+	if (StatUI.Succeeded())
+	{
+		TowerWidget->SetWidgetClass(StatUI.Class);
+		TowerWidget->SetDrawSize(FVector2D(180, 30));
+	}
+}
+
+void ATower::InitTowerUI()
+{
+	auto TmpWidget = Cast<UHPUI>(TowerWidget->GetUserWidgetObject());
+	if (nullptr != TmpWidget)
+	{
+		TowerUIRef = TmpWidget;
+		TowerUIRef->InitHPBar();
+	}
 }
 
 // Called every frame
@@ -132,6 +164,8 @@ void ATower::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Other
 void ATower::TakeDamage(float _damage, AActor* damageCauser)
 {
 	HP -= _damage;
+
+	TowerUIRef->SetHPBar(HP/ MaxHP);
 
 	if (HP <= 0)
 	{

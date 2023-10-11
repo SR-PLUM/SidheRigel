@@ -11,6 +11,9 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "Components/WidgetComponent.h"
+#include "SidheRigel/UI/HPUI.h"
+
 // Sets default values
 AMinion::AMinion()
 {
@@ -25,6 +28,8 @@ AMinion::AMinion()
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = 325.f;
+
+	InitMinionWidget();
 }
 
 // Called when the game starts or when spawned
@@ -43,6 +48,8 @@ void AMinion::BeginPlay()
 	AIController = Cast<AAIController>(GetController());
 
 	MoveToWayPoint();
+
+	InitMinionUI();
 }
 
 // Called every frame
@@ -184,6 +191,32 @@ E_Team AMinion::GetTeam()
 	return team;
 }
 
+void AMinion::InitMinionWidget()
+{
+	MinionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MinionWIDGET"));
+	MinionWidget->SetupAttachment(GetMesh());
+
+	MinionWidget->SetRelativeLocation(FVector(0, 0, 240));
+	MinionWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_HPUI"));
+	if (StatUI.Succeeded())
+	{
+		MinionWidget->SetWidgetClass(StatUI.Class);
+		MinionWidget->SetDrawSize(FVector2D(180, 30));
+	}
+}
+
+void AMinion::InitMinionUI()
+{
+	auto TmpWidget = Cast<UHPUI>(MinionWidget->GetUserWidgetObject());
+	if (nullptr != TmpWidget)
+	{
+		MinionUIRef = TmpWidget;
+		MinionUIRef->InitHPBar();
+		MinionUIRef->SetUIVisibility(false);
+	}
+}
+
 void AMinion::Attack(AActor* Target)
 {
 }
@@ -212,6 +245,10 @@ void AMinion::TakeDamage(float _damage, AActor* damageCauser)
 {
 	hp -= _damage;
 	UE_LOG(LogTemp, Warning, TEXT("Minion_HP : %f"), hp);
+
+	MinionUIRef->SetHPBar(hp / maxHp);
+	MinionUIRef->SetUIVisibility(true);
+
 	if (hp <= 0)
 	{
 		auto Character = Cast<ASidheRigelCharacter>(damageCauser);
