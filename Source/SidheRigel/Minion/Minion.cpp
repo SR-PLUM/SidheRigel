@@ -69,6 +69,10 @@ void AMinion::Tick(float DeltaTime)
 			}
 		}
 	}
+	else
+	{
+		MoveToWayPoint();
+	}
 
 	if (attackDelay > 0)
 	{
@@ -87,6 +91,7 @@ void AMinion::Tick(float DeltaTime)
 				if (attackList.Num() == 0)
 				{
 					currentTarget = nullptr;
+					MoveToWayPoint();
 				}
 				else
 				{
@@ -144,8 +149,6 @@ void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		{
 			if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
 			{
-				AIController->StopMovement();
-
 				if (attackList.Num() == 0)
 				{
 					currentTarget = OtherActor;
@@ -164,8 +167,6 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	{
 		if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
 		{
-			AIController->StopMovement();
-
 			attackList.Remove(OtherActor);
 
 			if (currentTarget == OtherActor)
