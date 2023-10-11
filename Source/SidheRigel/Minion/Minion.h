@@ -74,6 +74,16 @@ public:
 	int32 gold = 20;
 	int32 exp = 60;
 
+protected: //UI
+	UPROPERTY()
+		class UWidgetComponent* MinionWidget;
+	UPROPERTY()
+		class UHPUI* MinionUIRef;
+
+	void InitMinionWidget();
+	void InitMinionUI();
+
+
 public:
 	UFUNCTION()
 		virtual void Attack(AActor* Target);

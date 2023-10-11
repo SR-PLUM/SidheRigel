@@ -3,6 +3,7 @@
 
 #include "Skill.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
 
 Skill::Skill()
 {
@@ -61,4 +62,23 @@ float Skill::GetCooldown()
 bool Skill::IsInstantCast()
 {
 	return bIsInstantCast;
+}
+
+bool Skill::CanUse()
+{
+	if (!bIsTargeting)
+		return true;
+
+	auto SRController = Cast<ASidheRigelPlayerController>(character->GetController());
+	if (SRController)
+	{
+		auto hit = SRController->GetHitResult();
+		auto teamActor = Cast<ITeam>(hit.GetActor());
+		if (teamActor && teamActor->GetTeam() != character->GetTeam())
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
