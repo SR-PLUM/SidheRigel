@@ -9,6 +9,8 @@
 
 AInGameMapScriptActor::AInGameMapScriptActor()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> InGameUIBPClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_InGameUI"));
 	if (InGameUIBPClass.Class == nullptr)
 		return;
@@ -71,4 +73,9 @@ void AInGameMapScriptActor::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("InGameUI is null"))
 	}*/
 	
+}
+
+void AInGameMapScriptActor::Tick(float DeltaSeconds)
+{
+	Time += DeltaSeconds;
 }
