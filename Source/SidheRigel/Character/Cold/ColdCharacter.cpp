@@ -82,12 +82,6 @@ void AColdCharacter::InitAttackProjectile()
 
 void AColdCharacter::Attack(AActor* target)
 {
-	AInGameMapScriptActor* LevelScriptActor = Cast<AInGameMapScriptActor>(GetWorld()->GetLevelScriptActor());
-	if (LevelScriptActor)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("time : %f"), LevelScriptActor->Time);
-	}
-
 	if (attackProjectileClass)
 	{
 		FVector MuzzleLocation = GetActorLocation();

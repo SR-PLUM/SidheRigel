@@ -28,7 +28,7 @@ protected:
 protected:
 	class USphereComponent* detectArea;
 
-	class AAIController* AIController;
+	class AMinionAIController* AIController;
 
 	//DEBUG RED=MINION, BLUE = PLAYER
 	UPROPERTY(EditAnywhere)
