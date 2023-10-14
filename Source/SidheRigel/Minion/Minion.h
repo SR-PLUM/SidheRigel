@@ -28,7 +28,7 @@ protected:
 protected:
 	class USphereComponent* detectArea;
 
-	class AAIController* AIController;
+	class AMinionAIController* AIController;
 
 	//DEBUG RED=MINION, BLUE = PLAYER
 	UPROPERTY(EditAnywhere)
@@ -111,4 +111,6 @@ public:
 
 	UFUNCTION()
 		virtual E_Team GetTeam() override;
+	UFUNCTION()
+		void SetTeam(E_Team _team);
 };

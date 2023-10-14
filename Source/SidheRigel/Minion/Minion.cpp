@@ -29,7 +29,12 @@ AMinion::AMinion()
 
 	GetCharacterMovement()->MaxWalkSpeed = 325.f;
 
+	AIControllerClass = AMinionAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 	InitMinionWidget();
+
+	UE_LOG(LogTemp,Warning,TEXT("MINION CONSTRUCT"))
 }
 
 // Called when the game starts or when spawned
@@ -37,19 +42,27 @@ void AMinion::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	AIControllerClass = AMinionAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWayPoint::StaticClass(), WayPoints);
 
 	detectArea->OnComponentBeginOverlap.AddDynamic(this, &AMinion::OnEnterEnemy);
 	detectArea->OnComponentEndOverlap.AddDynamic(this, &AMinion::OnExitEnemy);
 
-	AIController = Cast<AAIController>(GetController());
+	AIController = Cast<AMinionAIController>(GetController());
+
+	if (team == E_Team::Red)
+	{
+		currentWayPointOrder = 0;
+	}
+	else
+	{
+		currentWayPointOrder = WayPoints.Num() - 1;
+	}
 
 	MoveToWayPoint();
 
 	InitMinionUI();
+
+	UE_LOG(LogTemp, Warning, TEXT("MINION BEGIN_PLAY"))
 }
 
 // Called every frame
@@ -60,11 +73,19 @@ void AMinion::Tick(float DeltaTime)
 	//If Goal WayPoint Move To Next WayPoint
 	if (currentWayPoint)
 	{
-		if (currentWayPointOrder < WayPoints.Num())
+		if (WayPoints.Num() > 0)
 		{
 			if (GetDistanceTo(currentWayPoint) <= 100.f)
 			{
-				currentWayPointOrder++;
+				if (team == E_Team::Red)
+				{
+					currentWayPointOrder++;
+				}
+				else
+				{
+					currentWayPointOrder--;
+				}
+				WayPoints.Remove(currentWayPoint);
 				MoveToWayPoint();
 			}
 		}
@@ -106,7 +127,15 @@ void AMinion::Tick(float DeltaTime)
 			}
 			else
 			{
-				AIController->MoveToActor(currentTarget, range - 80);
+				if (AIController)
+				{
+					AIController->MoveToActor(currentTarget, range - 80);
+				}
+				else
+				{
+					AIController = Cast<AMinionAIController>(GetController());
+					UE_LOG(LogTemp, Warning, TEXT("MINION GET_CONTROLLER"))
+				}
 			}
 		}
 
@@ -190,6 +219,11 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 E_Team AMinion::GetTeam()
 {
 	return team;
+}
+
+void AMinion::SetTeam(E_Team _team)
+{
+	team = _team;
 }
 
 void AMinion::InitMinionWidget()
