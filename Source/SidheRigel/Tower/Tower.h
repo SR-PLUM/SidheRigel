@@ -32,7 +32,18 @@ protected:
 	UPROPERTY(EditAnywhere)
 		TEnumAsByte<E_Team> team = E_Team::Team_Null;
 
-	float HP = 5000;
+	float HP;
+	float MaxHP = 5000;
+
+protected:
+	UPROPERTY()
+		class UWidgetComponent* TowerWidget;
+	UPROPERTY()
+		class UHPUI* TowerUIRef;
+
+	void InitTowerWidget();
+	void InitTowerUI();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -43,17 +54,27 @@ public:
 		void OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
-	TArray<class AActor*> attackList;
+	TSubclassOf<class ATowerAttackProjectile> projectileClass;
 
-	AActor* currentTarget;
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* muzzleLocation;
 
-	float attackDelay = 0.f;
-	float maxAttackDelay = 1.5f;
+	UPROPERTY()
+		TArray<class AActor*> attackList;
 
-	float damage = 180;
+	UPROPERTY()
+		AActor* currentTarget;
+
+	UPROPERTY()
+		float attackDelay = 0.f;
+	UPROPERTY()
+		float maxAttackDelay = 1.5f;
+
+	UPROPERTY()
+		float damage = 180.f;
 public:
 	UFUNCTION()
-		virtual void TakeDamage(float damage, AActor* damageCauser);
+		virtual void TakeDamage(float _damage, AActor* damageCauser);
 	UFUNCTION()
 		virtual void RestoreHP(float value);
 	UFUNCTION()

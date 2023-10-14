@@ -9,7 +9,7 @@ void UStatSummary::InitStat()
 {
 	Level->SetText(FText::FromString(FString::FromInt(1)));
 	HPBar->SetPercent(1.f);
-	ExprienceBar->SetPercent(1.f);
+	ExprienceBar->SetPercent(0.f);
 }
 
 void UStatSummary::SetLevel(int32 CurrentLevel)
@@ -25,4 +25,9 @@ void UStatSummary::SetHPBar(float Percentage)
 void UStatSummary::SetExpBar(float Percentage)
 {
 	ExprienceBar->SetPercent(Percentage);
+}
+
+void UStatSummary::SetEnemyColor()
+{
+	HPBar->FillColorAndOpacity = FLinearColor(255.f, 0.f, 0.f, 1.f);
 }

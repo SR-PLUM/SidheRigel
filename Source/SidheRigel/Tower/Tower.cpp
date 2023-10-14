@@ -5,6 +5,10 @@
 
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
+
+#include "SidheRigel/UI/HPUI.h"
+#include "SidheRigel/Tower/TowerAttackProjectile.h"
 
 // Sets default values
 ATower::ATower()
@@ -29,12 +33,27 @@ ATower::ATower()
 		mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 		mesh->SetupAttachment(rangeArea);
 
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>meshRef(TEXT("/Game/Tower/MaterialSphere"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>meshRef(TEXT("/Game/Tower/S_Modular_Gate_Pillars_xfxoeigiy_lod0_Var1"));
 		if (meshRef.Succeeded())
 		{
 			mesh->SetStaticMesh(meshRef.Object);
 		}
 	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Tower/BP_TowerAttackProjectile"));
+	if (projectileRef.Object)
+	{
+		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+	}
+
+	if (!muzzleLocation)
+	{
+		muzzleLocation = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MuzzleLocation"));
+		muzzleLocation->SetupAttachment(mesh);
+	}
+
+	HP = MaxHP;
+	InitTowerWidget();
 }
 
 // Called when the game starts or when spawned
@@ -44,6 +63,33 @@ void ATower::BeginPlay()
 	
 	rangeArea->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnEnterEnemy);
 	rangeArea->OnComponentEndOverlap.AddDynamic(this, &ATower::OnExitEnemy);
+
+	InitTowerUI();
+}
+
+void ATower::InitTowerWidget()
+{
+	TowerWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TowerWIDGET"));
+	TowerWidget->SetupAttachment(mesh);
+
+	TowerWidget->SetRelativeLocation(FVector(0, 0, 240));
+	TowerWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_HPUI"));
+	if (StatUI.Succeeded())
+	{
+		TowerWidget->SetWidgetClass(StatUI.Class);
+		TowerWidget->SetDrawSize(FVector2D(180, 30));
+	}
+}
+
+void ATower::InitTowerUI()
+{
+	auto TmpWidget = Cast<UHPUI>(TowerWidget->GetUserWidgetObject());
+	if (nullptr != TmpWidget)
+	{
+		TowerUIRef = TmpWidget;
+		TowerUIRef->InitHPBar();
+	}
 }
 
 // Called every frame
@@ -76,8 +122,31 @@ void ATower::Tick(float DeltaTime)
 			}
 			else if (attackDelay <= 0)
 			{
-				damagableTarget->TakeDamage(damage, this);
+				//damagableTarget->TakeDamage(damage, this);
 				UE_LOG(LogTemp, Warning, TEXT("Tower Attack ENEMY"));
+
+				FVector MuzzleLocation = muzzleLocation->GetComponentLocation();
+				FRotator MuzzleRotation = GetActorRotation();
+
+				UWorld* World = GetWorld();
+				if (World)
+				{
+					FActorSpawnParameters SpawnParams;
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(MuzzleLocation);
+					SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+					SpawnParams.Owner = this;
+					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					ATowerAttackProjectile* projectile = World->SpawnActorDeferred<ATowerAttackProjectile>(projectileClass, SpawnTransform);
+					if (projectile)
+					{
+						projectile->target = currentTarget;
+						projectile->damage = damage;
+						projectile->projectileOwner = this;
+					}
+					projectile->FinishSpawning(SpawnTransform);
+				}
 
 				attackDelay = maxAttackDelay;
 			}
@@ -132,6 +201,8 @@ void ATower::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Other
 void ATower::TakeDamage(float _damage, AActor* damageCauser)
 {
 	HP -= _damage;
+
+	TowerUIRef->SetHPBar(HP/ MaxHP);
 
 	if (HP <= 0)
 	{

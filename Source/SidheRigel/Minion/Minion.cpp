@@ -11,6 +11,9 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "Components/WidgetComponent.h"
+#include "SidheRigel/UI/HPUI.h"
+
 // Sets default values
 AMinion::AMinion()
 {
@@ -25,6 +28,13 @@ AMinion::AMinion()
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = 325.f;
+
+	AIControllerClass = AMinionAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	InitMinionWidget();
+
+	UE_LOG(LogTemp,Warning,TEXT("MINION CONSTRUCT"))
 }
 
 // Called when the game starts or when spawned
@@ -32,17 +42,27 @@ void AMinion::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	AIControllerClass = AMinionAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWayPoint::StaticClass(), WayPoints);
 
 	detectArea->OnComponentBeginOverlap.AddDynamic(this, &AMinion::OnEnterEnemy);
 	detectArea->OnComponentEndOverlap.AddDynamic(this, &AMinion::OnExitEnemy);
 
-	AIController = Cast<AAIController>(GetController());
+	AIController = Cast<AMinionAIController>(GetController());
+
+	if (team == E_Team::Red)
+	{
+		currentWayPointOrder = 0;
+	}
+	else
+	{
+		currentWayPointOrder = WayPoints.Num() - 1;
+	}
 
 	MoveToWayPoint();
+
+	InitMinionUI();
+
+	UE_LOG(LogTemp, Warning, TEXT("MINION BEGIN_PLAY"))
 }
 
 // Called every frame
@@ -53,14 +73,26 @@ void AMinion::Tick(float DeltaTime)
 	//If Goal WayPoint Move To Next WayPoint
 	if (currentWayPoint)
 	{
-		if (currentWayPointOrder < WayPoints.Num())
+		if (WayPoints.Num() > 0)
 		{
 			if (GetDistanceTo(currentWayPoint) <= 100.f)
 			{
-				currentWayPointOrder++;
+				if (team == E_Team::Red)
+				{
+					currentWayPointOrder++;
+				}
+				else
+				{
+					currentWayPointOrder--;
+				}
+				WayPoints.Remove(currentWayPoint);
 				MoveToWayPoint();
 			}
 		}
+	}
+	else
+	{
+		MoveToWayPoint();
 	}
 
 	if (attackDelay > 0)
@@ -80,6 +112,7 @@ void AMinion::Tick(float DeltaTime)
 				if (attackList.Num() == 0)
 				{
 					currentTarget = nullptr;
+					MoveToWayPoint();
 				}
 				else
 				{
@@ -94,7 +127,15 @@ void AMinion::Tick(float DeltaTime)
 			}
 			else
 			{
-				AIController->MoveToActor(currentTarget, range - 80);
+				if (AIController)
+				{
+					AIController->MoveToActor(currentTarget, range - 80);
+				}
+				else
+				{
+					AIController = Cast<AMinionAIController>(GetController());
+					UE_LOG(LogTemp, Warning, TEXT("MINION GET_CONTROLLER"))
+				}
 			}
 		}
 
@@ -137,8 +178,6 @@ void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		{
 			if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
 			{
-				AIController->StopMovement();
-
 				if (attackList.Num() == 0)
 				{
 					currentTarget = OtherActor;
@@ -157,8 +196,6 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	{
 		if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
 		{
-			AIController->StopMovement();
-
 			attackList.Remove(OtherActor);
 
 			if (currentTarget == OtherActor)
@@ -182,6 +219,37 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 E_Team AMinion::GetTeam()
 {
 	return team;
+}
+
+void AMinion::SetTeam(E_Team _team)
+{
+	team = _team;
+}
+
+void AMinion::InitMinionWidget()
+{
+	MinionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MinionWIDGET"));
+	MinionWidget->SetupAttachment(GetMesh());
+
+	MinionWidget->SetRelativeLocation(FVector(0, 0, 240));
+	MinionWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_HPUI"));
+	if (StatUI.Succeeded())
+	{
+		MinionWidget->SetWidgetClass(StatUI.Class);
+		MinionWidget->SetDrawSize(FVector2D(180, 30));
+	}
+}
+
+void AMinion::InitMinionUI()
+{
+	auto TmpWidget = Cast<UHPUI>(MinionWidget->GetUserWidgetObject());
+	if (nullptr != TmpWidget)
+	{
+		MinionUIRef = TmpWidget;
+		MinionUIRef->InitHPBar();
+		MinionUIRef->SetUIVisibility(false);
+	}
 }
 
 void AMinion::Attack(AActor* Target)
@@ -212,6 +280,10 @@ void AMinion::TakeDamage(float _damage, AActor* damageCauser)
 {
 	hp -= _damage;
 	UE_LOG(LogTemp, Warning, TEXT("Minion_HP : %f"), hp);
+
+	MinionUIRef->SetHPBar(hp / maxHp);
+	MinionUIRef->SetUIVisibility(true);
+
 	if (hp <= 0)
 	{
 		auto Character = Cast<ASidheRigelCharacter>(damageCauser);

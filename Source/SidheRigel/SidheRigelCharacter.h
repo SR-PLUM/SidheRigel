@@ -49,6 +49,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class ADummyProjectile> baseProjectileClass;
 
+	UPROPERTY(VisibleAnywhere)
+		class USphereComponent* detectRange;
+
+protected:	//change target when attack enemy hero
+	UFUNCTION()
+		void OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	TArray<class AActor*> InRangeActors;
+
+	void ChangeTarget();
+
 public:	//Skill
 	TMap<E_SkillState, Skill*> skills;
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
@@ -142,6 +156,7 @@ public:		//Getter, Setter
 	void GiveMoney(int32 _money);
 	int32 GetExp();
 	void GiveExp(int32 _exp);
+	int32 GetMaxExp();
 
 	float GetRange();
 	float GetAttackDamage();

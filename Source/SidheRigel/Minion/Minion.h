@@ -28,7 +28,7 @@ protected:
 protected:
 	class USphereComponent* detectArea;
 
-	class AAIController* AIController;
+	class AMinionAIController* AIController;
 
 	//DEBUG RED=MINION, BLUE = PLAYER
 	UPROPERTY(EditAnywhere)
@@ -74,6 +74,16 @@ public:
 	int32 gold = 20;
 	int32 exp = 60;
 
+protected: //UI
+	UPROPERTY()
+		class UWidgetComponent* MinionWidget;
+	UPROPERTY()
+		class UHPUI* MinionUIRef;
+
+	void InitMinionWidget();
+	void InitMinionUI();
+
+
 public:
 	UFUNCTION()
 		virtual void Attack(AActor* Target);
@@ -101,4 +111,6 @@ public:
 
 	UFUNCTION()
 		virtual E_Team GetTeam() override;
+	UFUNCTION()
+		void SetTeam(E_Team _team);
 };
