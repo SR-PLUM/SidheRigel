@@ -59,7 +59,8 @@ protected:	//Skill Projectile
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AColdR2Projectile>R2ProjectileClass;
 
-public:
+protected:	//Talent
+	void InitColdTalent();
 
 private:	//Skill Variable
 	int32 QCount = 10;
