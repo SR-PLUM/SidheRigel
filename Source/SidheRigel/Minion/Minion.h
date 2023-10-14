@@ -111,4 +111,6 @@ public:
 
 	UFUNCTION()
 		virtual E_Team GetTeam() override;
+	UFUNCTION()
+		void SetTeam(E_Team _team);
 };

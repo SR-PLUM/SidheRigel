@@ -49,6 +49,15 @@ void AMinion::BeginPlay()
 
 	AIController = Cast<AMinionAIController>(GetController());
 
+	if (team == E_Team::Red)
+	{
+		currentWayPointOrder = 0;
+	}
+	else
+	{
+		currentWayPointOrder = WayPoints.Num() - 1;
+	}
+
 	MoveToWayPoint();
 
 	InitMinionUI();
@@ -64,11 +73,19 @@ void AMinion::Tick(float DeltaTime)
 	//If Goal WayPoint Move To Next WayPoint
 	if (currentWayPoint)
 	{
-		if (currentWayPointOrder < WayPoints.Num())
+		if (WayPoints.Num() > 0)
 		{
 			if (GetDistanceTo(currentWayPoint) <= 100.f)
 			{
-				currentWayPointOrder++;
+				if (team == E_Team::Red)
+				{
+					currentWayPointOrder++;
+				}
+				else
+				{
+					currentWayPointOrder--;
+				}
+				WayPoints.Remove(currentWayPoint);
 				MoveToWayPoint();
 			}
 		}
@@ -202,6 +219,11 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 E_Team AMinion::GetTeam()
 {
 	return team;
+}
+
+void AMinion::SetTeam(E_Team _team)
+{
+	team = _team;
 }
 
 void AMinion::InitMinionWidget()

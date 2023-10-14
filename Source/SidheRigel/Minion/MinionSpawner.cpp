@@ -3,6 +3,8 @@
 
 #include "MinionSpawner.h"
 
+#include "SidheRigel/Minion/Minion.h"
+
 // Sets default values
 AMinionSpawner::AMinionSpawner()
 {
@@ -47,12 +49,25 @@ void AMinionSpawner::SpawnMinion()
 		if (World)
 		{
 			FActorSpawnParameters SpawnParams;
+			FTransform SpawnTransform;
+			SpawnTransform.SetLocation(SpawnLocation);
+			SpawnTransform.SetRotation(SpawnRotation.Quaternion());
 			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			// Spawn the projectile at the muzzle.
-			AMinion* Minion = World->SpawnActor<AMinion>(minionClass, SpawnLocation, SpawnRotation, SpawnParams);
+			AMinion* minion = World->SpawnActorDeferred<AMinion>(minionClass, SpawnTransform);
+			if (minion)
+			{
+				minion->SetTeam(GetTeam());
+			}
+
+			minion->FinishSpawning(SpawnTransform);
 		}
 	}
+}
+
+E_Team AMinionSpawner::GetTeam()
+{
+	return team;
 }
 

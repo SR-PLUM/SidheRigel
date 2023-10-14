@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "SidheRigel/Interface/Team.h"
+
 #include "MinionSpawner.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API AMinionSpawner : public AActor
+class SIDHERIGEL_API AMinionSpawner : public AActor, public ITeam
 {
 	GENERATED_BODY()
 	
@@ -26,9 +29,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+		TEnumAsByte<E_Team> team = E_Team::Red;
+
 	UFUNCTION()
 		void SpawnMinion();
 
 	UPROPERTY()
 		float DebugTimer = 0;
+
+	UFUNCTION()
+		virtual E_Team GetTeam() override;
 };
