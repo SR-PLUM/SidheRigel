@@ -74,6 +74,8 @@ public:
 	int32 gold = 20;
 	int32 exp = 60;
 
+	bool isDie = false;
+
 protected: //UI
 	UPROPERTY()
 		class UWidgetComponent* MinionWidget;

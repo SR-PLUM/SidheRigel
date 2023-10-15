@@ -284,8 +284,9 @@ void AMinion::TakeDamage(float _damage, AActor* damageCauser)
 	MinionUIRef->SetHPBar(hp / maxHp);
 	MinionUIRef->SetUIVisibility(true);
 
-	if (hp <= 0)
+	if (hp <= 0 && !isDie)
 	{
+		isDie = true;
 		auto Character = Cast<ASidheRigelCharacter>(damageCauser);
 		if (Character)
 		{
