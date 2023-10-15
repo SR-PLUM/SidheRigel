@@ -30,6 +30,7 @@ public:
 
 	//Special State
 	class State* Stun;
+	class State* Die;
 
 public:
 	class ASidheRigelPlayerController* playerController;
@@ -59,6 +60,8 @@ public:	//Timer
 
 	//During Silence
 	float silenceTime = 0;
+
+	float DieTime = 0;
 
 	void ChangeState(State* NextState);
 	void ChangePreviousState();
