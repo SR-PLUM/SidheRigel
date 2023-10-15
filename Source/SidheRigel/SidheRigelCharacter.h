@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -168,7 +168,12 @@ public:		//Getter, Setter
 	void AddDecreseDefencePercent(FString name, float value, float time);
 	float GetDecreseDefence();
 
+	float GetRemainDieCooldown();
+
 	virtual void InitProperty();
+
+	UPROPERTY()
+		bool isDie = false;
 
 public:	//Attack
 	virtual void InitAttackProjectile();

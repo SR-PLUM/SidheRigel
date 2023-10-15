@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SidheRigelCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -448,6 +448,18 @@ float ASidheRigelCharacter::GetDecreseDefence()
 		res += value.Value;
 	}
 
+	return res;
+}
+
+float ASidheRigelCharacter::GetRemainDieCooldown()
+{
+	float res = 0;
+
+	auto myController = Cast<ASidheRigelPlayerController>(GetController());
+	if (myController)
+	{
+		res = myController->stateMachine->DieTime;
+	}
 	return res;
 }
 
