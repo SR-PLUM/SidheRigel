@@ -32,7 +32,6 @@ void ABlackWizardAttackProjectile::Tick(float DeltaTime)
 void ABlackWizardAttackProjectile::SetProjectileMesh()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-	ProjectileMesh->SetupAttachment(CollisionComponent);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/BlackWizard/SM_BlackWizardAttackProjectile"));
 	if (Mesh.Succeeded())
@@ -44,7 +43,6 @@ void ABlackWizardAttackProjectile::SetProjectileMesh()
 void ABlackWizardAttackProjectile::SetProjectileMovementComponent()
 {
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 5.f;
 	ProjectileMovementComponent->MaxSpeed = 5.f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
