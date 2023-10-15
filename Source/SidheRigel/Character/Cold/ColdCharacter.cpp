@@ -3,6 +3,7 @@
 
 #include "ColdCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
+
 #include "SidheRigel/Character/Cold/Skill/ColdQSkill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWSkill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdESkill.h"
@@ -13,6 +14,7 @@
 #include "SidheRigel/Character/Cold/Skill/ColdR1Projectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdR2Projectile.h"
 #include "SidheRigel/Character/Cold/ColdAttackProjectile.h"
+#include "SidheRigel/InGameMapScriptActor.h"
 
 // Sets default values
 AColdCharacter::AColdCharacter()

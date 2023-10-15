@@ -24,6 +24,12 @@ public:
 
 	class UInGameUI* GetInGameUI();
 
+	UPROPERTY(EditAnywhere)
+		float Time;
+
 protected:
 	virtual void BeginPlay() override;
+
+public:
+	virtual void Tick(float DeltaSeconds) override;
 };
