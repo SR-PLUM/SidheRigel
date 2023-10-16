@@ -81,6 +81,9 @@ bool Skill::CanUse()
 	{
 		auto hit = SRController->GetHitResult();
 
+		if (character->GetDistanceTo(hit.GetActor()) > range)
+			return false;
+
 		auto teamActor = Cast<ITeam>(hit.GetActor());
 		if (teamActor && teamActor->GetTeam() != character->GetTeam())
 		{
