@@ -69,6 +69,11 @@ bool Skill::IsInstantCast()
 	return bIsInstantCast;
 }
 
+bool Skill::IsTargeting()
+{
+	return bIsTargeting;
+}
+
 bool Skill::CanUse()
 {
 	if (!bIsTargeting)

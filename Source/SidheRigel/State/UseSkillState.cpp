@@ -37,6 +37,18 @@ void UseSkillState::OnBegin()
 
 			if (myCharacter->skills.Contains(stateMachine->currentSkill))
 			{
+				if (!(myCharacter->skills[stateMachine->currentSkill]->IsTargeting()))
+				{
+					FVector targetVector = Hit.Location - myCharacter->GetActorLocation();
+					if (myCharacter->skills[stateMachine->currentSkill]->GetRange() < targetVector.Size())
+					{
+						targetVector.Normalize();
+
+						targetVector *= myCharacter->skills[stateMachine->currentSkill]->GetRange();
+
+						Hit.Location = myCharacter->GetActorLocation() + targetVector;
+					}
+				}
 				myCharacter->skills[stateMachine->currentSkill]->OnUse(Hit);
 			}
 

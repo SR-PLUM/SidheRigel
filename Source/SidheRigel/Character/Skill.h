@@ -23,6 +23,7 @@ public:
 	void SetCooldown();
 	float GetCooldown();
 	bool IsInstantCast();
+	bool IsTargeting();
 	bool CanUse();
 	float GetRange();
 
