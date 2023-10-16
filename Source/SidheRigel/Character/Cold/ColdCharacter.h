@@ -44,21 +44,6 @@ private:	//State
 public:		//Talent
 	void TestTalent();
 
-
-protected:	//Skill Projectile
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdQProjectile> QProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdWProjectile> WProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdEProjectile> EProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdEDamageField>EDamageFieldClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdR1Projectile>R1ProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdR2Projectile>R2ProjectileClass;
-
 protected:	//Talent
 	void InitColdTalent();
 

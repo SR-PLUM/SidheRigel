@@ -16,6 +16,20 @@
 
 #include "SidheRigelCharacter.generated.h"
 
+USTRUCT()
+struct FIsSelectedTalentItem
+{
+	TArray<bool> IsSelected;
+
+	bool operator[] (int32 i) {
+		return IsSelected[i];
+	}
+
+	void Add(bool b) {
+		IsSelected.Add(b);
+	}
+};
+
 UCLASS(Blueprintable)
 class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable, public ITeam
 {
@@ -69,6 +83,8 @@ public:	//Skill
 
 public: //Talent
 	TArray<FTalentList*> talentListArray;
+
+	TArray<FIsSelectedTalentItem> IsSelectedTalent;
 
 	void InitTalentLIst();
 

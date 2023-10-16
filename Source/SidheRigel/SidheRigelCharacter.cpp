@@ -66,6 +66,18 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//StatWidget
 	InitStatWidget();
+
+	// 7X3 Array
+	for (int i = 0; i < 7; i++)
+	{
+		FIsSelectedTalentItem item;
+		for (int i = 0; i < 3; i++)
+		{
+			item.Add(false);
+		}
+
+		IsSelectedTalent.Add(item);
+	}
 }
 
 void ASidheRigelCharacter::BeginPlay()
