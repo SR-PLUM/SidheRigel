@@ -51,6 +51,10 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		class USphereComponent* detectRange;
 
+public:
+	UPROPERTY(VisibleAnywhere)
+		class UStaticMeshComponent* skillRange;
+
 protected:	//change target when attack enemy hero
 	UFUNCTION()
 		void OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

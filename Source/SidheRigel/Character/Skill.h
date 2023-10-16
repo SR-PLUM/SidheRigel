@@ -24,6 +24,7 @@ public:
 	float GetCooldown();
 	bool IsInstantCast();
 	bool CanUse();
+	float GetRange();
 
 protected:
 	float skillDelay;
@@ -31,8 +32,8 @@ protected:
 	float skillMaxCooldown;
 	float range;
 
-	bool bIsInstantCast = false;
-	bool bIsTargeting = true;
+	bool bIsInstantCast;
+	bool bIsTargeting;
 
 	class ASidheRigelCharacter* character;
 	E_SkillState skillstate;

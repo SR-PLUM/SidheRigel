@@ -53,9 +53,22 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// Create Can Detect Range
 	detectRange = CreateDefaultSubobject<USphereComponent>(TEXT("DetectRange"));
 	detectRange->InitSphereRadius(500.0f);
 	detectRange->SetupAttachment(RootComponent);
+
+	// Create Skill Range
+	skillRange = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SkillRange"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>SkillRangeMesh(TEXT("/Game/Dummy/SM_AssetPlatform"));
+	if (SkillRangeMesh.Succeeded())
+	{
+		skillRange->SetStaticMesh(SkillRangeMesh.Object);
+	}
+	skillRange->SetRelativeLocation(FVector(0, 0, -100));
+	skillRange->SetVisibility(false);
+	skillRange->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	skillRange->SetupAttachment(RootComponent);
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;

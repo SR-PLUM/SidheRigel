@@ -18,6 +18,11 @@ void Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState Skill
 	skillDelay = 1.f;
 	skillCooldown = 0;
 	skillMaxCooldown = 2.f;
+	range = 500.f;
+
+	bIsInstantCast = false;
+	bIsTargeting = true;
+
 	character = Character;
 	skillstate = SkillState;
 }
@@ -67,12 +72,15 @@ bool Skill::IsInstantCast()
 bool Skill::CanUse()
 {
 	if (!bIsTargeting)
+	{
 		return true;
+	}
 
 	auto SRController = Cast<ASidheRigelPlayerController>(character->GetController());
 	if (SRController)
 	{
 		auto hit = SRController->GetHitResult();
+
 		auto teamActor = Cast<ITeam>(hit.GetActor());
 		if (teamActor && teamActor->GetTeam() != character->GetTeam())
 		{
@@ -81,4 +89,9 @@ bool Skill::CanUse()
 	}
 
 	return false;
+}
+
+float Skill::GetRange()
+{
+	return range;
 }

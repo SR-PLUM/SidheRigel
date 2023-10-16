@@ -50,6 +50,8 @@ void UseSkillState::OnBegin()
 			//Return Flag
 			stateMachine->bSkillReady = false;
 			stateMachine->currentSkill = E_SkillState::Skill_Null;
+
+			myCharacter->skillRange->SetVisibility(false);
 		}
 	}
 }
