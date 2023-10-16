@@ -11,6 +11,7 @@
 #include "AttackState.h"
 #include "UseSkillState.h"
 #include "StunState.h"
+#include "DieState.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Interface/Damagable.h"
@@ -27,6 +28,7 @@ StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 	UseSkill = new UseSkillState(this);
 
 	Stun = new StunState(this);
+	Die = new DieState(this);
 
 	currentState = Idle;
 
@@ -98,6 +100,10 @@ void StateMachine::Update(float DeltaTime)
 	if (silenceTime > 0)
 	{
 		silenceTime -= DeltaTime;
+	}
+	if (DieTime > 0)
+	{
+		DieTime -= DeltaTime;
 	}
 
 	//Show Skill Range

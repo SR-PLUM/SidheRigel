@@ -32,7 +32,6 @@ void AColdAttackProjectile::Tick(float DeltaTime)
 void AColdAttackProjectile::SetProjectileMesh()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-	ProjectileMesh->SetupAttachment(CollisionComponent);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/SM_ColdAttackProjectile"));
 	if (Mesh.Succeeded())
@@ -44,7 +43,6 @@ void AColdAttackProjectile::SetProjectileMesh()
 void AColdAttackProjectile::SetProjectileMovementComponent()
 {
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 5.f;
 	ProjectileMovementComponent->MaxSpeed = 5.f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;

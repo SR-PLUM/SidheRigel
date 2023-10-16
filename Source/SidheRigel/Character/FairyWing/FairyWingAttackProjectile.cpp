@@ -32,7 +32,6 @@ void AFairyWingAttackProjectile::Tick(float DeltaTime)
 void AFairyWingAttackProjectile::SetProjectileMesh()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-	ProjectileMesh->SetupAttachment(CollisionComponent);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/FairyWing/SM_FairyWingAttackProjectile"));
 	if (Mesh.Succeeded())
@@ -44,7 +43,6 @@ void AFairyWingAttackProjectile::SetProjectileMesh()
 void AFairyWingAttackProjectile::SetProjectileMovementComponent()
 {
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 5.f;
 	ProjectileMovementComponent->MaxSpeed = 5.f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;

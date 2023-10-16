@@ -32,10 +32,10 @@ public:
 		float criticalRate;
 	UPROPERTY()
 		float criticalDamage;
+	UPROPERTY()
+		float speed = 2000.f;
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-		class USphereComponent* CollisionComponent;
 	UPROPERTY(VisibleAnywhere)
 		class UProjectileMovementComponent* ProjectileMovementComponent;
 	UPROPERTY(VisibleAnywhere)
