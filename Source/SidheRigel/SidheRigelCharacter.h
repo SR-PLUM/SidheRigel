@@ -12,8 +12,23 @@
 #include "Interface/Team.h"
 #include "Enum/E_SkillState.h"
 #include "Character/Skill.h"
+#include "Character/TalentList.h"
 
 #include "SidheRigelCharacter.generated.h"
+
+USTRUCT()
+struct FIsSelectedTalentItem
+{
+	TArray<bool> IsSelected;
+
+	bool operator[] (int32 i) {
+		return IsSelected[i];
+	}
+
+	void Add(bool b) {
+		IsSelected.Add(b);
+	}
+};
 
 UCLASS(Blueprintable)
 class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable, public ITeam
@@ -69,6 +84,13 @@ protected:	//change target when attack enemy hero
 public:	//Skill
 	TMap<E_SkillState, Skill*> skills;
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
+
+public: //Talent
+	TArray<FTalentList*> talentListArray;
+
+	TArray<FIsSelectedTalentItem> IsSelectedTalent;
+
+	void InitTalentLIst();
 
 public: //UI
 	UPROPERTY()

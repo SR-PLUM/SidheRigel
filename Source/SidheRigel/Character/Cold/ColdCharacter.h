@@ -41,22 +41,11 @@ protected:	//Attack
 private:	//State
 	E_UltType ultType;
 
+public:		//Talent
+	void TestTalent();
 
-protected:	//Skill Projectile
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdQProjectile> QProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdWProjectile> WProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdEProjectile> EProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdEDamageField>EDamageFieldClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdR1Projectile>R1ProjectileClass;
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<class AColdR2Projectile>R2ProjectileClass;
-
-public:
+protected:	//Talent
+	void InitColdTalent();
 
 private:	//Skill Variable
 	int32 QCount = 10;

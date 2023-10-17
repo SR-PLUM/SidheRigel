@@ -79,6 +79,18 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//StatWidget
 	InitStatWidget();
+
+	// 7X3 Array
+	for (int i = 0; i < 7; i++)
+	{
+		FIsSelectedTalentItem item;
+		for (int i = 0; i < 3; i++)
+		{
+			item.Add(false);
+		}
+
+		IsSelectedTalent.Add(item);
+	}
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -93,6 +105,8 @@ void ASidheRigelCharacter::BeginPlay()
 	InGameUI->CharacterStatus->InitCharacterStatus(this);
 	
 	InitStatSummary();
+
+	InitTalentLIst();
 
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 
@@ -175,6 +189,36 @@ void ASidheRigelCharacter::ChangeTarget()
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
+}
+
+void ASidheRigelCharacter::InitTalentLIst()
+{
+	//Talent Init
+	for (int i = 0; i < 7; i++)
+	{
+		talentListArray.Add(new FTalentList);
+
+		int iItemCount;
+		if (i == 3)	//if level 10 Talent
+		{
+			//Ultimate Skill Count
+			iItemCount = 1;
+		}
+		else if (i == 6)//if level 20 Talent
+		{
+			iItemCount = 3;
+		}
+		else
+		{
+			iItemCount = 3;
+		}
+
+		talentListArray[i]->itemCount = iItemCount;
+		for (int j = 0; j < iItemCount; j++)
+		{
+			talentListArray[i]->talentItems.Add(new FTalent{ "", "", "" });
+		}
+	}
 }
 
 void ASidheRigelCharacter::InitStatWidget()
@@ -277,6 +321,30 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 	{
 		experience -= MaxExperience;
 		level++;
+		if (level == 4)
+		{
+
+		}
+		if (level == 7)
+		{
+
+		}
+		if (level == 10)
+		{
+
+		}
+		if (level == 13)
+		{
+
+		}
+		if (level == 16)
+		{
+
+		}
+		if (level == 20)
+		{
+
+		}
 	}
 
 	InGameUI->CharacterStatus->UpdateLevel();
