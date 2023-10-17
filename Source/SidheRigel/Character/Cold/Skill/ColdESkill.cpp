@@ -31,7 +31,10 @@ void ColdESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState 
 	skillDelay = 1.f;
 	skillCooldown = 0;
 	skillMaxCooldown = 3.f;
-	bIsInstantCast = false;
+	range = 500.f;
+
+	bIsInstantCast = true;
+	bIsTargeting = false;
 
 	character = Character;
 	skillstate = SkillState;

@@ -106,12 +106,6 @@ void StateMachine::Update(float DeltaTime)
 		DieTime -= DeltaTime;
 	}
 
-	//Show Skill Range
-	if (bSkillReady && currentSkill != E_SkillState::Skill_Null)
-	{
-
-	}
-
 	currentState->Update(DeltaTime);
 }
 
@@ -121,6 +115,7 @@ void StateMachine::OnRightClick()
 	//SkillCancel
 	bSkillReady = false;
 	currentSkill = E_SkillState::Skill_Null;
+	myCharacter->skillRange->SetVisibility(false);
 
 	currentState->OnRightClick();
 }
@@ -147,6 +142,12 @@ void StateMachine::OnKeyboard(E_SkillState SkillState)
 
 	bSkillReady = true;
 	currentSkill = SkillState;
+
+	float currentSkillRange = myCharacter->skills[currentSkill]->GetRange();
+	UE_LOG(LogTemp, Warning, TEXT("SkillRange : %f"), currentSkillRange);
+	myCharacter->skillRange->SetRelativeScale3D(FVector(currentSkillRange / 100, currentSkillRange / 100, 1));
+
+	myCharacter->skillRange->SetVisibility(true);
 
 	currentState->OnKeyboard(SkillState);
 }
@@ -213,6 +214,7 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
 		currentSkill = E_SkillState::Skill_Null;
 		bSkillReady = false;
+		myCharacter->skillRange->SetVisibility(false);
 	}
 }
 
