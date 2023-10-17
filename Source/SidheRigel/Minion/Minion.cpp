@@ -101,6 +101,10 @@ void AMinion::Tick(float DeltaTime)
 	if (attackDelay > 0)
 	{
 		attackDelay -= DeltaTime;
+		if (attackDelay <= 0)
+		{
+			IsAttackAnim = false;
+		}
 	}
 
 	if (currentTarget)
@@ -124,6 +128,7 @@ void AMinion::Tick(float DeltaTime)
 			}
 			else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0)
 			{
+				IsAttackAnim = true;
 				FVector MuzzleLocation = GetActorLocation();
 				FRotator MuzzleRotation = GetActorRotation();
 

@@ -90,6 +90,9 @@ public:
 
 	bool isDie = false;
 
+	UPROPERTY()
+		bool IsAttackAnim = false;
+
 protected: //UI
 	UPROPERTY()
 		class UWidgetComponent* MinionWidget;
