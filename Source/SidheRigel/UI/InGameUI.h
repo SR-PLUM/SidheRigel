@@ -25,6 +25,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UCombatSummary* CombatSummary;
 
+	UPROPERTY(meta = (BindWidget))
+		class UOverlay* TalentUIOverlay;
+
 	UPROPERTY()
 		class USidheRigelGameInstance* GameInstanceRef;
 
