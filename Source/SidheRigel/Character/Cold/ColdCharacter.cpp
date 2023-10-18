@@ -108,86 +108,86 @@ void AColdCharacter::Attack(AActor* target)
 void AColdCharacter::InitColdTalent()
 {
 	//level 1
-	talentListArray[0]->talentItems[0]->talentName = "Cold_1_1";
-	talentListArray[0]->talentItems[0]->talentDescription = "Q 유도탄 사거리 증가";
-	talentListArray[0]->talentItems[0]->imgPath = "";
+	talentListArray[0].talentItems[0].talentName = "Cold_1_1";
+	talentListArray[0].talentItems[0].talentDescription = "Q 유도탄 사거리 증가";
+	talentListArray[0].talentItems[0].imgPath = "";
 
-	talentListArray[0]->talentItems[1]->talentName = "Cold_1_2";
-	talentListArray[0]->talentItems[1]->talentDescription = "W 피흡";
-	talentListArray[0]->talentItems[1]->imgPath = "";
+	talentListArray[0].talentItems[1].talentName = "Cold_1_2";
+	talentListArray[0].talentItems[1].talentDescription = "W 피흡";
+	talentListArray[0].talentItems[1].imgPath = "";
 
-	talentListArray[0]->talentItems[2]->talentName = "Cold_1_3";
-	talentListArray[0]->talentItems[2]->talentDescription = "E 소모 마나량 증가 및 데미지 증가";
-	talentListArray[0]->talentItems[2]->imgPath = "";
+	talentListArray[0].talentItems[2].talentName = "Cold_1_3";
+	talentListArray[0].talentItems[2].talentDescription = "E 소모 마나량 증가 및 데미지 증가";
+	talentListArray[0].talentItems[2].imgPath = "";
 
 	//level 4
-	talentListArray[1]->talentItems[0]->talentName = "Cold_2_1";
-	talentListArray[1]->talentItems[0]->talentDescription = "W 밀어내고 벽생성";
-	talentListArray[1]->talentItems[0]->imgPath = "";
+	talentListArray[1].talentItems[0].talentName = "Cold_2_1";
+	talentListArray[1].talentItems[0].talentDescription = "W 밀어내고 벽생성";
+	talentListArray[1].talentItems[0].imgPath = "";
 
-	talentListArray[1]->talentItems[1]->talentName = "Cold_2_2";
-	talentListArray[1]->talentItems[1]->talentDescription = "W 밀어내고 방어력 증가";
-	talentListArray[1]->talentItems[1]->imgPath = "";
+	talentListArray[1].talentItems[1].talentName = "Cold_2_2";
+	talentListArray[1].talentItems[1].talentDescription = "W 밀어내고 방어력 증가";
+	talentListArray[1].talentItems[1].imgPath = "";
 
-	talentListArray[1]->talentItems[2]->talentName = "Cold_2_3";
-	talentListArray[1]->talentItems[2]->talentDescription = "W 밀어내고 이속증가";
-	talentListArray[1]->talentItems[2]->imgPath = "";
+	talentListArray[1].talentItems[2].talentName = "Cold_2_3";
+	talentListArray[1].talentItems[2].talentDescription = "W 밀어내고 이속증가";
+	talentListArray[1].talentItems[2].imgPath = "";
 
 	//level 7
-	talentListArray[2]->talentItems[0]->talentName = "Cold_3_1";
-	talentListArray[2]->talentItems[0]->talentDescription = "E 느린 속도로 이동 가능";
-	talentListArray[2]->talentItems[0]->imgPath = "";
+	talentListArray[2].talentItems[0].talentName = "Cold_3_1";
+	talentListArray[2].talentItems[0].talentDescription = "E 느린 속도로 이동 가능";
+	talentListArray[2].talentItems[0].imgPath = "";
 
-	talentListArray[2]->talentItems[1]->talentName = "Cold_3_2";
-	talentListArray[2]->talentItems[1]->talentDescription = "E 모드 변경 속도 감소";
-	talentListArray[2]->talentItems[1]->imgPath = "";
+	talentListArray[2].talentItems[1].talentName = "Cold_3_2";
+	talentListArray[2].talentItems[1].talentDescription = "E 모드 변경 속도 감소";
+	talentListArray[2].talentItems[1].imgPath = "";
 
-	talentListArray[2]->talentItems[2]->talentName = "Cold_3_3";
-	talentListArray[2]->talentItems[2]->talentDescription = "E 일정 시간이 지날때 마다 사거리 증가";
-	talentListArray[2]->talentItems[2]->imgPath = "";
+	talentListArray[2].talentItems[2].talentName = "Cold_3_3";
+	talentListArray[2].talentItems[2].talentDescription = "E 일정 시간이 지날때 마다 사거리 증가";
+	talentListArray[2].talentItems[2].imgPath = "";
 
 	//level 10
-	talentListArray[3]->talentItems[0]->talentName = "Cold_4_1";
-	talentListArray[3]->talentItems[0]->talentDescription = "R 사거리가 굉장히 긴 논타겟팅 레이저 발사";
-	talentListArray[3]->talentItems[0]->imgPath = "";
+	talentListArray[3].talentItems[0].talentName = "Cold_4_1";
+	talentListArray[3].talentItems[0].talentDescription = "R 사거리가 굉장히 긴 논타겟팅 레이저 발사";
+	talentListArray[3].talentItems[0].imgPath = "";
 
 	//level 13
-	talentListArray[4]->talentItems[0]->talentName = "Cold_4_1";
-	talentListArray[4]->talentItems[0]->talentDescription = "Q 유도탄 갯수 증가";
-	talentListArray[4]->talentItems[0]->imgPath = "";
+	talentListArray[4].talentItems[0].talentName = "Cold_4_1";
+	talentListArray[4].talentItems[0].talentDescription = "Q 유도탄 갯수 증가";
+	talentListArray[4].talentItems[0].imgPath = "";
 
-	talentListArray[4]->talentItems[1]->talentName = "Cold_4_2";
-	talentListArray[4]->talentItems[1]->talentDescription = "Q 유도탄 1타 이후 데미지도 100%";
-	talentListArray[4]->talentItems[1]->imgPath = "";
+	talentListArray[4].talentItems[1].talentName = "Cold_4_2";
+	talentListArray[4].talentItems[1].talentDescription = "Q 유도탄 1타 이후 데미지도 100%";
+	talentListArray[4].talentItems[1].imgPath = "";
 
-	talentListArray[4]->talentItems[2]->talentName = "Cold_5_3";
-	talentListArray[4]->talentItems[2]->talentDescription = "Q 유도탄 사용시 이동속도 증가";
-	talentListArray[4]->talentItems[2]->imgPath = "";
+	talentListArray[4].talentItems[2].talentName = "Cold_5_3";
+	talentListArray[4].talentItems[2].talentDescription = "Q 유도탄 사용시 이동속도 증가";
+	talentListArray[4].talentItems[2].imgPath = "";
 
 	//level 16
-	talentListArray[5]->talentItems[0]->talentName = "Cold_6_1";
-	talentListArray[5]->talentItems[0]->talentDescription = "Q 근처 적에게도 유도탄 발사";
-	talentListArray[5]->talentItems[0]->imgPath = "";
+	talentListArray[5].talentItems[0].talentName = "Cold_6_1";
+	talentListArray[5].talentItems[0].talentDescription = "Q 근처 적에게도 유도탄 발사";
+	talentListArray[5].talentItems[0].imgPath = "";
 
-	talentListArray[5]->talentItems[1]->talentName = "Cold_6_2";
-	talentListArray[5]->talentItems[1]->talentDescription = "Q 슬로우";
-	talentListArray[5]->talentItems[1]->imgPath = "";
+	talentListArray[5].talentItems[1].talentName = "Cold_6_2";
+	talentListArray[5].talentItems[1].talentDescription = "Q 슬로우";
+	talentListArray[5].talentItems[1].imgPath = "";
 
-	talentListArray[5]->talentItems[2]->talentName = "Cold_6_3";
-	talentListArray[5]->talentItems[2]->talentDescription = "E 피흡";
-	talentListArray[5]->talentItems[2]->imgPath = "";
+	talentListArray[5].talentItems[2].talentName = "Cold_6_3";
+	talentListArray[5].talentItems[2].talentDescription = "E 피흡";
+	talentListArray[5].talentItems[2].imgPath = "";
 
 	//level 20
-	talentListArray[6]->talentItems[0]->talentName = "Cold_7_1";
-	talentListArray[6]->talentItems[0]->talentDescription = "W 나도 뒤로 이동 (벽넘기 가능)";
-	talentListArray[6]->talentItems[0]->imgPath = "";
+	talentListArray[6].talentItems[0].talentName = "Cold_7_1";
+	talentListArray[6].talentItems[0].talentDescription = "W 나도 뒤로 이동 (벽넘기 가능)";
+	talentListArray[6].talentItems[0].imgPath = "";
 
-	talentListArray[6]->talentItems[1]->talentName = "Cold_7_2";
-	talentListArray[6]->talentItems[1]->talentDescription = "E 처형";
-	talentListArray[6]->talentItems[1]->imgPath = "";
+	talentListArray[6].talentItems[1].talentName = "Cold_7_2";
+	talentListArray[6].talentItems[1].talentDescription = "E 처형";
+	talentListArray[6].talentItems[1].imgPath = "";
 
-	talentListArray[6]->talentItems[2]->talentName = "Cold_7_3";
-	talentListArray[6]->talentItems[2]->talentDescription = "R2 사거리가 무제한";
-	talentListArray[6]->talentItems[2]->imgPath = "";
+	talentListArray[6].talentItems[2].talentName = "Cold_7_3";
+	talentListArray[6].talentItems[2].talentDescription = "R2 사거리가 무제한";
+	talentListArray[6].talentItems[2].imgPath = "";
 }
 

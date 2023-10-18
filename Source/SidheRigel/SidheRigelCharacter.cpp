@@ -84,7 +84,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	for (int i = 0; i < 7; i++)
 	{
 		FIsSelectedTalentItem item;
-		for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
 		{
 			item.Add(false);
 		}
@@ -196,7 +196,8 @@ void ASidheRigelCharacter::InitTalentLIst()
 	//Talent Init
 	for (int i = 0; i < 7; i++)
 	{
-		talentListArray.Add(new FTalentList);
+		FTalentList tmp;
+		talentListArray.Add(tmp);
 
 		int iItemCount;
 		if (i == 3)	//if level 10 Talent
@@ -213,10 +214,11 @@ void ASidheRigelCharacter::InitTalentLIst()
 			iItemCount = 3;
 		}
 
-		talentListArray[i]->itemCount = iItemCount;
+		talentListArray[i].itemCount = iItemCount;
 		for (int j = 0; j < iItemCount; j++)
 		{
-			talentListArray[i]->talentItems.Add(new FTalent{ "", "", "" });
+			FTalent tmpTalent = FTalent{"", "", ""};
+			talentListArray[i].talentItems.Add(tmpTalent);
 		}
 	}
 }
