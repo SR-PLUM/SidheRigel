@@ -11,6 +11,7 @@
 #include "AttackState.h"
 #include "UseSkillState.h"
 #include "StunState.h"
+#include "DieState.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Interface/Damagable.h"
@@ -27,6 +28,7 @@ StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
 	UseSkill = new UseSkillState(this);
 
 	Stun = new StunState(this);
+	Die = new DieState(this);
 
 	currentState = Idle;
 
@@ -99,11 +101,9 @@ void StateMachine::Update(float DeltaTime)
 	{
 		silenceTime -= DeltaTime;
 	}
-
-	//Show Skill Range
-	if (bSkillReady && currentSkill != E_SkillState::Skill_Null)
+	if (DieTime > 0)
 	{
-
+		DieTime -= DeltaTime;
 	}
 
 	currentState->Update(DeltaTime);
@@ -115,6 +115,7 @@ void StateMachine::OnRightClick()
 	//SkillCancel
 	bSkillReady = false;
 	currentSkill = E_SkillState::Skill_Null;
+	myCharacter->skillRange->SetVisibility(false);
 
 	currentState->OnRightClick();
 }
@@ -141,6 +142,12 @@ void StateMachine::OnKeyboard(E_SkillState SkillState)
 
 	bSkillReady = true;
 	currentSkill = SkillState;
+
+	float currentSkillRange = myCharacter->skills[currentSkill]->GetRange();
+	UE_LOG(LogTemp, Warning, TEXT("SkillRange : %f"), currentSkillRange);
+	myCharacter->skillRange->SetRelativeScale3D(FVector(currentSkillRange / 100, currentSkillRange / 100, 1));
+
+	myCharacter->skillRange->SetVisibility(true);
 
 	currentState->OnKeyboard(SkillState);
 }
@@ -207,6 +214,7 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
 		currentSkill = E_SkillState::Skill_Null;
 		bSkillReady = false;
+		myCharacter->skillRange->SetVisibility(false);
 	}
 }
 

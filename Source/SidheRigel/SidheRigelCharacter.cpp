@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SidheRigelCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -53,9 +53,22 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// Create Can Detect Range
 	detectRange = CreateDefaultSubobject<USphereComponent>(TEXT("DetectRange"));
 	detectRange->InitSphereRadius(500.0f);
 	detectRange->SetupAttachment(RootComponent);
+
+	// Create Skill Range
+	skillRange = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SkillRange"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>SkillRangeMesh(TEXT("/Game/Dummy/SM_AssetPlatform"));
+	if (SkillRangeMesh.Succeeded())
+	{
+		skillRange->SetStaticMesh(SkillRangeMesh.Object);
+	}
+	skillRange->SetRelativeLocation(FVector(0, 0, -100));
+	skillRange->SetVisibility(false);
+	skillRange->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	skillRange->SetupAttachment(RootComponent);
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
@@ -66,6 +79,18 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//StatWidget
 	InitStatWidget();
+
+	// 7X3 Array
+	for (int i = 0; i < 7; i++)
+	{
+		FIsSelectedTalentItem item;
+		for (int j = 0; j < 3; j++)
+		{
+			item.Add(false);
+		}
+
+		IsSelectedTalent.Add(item);
+	}
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -80,6 +105,8 @@ void ASidheRigelCharacter::BeginPlay()
 	InGameUI->CharacterStatus->InitCharacterStatus(this);
 	
 	InitStatSummary();
+
+	InitTalentLIst();
 
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 
@@ -162,6 +189,38 @@ void ASidheRigelCharacter::ChangeTarget()
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
+}
+
+void ASidheRigelCharacter::InitTalentLIst()
+{
+	//Talent Init
+	for (int i = 0; i < 7; i++)
+	{
+		FTalentList tmp;
+		talentListArray.Add(tmp);
+
+		int iItemCount;
+		if (i == 3)	//if level 10 Talent
+		{
+			//Ultimate Skill Count
+			iItemCount = 1;
+		}
+		else if (i == 6)//if level 20 Talent
+		{
+			iItemCount = 3;
+		}
+		else
+		{
+			iItemCount = 3;
+		}
+
+		talentListArray[i].itemCount = iItemCount;
+		for (int j = 0; j < iItemCount; j++)
+		{
+			FTalent tmpTalent = FTalent{"", "", ""};
+			talentListArray[i].talentItems.Add(tmpTalent);
+		}
+	}
 }
 
 void ASidheRigelCharacter::InitStatWidget()
@@ -264,6 +323,30 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 	{
 		experience -= MaxExperience;
 		level++;
+		if (level == 4)
+		{
+
+		}
+		if (level == 7)
+		{
+
+		}
+		if (level == 10)
+		{
+
+		}
+		if (level == 13)
+		{
+
+		}
+		if (level == 16)
+		{
+
+		}
+		if (level == 20)
+		{
+
+		}
 	}
 
 	InGameUI->CharacterStatus->UpdateLevel();
@@ -448,6 +531,18 @@ float ASidheRigelCharacter::GetDecreseDefence()
 		res += value.Value;
 	}
 
+	return res;
+}
+
+float ASidheRigelCharacter::GetRemainDieCooldown()
+{
+	float res = 0;
+
+	auto myController = Cast<ASidheRigelPlayerController>(GetController());
+	if (myController)
+	{
+		res = myController->stateMachine->DieTime;
+	}
 	return res;
 }
 

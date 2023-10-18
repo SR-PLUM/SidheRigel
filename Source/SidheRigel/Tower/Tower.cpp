@@ -122,9 +122,6 @@ void ATower::Tick(float DeltaTime)
 			}
 			else if (attackDelay <= 0)
 			{
-				//damagableTarget->TakeDamage(damage, this);
-				UE_LOG(LogTemp, Warning, TEXT("Tower Attack ENEMY"));
-
 				FVector MuzzleLocation = muzzleLocation->GetComponentLocation();
 				FRotator MuzzleRotation = GetActorRotation();
 
@@ -141,8 +138,9 @@ void ATower::Tick(float DeltaTime)
 					ATowerAttackProjectile* projectile = World->SpawnActorDeferred<ATowerAttackProjectile>(projectileClass, SpawnTransform);
 					if (projectile)
 					{
-						projectile->target = currentTarget;
-						projectile->damage = damage;
+						projectile->Target = currentTarget;
+						projectile->AttackDamage = damage;
+						
 						projectile->projectileOwner = this;
 					}
 					projectile->FinishSpawning(SpawnTransform);

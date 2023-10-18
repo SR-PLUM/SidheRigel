@@ -53,26 +53,45 @@ public:
 	UPROPERTY(EditAnywhere)
 		int32 currentWayPointOrder;
 
-	class AWayPoint* currentWayPoint;
+	UPROPERTY()
+		class AWayPoint* currentWayPoint;
 
-	TArray<AActor*> WayPoints;
+	UPROPERTY()
+		TArray<AActor*> WayPoints;
 
 	//ATTACK
-	TArray<class AActor*> attackList;
+	TSubclassOf<class AMinionProjectile> projectileClass;
 
-	AActor* currentTarget;
+	UPROPERTY()
+		TArray<class AActor*> attackList;
 
-	float range = 250.f;
-	float damage = 10.f;
+	UPROPERTY()
+		AActor* currentTarget;
 
-	float attackDelay = 0.f;
-	float maxAttackDelay = 1.5f;
+	UPROPERTY()
+		float range = 250.f;
+	UPROPERTY()
+		float projectileDamage = 10.f;
 
-	float hp = 477;
-	float maxHp = 477;
+	UPROPERTY()
+		float attackDelay = 0.f;
+	UPROPERTY()
+		float maxAttackDelay = 1.5f;
 
-	int32 gold = 20;
-	int32 exp = 60;
+	UPROPERTY()
+		float hp = 477;
+	UPROPERTY()
+		float maxHp = 477;
+
+	UPROPERTY()
+		int32 gold = 20;
+	UPROPERTY()
+		int32 exp = 60;
+
+	bool isDie = false;
+
+	UPROPERTY()
+		bool IsAttackAnim = false;
 
 protected: //UI
 	UPROPERTY()

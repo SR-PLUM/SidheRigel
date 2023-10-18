@@ -4,31 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "SidheRigel/Dummy/DummyProjectile.h"
+
 #include "MinionProjectile.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API AMinionProjectile : public AActor
+class SIDHERIGEL_API AMinionProjectile : public ADummyProjectile
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	AMinionProjectile();
-
-protected:
-	UPROPERTY(VisibleAnywhere)
-		class UProjectileMovementComponent* ProjectileMovementComponent;
-	UPROPERTY(VisibleAnywhere)
-		class UStaticMeshComponent* ProjectileMesh;
-
-public:
-	UPROPERTY()
-		AActor* target;
-	UPROPERTY()
-		float attackDamage;
-	UPROPERTY()
-		AActor* projectileOwner;
-
 
 protected:
 	// Called when the game starts or when spawned
@@ -38,4 +26,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:	//InitFunction
+	virtual void SetProjectileMesh();
+	virtual void SetProjectileMovementComponent();
 };

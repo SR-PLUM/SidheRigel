@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "SidheRigel/Dummy/DummyProjectile.h"
+
 #include "TowerAttackProjectile.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API ATowerAttackProjectile : public AActor
+class SIDHERIGEL_API ATowerAttackProjectile : public ADummyProjectile
 {
 	GENERATED_BODY()
 	
@@ -24,19 +27,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 protected:
-	UPROPERTY(VisibleAnywhere)
-		class UProjectileMovementComponent* ProjectileMovementComponent;
-	UPROPERTY(VisibleAnywhere)
-		class UStaticMeshComponent* ProjectileMesh;
-
-public:
-	UPROPERTY()
-		float damage = 180;
-	UPROPERTY()
-		float speed = 500.f;
-	UPROPERTY(EditAnywhere)
-		AActor* target;
-	UPROPERTY()
-		AActor* projectileOwner;
-
+	virtual void SetProjectileMesh() override;
+	virtual void SetProjectileMovementComponent() override;
 };

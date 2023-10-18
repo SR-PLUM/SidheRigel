@@ -6,6 +6,7 @@
 #include "MinionAIController.h"
 #include "WayPoint.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "MinionProjectile.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -32,9 +33,13 @@ AMinion::AMinion()
 	AIControllerClass = AMinionAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	InitMinionWidget();
+	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Minion/BP_MinionProjectile"));
+	if (projectileRef.Object)
+	{
+		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+	}
 
-	UE_LOG(LogTemp,Warning,TEXT("MINION CONSTRUCT"))
+	InitMinionWidget();
 }
 
 // Called when the game starts or when spawned
@@ -61,8 +66,6 @@ void AMinion::BeginPlay()
 	MoveToWayPoint();
 
 	InitMinionUI();
-
-	UE_LOG(LogTemp, Warning, TEXT("MINION BEGIN_PLAY"))
 }
 
 // Called every frame
@@ -98,6 +101,10 @@ void AMinion::Tick(float DeltaTime)
 	if (attackDelay > 0)
 	{
 		attackDelay -= DeltaTime;
+		if (attackDelay <= 0)
+		{
+			IsAttackAnim = false;
+		}
 	}
 
 	if (currentTarget)
@@ -121,7 +128,30 @@ void AMinion::Tick(float DeltaTime)
 			}
 			else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0)
 			{
-				damagableTarget->TakeDamage(damage, this);
+				IsAttackAnim = true;
+				FVector MuzzleLocation = GetActorLocation();
+				FRotator MuzzleRotation = GetActorRotation();
+
+				UWorld* World = GetWorld();
+				if (World)
+				{
+					FActorSpawnParameters SpawnParams;
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(MuzzleLocation);
+					SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+					SpawnParams.Owner = this;
+					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					AMinionProjectile* projectile = World->SpawnActorDeferred<AMinionProjectile>(projectileClass, SpawnTransform);
+					if (projectile)
+					{
+						projectile->Target = currentTarget;
+						projectile->AttackDamage = projectileDamage;
+
+						projectile->projectileOwner = this;
+					}
+					projectile->FinishSpawning(SpawnTransform);
+				}
 
 				attackDelay = maxAttackDelay;
 			}
@@ -284,8 +314,9 @@ void AMinion::TakeDamage(float _damage, AActor* damageCauser)
 	MinionUIRef->SetHPBar(hp / maxHp);
 	MinionUIRef->SetUIVisibility(true);
 
-	if (hp <= 0)
+	if (hp <= 0 && !isDie)
 	{
+		isDie = true;
 		auto Character = Cast<ASidheRigelCharacter>(damageCauser);
 		if (Character)
 		{

@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -12,8 +12,27 @@
 #include "Interface/Team.h"
 #include "Enum/E_SkillState.h"
 #include "Character/Skill.h"
+#include "Character/TalentList.h"
 
 #include "SidheRigelCharacter.generated.h"
+
+USTRUCT()
+struct FIsSelectedTalentItem
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+
+	TArray<bool> IsSelected;
+
+	bool operator[] (int32 i) {
+		return IsSelected[i];
+	}
+
+	void Add(bool b) {
+		IsSelected.Add(b);
+	}
+};
 
 UCLASS(Blueprintable)
 class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable, public ITeam
@@ -51,6 +70,10 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		class USphereComponent* detectRange;
 
+public:
+	UPROPERTY(VisibleAnywhere)
+		class UStaticMeshComponent* skillRange;
+
 protected:	//change target when attack enemy hero
 	UFUNCTION()
 		void OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -65,6 +88,13 @@ protected:	//change target when attack enemy hero
 public:	//Skill
 	TMap<E_SkillState, Skill*> skills;
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
+
+public: //Talent
+	TArray<FTalentList> talentListArray;
+
+	TArray<FIsSelectedTalentItem> IsSelectedTalent;
+
+	void InitTalentLIst();
 
 public: //UI
 	UPROPERTY()
@@ -168,7 +198,12 @@ public:		//Getter, Setter
 	void AddDecreseDefencePercent(FString name, float value, float time);
 	float GetDecreseDefence();
 
+	float GetRemainDieCooldown();
+
 	virtual void InitProperty();
+
+	UPROPERTY()
+		bool isDie = false;
 
 public:	//Attack
 	virtual void InitAttackProjectile();

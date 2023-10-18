@@ -33,7 +33,6 @@ void AACMAttackProjectile::SetProjectileMesh()
 void AACMAttackProjectile::SetProjectileMovementComponent()
 {
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 	ProjectileMovementComponent->InitialSpeed = 5.f;
 	ProjectileMovementComponent->MaxSpeed = 5.f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
