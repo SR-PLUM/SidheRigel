@@ -12,7 +12,7 @@ void UTalentItem::InitTalentItemRef(class ASidheRigelCharacter* Character, int32
 	TalentLevel = Level;
 	TalentIndex = Index;
 
-	BtnTalentItem->OnClicked.AddDynamic(this, &UTalentItem::OnClicked);
+	//BtnTalentItem->OnClicked.AddDynamic(this, &UTalentItem::OnClicked);
 
 	InitTalentItemInfo();
 }
@@ -22,9 +22,13 @@ void UTalentItem::InitTalentItemInfo()
 	TalentDescription = CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentDescription;
 	SetToolTipText(FText::FromString(TalentDescription));
 	TalentNameText->SetText(FText::FromString(CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentName));
+	
+	UE_LOG(LogTemp, Warning, TEXT("TalentItem Loaded"));
+
 }
 
 void UTalentItem::OnClicked()
 {
 	CharacterRef->IsSelectedTalent[TalentLevel].IsSelected[TalentIndex] = true;
+	CharacterRef->RemoveTalentUI(TalentLevel);
 }

@@ -17,4 +17,7 @@ class SIDHERIGEL_API UTalentUI : public UUserWidget
 public:
 	TArray<class UTalentItem*> TalentItemList;
 
+	UPROPERTY(meta = (BindWidget))
+		class UVerticalBox* TalentItemBox;
+
 };

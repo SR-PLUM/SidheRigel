@@ -94,7 +94,19 @@ public: //Talent
 
 	TArray<FIsSelectedTalentItem> IsSelectedTalent;
 
+	TMap<int32, class UTalentUI*> TalentUIArray;
+
+	UPROPERTY()
+		TSubclassOf<class UUserWidget> TalentUIWidget;
+
+	UPROPERTY()
+		TSubclassOf<class UUserWidget> TalentItemWidget;
+
 	void InitTalentLIst();
+
+	void RemoveTalentUI(int32 Index);
+
+	void InitTalentWidget();
 
 public: //UI
 	UPROPERTY()
@@ -105,6 +117,8 @@ public: //UI
 
 	UPROPERTY()
 		class UStatSummary* StatSummary;
+
+
 
 	void InitStatWidget();
 	void InitStatSummary();
