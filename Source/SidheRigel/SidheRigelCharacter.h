@@ -19,6 +19,10 @@
 USTRUCT()
 struct FIsSelectedTalentItem
 {
+	GENERATED_USTRUCT_BODY()
+
+public:
+
 	TArray<bool> IsSelected;
 
 	bool operator[] (int32 i) {
@@ -86,7 +90,7 @@ public:	//Skill
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 public: //Talent
-	TArray<FTalentList*> talentListArray;
+	TArray<FTalentList> talentListArray;
 
 	TArray<FIsSelectedTalentItem> IsSelectedTalent;
 

@@ -14,7 +14,7 @@ public:
 
 public:
 	UPROPERTY()
-		TArray<FTalent*> talentItems;
+		TArray<FTalent> talentItems;
 
 	UPROPERTY()
 		int32 itemCount;
