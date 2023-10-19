@@ -102,6 +102,11 @@ protected: //UI
 	void InitMinionWidget();
 	void InitMinionUI();
 
+protected:	//Move
+	bool IsMoveVectorTrue = false;
+	FVector moveDirection = FVector::ZeroVector;
+	float moveForce = 0;
+	int32 moveCnt = 0;
 
 public:
 	UFUNCTION()
@@ -115,8 +120,6 @@ public:
 		virtual void Slow(float time, float value, FString key);
 	UFUNCTION()
 		virtual void Silence(float time);
-	UFUNCTION()
-		virtual void Airborne(float time);
 
 	UFUNCTION()
 		virtual void TakeDamage(float damage, AActor* damageCauser);
@@ -132,4 +135,8 @@ public:
 		virtual E_Team GetTeam() override;
 	UFUNCTION()
 		void SetTeam(E_Team _team);
+
+protected:
+	UPROPERTY()
+		TMap<FString, float> speedRate;
 };

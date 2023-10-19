@@ -73,6 +73,22 @@ void AMinion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (IsMoveVectorTrue)
+	{
+		FVector Location = GetActorLocation();
+		Location += moveDirection * (moveForce / 10) * DeltaTime;
+		SetActorLocation(Location);
+		moveCnt++;
+		if (moveCnt <= 10)
+		{
+			moveDirection = FVector::ZeroVector;
+			moveForce = 0;
+			moveCnt = 0;
+
+			IsMoveVectorTrue = false;
+		}
+	}
+
 	//If Goal WayPoint Move To Next WayPoint
 	if (currentWayPoint)
 	{
@@ -164,7 +180,6 @@ void AMinion::Tick(float DeltaTime)
 				else
 				{
 					AIController = Cast<AMinionAIController>(GetController());
-					UE_LOG(LogTemp, Warning, TEXT("MINION GET_CONTROLLER"))
 				}
 			}
 		}
@@ -214,7 +229,6 @@ void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 				}
 
 				attackList.Add(OtherActor);
-				UE_LOG(LogTemp, Warning, TEXT("ENTER ENEMY : %s"), *OtherActor->GetName());
 			}
 		}
 	}
@@ -241,7 +255,6 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 					currentTarget = attackList.Top();
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("EXIT ENEMY : %s"), *OtherActor->GetName());
 		}
 	}
 }
@@ -288,28 +301,57 @@ void AMinion::Attack(AActor* Target)
 
 void AMinion::Stun(float time)
 {
+	AMinionAIController* controller = Cast<AMinionAIController>(GetWorld()->GetFirstPlayerController());
+	if (controller && controller->stateMachine)
+	{
+		controller->stateMachine->OnStun(time);
+	}
 }
 
 void AMinion::Stop(float time)
 {
+	AMinionAIController* controller = Cast<AMinionAIController>(GetWorld()->GetFirstPlayerController());
+	if (controller && controller->stateMachine)
+	{
+		controller->stateMachine->OnStop(time);
+	}
 }
 
 void AMinion::Slow(float time, float value, FString key)
 {
+	if (speedRate.Contains(key))
+	{
+		return;
+	}
+
+	speedRate.Add(key, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle SlowTimer;
+	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (speedRate.Find(key))
+			{
+				speedRate.Remove(key);
+			}
+		})
+		, time, false);
 }
 
 void AMinion::Silence(float time)
 {
-}
-
-void AMinion::Airborne(float time)
-{
+	AMinionAIController* controller = Cast<AMinionAIController>(GetWorld()->GetFirstPlayerController());
+	if (controller && controller->stateMachine)
+	{
+		controller->stateMachine->OnSilence(time);
+	}
 }
 
 void AMinion::TakeDamage(float _damage, AActor* damageCauser)
 {
 	hp -= _damage;
-	UE_LOG(LogTemp, Warning, TEXT("Minion_HP : %f"), hp);
 
 	MinionUIRef->SetHPBar(hp / maxHp);
 	MinionUIRef->SetUIVisibility(true);
@@ -351,4 +393,8 @@ float AMinion::GetHP()
 
 void AMinion::MoveVector(FVector Direction, float Force)
 {
+	moveDirection = Direction.GetSafeNormal();
+	moveForce = Force;
+	moveCnt = 0;
+	IsMoveVectorTrue = true;
 }

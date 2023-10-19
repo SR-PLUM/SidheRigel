@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+
+#include "../State/StateMachine.h"
+
 #include "MinionAIController.generated.h"
 
 /**
@@ -16,4 +19,6 @@ class SIDHERIGEL_API AMinionAIController : public AAIController
 	
 public:
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
+
+	StateMachine* stateMachine;
 };
