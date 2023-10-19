@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ColdCharacter.h"
@@ -49,6 +49,8 @@ AColdCharacter::AColdCharacter()
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
+
+	InitColdTalent();
 }
 
 // Called when the game starts or when spawned

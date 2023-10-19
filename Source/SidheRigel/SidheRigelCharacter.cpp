@@ -13,6 +13,10 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "Components/SphereComponent.h"
+#include "Components/Overlay.h"
+#include "Components/VerticalBox.h"
+#include "Components/OverlaySlot.h"
+#include "Components/VerticalBoxSlot.h"
 
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/InGameMapScriptActor.h"
@@ -23,6 +27,8 @@
 #include "Components/WidgetComponent.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRigel/Tower/Tower.h"
+#include "SidheRigel/UI/TalentUI.h"
+#include "SidheRigel/UI/TalentItem.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -91,6 +97,11 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 		IsSelectedTalent.Add(item);
 	}
+
+	InitTalentLIst();
+
+	//Init Talent Widget Subclass
+	InitTalentWidget();
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -106,7 +117,7 @@ void ASidheRigelCharacter::BeginPlay()
 	
 	InitStatSummary();
 
-	InitTalentLIst();
+	
 
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 
@@ -114,6 +125,8 @@ void ASidheRigelCharacter::BeginPlay()
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
+
+	DisplayTalentList(0);
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -223,6 +236,54 @@ void ASidheRigelCharacter::InitTalentLIst()
 	}
 }
 
+void ASidheRigelCharacter::RemoveTalentUI(int32 Index)
+{
+	UTalentUI* tmp = TalentUIArray[Index];
+	InGameUI->TalentUIOverlay->RemoveChild(tmp);
+	TalentUIArray.Remove(Index);
+}
+
+void ASidheRigelCharacter::InitTalentWidget()
+{
+	ConstructorHelpers::FClassFinder<UUserWidget> TalentUIClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_TalentUI"));
+	if (TalentUIClass.Class == nullptr)
+		return;
+
+	TalentUIWidget = TalentUIClass.Class;
+
+	ConstructorHelpers::FClassFinder<UUserWidget> TalentItemClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_TalentItem"));
+	if (TalentItemClass.Class == nullptr)
+		return;
+
+	TalentItemWidget = TalentItemClass.Class;
+
+}
+
+void ASidheRigelCharacter::DisplayTalentList(int32 Index)
+{
+	UTalentUI* talentUI = CreateWidget<UTalentUI>(InGameUI, TalentUIWidget);
+
+	for (int i = 0; i < talentListArray[Index].itemCount; i++)
+	{
+		UTalentItem* talentItem = CreateWidget<UTalentItem>(InGameUI, TalentItemWidget);
+		talentItem->InitTalentItemRef(this, Index, i);
+
+		talentUI->TalentItemList.Add(talentItem);
+		talentUI->TalentItemBox->AddChild(talentItem);
+	}
+
+	InGameUI->TalentUIOverlay->AddChild(talentUI);
+	TalentUIArray.Add(Index, talentUI);
+
+	UOverlaySlot* slot = Cast<UOverlaySlot>(talentUI->Slot);
+	
+	if (slot)
+	{
+		slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
+		slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Bottom);
+	}
+}
+
 void ASidheRigelCharacter::InitStatWidget()
 {
 	StatWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("StatWIDGET"));
@@ -264,7 +325,7 @@ void ASidheRigelCharacter::SetLevel(int32 _level)
 
 	if ((level != 19) && (level % 3 == 1 || level == 20))
 	{
-		//특성 띄우기
+		
 	}
 }
 
@@ -323,29 +384,35 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 	{
 		experience -= MaxExperience;
 		level++;
+		int32 idx = 0;
 		if (level == 4)
 		{
-
+			idx = 1;
 		}
 		if (level == 7)
 		{
-
+			idx = 2;
 		}
 		if (level == 10)
 		{
-
+			idx = 3;
 		}
 		if (level == 13)
 		{
-
+			idx = 4;
 		}
 		if (level == 16)
 		{
-
+			idx = 5;
 		}
 		if (level == 20)
 		{
+			idx = 6;
+		}
 
+		if (idx != 0)
+		{
+			DisplayTalentList(idx);
 		}
 	}
 
