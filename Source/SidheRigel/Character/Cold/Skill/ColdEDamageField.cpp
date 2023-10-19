@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 
 #include "SidheRigel/Interface/Damagable.h"
+#include "SidheRigel/Interface/Team.h"
 
 // Sets default values
 AColdEDamageField::AColdEDamageField()
@@ -46,7 +47,14 @@ void AColdEDamageField::NotifyActorBeginOverlap(AActor* OtherActor)
 	IDamagable* target = Cast<IDamagable>(OtherActor);
 	if (target)
 	{
-		targets.Add(target);
+		ITeam* TeamActor = Cast<ITeam>(OtherActor);
+		if (TeamActor)
+		{
+			if (TeamActor->GetTeam() != Cast<ITeam>(projectileOwner)->GetTeam())
+			{
+				targets.Add(target);
+			}
+		}
 	}
 }
 
@@ -76,7 +84,10 @@ void AColdEDamageField::Explosion()
 {
 	for (auto target : targets)
 	{
-		target->TakeDamage(damage, projectileOwner);
+		if (target)
+		{
+			target->TakeDamage(damage, projectileOwner);
+		}
 	}
 
 	Destroy();
