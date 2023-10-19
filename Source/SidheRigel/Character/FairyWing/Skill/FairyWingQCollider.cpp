@@ -2,6 +2,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
+#include "SidheRigel/Interface/Team.h"
 
 // Sets default values
 AFairyWingQCollider::AFairyWingQCollider()
@@ -41,6 +42,14 @@ void AFairyWingQCollider::BeginPlay()
 	Super::BeginPlay();
 
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingQCollider::OnColliderOverlap);
+
+	FTimerHandle QColliderDestroyTimer;
+	GetWorldTimerManager().SetTimer(QColliderDestroyTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				Destroy();
+			}
+	), duration, false);
 }
 
 // Called every frame
@@ -52,17 +61,21 @@ void AFairyWingQCollider::Tick(float DeltaTime)
 
 void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 30.0f, FColor::Red, OtherActorName);
-	}
-
 	if (OtherActor)
 	{
-		IDamagable* test = Cast<IDamagable>(OtherActor);
-		if(test)
-			test->TakeDamage(10.f, colliderOwner);
+		if (ITeam* team = Cast<ITeam>(OtherActor))
+		{
+			if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
+			{
+				if (IDamagable* target = Cast<IDamagable>(OtherActor))
+				{
+					target->TakeDamage(damage, colliderOwner);
+				}
+			}
+			else
+			{
+				// 같은 팀이면 이동속도 증가
+			}
+		}
 	}
 }
-
