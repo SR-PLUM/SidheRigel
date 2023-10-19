@@ -28,6 +28,12 @@ protected:	//Attack
 	virtual void InitAttackProjectile() override;
 	virtual void Attack(AActor* target) override;
 
+public:		//Talent
+	void TestTalent();
+
+protected:	//Talent
+	void InitBlackWizardTalent();
+
 private:
 	UPROPERTY()
 		FTimerHandle destroyTimer;
