@@ -6,6 +6,7 @@
 #include "CombatSummary.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "Components/Overlay.h"
 
 
 void UInGameUI::InitCharacterData(USidheRigelGameInstance* GameInstance)
@@ -25,6 +26,5 @@ void UInGameUI::InitCharacterData(USidheRigelGameInstance* GameInstance)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("CharacterStatus is null"));
 	}
-	
 }
 

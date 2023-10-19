@@ -20,11 +20,9 @@ void UTalentItem::InitTalentItemRef(class ASidheRigelCharacter* Character, int32
 void UTalentItem::InitTalentItemInfo()
 {
 	TalentDescription = CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentDescription;
-	SetToolTipText(FText::FromString(TalentDescription));
+	BtnTalentItem->SetToolTipText(FText::FromString(TalentDescription));
 	TalentNameText->SetText(FText::FromString(CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentName));
-	
-	UE_LOG(LogTemp, Warning, TEXT("TalentItem Loaded"));
-
+	TalentNameText->SetToolTipText(FText::FromString(TalentDescription));
 }
 
 void UTalentItem::OnClicked()

@@ -15,6 +15,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/Overlay.h"
 #include "Components/VerticalBox.h"
+#include "Components/OverlaySlot.h"
+#include "Components/VerticalBoxSlot.h"
 
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/InGameMapScriptActor.h"
@@ -96,6 +98,8 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 		IsSelectedTalent.Add(item);
 	}
 
+	InitTalentLIst();
+
 	//Init Talent Widget Subclass
 	InitTalentWidget();
 }
@@ -113,7 +117,7 @@ void ASidheRigelCharacter::BeginPlay()
 	
 	InitStatSummary();
 
-	InitTalentLIst();
+	
 
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 
@@ -121,6 +125,8 @@ void ASidheRigelCharacter::BeginPlay()
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
+
+	DisplayTalentList(0);
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -253,6 +259,32 @@ void ASidheRigelCharacter::InitTalentWidget()
 
 }
 
+void ASidheRigelCharacter::DisplayTalentList(int32 Index)
+{
+	UTalentUI* talentUI = CreateWidget<UTalentUI>(InGameUI, TalentUIWidget);
+
+	for (int i = 0; i < talentListArray[Index].itemCount; i++)
+	{
+		UTalentItem* talentItem = CreateWidget<UTalentItem>(InGameUI, TalentItemWidget);
+		talentItem->InitTalentItemRef(this, Index, i);
+
+		talentUI->TalentItemList.Add(talentItem);
+		talentUI->TalentItemBox->AddChild(talentItem);
+	}
+
+	InGameUI->TalentUIOverlay->AddChild(talentUI);
+	TalentUIArray.Add(Index, talentUI);
+
+	UOverlaySlot* slot = Cast<UOverlaySlot>(talentUI->Slot);
+	
+	if (slot)
+	{
+		slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
+		slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Bottom);
+		UE_LOG(LogTemp, Warning , TEXT("Slot is valid"))
+	}
+}
+
 void ASidheRigelCharacter::InitStatWidget()
 {
 	StatWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("StatWIDGET"));
@@ -381,20 +413,7 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 
 		if (idx != 0)
 		{
-			//특성 띄우기
-			UTalentUI* talentUI = CreateWidget<UTalentUI>(InGameUI, TalentUIWidget);
-
-			for (int i = 0; i < talentListArray[idx].itemCount; i++)
-			{
-				UTalentItem* talentItem = CreateWidget<UTalentItem>(InGameUI, TalentItemWidget);
-				talentItem->InitTalentItemRef(this, idx, i);
-
-				talentUI->TalentItemList.Add(talentItem);
-				talentUI->TalentItemBox->AddChild(talentItem);
-			}
-
-			InGameUI->TalentUIOverlay->AddChild(talentUI);
-			TalentUIArray.Add(idx, talentUI);
+			DisplayTalentList(idx);
 		}
 	}
 

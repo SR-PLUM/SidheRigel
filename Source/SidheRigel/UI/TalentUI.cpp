@@ -2,4 +2,9 @@
 
 
 #include "TalentUI.h"
+#include "Components/VerticalBox.h"
 
+void UTalentUI::LineUpItems()
+{
+	
+}

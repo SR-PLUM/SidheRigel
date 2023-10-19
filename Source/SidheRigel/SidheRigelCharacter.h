@@ -108,6 +108,8 @@ public: //Talent
 
 	void InitTalentWidget();
 
+	void DisplayTalentList(int32 Index);
+
 public: //UI
 	UPROPERTY()
 		class UInGameUI* InGameUI;

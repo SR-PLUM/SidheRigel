@@ -49,6 +49,8 @@ AColdCharacter::AColdCharacter()
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
+
+	InitColdTalent();
 }
 
 // Called when the game starts or when spawned
