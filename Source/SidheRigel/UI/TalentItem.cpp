@@ -12,7 +12,7 @@ void UTalentItem::InitTalentItemRef(class ASidheRigelCharacter* Character, int32
 	TalentLevel = Level;
 	TalentIndex = Index;
 
-	//BtnTalentItem->OnClicked.AddDynamic(this, &UTalentItem::OnClicked);
+	BtnTalentItem->OnClicked.AddDynamic(this, &UTalentItem::OnClicked);
 
 	InitTalentItemInfo();
 }
@@ -22,7 +22,6 @@ void UTalentItem::InitTalentItemInfo()
 	TalentDescription = CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentDescription;
 	BtnTalentItem->SetToolTipText(FText::FromString(TalentDescription));
 	TalentNameText->SetText(FText::FromString(CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentName));
-	TalentNameText->SetToolTipText(FText::FromString(TalentDescription));
 }
 
 void UTalentItem::OnClicked()
