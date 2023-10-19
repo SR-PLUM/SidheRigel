@@ -20,6 +20,4 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UVerticalBox* TalentItemBox;
 
-	void LineUpItems();
-
 };

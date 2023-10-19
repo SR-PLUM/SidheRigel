@@ -281,7 +281,6 @@ void ASidheRigelCharacter::DisplayTalentList(int32 Index)
 	{
 		slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 		slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Bottom);
-		UE_LOG(LogTemp, Warning , TEXT("Slot is valid"))
 	}
 }
 

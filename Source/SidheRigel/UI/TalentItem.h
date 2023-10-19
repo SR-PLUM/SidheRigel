@@ -15,11 +15,19 @@ class SIDHERIGEL_API UTalentItem : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UTalentItem(const FObjectInitializer& ObjectInitializer);
+
+public:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* BtnTalentItem;
 
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* TalentNameText;
+
+	UPROPERTY()
+		TSubclassOf<class UUserWidget> TalentToolTipWidget;
+
+	class UTalentToolTip* ToolTip;
 
 	FString TalentDescription;
 
@@ -29,7 +37,7 @@ public:
 	UPROPERTY()
 		class ASidheRigelCharacter* CharacterRef;
 
-
+public:
 	UFUNCTION()
 		void InitTalentItemRef(class ASidheRigelCharacter * Character, int32 Level, int32 Index);
 
@@ -38,5 +46,7 @@ public:
 
 	UFUNCTION()
 		void OnClicked();
+
+	void InitToolTip();
 	
 };
