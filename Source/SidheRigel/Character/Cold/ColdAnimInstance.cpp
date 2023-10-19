@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#include "SidheRigel/SidheRigelPlayerController.h"
+
 void UColdAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
@@ -14,6 +16,11 @@ void UColdAnimInstance::NativeInitializeAnimation()
 	if (ColdCharacter)
 	{
 		ColdCharacterMovement = ColdCharacter->GetCharacterMovement();
+
+		if (auto SRController = Cast<ASidheRigelPlayerController>(ColdCharacter->GetController()))
+		{
+			ColdStateMachine = SRController->stateMachine;
+		}
 	}
 }
 
@@ -24,5 +31,23 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	if (ColdCharacterMovement)
 	{
 		Speed = UKismetMathLibrary::VSizeXY(ColdCharacterMovement->Velocity);
+		if (ColdStateMachine)
+		{
+			if (ColdStateMachine->GetCurrentState() == ColdStateMachine->Attack)
+			{
+				isAttack = true;
+			}
+			else
+			{
+				isAttack = false;
+			}
+		}
+		else
+		{
+			if (auto SRController = Cast<ASidheRigelPlayerController>(ColdCharacter->GetController()))
+			{
+				ColdStateMachine = SRController->stateMachine;
+			}
+		}
 	}
 }

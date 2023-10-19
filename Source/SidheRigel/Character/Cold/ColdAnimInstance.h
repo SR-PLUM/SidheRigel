@@ -21,9 +21,14 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		class AColdCharacter* ColdCharacter;
 
+	class StateMachine* ColdStateMachine;
+
 	UPROPERTY(BlueprintReadOnly)
 		class UCharacterMovementComponent* ColdCharacterMovement;
 
 	UPROPERTY(BlueprintReadOnly)
 		float Speed;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool isAttack;
 };

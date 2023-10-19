@@ -62,6 +62,11 @@ void StateMachine::ChangePreviousState()
 	currentState = previousState;
 }
 
+State* StateMachine::GetCurrentState()
+{
+	return currentState;
+}
+
 //Timer
 void StateMachine::Update(float DeltaTime)
 {
