@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Movable.h"
+#include "SidheRigel/Interface/Team.h"
 
 // Sets default values
 AColdWProjectile::AColdWProjectile()
@@ -72,15 +73,25 @@ void AColdWProjectile::OnColliderOverlap(UPrimitiveComponent* OverlappedComponen
 	{
 		if (IDamagable* target = Cast<IDamagable>(OtherActor))
 		{
-			target->TakeDamage(damage, projectileOwner);
-		}
-		if (IMovable* target = Cast<IMovable>(OtherActor))
-		{
-			if (projectileOwner)
+			if (ITeam* TeamActor = Cast<ITeam>(OtherActor))
 			{
-				FVector moveDirection = (OtherActor->GetActorLocation() - projectileOwner->GetActorLocation()) * FVector(1, 1, 0);
+				if (TeamActor)
+				{
+					if (TeamActor->GetTeam() != Cast<ITeam>(projectileOwner)->GetTeam())
+					{
+						target->TakeDamage(damage, projectileOwner);
 
-				target->MoveVector(moveDirection, force);
+						if (IMovable* MoveActor = Cast<IMovable>(OtherActor))
+						{
+							if (projectileOwner)
+							{
+								FVector moveDirection = (OtherActor->GetActorLocation() - projectileOwner->GetActorLocation());
+
+								MoveActor->MoveVector(moveDirection, force);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
