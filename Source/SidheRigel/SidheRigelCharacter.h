@@ -221,6 +221,9 @@ public:		//Getter, Setter
 	UPROPERTY()
 		bool isDie = false;
 
+	UPROPERTY()
+		float frontDelay = 0.1f;
+
 public:	//Attack
 	virtual void InitAttackProjectile();
 	virtual void Attack(AActor* target) override;

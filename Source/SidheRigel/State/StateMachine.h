@@ -65,6 +65,7 @@ public:	//Timer
 
 	void ChangeState(State* NextState);
 	void ChangePreviousState();
+	State* GetCurrentState();
 
 public:
 	void Update(float DeltaTime);

@@ -23,10 +23,10 @@ void AttackState::OnBegin()
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
 
 		///Set Attack FrontDelay///
-		/*if (myCharacter)
+		if (myCharacter)
 		{
 			stateMachine->frontDelay = myCharacter->frontDelay;
-		}*/
+		}
 	}
 }
 
