@@ -23,5 +23,5 @@ private:	//Property
 	float colliderDelay = 0.1f;
 	float colliderDamage = 20.f;
 
-	TSubclassOf<class AColdQProjectile> projectileClass;
+	TSubclassOf<class AFairyWingEProjectile> projectileClass;
 };

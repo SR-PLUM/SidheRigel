@@ -39,7 +39,7 @@ void FairyWingESkill::OnUse(FHitResult Hit)
 	if (AActor* _target = Hit.GetActor())
 	{
 		if (projectileClass)
-		{
+		{			
 			FVector MuzzleLocation = character->GetActorLocation();
 			FRotator MuzzleRotation = character->GetActorRotation();
 
