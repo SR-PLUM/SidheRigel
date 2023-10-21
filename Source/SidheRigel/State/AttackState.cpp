@@ -27,6 +27,13 @@ void AttackState::OnBegin()
 		{
 			stateMachine->frontDelay = myCharacter->frontDelay;
 		}
+
+		//Turn to Target
+		if (stateMachine->target)
+		{
+			FVector ForwardDirection = ((stateMachine->target->GetActorLocation() - myCharacter->GetActorLocation()) * FVector(1, 1, 0)).GetSafeNormal();
+			myCharacter->SetActorRotation(ForwardDirection.Rotation());
+		}
 	}
 }
 
