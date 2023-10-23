@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/CCable.h"
 #include "SidheRigel/Interface/Damagable.h"
+#include "SidheRigel/Interface/Team.h"
 
 // Sets default values
 ABlackWizardECollider::ABlackWizardECollider()
@@ -67,15 +68,21 @@ void ABlackWizardECollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCom
 {
 	if (OtherActor)
 	{
-		if (IDamagable* test = Cast<IDamagable>(OtherActor))
+		if (ITeam* team = Cast<ITeam>(OtherActor))
 		{
-			test->TakeDamage(10.f, colliderOwner);
-		}			
+			if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
+			{
+				if (IDamagable* target = Cast<IDamagable>(OtherActor))
+				{
+					target->TakeDamage(10.f, colliderOwner);
+				}
 
-		if (ICCable* CC = Cast<ICCable>(OtherActor))
-		{
-			CC->Stop(1.0f);
-		}			
+				if (ICCable* CCtarget = Cast<ICCable>(OtherActor))
+				{
+					CCtarget->Stop(1.0f);
+				}
+			}
+		}
 	}
 }
 

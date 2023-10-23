@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Movable.h"
+#include "SidheRigel/Interface/Team.h"
 
 // Sets default values
 ABlackWizardRCollider::ABlackWizardRCollider()
@@ -67,18 +68,24 @@ void ABlackWizardRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCom
 {
 	if (OtherActor)
 	{
-		if (IDamagable* DamagableTarget = Cast<IDamagable>(OtherActor))
+		if (ITeam* team = Cast<ITeam>(OtherActor))
 		{
-			DamagableTarget->TakeDamage(damage, colliderOwner);
-		}		
-
-		if (IMovable* MovableTarget = Cast<IMovable>(OtherActor))
-		{
-			if (OtherActor != colliderOwner)
+			if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
 			{
-				FVector moveDirection = (OtherActor->GetActorLocation() - colliderOwner->GetActorLocation()) * FVector(1, 1, 0);
+				if (IDamagable* DamagableTarget = Cast<IDamagable>(OtherActor))
+				{
+					DamagableTarget->TakeDamage(damage, colliderOwner);
+				}
 
-				MovableTarget->MoveVector(moveDirection, force);
+				if (IMovable* MovableTarget = Cast<IMovable>(OtherActor))
+				{
+					if (OtherActor != colliderOwner)
+					{
+						FVector moveDirection = (OtherActor->GetActorLocation() - colliderOwner->GetActorLocation()) * FVector(1, 1, 0);
+						
+						MovableTarget->MoveVector(moveDirection, force);
+					}
+				}
 			}
 		}
 	}
