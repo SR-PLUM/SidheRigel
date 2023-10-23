@@ -19,6 +19,4 @@ class SIDHERIGEL_API AMinionAIController : public AAIController
 	
 public:
 	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
-
-	StateMachine* stateMachine;
 };

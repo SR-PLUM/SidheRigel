@@ -29,6 +29,7 @@ AMinion::AMinion()
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = 325.f;
+	currentSpeed = GetCharacterMovement()->MaxWalkSpeed;
 
 	AIControllerClass = AMinionAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -53,7 +54,6 @@ void AMinion::BeginPlay()
 	detectArea->OnComponentEndOverlap.AddDynamic(this, &AMinion::OnExitEnemy);
 
 	AIController = Cast<AMinionAIController>(GetController());
-	StopRequestID = FAIRequestID::CurrentRequest;
 
 	if (team == E_Team::Red)
 	{
@@ -303,13 +303,13 @@ void AMinion::Attack(AActor* Target)
 void AMinion::Stun(float time)
 {
 	IsStun = true;
-	AIController->PauseMove(StopRequestID);
+	GetCharacterMovement()->MaxWalkSpeed = 0;
 
 	GetWorldTimerManager().SetTimer(CheckStunTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
 				IsStun = false;
-				AIController->ResumeMove(StopRequestID);
+				GetCharacterMovement()->MaxWalkSpeed = currentSpeed;
 			}
 
 	), time, false);
@@ -317,12 +317,12 @@ void AMinion::Stun(float time)
 
 void AMinion::Stop(float time)
 {
-	AIController->PauseMove(StopRequestID);
+	GetCharacterMovement()->MaxWalkSpeed = 0;
 
 	GetWorldTimerManager().SetTimer(CheckStunTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
-				AIController->ResumeMove(StopRequestID);
+				GetCharacterMovement()->MaxWalkSpeed = currentSpeed;
 			}
 
 	), time, false);

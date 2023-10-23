@@ -97,7 +97,7 @@ public:
 	UPROPERTY()
 		FTimerHandle CheckStunTimer;
 	UPROPERTY()
-		uint32 StopRequestID;
+		float currentSpeed;
 
 protected: //UI
 	UPROPERTY()
