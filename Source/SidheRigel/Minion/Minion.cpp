@@ -53,6 +53,7 @@ void AMinion::BeginPlay()
 	detectArea->OnComponentEndOverlap.AddDynamic(this, &AMinion::OnExitEnemy);
 
 	AIController = Cast<AMinionAIController>(GetController());
+	StopRequestID = FAIRequestID::CurrentRequest;
 
 	if (team == E_Team::Red)
 	{
@@ -142,7 +143,7 @@ void AMinion::Tick(float DeltaTime)
 					currentTarget = attackList.Top();
 				}
 			}
-			else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0)
+			else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0 && IsStun == false)
 			{
 				IsAttackAnim = true;
 				FVector MuzzleLocation = GetActorLocation();
@@ -301,20 +302,30 @@ void AMinion::Attack(AActor* Target)
 
 void AMinion::Stun(float time)
 {
-	AMinionAIController* controller = Cast<AMinionAIController>(GetWorld()->GetFirstPlayerController());
-	if (controller && controller->stateMachine)
-	{
-		controller->stateMachine->OnStun(time);
-	}
+	IsStun = true;
+	AIController->PauseMove(StopRequestID);
+
+	GetWorldTimerManager().SetTimer(CheckStunTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				IsStun = false;
+				AIController->ResumeMove(StopRequestID);
+			}
+
+	), time, false);
 }
 
 void AMinion::Stop(float time)
 {
-	AMinionAIController* controller = Cast<AMinionAIController>(GetWorld()->GetFirstPlayerController());
-	if (controller && controller->stateMachine)
-	{
-		controller->stateMachine->OnStop(time);
-	}
+	AIController->PauseMove(StopRequestID);
+
+	GetWorldTimerManager().SetTimer(CheckStunTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				AIController->ResumeMove(StopRequestID);
+			}
+
+	), time, false);
 }
 
 void AMinion::Slow(float time, float value, FString key)
@@ -342,11 +353,7 @@ void AMinion::Slow(float time, float value, FString key)
 
 void AMinion::Silence(float time)
 {
-	AMinionAIController* controller = Cast<AMinionAIController>(GetWorld()->GetFirstPlayerController());
-	if (controller && controller->stateMachine)
-	{
-		controller->stateMachine->OnSilence(time);
-	}
+	//상태만 게임화면에 표시되게 하기
 }
 
 void AMinion::TakeDamage(float _damage, AActor* damageCauser)

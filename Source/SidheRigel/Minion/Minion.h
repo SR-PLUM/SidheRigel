@@ -92,6 +92,12 @@ public:
 
 	UPROPERTY()
 		bool IsAttackAnim = false;
+	UPROPERTY()
+		bool IsStun = false;
+	UPROPERTY()
+		FTimerHandle CheckStunTimer;
+	UPROPERTY()
+		uint32 StopRequestID;
 
 protected: //UI
 	UPROPERTY()
