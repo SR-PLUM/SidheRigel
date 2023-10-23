@@ -214,7 +214,6 @@ void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 				}
 
 				attackList.Add(OtherActor);
-				UE_LOG(LogTemp, Warning, TEXT("ENTER ENEMY : %s"), *OtherActor->GetName());
 			}
 		}
 	}
@@ -241,7 +240,6 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 					currentTarget = attackList.Top();
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("EXIT ENEMY : %s"), *OtherActor->GetName());
 		}
 	}
 }
@@ -309,7 +307,6 @@ void AMinion::Airborne(float time)
 void AMinion::TakeDamage(float _damage, AActor* damageCauser)
 {
 	hp -= _damage;
-	UE_LOG(LogTemp, Warning, TEXT("Minion_HP : %f"), hp);
 
 	MinionUIRef->SetHPBar(hp / maxHp);
 	MinionUIRef->SetUIVisibility(true);
@@ -351,4 +348,6 @@ float AMinion::GetHP()
 
 void AMinion::MoveVector(FVector Direction, float Force)
 {
+	auto unitDirection = (Direction * FVector(1, 1, 0)).GetSafeNormal();
+	LaunchCharacter(unitDirection * Force, false, false);
 }
