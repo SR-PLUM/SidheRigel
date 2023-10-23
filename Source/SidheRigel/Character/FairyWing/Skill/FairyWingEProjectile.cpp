@@ -5,6 +5,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
+#include "SidheRigel/Interface/Team.h"
 
 // Sets default values
 AFairyWingEProjectile::AFairyWingEProjectile()
@@ -63,15 +64,25 @@ void AFairyWingEProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Target)
-	{
-		FVector Forward = Target->GetActorLocation() - GetActorLocation();
+	if (target)
+	{		
+		FVector Forward = target->GetActorLocation() - GetActorLocation();
 		ProjectileMovementComponent->Velocity = Forward * ProjectileMovementComponent->InitialSpeed;
 
-		if ((this->GetDistanceTo(Target)) < 100.f)
+		if (ITeam* team = Cast<ITeam>(target))
 		{
-			Cast<IDamagable>(Target)->TakeDamage(10.f, projectileOwner);
-			Destroy();
-		}
+			if (team->GetTeam() != Cast<ITeam>(projectileOwner)->GetTeam())
+			{
+				if ((this->GetDistanceTo(target)) < 100.f)
+				{
+					if (IDamagable* enemy = Cast<IDamagable>(target))
+					{
+						enemy->TakeDamage(damage, projectileOwner);
+					}
+						
+					Destroy();
+				}
+			}
+		}		
 	}
 }
