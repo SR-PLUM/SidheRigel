@@ -203,6 +203,9 @@ public:		//Getter, Setter
 	int32 GetCriticalRate();
 	int32 GetCriticalDamage();
 	float GetAttackSpeed();
+	void AddAttackSpeed(FString name, float value);
+	void RemoveAttackSpeed(FString name);
+
 	float GetMaxHP();
 	float GetGenerateHealthPoint();
 	float GetMaxMP();

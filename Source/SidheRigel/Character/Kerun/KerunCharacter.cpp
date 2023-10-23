@@ -19,13 +19,36 @@ AKerunCharacter::AKerunCharacter()
 	InitAttackProjectile();
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+
+	
+	skills.Add({ E_SkillState::Q_Ready, new KerunQSkill });
+	if (skills[E_SkillState::Q_Ready] != nullptr)
+	{
+		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
+	}
+	/*
+	skills.Add({ E_SkillState::W_Ready, new ColdWSkill });
+	if (skills[E_SkillState::W_Ready] != nullptr)
+	{
+		skills[E_SkillState::W_Ready]->SetSkillProperty(this, E_SkillState::W_Ready);
+	}
+	skills.Add({ E_SkillState::E_Ready, new ColdESkill });
+	if (skills[E_SkillState::E_Ready] != nullptr)
+	{
+		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
+	}
+	skills.Add({ E_SkillState::R_Ready, new ColdR1Skill });
+	if (skills[E_SkillState::R_Ready] != nullptr)
+	{
+		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
+	}
+	*/
 }
 
 void AKerunCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	KerunQSkillRef = NewObject<UKerunQSkill>();
 	KerunWSkillRef = NewObject<UKerunWSkill>();
 	KerunR1SkillRef = NewObject<UKerunR1Skill>();
 	KerunR2SkillRef = NewObject<UKerunR2Skill>();
@@ -39,9 +62,11 @@ void AKerunCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//Kerun QSkill
-	if (KerunQSkillRef->CheckAttackCount())
+	KerunQSkill* QSkillRef = Cast<KerunQSkill>(skills[E_SkillState::Q_Ready]);
+
+	if (QSkillRef->CheckAttackCount())
 	{
-		KerunQSkillRef->QuitQSkill(attackSpeed);
+		QSkillRef->QuitQSkill();
 	}
 
 	//Kerun WSkill
@@ -64,17 +89,27 @@ void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AKerunCharacter::InitProperty()
 {
+	level = 1;
 	range.Add("Debug", 200.f);
 	attackDamage.Add("Debug", 5.f);
 	attackSpeed.Add("Debug", 1.f);
 	criticalRate.Add("Debug", 50);
 	criticalDamage.Add("Debug", 50);
+
 	MaxHP.Add("Debug", 100.f);
 	generateHealthPoint.Add("Debug", 0.2f);
+	MaxMP.Add("Debug", 100.f);
 	lifeSteal.Add("Debug", 5.f);
 	protectPower.Add("Debug", 20);
 
+	defencePoint.Add("Debug", 100);
+
+	speed.Add("Debug", 600.f);
+
 	currentHP = GetMaxHP();
+	currentMP = GetMaxMP();
+
+	MaxExperience = 20;
 }
 
 void AKerunCharacter::Attack(AActor* target)
@@ -98,9 +133,11 @@ void AKerunCharacter::Attack(AActor* target)
 			InitProjectileProperty(Projectile);
 
 			//Kerun QSkill
-			if (KerunQSkillRef->IsWorking)
+			KerunQSkill* QSkillRef = Cast<KerunQSkill>(skills[E_SkillState::Q_Ready]);
+
+			if (QSkillRef->IsWorking)
 			{
-				KerunQSkillRef->AttackCount += 1;
+				QSkillRef->AttackCount += 1;
 			}
 
 			ImproveEStack(1);
@@ -140,10 +177,6 @@ void AKerunCharacter::SetCurrentHP(float _hp)
 }
 
 //TODO::REFECTOR THIS
-void AKerunCharacter::SkillOne()
-{
-	KerunQSkillRef->ImproveAttackSpeed(attackSpeed, this);
-}
 
 void AKerunCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {

@@ -17,7 +17,7 @@ public:
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState);
 
-	void OnTick(float DeltaTime);
+	virtual void OnTick(float DeltaTime);
 	virtual void OnUse(FHitResult Hit);
 	float GetSkillDelay();
 	void SetCooldown();

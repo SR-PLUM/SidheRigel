@@ -43,9 +43,6 @@ private:
 	class UKerunAnimInstance* AnimInstance;
 
 	UPROPERTY()
-	class UKerunQSkill* KerunQSkillRef;
-
-	UPROPERTY()
 	class UKerunWSkill* KerunWSkillRef;
 
 	UPROPERTY()
