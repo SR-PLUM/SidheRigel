@@ -3,6 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/CCable.h"
+#include "SidheRigel/Interface/Team.h"
 
 // Sets default values
 AFairyWingWCollider::AFairyWingWCollider()
@@ -42,6 +43,14 @@ void AFairyWingWCollider::BeginPlay()
 	Super::BeginPlay();
 	
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingWCollider::OnColliderOverlap);
+
+	FTimerHandle WColliderDestroyTimer;
+	GetWorldTimerManager().SetTimer(WColliderDestroyTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				Destroy();
+			}
+	), duration, false);
 }
 
 // Called every frame
@@ -53,20 +62,20 @@ void AFairyWingWCollider::Tick(float DeltaTime)
 
 void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 30.0f, FColor::Red, OtherActorName);
-	}
-
 	if (OtherActor)
 	{
-		IDamagable* Test = Cast<IDamagable>(OtherActor);
-		if (Test)
-			Test->TakeDamage(10.f, colliderOwner);
+		if (ITeam* team = Cast<ITeam>(OtherActor))
+		{
+			if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
+			{
+				IDamagable* target = Cast<IDamagable>(OtherActor);
+				if (target)
+					target->TakeDamage(damage, colliderOwner);
 
-		ICCable* CC = Cast<ICCable>(OtherActor);
-		if (CC)
-			CC->Slow(1.0f, 50.0f, "FairyWing_W");
+				ICCable* CC = Cast<ICCable>(OtherActor);
+				if (CC)
+					CC->Slow(1.0f, 50.0f, "FairyWing_W");
+			}			
+		}		
 	}
 }

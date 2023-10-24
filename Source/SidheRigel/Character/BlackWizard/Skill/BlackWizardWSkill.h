@@ -8,20 +8,14 @@
 /**
  * 
  */
-class SIDHERIGEL_API BlackWizardRSkill : public Skill
+class SIDHERIGEL_API BlackWizardWSkill : public Skill
 {
 public:
-	BlackWizardRSkill();
-	~BlackWizardRSkill();
+	BlackWizardWSkill();
+	~BlackWizardWSkill();
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
 
-private:
-	float colliderDamage = 20.f;
-	float colliderDuration = 1.f;
-	float colliderForce = 10000.f;
-
-	TSubclassOf<class ABlackWizardRCollider> colliderClass;
-
+	float force = 100000.0f;
 };

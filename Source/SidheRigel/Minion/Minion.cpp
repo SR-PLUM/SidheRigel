@@ -29,6 +29,7 @@ AMinion::AMinion()
 	}
 
 	GetCharacterMovement()->MaxWalkSpeed = 325.f;
+	currentSpeed = GetCharacterMovement()->MaxWalkSpeed;
 
 	AIControllerClass = AMinionAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -72,6 +73,22 @@ void AMinion::BeginPlay()
 void AMinion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsMoveVectorTrue)
+	{
+		FVector Location = GetActorLocation();
+		Location += moveDirection * (moveForce / 10) * DeltaTime;
+		SetActorLocation(Location);
+		moveCnt++;
+		if (moveCnt <= 10)
+		{
+			moveDirection = FVector::ZeroVector;
+			moveForce = 0;
+			moveCnt = 0;
+
+			IsMoveVectorTrue = false;
+		}
+	}
 
 	//If Goal WayPoint Move To Next WayPoint
 	if (currentWayPoint)
@@ -126,7 +143,7 @@ void AMinion::Tick(float DeltaTime)
 					currentTarget = attackList.Top();
 				}
 			}
-			else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0)
+			else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0 && IsStun == false)
 			{
 				IsAttackAnim = true;
 				FVector MuzzleLocation = GetActorLocation();
@@ -164,7 +181,6 @@ void AMinion::Tick(float DeltaTime)
 				else
 				{
 					AIController = Cast<AMinionAIController>(GetController());
-					UE_LOG(LogTemp, Warning, TEXT("MINION GET_CONTROLLER"))
 				}
 			}
 		}
@@ -286,22 +302,58 @@ void AMinion::Attack(AActor* Target)
 
 void AMinion::Stun(float time)
 {
+	IsStun = true;
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+
+	GetWorldTimerManager().SetTimer(CheckStunTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				IsStun = false;
+				GetCharacterMovement()->MaxWalkSpeed = currentSpeed;
+			}
+
+	), time, false);
 }
 
 void AMinion::Stop(float time)
 {
+	GetCharacterMovement()->MaxWalkSpeed = 0;
+
+	GetWorldTimerManager().SetTimer(CheckStunTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				GetCharacterMovement()->MaxWalkSpeed = currentSpeed;
+			}
+
+	), time, false);
 }
 
 void AMinion::Slow(float time, float value, FString key)
 {
+	if (speedRate.Contains(key))
+	{
+		return;
+	}
+
+	speedRate.Add(key, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle SlowTimer;
+	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (speedRate.Find(key))
+			{
+				speedRate.Remove(key);
+			}
+		})
+		, time, false);
 }
 
 void AMinion::Silence(float time)
 {
-}
-
-void AMinion::Airborne(float time)
-{
+	//상태만 게임화면에 표시되게 하기
 }
 
 void AMinion::TakeDamage(float _damage, AActor* damageCauser)
