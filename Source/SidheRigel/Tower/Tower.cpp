@@ -21,13 +21,6 @@ ATower::ATower()
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
 	}
 
-	if (!rangeArea)
-	{
-		rangeArea = CreateDefaultSubobject<USphereComponent>(TEXT("rangeArea"));
-		rangeArea->InitSphereRadius(500.0f);
-		RootComponent = rangeArea;
-	}
-
 	if (!mesh)
 	{
 		mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -38,6 +31,14 @@ ATower::ATower()
 		{
 			mesh->SetStaticMesh(meshRef.Object);
 		}
+		RootComponent = mesh;
+	}
+
+	if (!rangeArea)
+	{
+		rangeArea = CreateDefaultSubobject<USphereComponent>(TEXT("rangeArea"));
+		rangeArea->InitSphereRadius(500.0f);
+		rangeArea->SetupAttachment(mesh);
 	}
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Tower/BP_TowerAttackProjectile"));
