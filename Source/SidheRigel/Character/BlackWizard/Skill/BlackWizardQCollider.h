@@ -25,8 +25,6 @@ public:
 
 public:
 	UPROPERTY()
-		AActor* Target;
-	UPROPERTY()
 		AActor* colliderOwner;
 	UPROPERTY(EditAnywhere)
 		class USphereComponent* CollisionComponent;

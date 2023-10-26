@@ -25,9 +25,13 @@ public:
 
 public:
 	UPROPERTY()
-		AActor* Target;
+		AActor* target;
 	UPROPERTY()
 		AActor* projectileOwner;
+	UPROPERTY()
+		float damage;
+	UPROPERTY()
+		float speed;
 
 private:
 	UPROPERTY(EditAnywhere)

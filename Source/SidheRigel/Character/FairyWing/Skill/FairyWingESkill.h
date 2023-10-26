@@ -5,26 +5,23 @@
 #include "CoreMinimal.h"
 
 #include "../../Skill.h"
-#include "BlackWizardRskill.generated.h"
+
 /**
  * 
  */
-UCLASS()
-class SIDHERIGEL_API UBlackWizardRSkill : public USkill
+class SIDHERIGEL_API FairyWingESkill : public Skill
 {
-	GENERATED_BODY()
 public:
-	UBlackWizardRSkill();
-	~UBlackWizardRSkill();
+	FairyWingESkill();
+	~FairyWingESkill();
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
 
-private:
+private:	//Property
+	float colliderSpeed = 500.f;
+	float colliderDelay = 0.1f;
 	float colliderDamage = 20.f;
-	float colliderDuration = 1.f;
-	float colliderForce = 10000.f;
 
-	TSubclassOf<class ABlackWizardRCollider> colliderClass;
-
+	TSubclassOf<class AFairyWingEProjectile> projectileClass;
 };

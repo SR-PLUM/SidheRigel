@@ -2,8 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Enum/E_SkillState.h"
+
 #include "FairyWingCharacter.generated.h"
 
 UCLASS()
@@ -23,9 +25,6 @@ protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-public:
-	virtual void InitProperty() override;
-
 protected:	//Attack
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AFairyWingAttackProjectile> attackProjectileClass;
@@ -33,12 +32,15 @@ protected:	//Attack
 	virtual void InitAttackProjectile() override;
 	virtual void Attack(AActor* target) override;
 
-protected:	//Skill
-	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
-
 private:	//State
 	UPROPERTY()
 		FTimerHandle destroyTimer;
+
+public:		//Talent
+	void TestTalent();
+
+protected:	//Talent
+	void InitFairyWingTalent();
 
 protected:	//Skill Projectile
 	UPROPERTY(EditDefaultsOnly)

@@ -1,42 +1,42 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BlackWizardESkill.h"
+#include "FairyWingRSkill.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
-#include "SidheRigel/Character/BlackWizard/Skill/BlackWizardECollider.h"
+#include "SidheRigel/Character/FairyWing/Skill/FairyWingRCollider.h"
 
-UBlackWizardESkill::UBlackWizardESkill()
+
+FairyWingRSkill::FairyWingRSkill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> colliderRef(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardECollider"));
+	static ConstructorHelpers::FObjectFinder<UBlueprint> colliderRef(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingRCollider"));
 	if (colliderRef.Object)
 	{
 		colliderClass = (UClass*)colliderRef.Object->GeneratedClass;
 	}
 }
 
-UBlackWizardESkill::~UBlackWizardESkill()
+FairyWingRSkill::~FairyWingRSkill()
 {
 }
 
-void UBlackWizardESkill::SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState)
+void FairyWingRSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
-	skillMaxCooldown = 2.f;
+	skillMaxCooldown = 1.f;
 	range = 500.f;
 
 	bIsInstantCast = false;
-	bIsTargeting = true;
+	bIsTargeting = false;
 
 	character = Character;
 	skillstate = SkillState;
 }
 
-void UBlackWizardESkill::OnUse(FHitResult Hit)
+void FairyWingRSkill::OnUse(FHitResult Hit)
 {
 	FVector PawnToTarget = (Hit.Location - character->GetActorLocation()).GetSafeNormal();
-	FVector MuzzleLocation = character->GetActorLocation() + PawnToTarget * 50;
 	FRotator MuzzleRotation = PawnToTarget.Rotation();
 
 	UWorld* World = character->GetWorld();
@@ -44,13 +44,13 @@ void UBlackWizardESkill::OnUse(FHitResult Hit)
 	{
 		FActorSpawnParameters SpawnParams;
 		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(MuzzleLocation);
+		SpawnTransform.SetLocation(Hit.Location);
 		SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
 		SpawnParams.Owner = character;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		// Spawn the projectile at the muzzle.
-		ABlackWizardECollider* collider = World->SpawnActorDeferred<ABlackWizardECollider>(colliderClass, SpawnTransform);
+		AFairyWingRCollider* collider = World->SpawnActorDeferred<AFairyWingRCollider>(colliderClass, SpawnTransform);
 		if (collider)
 		{
 			collider->colliderOwner = character;

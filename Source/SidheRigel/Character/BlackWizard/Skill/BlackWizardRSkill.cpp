@@ -23,8 +23,11 @@ void UBlackWizardRSkill::SetSkillProperty(class ASidheRigelCharacter* Character,
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
-	skillMaxCooldown = 10.f;
+	skillMaxCooldown = 2.f;
+	range = 500.f;
+
 	bIsInstantCast = false;
+	bIsTargeting = true;
 
 	character = Character;
 	skillstate = SkillState;
