@@ -5,14 +5,17 @@
 #include "CoreMinimal.h"
 
 #include "../../Skill.h"
+#include "BlackWizardRskill.generated.h"
 /**
  * 
  */
-class SIDHERIGEL_API BlackWizardRSkill : public Skill
+UCLASS()
+class SIDHERIGEL_API UBlackWizardRSkill : public USkill
 {
+	GENERATED_BODY()
 public:
-	BlackWizardRSkill();
-	~BlackWizardRSkill();
+	UBlackWizardRSkill();
+	~UBlackWizardRSkill();
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;

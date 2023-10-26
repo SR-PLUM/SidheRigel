@@ -7,7 +7,7 @@
 #include "SidheRigel/Character/Cold/ColdCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdQProjectile.h"
 
-ColdQSkill::ColdQSkill()
+UColdQSkill::UColdQSkill()
 {
 	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdQProjectile"));
 	if (projectileRef.Object)
@@ -16,11 +16,11 @@ ColdQSkill::ColdQSkill()
 	}
 }
 
-ColdQSkill::~ColdQSkill()
+UColdQSkill::~UColdQSkill()
 {
 }
 
-void ColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -34,7 +34,7 @@ void ColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState 
 	skillstate = SkillState;
 }
 
-void ColdQSkill::OnUse(FHitResult Hit)
+void UColdQSkill::OnUse(FHitResult Hit)
 {
 	if (character == nullptr) return;
 	if (projectileClass == nullptr) return;

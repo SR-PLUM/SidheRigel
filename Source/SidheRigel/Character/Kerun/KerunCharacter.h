@@ -57,7 +57,6 @@ public:
 
 
 protected:	//Skill
-	virtual void SkillOne();	//Q
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 private:	//State

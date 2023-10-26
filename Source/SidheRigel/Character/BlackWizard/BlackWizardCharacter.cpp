@@ -34,7 +34,15 @@ ABlackWizardCharacter::ABlackWizardCharacter()
 
 	InitAttackProjectile();
 
-	skills.Add({ E_SkillState::Q_Ready, new BlackWizardQSkill });
+	
+}
+
+// Called when the game starts or when spawned
+void ABlackWizardCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	skills.Add({ E_SkillState::Q_Ready, NewObject<UBlackWizardQSkill>() });
 	if (skills[E_SkillState::Q_Ready] != nullptr)
 	{
 		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
@@ -44,23 +52,16 @@ ABlackWizardCharacter::ABlackWizardCharacter()
 	{
 		skills[E_SkillState::W_Ready]->SetSkillProperty(this);
 	}*/
-	skills.Add({ E_SkillState::E_Ready, new BlackWizardESkill });
+	skills.Add({ E_SkillState::E_Ready, NewObject<UBlackWizardESkill>() });
 	if (skills[E_SkillState::E_Ready] != nullptr)
 	{
 		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
 	}
-	skills.Add({ E_SkillState::R_Ready, new BlackWizardRSkill });
+	skills.Add({ E_SkillState::R_Ready, NewObject<UBlackWizardRSkill>() });
 	if (skills[E_SkillState::R_Ready] != nullptr)
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
-}
-
-// Called when the game starts or when spawned
-void ABlackWizardCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 // Called every frame

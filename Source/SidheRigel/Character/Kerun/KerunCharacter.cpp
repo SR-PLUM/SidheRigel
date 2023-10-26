@@ -21,7 +21,20 @@ AKerunCharacter::AKerunCharacter()
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 
 	
-	skills.Add({ E_SkillState::Q_Ready, new KerunQSkill });
+	
+}
+
+void AKerunCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	KerunWSkillRef = NewObject<UKerunWSkill>();
+	KerunR1SkillRef = NewObject<UKerunR1Skill>();
+	KerunR2SkillRef = NewObject<UKerunR2Skill>();
+
+	//AnimInstance = Cast<UKerunAnimInstance>(GetMesh()->GetAnimInstance());
+	
+	skills.Add({ E_SkillState::Q_Ready, NewObject<UKerunQSkill>() });
 	if (skills[E_SkillState::Q_Ready] != nullptr)
 	{
 		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
@@ -43,18 +56,7 @@ AKerunCharacter::AKerunCharacter()
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
 	*/
-}
 
-void AKerunCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	KerunWSkillRef = NewObject<UKerunWSkill>();
-	KerunR1SkillRef = NewObject<UKerunR1Skill>();
-	KerunR2SkillRef = NewObject<UKerunR2Skill>();
-
-	//AnimInstance = Cast<UKerunAnimInstance>(GetMesh()->GetAnimInstance());
-	
 }
 
 void AKerunCharacter::Tick(float DeltaTime)
@@ -62,7 +64,7 @@ void AKerunCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//Kerun QSkill
-	KerunQSkill* QSkillRef = Cast<KerunQSkill>(skills[E_SkillState::Q_Ready]);
+	UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(skills[E_SkillState::Q_Ready]);
 
 	if (QSkillRef->CheckAttackCount())
 	{
@@ -133,7 +135,7 @@ void AKerunCharacter::Attack(AActor* target)
 			InitProjectileProperty(Projectile);
 
 			//Kerun QSkill
-			KerunQSkill* QSkillRef = Cast<KerunQSkill>(skills[E_SkillState::Q_Ready]);
+			UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(skills[E_SkillState::Q_Ready]);
 
 			if (QSkillRef->IsWorking)
 			{

@@ -4,7 +4,7 @@
 #include "../KerunCharacter.h"
 #include "TimerManager.h"
 
-void KerunQSkill::QuitQSkill()
+void UKerunQSkill::QuitQSkill()
 {
 	character->RemoveAttackSpeed("QSkill");
 	IsWorking = false;
@@ -12,12 +12,12 @@ void KerunQSkill::QuitQSkill()
 	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun QSkill End")));
 }
 
-bool KerunQSkill::CheckAttackCount()
+bool UKerunQSkill::CheckAttackCount()
 {
 	return AttackCount >= MaxAttackCount;
 }
 
-void KerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UKerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -30,15 +30,15 @@ void KerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 	skillstate = SkillState;
 }
 
-void KerunQSkill::OnUse(FHitResult Hit)
+void UKerunQSkill::OnUse(FHitResult Hit)
 {
 	character->AddAttackSpeed("QSkill", MaxAttackSpeed);
 	IsWorking = true;
 }
 
-void KerunQSkill::OnTick(float DeltaTime)
+void UKerunQSkill::OnTick(float DeltaTime)
 {
-	Skill::OnTick(DeltaTime);
+	USkill::OnTick(DeltaTime);
 
 	if (BuffDuration > 0)
 	{

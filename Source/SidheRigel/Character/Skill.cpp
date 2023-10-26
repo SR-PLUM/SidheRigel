@@ -5,15 +5,15 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
-Skill::Skill()
+USkill::USkill()
 {
 }
 
-Skill::~Skill()
+USkill::~USkill()
 {
 }
 
-void Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+void USkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -27,7 +27,7 @@ void Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState Skill
 	skillstate = SkillState;
 }
 
-void Skill::OnTick(float DeltaTime)
+void USkill::OnTick(float DeltaTime)
 {
 	if (skillCooldown > 0)
 	{
@@ -44,37 +44,37 @@ void Skill::OnTick(float DeltaTime)
 	}
 }
 
-void Skill::OnUse(FHitResult Hit)
+void USkill::OnUse(FHitResult Hit)
 {
 	//Implement Skill Detail
 }
 
-float Skill::GetSkillDelay()
+float USkill::GetSkillDelay()
 {
 	return skillDelay;
 }
 
-void Skill::SetCooldown()
+void USkill::SetCooldown()
 {
 	skillCooldown = skillMaxCooldown;
 }
 
-float Skill::GetCooldown()
+float USkill::GetCooldown()
 {
 	return skillCooldown;
 }
 
-bool Skill::IsInstantCast()
+bool USkill::IsInstantCast()
 {
 	return bIsInstantCast;
 }
 
-bool Skill::IsTargeting()
+bool USkill::IsTargeting()
 {
 	return bIsTargeting;
 }
 
-bool Skill::CanUse()
+bool USkill::CanUse()
 {
 	if (!bIsTargeting)
 	{
@@ -99,7 +99,7 @@ bool Skill::CanUse()
 	return false;
 }
 
-float Skill::GetRange()
+float USkill::GetRange()
 {
 	return range;
 }

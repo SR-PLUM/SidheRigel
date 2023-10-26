@@ -4,13 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "../../Skill.h"
+#include "KerunQSkill.generated.h"
 
 /**
  * 
  */
-class SIDHERIGEL_API KerunQSkill : public Skill
+UCLASS()
+class SIDHERIGEL_API UKerunQSkill : public USkill
 {
-
+	GENERATED_BODY()
 public:
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;

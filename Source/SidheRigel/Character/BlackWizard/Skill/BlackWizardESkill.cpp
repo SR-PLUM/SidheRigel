@@ -6,7 +6,7 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/BlackWizard/Skill/BlackWizardECollider.h"
 
-BlackWizardESkill::BlackWizardESkill()
+UBlackWizardESkill::UBlackWizardESkill()
 {
 	static ConstructorHelpers::FObjectFinder<UBlueprint> colliderRef(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardECollider"));
 	if (colliderRef.Object)
@@ -15,11 +15,11 @@ BlackWizardESkill::BlackWizardESkill()
 	}
 }
 
-BlackWizardESkill::~BlackWizardESkill()
+UBlackWizardESkill::~UBlackWizardESkill()
 {
 }
 
-void BlackWizardESkill::SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UBlackWizardESkill::SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -30,7 +30,7 @@ void BlackWizardESkill::SetSkillProperty(class ASidheRigelCharacter* Character, 
 	skillstate = SkillState;
 }
 
-void BlackWizardESkill::OnUse(FHitResult Hit)
+void UBlackWizardESkill::OnUse(FHitResult Hit)
 {
 	FVector PawnToTarget = (Hit.Location - character->GetActorLocation()).GetSafeNormal();
 	FVector MuzzleLocation = character->GetActorLocation() + PawnToTarget * 50;
