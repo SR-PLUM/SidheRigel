@@ -40,6 +40,12 @@ void USidheRigelGameInstance::LoadMenu()
 
 	Menu->Setup();
 
+	APlayerController* playerController = GetFirstLocalPlayerController();
+	if (playerController)
+	{
+		playerController->bShowMouseCursor = true;
+	}
+
 	Menu->SetMenuInterface(this);
 }
 
