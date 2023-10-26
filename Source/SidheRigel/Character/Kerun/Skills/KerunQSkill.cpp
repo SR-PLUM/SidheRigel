@@ -40,6 +40,11 @@ void UKerunQSkill::OnTick(float DeltaTime)
 {
 	USkill::OnTick(DeltaTime);
 
+	if (CheckAttackCount())
+	{
+		QuitQSkill();
+	}
+
 	if (BuffDuration > 0)
 	{
 		BuffDuration -= DeltaTime;

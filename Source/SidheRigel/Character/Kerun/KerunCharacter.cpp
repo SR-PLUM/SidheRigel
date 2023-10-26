@@ -19,9 +19,6 @@ AKerunCharacter::AKerunCharacter()
 	InitAttackProjectile();
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-
-	
-	
 }
 
 void AKerunCharacter::BeginPlay()
@@ -62,14 +59,6 @@ void AKerunCharacter::BeginPlay()
 void AKerunCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//Kerun QSkill
-	UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(skills[E_SkillState::Q_Ready]);
-
-	if (QSkillRef->CheckAttackCount())
-	{
-		QSkillRef->QuitQSkill();
-	}
 
 	//Kerun WSkill
 	if (KerunWSkillRef->GetIsWorking())
