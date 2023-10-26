@@ -19,7 +19,6 @@ bool UKerunQSkill::CheckAttackCount()
 
 void UKerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
-	skillDelay = 1.f;
 	skillCooldown = 0;
 	skillMaxCooldown = 10.f;
 
@@ -38,7 +37,7 @@ void UKerunQSkill::OnUse(FHitResult Hit)
 
 void UKerunQSkill::OnTick(float DeltaTime)
 {
-	USkill::OnTick(DeltaTime);
+	Super::OnTick(DeltaTime);
 
 	if (CheckAttackCount())
 	{

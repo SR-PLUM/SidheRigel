@@ -43,9 +43,6 @@ private:
 	class UKerunAnimInstance* AnimInstance;
 
 	UPROPERTY()
-	class UKerunWSkill* KerunWSkillRef;
-
-	UPROPERTY()
 	class UKerunR1Skill* KerunR1SkillRef;
 
 	UPROPERTY()
@@ -73,8 +70,11 @@ protected: //Passive E
 	UPROPERTY()
 	FTimerHandle ETimer;
 
-	void ImproveEStack(int Count);
-
 	void StartETimer();
 	void QuitETimer();
+
+public:
+	void ImproveEStack(int Count);
+
+	
 };

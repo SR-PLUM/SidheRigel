@@ -24,8 +24,6 @@ AKerunCharacter::AKerunCharacter()
 void AKerunCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	KerunWSkillRef = NewObject<UKerunWSkill>();
 	KerunR1SkillRef = NewObject<UKerunR1Skill>();
 	KerunR2SkillRef = NewObject<UKerunR2Skill>();
 
@@ -36,12 +34,13 @@ void AKerunCharacter::BeginPlay()
 	{
 		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
 	}
-	/*
-	skills.Add({ E_SkillState::W_Ready, new ColdWSkill });
+	
+	skills.Add({ E_SkillState::W_Ready, NewObject<UKerunWSkill>() });
 	if (skills[E_SkillState::W_Ready] != nullptr)
 	{
 		skills[E_SkillState::W_Ready]->SetSkillProperty(this, E_SkillState::W_Ready);
 	}
+	/*
 	skills.Add({ E_SkillState::E_Ready, new ColdESkill });
 	if (skills[E_SkillState::E_Ready] != nullptr)
 	{
@@ -59,18 +58,6 @@ void AKerunCharacter::BeginPlay()
 void AKerunCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//Kerun WSkill
-	if (KerunWSkillRef->GetIsWorking())
-	{
-		FVector Loc = GetActorLocation();
-
-		if (Loc.Z >= KerunWSkillRef->GetLimitZValue())
-		{
-			KerunWSkillRef->KnockDownTarget(this);
-		}
-		
-	}
 }
 
 void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -175,21 +162,6 @@ void AKerunCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 	{
 	case Skill_Null:
 		UE_LOG(LogTemp, Warning, TEXT("skillState is Null"));
-		break;
-	
-	case W_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("skillState is W"));
-
-		if (AActor* Actor = HitResult.GetActor())
-		{
-			if (Actor->Tags.Contains("Hero"))
-			{
-				KerunWSkillRef->JumpIntoTarget(Actor, this);
-
-				ImproveEStack(3);
-			}
-		}
-
 		break;
 
 	case R_Ready:

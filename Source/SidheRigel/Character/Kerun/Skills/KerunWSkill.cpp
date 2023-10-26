@@ -9,43 +9,68 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
 
-void UKerunWSkill::JumpIntoTarget(AActor* Actor, AKerunCharacter* Owner)
+void UKerunWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
-	if (!(IsCoolingDown))
+	skillDelay = 1.f;
+	skillCooldown = 0.f;
+	skillMaxCooldown = 10.f;
+	range = 300.f;
+
+	bIsInstantCast = false;
+	bIsTargeting = true;
+
+	character = Character;
+	skillstate = SkillState;
+}
+
+void UKerunWSkill::OnTick(float DeltaTime)
+{
+	Super::OnTick(DeltaTime);
+
+	//Kerun WSkill
+	if (GetIsWorking())
 	{
-		IsCoolingDown = true;
-		IsWorking = true;
-		
-		// Move Owner
-		FVector StartLoc = Owner->GetActorLocation();
-		FVector EndLoc = Actor->GetActorLocation();
+		FVector Loc = character->GetActorLocation();
 
-		TargetLocation = EndLoc;
-
-		FVector Velocity = EndLoc - StartLoc;
-		Velocity.Z = StartLoc.Z + ZValue;
-
-		Velocity *= Speed - 1;
-		
-		Owner->GetCharacterMovement()->Launch(Velocity);
-
-		if (IDamagable* Target = Cast<IDamagable>(Actor))
+		if (Loc.Z >= GetLimitZValue())
 		{
-			Target->TakeDamage(10.0f, Cast<AActor>(Owner));
+			AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
+			KnockDownTarget(KerunCharacter);
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("X :: %f, Y :: %f, Z :: %f"), Velocity.X, Velocity.Y, Velocity.Z);
-
-		//CoolTime
-		Owner->GetWorldTimerManager().SetTimer(CoolingTimer,
-			FTimerDelegate::CreateLambda([&]() {
-				IsCoolingDown = false;
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun WSkill Cool Downed")));
-				}), CoolDownDuration, false);
 	}
-	else
+}
+
+void UKerunWSkill::OnUse(FHitResult Hit)
+{
+	if (AActor* Actor = Hit.GetActor())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun WSkill Cooling Down")));
+		if (IDamagable* Target = Cast<IDamagable>(Actor))
+		{
+			JumpIntoTarget(Actor);
+
+			AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
+
+			KerunCharacter->ImproveEStack(3);
+		}
+	}
+}
+
+void UKerunWSkill::JumpIntoTarget(AActor* Actor)
+{
+	IsWorking = true;
+	// Move Owner
+	FVector StartLoc = character->GetActorLocation();
+	FVector EndLoc = Actor->GetActorLocation();
+	TargetLocation = EndLoc;
+	FVector Velocity = EndLoc - StartLoc;
+	Velocity.Z = StartLoc.Z + ZValue;
+	Velocity *= Speed - 1;
+
+	character->GetCharacterMovement()->Launch(Velocity);
+	if (IDamagable* Target = Cast<IDamagable>(Actor))
+	{
+		Target->TakeDamage(10.0f, Cast<AActor>(character));
 	}
 }
 

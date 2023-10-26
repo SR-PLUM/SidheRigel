@@ -3,19 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "../../Skill.h"
 #include "KerunWSkill.generated.h"
 /**
  * 
  */
 UCLASS()
-class SIDHERIGEL_API UKerunWSkill : public UObject
+class SIDHERIGEL_API UKerunWSkill : public USkill
 {
 	GENERATED_BODY()
 
-private:
+public:
+	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
+	virtual void OnTick(float DeltaTime) override;
+	virtual void OnUse(FHitResult Hit) override;
 
-	bool IsWorking = false;
-	bool IsCoolingDown = false;
+private:
 	FVector TargetLocation = FVector::ZeroVector;
 
 	//Z value
@@ -24,14 +27,10 @@ private:
 	//Speed
 	int32 Speed = 5;
 
-	//CoolTime
-	float CoolDownDuration = 10.f;
+	bool IsWorking = false;
 
-	//Cooling SetTimer
-	FTimerHandle CoolingTimer;
-
-public:
-	void JumpIntoTarget(AActor* Actor, class AKerunCharacter* Owner);
+protected:
+	void JumpIntoTarget(AActor* Actor);
 	bool GetIsWorking();
 	void SetIsWorking(bool flag);
 	void KnockDownTarget(class AKerunCharacter* Owner);
