@@ -8,31 +8,36 @@
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/CCable.h"
 
-void UKerunR1Skill::StunTarget(AActor* Actor, AKerunCharacter* Owner)
+void UKerunR1Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
-	if (!(IsCoolingDown))
-	{
-		IsCoolingDown = true;
+	skillDelay = 1.f;
+	skillCooldown = 0.f;
+	skillMaxCooldown = 20.f;
+	range = 300.f;
 
+	bIsInstantCast = false;
+	bIsTargeting = true;
+
+	character = Character;
+	skillstate = SkillState;
+}
+
+void UKerunR1Skill::OnUse(FHitResult Hit)
+{
+	if (AActor* Actor = Hit.GetActor())
+	{
 		if (IDamagable* Target = Cast<IDamagable>(Actor))
 		{
-			Target->TakeDamage(15.0f, Cast<AActor>(Owner));
+			Target->TakeDamage(15.0f, character);
+
+			if (ICCable* CCTarget = Cast<ICCable>(Actor))
+			{
+				CCTarget->Stun(2.0f);
+			}
+
+			AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
+
+			KerunCharacter->ImproveEStack(6);
 		}
-
-		if (ICCable* Target = Cast<ICCable>(Actor))
-		{
-			Target->Stun(2.0f);
-		}
-
-		Owner->GetWorldTimerManager().SetTimer(CoolingTimer,
-			FTimerDelegate::CreateLambda([&]() {
-				IsCoolingDown = false;
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun R1Skill Cool Downed")));
-				}), CoolDownDuration, false);
 	}
-	else if (IsCoolingDown)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun R1Skill Cooling Down")));
-	}
-
 }

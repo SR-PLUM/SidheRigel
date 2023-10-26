@@ -42,21 +42,9 @@ private:
 
 	class UKerunAnimInstance* AnimInstance;
 
-	UPROPERTY()
-	class UKerunR1Skill* KerunR1SkillRef;
-
-	UPROPERTY()
-	class UKerunR2Skill* KerunR2SkillRef;
-
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
-
-
-protected:	//Skill
-	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
-
-private:	//State
 
 protected: //Passive E
 

@@ -6,7 +6,6 @@
 #include "Skills/KerunQSkill.h"
 #include "Skills/KerunWSkill.h"
 #include "Skills/KerunR1Skill.h"
-#include "Skills/KerunR2Skill.h"
 
 #include "KerunAttackProjectile.h"
 #include "KerunAnimInstance.h"
@@ -24,8 +23,6 @@ AKerunCharacter::AKerunCharacter()
 void AKerunCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	KerunR1SkillRef = NewObject<UKerunR1Skill>();
-	KerunR2SkillRef = NewObject<UKerunR2Skill>();
 
 	//AnimInstance = Cast<UKerunAnimInstance>(GetMesh()->GetAnimInstance());
 	
@@ -45,13 +42,12 @@ void AKerunCharacter::BeginPlay()
 	if (skills[E_SkillState::E_Ready] != nullptr)
 	{
 		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
-	}
-	skills.Add({ E_SkillState::R_Ready, new ColdR1Skill });
+	}*/
+	skills.Add({ E_SkillState::R_Ready, NewObject<UKerunR1Skill>()});
 	if (skills[E_SkillState::R_Ready] != nullptr)
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
-	*/
 
 }
 
@@ -145,6 +141,7 @@ void AKerunCharacter::SetCurrentHP(float _hp)
 {
 	Super::SetCurrentHP(_hp);
 
+	/*
 	if (KerunR2SkillRef->GetIsWorking())
 	{
 		if (KerunR2SkillRef->CheckCurrentHP(currentHP))
@@ -152,32 +149,7 @@ void AKerunCharacter::SetCurrentHP(float _hp)
 			currentHP = KerunR2SkillRef->GetMinHP();
 		}
 	}
-}
-
-//TODO::REFECTOR THIS
-
-void AKerunCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
-{
-	switch (SkillState)
-	{
-	case Skill_Null:
-		UE_LOG(LogTemp, Warning, TEXT("skillState is Null"));
-		break;
-
-	case R_Ready:
-		UE_LOG(LogTemp, Warning, TEXT("skillState is R"));
-
-		if (AActor* Actor = HitResult.GetActor())
-		{
-			if (Actor->Tags.Contains("Hero"))
-			{
-				KerunR1SkillRef->StunTarget(Actor, this);
-
-				ImproveEStack(6);
-			}
-		}
-		break;
-	}
+	*/
 }
 
 void AKerunCharacter::ImproveEStack(int Count)
