@@ -3,28 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "../../Skill.h"
 #include "KerunR1Skill.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIDHERIGEL_API UKerunR1Skill : public UObject
+class SIDHERIGEL_API UKerunR1Skill : public USkill
 {
 	GENERATED_BODY()
 
-private:
-
-	bool IsCoolingDown = false;
-
-	//CoolTime
-	float CoolDownDuration = 20.f;
-
-	//Cooling SetTimer
-	FTimerHandle CoolingTimer;
-
 public:
-	void StunTarget(AActor* Actor, class AKerunCharacter* Owner);
+	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 
+	virtual void OnUse(FHitResult Hit) override;
 
 };

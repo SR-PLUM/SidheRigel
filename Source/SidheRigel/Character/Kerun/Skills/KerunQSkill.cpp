@@ -4,43 +4,12 @@
 #include "../KerunCharacter.h"
 #include "TimerManager.h"
 
-void UKerunQSkill::ImproveAttackSpeed(TMap<FString, float>& AttackSpeed, AKerunCharacter * Owner)
+void UKerunQSkill::QuitQSkill()
 {
-	if (!(IsWorking) && !(IsCoolingDown))
-	{
-		AttackSpeed.Add("QSkill", MaxAttackSpeed);
-		IsWorking = true;
-		IsCoolingDown = true;
-		
-		Owner->GetWorldTimerManager().SetTimer(WorkingTimer,
-			FTimerDelegate::CreateLambda([&]() {
-				QuitQSkill(AttackSpeed);
-			}), MaxDuration, false);
-
-		Owner->GetWorldTimerManager().SetTimer(CoolingTimer,
-			FTimerDelegate::CreateLambda([&]() {
-				IsCoolingDown = false;
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun QSkill Cool Downed")));
-				}), CoolDownDuration, false);
-	}
-	else if (IsCoolingDown)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun QSkill Cooling Down")));
-	}
-	
-}
-
-void UKerunQSkill::QuitQSkill(TMap<FString, float>& AttackSpeed)
-{
-	if (AttackSpeed.Find("QSkill"))
-	{
-		AttackSpeed.Remove("QSkill");
-		IsWorking = false;
-		AttackCount = 0;
-
-		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun QSkill End")));
-	}
-	
+	character->RemoveAttackSpeed("QSkill");
+	IsWorking = false;
+	AttackCount = 0;
+	GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("Kerun QSkill End")));
 }
 
 bool UKerunQSkill::CheckAttackCount()
@@ -48,4 +17,40 @@ bool UKerunQSkill::CheckAttackCount()
 	return AttackCount >= MaxAttackCount;
 }
 
+void UKerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+{
+	skillCooldown = 0;
+	skillMaxCooldown = 10.f;
 
+	bIsInstantCast = true;
+	bIsTargeting = false;
+
+	character = Character;
+	skillstate = SkillState;
+}
+
+void UKerunQSkill::OnUse(FHitResult Hit)
+{
+	character->AddAttackSpeed("QSkill", MaxAttackSpeed);
+	IsWorking = true;
+}
+
+void UKerunQSkill::OnTick(float DeltaTime)
+{
+	Super::OnTick(DeltaTime);
+
+	if (CheckAttackCount())
+	{
+		QuitQSkill();
+	}
+
+	if (BuffDuration > 0)
+	{
+		BuffDuration -= DeltaTime;
+
+		if (BuffDuration <= 0)
+		{
+			QuitQSkill();
+		}
+	}
+}

@@ -6,7 +6,7 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingWCollider.h"
 
-FairyWingWSkill::FairyWingWSkill()
+UFairyWingWSkill::UFairyWingWSkill()
 {
 	static ConstructorHelpers::FObjectFinder<UBlueprint> colliderRef(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingWCollider"));
 	if (colliderRef.Object)
@@ -15,11 +15,11 @@ FairyWingWSkill::FairyWingWSkill()
 	}
 }
 
-FairyWingWSkill::~FairyWingWSkill()
+UFairyWingWSkill::~UFairyWingWSkill()
 {
 }
 
-void FairyWingWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UFairyWingWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -33,7 +33,7 @@ void FairyWingWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillS
 	skillstate = SkillState;
 }
 
-void FairyWingWSkill::OnUse(FHitResult Hit)
+void UFairyWingWSkill::OnUse(FHitResult Hit)
 {
 	FVector PawnToTarget = (Hit.Location - character->GetActorLocation()).GetSafeNormal();
 	FRotator MuzzleRotation = PawnToTarget.Rotation();

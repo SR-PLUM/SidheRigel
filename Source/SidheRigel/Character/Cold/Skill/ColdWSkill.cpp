@@ -6,7 +6,7 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
 
-ColdWSkill::ColdWSkill()
+UColdWSkill::UColdWSkill()
 {
 	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdWProjectile"));
 	if (projectileRef.Object)
@@ -15,11 +15,11 @@ ColdWSkill::ColdWSkill()
 	}
 }
 
-ColdWSkill::~ColdWSkill()
+UColdWSkill::~UColdWSkill()
 {
 }
 
-void ColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -33,7 +33,7 @@ void ColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState 
 	skillstate = SkillState;
 }
 
-void ColdWSkill::OnUse(FHitResult Hit)
+void UColdWSkill::OnUse(FHitResult Hit)
 {
 	FVector PawnToTarget = (Hit.Location - character->GetActorLocation()).GetSafeNormal();
 	FVector MuzzleLocation = character->GetActorLocation() + PawnToTarget*50;

@@ -6,7 +6,7 @@
 #include "SidheRigel/Character/Cold/Skill/ColdR1Projectile.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 
-ColdR1Skill::ColdR1Skill()
+UColdR1Skill::UColdR1Skill()
 {
 	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdR1Projectile"));
 	if (projectileRef.Object)
@@ -15,11 +15,11 @@ ColdR1Skill::ColdR1Skill()
 	}
 }
 
-ColdR1Skill::~ColdR1Skill()
+UColdR1Skill::~UColdR1Skill()
 {
 }
 
-void ColdR1Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UColdR1Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -30,7 +30,7 @@ void ColdR1Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 	skillstate = SkillState;
 }
 
-void ColdR1Skill::OnUse(FHitResult Hit)
+void UColdR1Skill::OnUse(FHitResult Hit)
 {
 	if (AActor* _target = Hit.GetActor())
 	{

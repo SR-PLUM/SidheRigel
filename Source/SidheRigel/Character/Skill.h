@@ -5,19 +5,22 @@
 #include "CoreMinimal.h"
 
 #include "../Enum/E_SkillState.h"
+#include "Skill.generated.h"
 
 /**
  * 
  */
-class SIDHERIGEL_API Skill
+UCLASS()
+class SIDHERIGEL_API USkill : public UObject
 {
+	GENERATED_BODY()
 public:
-	Skill();
-	~Skill();
+	USkill();
+	~USkill();
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState);
 
-	void OnTick(float DeltaTime);
+	virtual void OnTick(float DeltaTime);
 	virtual void OnUse(FHitResult Hit);
 	float GetSkillDelay();
 	void SetCooldown();

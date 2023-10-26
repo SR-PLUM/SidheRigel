@@ -3,41 +3,37 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "../../Skill.h"
 #include "KerunQSkill.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIDHERIGEL_API UKerunQSkill : public UObject
+class SIDHERIGEL_API UKerunQSkill : public USkill
 {
-
 	GENERATED_BODY()
+public:
+
+	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
+	virtual void OnUse(FHitResult Hit) override;
+	virtual void OnTick(float DeltaTime) override;
+
+private:	//Property
 
 public :
 	int32 AttackCount = 0;
 	int32 MaxAttackCount = 2;
 
 	float MaxDuration = 5.0f;
+	float BuffDuration = 0.f;
 	float MaxAttackSpeed = 2.5f;
 
 	bool IsWorking = false;
-	bool IsCoolingDown = false;
-
-	// CoolTime
-	float CoolDownDuration = 10.f;
-
-private :
-	//Working SetTimer
-	FTimerHandle WorkingTimer;
-
-	//Cooling SetTimer
-	FTimerHandle CoolingTimer;
 
 public :
-	void ImproveAttackSpeed(TMap<FString, float>& AttackSpeed, class AKerunCharacter * Owner);
-
-	void QuitQSkill(TMap<FString, float>& AttackSpeed);
+	
+	void QuitQSkill();
 
 	bool CheckAttackCount();
 };

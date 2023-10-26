@@ -86,7 +86,7 @@ protected:	//change target when attack enemy hero
 	void ChangeTarget();
 
 public:	//Skill
-	TMap<E_SkillState, Skill*> skills;
+	TMap<E_SkillState, class USkill*> skills;
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
 public: //Talent
@@ -203,6 +203,9 @@ public:		//Getter, Setter
 	int32 GetCriticalRate();
 	int32 GetCriticalDamage();
 	float GetAttackSpeed();
+	void AddAttackSpeed(FString name, float value);
+	void RemoveAttackSpeed(FString name);
+
 	float GetMaxHP();
 	float GetGenerateHealthPoint();
 	float GetMaxMP();
