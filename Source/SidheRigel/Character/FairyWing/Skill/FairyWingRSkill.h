@@ -5,15 +5,17 @@
 #include "CoreMinimal.h"
 
 #include "../../Skill.h"
-
+#include "FairyWingRSkill.generated.h"
 /**
  * 
  */
-class SIDHERIGEL_API FairyWingRSkill : public Skill
+UCLASS()
+class SIDHERIGEL_API UFairyWingRSkill : public USkill
 {
+	GENERATED_BODY()
 public:
-	FairyWingRSkill();
-	~FairyWingRSkill();
+	UFairyWingRSkill();
+	~UFairyWingRSkill();
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;

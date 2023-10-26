@@ -7,7 +7,7 @@
 #include "SidheRigel/Character/FairyWing/FairyWingCharacter.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingEProjectile.h"
 
-FairyWingESkill::FairyWingESkill()
+UFairyWingESkill::UFairyWingESkill()
 {
 	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingEProjectile"));
 	if (projectileRef.Object)
@@ -16,11 +16,11 @@ FairyWingESkill::FairyWingESkill()
 	}
 }
 
-FairyWingESkill::~FairyWingESkill()
+UFairyWingESkill::~UFairyWingESkill()
 {
 }
 
-void FairyWingESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UFairyWingESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -34,7 +34,7 @@ void FairyWingESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillS
 	skillstate = SkillState;
 }
 
-void FairyWingESkill::OnUse(FHitResult Hit)
+void UFairyWingESkill::OnUse(FHitResult Hit)
 {
 	if (AActor* _target = Hit.GetActor())
 	{

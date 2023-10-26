@@ -6,15 +6,15 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Interface/Movable.h"
 
-BlackWizardWSkill::BlackWizardWSkill()
+UBlackWizardWSkill::UBlackWizardWSkill()
 {
 }
 
-BlackWizardWSkill::~BlackWizardWSkill()
+UBlackWizardWSkill::~UBlackWizardWSkill()
 {
 }
 
-void BlackWizardWSkill::SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UBlackWizardWSkill::SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -28,7 +28,7 @@ void BlackWizardWSkill::SetSkillProperty(class ASidheRigelCharacter* Character, 
 	skillstate = SkillState;
 }
 
-void BlackWizardWSkill::OnUse(FHitResult Hit)
+void UBlackWizardWSkill::OnUse(FHitResult Hit)
 {
 	if (IMovable* MovableTarget = Cast<IMovable>(character))
 	{

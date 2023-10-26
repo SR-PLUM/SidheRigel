@@ -48,10 +48,11 @@ void ABlackWizardCharacter::BeginPlay()
 	{
 		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
 	}
-	skills.Add({ E_SkillState::W_Ready, new BlackWizardWSkill });
+	
+	skills.Add({ E_SkillState::W_Ready, NewObject<UBlackWizardWSkill>()});
 	if (skills[E_SkillState::W_Ready] != nullptr)
 	{
-		skills[E_SkillState::W_Ready]->SetSkillProperty(this);
+		skills[E_SkillState::W_Ready]->SetSkillProperty(this, E_SkillState::W_Ready);
 	}
 	skills.Add({ E_SkillState::E_Ready, NewObject<UBlackWizardESkill>() });
 	if (skills[E_SkillState::E_Ready] != nullptr)
