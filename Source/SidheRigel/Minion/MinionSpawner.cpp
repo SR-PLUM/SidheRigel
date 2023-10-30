@@ -59,6 +59,7 @@ void AMinionSpawner::SpawnMinion()
 			if (minion)
 			{
 				minion->SetTeam(GetTeam());
+				minion->GetMesh()->SetSkeletalMesh(meshArray[0]);
 			}
 
 			minion->FinishSpawning(SpawnTransform);
