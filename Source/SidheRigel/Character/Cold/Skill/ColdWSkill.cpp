@@ -5,6 +5,7 @@
 
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
+#include "SidheRigel/Character/Cold/Skill/ColdWParticle.h"
 
 UColdWSkill::UColdWSkill()
 {
@@ -12,6 +13,12 @@ UColdWSkill::UColdWSkill()
 	if (projectileRef.Object)
 	{
 		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> particleRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdWParticle"));
+	if (particleRef.Object)
+	{
+		particleClass = (UClass*)particleRef.Object->GeneratedClass;
 	}
 }
 
@@ -60,5 +67,14 @@ void UColdWSkill::OnUse(FHitResult Hit)
 		}
 	
 		projectile->FinishSpawning(SpawnTransform);
+
+		// Spawn the projectile at the muzzle.
+		AColdWParticle* particle = World->SpawnActorDeferred<AColdWParticle>(particleClass, SpawnTransform);
+		if (particle)
+		{
+			particle->particleDuration = particleDuration;
+		}
+
+		particle->FinishSpawning(SpawnTransform);
 	}
 }
