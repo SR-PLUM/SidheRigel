@@ -55,10 +55,26 @@ void UColdWSkill::OnUse(FHitResult Hit)
 		{
 			projectile->projectileOwner = character;
 			projectile->duration = colliderDuration;
-			projectile->damage = colliderDamage;
 			projectile->force = colliderForce;
+
+			if (character->IsSelectedTalent[0][1])
+				projectile->damage = talentDamage;
+			else
+				projectile->damage = colliderDamage;
 		}
 	
 		projectile->FinishSpawning(SpawnTransform);
 	}
+}
+
+float UColdWSkill::GetSkillDelay()
+{
+	float appliedDelay = skillDelay;
+
+	if (character->IsSelectedTalent[0][1])
+	{
+		appliedDelay = talentDelay;
+	}
+
+	return appliedDelay;
 }

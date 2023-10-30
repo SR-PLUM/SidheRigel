@@ -73,7 +73,11 @@ void UColdESkill::OnUse(FHitResult Hit)
 		{
 			projectile->damageField->projectileOwner = character;
 			projectile->damageField->fieldArea = colliderFieldArea;
-			projectile->damageField->damage = colliderDamage;
+
+			if (character->IsSelectedTalent[0][2])
+				projectile->damageField->damage = talentDamage;
+			else
+				projectile->damageField->damage = colliderDamage;
 		}
 
 		projectile->damageField->FinishSpawning(SpawnTransform);

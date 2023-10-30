@@ -20,10 +20,15 @@ public:
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
 
+	float GetSkillDelay() override;
+
 private:
 	float colliderDamage = 120.f;
 	float colliderDuration = 2.f;
 	float colliderForce = 2000.f;
+
+	float talentDamage = 200.f;
+	float talentDelay = 0.5f;
 
 	TSubclassOf<class AColdWProjectile> projectileClass;
 };

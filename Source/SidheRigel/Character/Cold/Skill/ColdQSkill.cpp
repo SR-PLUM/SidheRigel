@@ -82,3 +82,13 @@ void UColdQSkill::OnUse(FHitResult Hit)
 		}
 	}
 }
+
+float UColdQSkill::GetRange()
+{
+	float appliedRange = range;
+
+	if (character->IsSelectedTalent[0][0])
+		appliedRange = talentRange;
+
+	return appliedRange;
+}
