@@ -400,8 +400,6 @@ float AMinion::GetHP()
 
 void AMinion::MoveVector(FVector Direction, float Force)
 {
-	moveDirection = Direction.GetSafeNormal();
-	moveForce = Force;
-	moveCnt = 0;
-	IsMoveVectorTrue = true;
+	auto unitDirection = (Direction * FVector(1, 1, 0)).GetSafeNormal();
+	LaunchCharacter(unitDirection * Force, false, false);
 }
