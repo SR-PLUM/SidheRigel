@@ -5,15 +5,18 @@
 #include "CoreMinimal.h"
 
 #include "../../Skill.h"
+#include "ColdESkill.generated.h"
 
 /**
  * 
  */
-class SIDHERIGEL_API ColdESkill : public Skill
+UCLASS()
+class SIDHERIGEL_API UColdESkill : public USkill
 {
+	GENERATED_BODY()
 public:
-	ColdESkill();
-	~ColdESkill();
+	UColdESkill();
+	~UColdESkill();
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;

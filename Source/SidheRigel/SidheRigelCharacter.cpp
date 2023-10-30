@@ -490,6 +490,16 @@ float ASidheRigelCharacter::GetAttackSpeed()
 	return res;
 }
 
+void ASidheRigelCharacter::AddAttackSpeed(FString name, float value)
+{
+	attackSpeed.Add(name, value);
+}
+
+void ASidheRigelCharacter::RemoveAttackSpeed(FString name)
+{
+	attackSpeed.Remove(name);
+}
+
 float ASidheRigelCharacter::GetMaxHP()
 {
 	float res = 0;

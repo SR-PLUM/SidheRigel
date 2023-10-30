@@ -45,22 +45,22 @@ AFairyWingCharacter::AFairyWingCharacter()
 
 	InitAttackProjectile();
 
-	skills.Add({ E_SkillState::Q_Ready, new FairyWingQSkill });
+	skills.Add({ E_SkillState::Q_Ready, NewObject<UFairyWingQSkill>()});
 	if (skills[E_SkillState::Q_Ready] != nullptr)
 	{
 		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
 	}
-	skills.Add({ E_SkillState::W_Ready, new FairyWingWSkill });
+	skills.Add({ E_SkillState::W_Ready, NewObject<UFairyWingWSkill>() });
 	if (skills[E_SkillState::W_Ready] != nullptr)
 	{
 		skills[E_SkillState::W_Ready]->SetSkillProperty(this, E_SkillState::W_Ready);
 	}
-	skills.Add({ E_SkillState::E_Ready, new FairyWingESkill });
+	skills.Add({ E_SkillState::E_Ready, NewObject<UFairyWingESkill>() });
 	if (skills[E_SkillState::E_Ready] != nullptr)
 	{
 		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
 	}
-	skills.Add({ E_SkillState::R_Ready, new FairyWingRSkill });
+	skills.Add({ E_SkillState::R_Ready, NewObject<UFairyWingRSkill>() });
 	if (skills[E_SkillState::R_Ready] != nullptr)
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);

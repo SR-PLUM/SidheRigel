@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ColdCharacter.h"
@@ -29,26 +29,7 @@ AColdCharacter::AColdCharacter()
 
 	InitAttackProjectile();
 
-	skills.Add({ E_SkillState::Q_Ready, new ColdQSkill });
-	if (skills[E_SkillState::Q_Ready] != nullptr)
-	{
-		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
-	}
-	skills.Add({ E_SkillState::W_Ready, new ColdWSkill });
-	if (skills[E_SkillState::W_Ready] != nullptr)
-	{
-		skills[E_SkillState::W_Ready]->SetSkillProperty(this, E_SkillState::W_Ready);
-	}
-	skills.Add({ E_SkillState::E_Ready, new ColdESkill });
-	if (skills[E_SkillState::E_Ready] != nullptr)
-	{
-		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
-	}
-	skills.Add({ E_SkillState::R_Ready, new ColdR1Skill });
-	if (skills[E_SkillState::R_Ready] != nullptr)
-	{
-		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
-	}
+	
 
 	InitColdTalent();
 }
@@ -58,6 +39,26 @@ void AColdCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	skills.Add({ E_SkillState::Q_Ready, NewObject<UColdQSkill>() });
+	if (skills[E_SkillState::Q_Ready] != nullptr)
+	{
+		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
+	}
+	skills.Add({ E_SkillState::W_Ready, NewObject<UColdWSkill>() });
+	if (skills[E_SkillState::W_Ready] != nullptr)
+	{
+		skills[E_SkillState::W_Ready]->SetSkillProperty(this, E_SkillState::W_Ready);
+	}
+	skills.Add({ E_SkillState::E_Ready, NewObject<UColdESkill>() });
+	if (skills[E_SkillState::E_Ready] != nullptr)
+	{
+		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
+	}
+	skills.Add({ E_SkillState::R_Ready, NewObject<UColdR1Skill>() });
+	if (skills[E_SkillState::R_Ready] != nullptr)
+	{
+		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
+	}
 }
 
 // Called every frame

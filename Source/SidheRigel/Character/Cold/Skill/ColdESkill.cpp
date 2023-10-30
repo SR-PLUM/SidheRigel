@@ -7,7 +7,7 @@
 #include "SidheRigel/Character/Cold/Skill/ColdEProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEDamageField.h"
 
-ColdESkill::ColdESkill()
+UColdESkill::UColdESkill()
 {
 	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdEProjectile"));
 	if (projectileRef.Object)
@@ -22,11 +22,11 @@ ColdESkill::ColdESkill()
 	}
 }
 
-ColdESkill::~ColdESkill()
+UColdESkill::~UColdESkill()
 {
 }
 
-void ColdESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
+void UColdESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
@@ -40,7 +40,7 @@ void ColdESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState 
 	skillstate = SkillState;
 }
 
-void ColdESkill::OnUse(FHitResult Hit)
+void UColdESkill::OnUse(FHitResult Hit)
 {
 	FVector MuzzleLocation = character->GetActorLocation() + FVector::UpVector * 50;
 	FRotator MuzzleRotation = character->GetActorRotation();
