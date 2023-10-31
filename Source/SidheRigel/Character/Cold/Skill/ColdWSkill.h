@@ -34,4 +34,5 @@ private:
 
 	TSubclassOf<class AColdWProjectile> projectileClass;
 	TSubclassOf<class AColdWParticle> particleClass;
+	TSubclassOf<class AColdWWall> wallClass;
 };

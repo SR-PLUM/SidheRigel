@@ -20,6 +20,12 @@ UColdWSkill::UColdWSkill()
 	{
 		particleClass = (UClass*)particleRef.Object->GeneratedClass;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> wallRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdWWall"));
+	if (wallRef.Object)
+	{
+		wallClass = (UClass*)wallRef.Object->GeneratedClass;
+	}
 }
 
 UColdWSkill::~UColdWSkill()
@@ -68,18 +74,35 @@ void UColdWSkill::OnUse(FHitResult Hit)
 				projectile->damage = talentDamage;
 			else
 				projectile->damage = colliderDamage;
+
+			if (character->IsSelectedTalent[1][0])
+			{
+				//벽 생성
+				FActorSpawnParameters WallSpawnParams;
+				FTransform WallSpawnTransform;
+				WallSpawnTransform.SetLocation(Hit.Location);
+				WallSpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+				SpawnParams.Owner = character;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				AColdWWall* wall = World->SpawnActorDeferred<AColdWWall>(wallClass, WallSpawnTransform);
+				if (wall)
+				{
+					projectile->wall = wall;
+					projectile->wallSpawnTransform = WallSpawnTransform;
+				}
+			}
 		}
-	
 		projectile->FinishSpawning(SpawnTransform);
 
-		// Spawn the projectile at the muzzle.
 		AColdWParticle* particle = World->SpawnActorDeferred<AColdWParticle>(particleClass, SpawnTransform);
 		if (particle)
 		{
 			particle->particleDuration = particleDuration;
 		}
-
 		particle->FinishSpawning(SpawnTransform);
+
+		
 	}
 }
 
