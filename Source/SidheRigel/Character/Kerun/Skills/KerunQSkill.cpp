@@ -17,6 +17,32 @@ bool UKerunQSkill::CheckAttackCount()
 	return AttackCount >= MaxAttackCount;
 }
 
+void UKerunQSkill::ApplyTalentWhenFullComboHits(AActor* target)
+{
+	if (CheckAttackCount())
+	{
+		if (character->IsSelectedTalent[0][1])
+		{
+			ASidheRigelCharacter* Character = Cast<ASidheRigelCharacter>(target);
+
+			if (IsValid(Character))
+			{
+				Character->AddDecreseDefencePercent("KerunQSkillDecreaseDefenseTalent", Kerun01DecreaseDefencePercent, Kerun01DecreaseDefenceTime);
+			}
+			
+		}
+
+		QuitQSkill();
+
+	}
+}
+
+float UKerunQSkill::GetQDamage()
+{
+	float amount = AttackCount * Kerun02UpgradeAmount;
+	return amount;
+}
+
 void UKerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillCooldown = 0;
@@ -38,11 +64,6 @@ void UKerunQSkill::OnUse(FHitResult Hit)
 void UKerunQSkill::OnTick(float DeltaTime)
 {
 	Super::OnTick(DeltaTime);
-
-	if (CheckAttackCount())
-	{
-		QuitQSkill();
-	}
 
 	if (BuffDuration > 0)
 	{

@@ -31,9 +31,20 @@ public :
 
 	bool IsWorking = false;
 
+private: // Talent
+	
+	float Kerun01DecreaseDefencePercent = 0.1f;
+	float Kerun01DecreaseDefenceTime = 4.f;
+
+	float Kerun02UpgradeAmount = 7.f;
+
 public :
 	
 	void QuitQSkill();
 
 	bool CheckAttackCount();
+
+	void ApplyTalentWhenFullComboHits(AActor* target);
+
+	float GetQDamage();
 };

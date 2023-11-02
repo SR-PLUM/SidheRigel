@@ -104,10 +104,6 @@ void AKerunCharacter::Attack(AActor* target)
 		AKerunAttackProjectile* Projectile = World->SpawnActor<AKerunAttackProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 		if (Projectile)
 		{
-			// Set the projectile's initial trajectory.
-			Projectile->Target = target;
-			InitProjectileProperty(Projectile);
-
 			//Kerun QSkill
 			UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(skills[E_SkillState::Q_Ready]);
 
@@ -116,7 +112,20 @@ void AKerunCharacter::Attack(AActor* target)
 				QSkillRef->AttackCount += 1;
 			}
 
+			// Set the projectile's initial trajectory.
+			Projectile->Target = target;
+			InitProjectileProperty(Projectile);
+
+			if (IsSelectedTalent[0][2])
+			{
+				ADummyProjectile* TmpProjectile = Cast<ADummyProjectile>(Projectile);
+
+				TmpProjectile->AttackDamage = GetAttackDamage() + QSkillRef->GetQDamage();
+			}
+
 			ImproveEStack(1);
+
+			QSkillRef->ApplyTalentWhenFullComboHits(target);
 			
 		}
 	}
@@ -175,7 +184,7 @@ void AKerunCharacter::InitKerunTalent()
 	talentListArray[0].talentItems[0].imgPath = "";
 
 	talentListArray[0].talentItems[1].talentName = "Kerun_1_2";
-	talentListArray[0].talentItems[1].talentDescription = "Q 3번 모두 맞추면 방어력 감소";
+	talentListArray[0].talentItems[1].talentDescription = "Q 모두 맞추면 방어력 감소";
 	talentListArray[0].talentItems[1].imgPath = "";
 
 	talentListArray[0].talentItems[2].talentName = "Kerun_1_3";
