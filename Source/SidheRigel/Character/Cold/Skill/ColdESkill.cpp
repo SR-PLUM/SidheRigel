@@ -38,6 +38,8 @@ void UColdESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 
 	character = Character;
 	skillstate = SkillState;
+
+	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &USkill::OnTick, 0.1f, true);
 }
 
 void UColdESkill::OnUse(FHitResult Hit)
