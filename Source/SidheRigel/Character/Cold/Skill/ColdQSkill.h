@@ -26,7 +26,7 @@ private:	//Property
 	float colliderSpeed = 500.f;
 	float colliderDelay = 0.1f;
 	float colliderDamage = 20.f;
-	int32 count = 10;
+	int32 count = 5;
 
 	float talentRange = 400.f;
 
