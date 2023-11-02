@@ -64,5 +64,7 @@ protected: //Passive E
 public:
 	void ImproveEStack(int Count);
 
+protected:	//Talent
+	void InitKerunTalent();
 	
 };

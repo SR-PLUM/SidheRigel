@@ -116,7 +116,6 @@ void ASidheRigelCharacter::BeginPlay()
 	InGameUI->CharacterStatus->InitCharacterStatus(this);
 	
 	InitStatSummary();
-
 	
 
 	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
