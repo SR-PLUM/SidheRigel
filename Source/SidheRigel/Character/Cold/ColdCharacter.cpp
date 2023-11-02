@@ -29,8 +29,6 @@ AColdCharacter::AColdCharacter()
 
 	InitAttackProjectile();
 
-	
-
 	InitColdTalent();
 }
 

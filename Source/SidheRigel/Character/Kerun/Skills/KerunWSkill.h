@@ -15,7 +15,7 @@ class SIDHERIGEL_API UKerunWSkill : public USkill
 
 public:
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
-	virtual void OnTick(float DeltaTime) override;
+	virtual void OnTick() override;
 	virtual void OnUse(FHitResult Hit) override;
 
 private:
