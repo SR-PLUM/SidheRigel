@@ -262,11 +262,35 @@ void AKerunCharacter::InitKerunTalent()
 	talentListArray[6].talentItems[2].imgPath = "";
 }
 
+float AKerunCharacter::GetEDuration()
+{
+	if (IsSelectedTalent[2][2])
+	{
+		return UpgradeEDuration;
+	}
+	else
+	{
+		return EDuration;
+	}
+}
+
+float AKerunCharacter::GetEHealthRate()
+{
+	if (IsSelectedTalent[2][1])
+	{
+		return UpgradeEHealthRate;
+	}
+	else
+	{
+		return EHealthRate;
+	}
+}
+
 void AKerunCharacter::StartETimer()
 {
 	QuitETimer();
 
-	float GenerateAmount = ECurrentStack * EHealthRate;
+	float GenerateAmount = ECurrentStack * GetEHealthRate();
 
 	generateHealthPoint.Add("ESkill", GenerateAmount);
 
@@ -277,7 +301,7 @@ void AKerunCharacter::StartETimer()
 			ECurrentStack = 0;
 			UE_LOG(LogTemp, Warning, TEXT("ECurrentStack Initialized"));
 			}),
-		EDuration,
+		GetEDuration(),
 		false
 		);
 }

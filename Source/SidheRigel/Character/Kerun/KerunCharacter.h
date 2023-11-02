@@ -50,7 +50,9 @@ protected: //Passive E
 
 	const int EMaxStack = 25;
 	const float EDuration = 3.5f;
+	const float UpgradeEDuration = 5.0f;
 	const float EHealthRate = 1.0f;
+	const float UpgradeEHealthRate = 3.0f;
 
 	UPROPERTY()
 	int ECurrentStack = 0;
@@ -58,6 +60,8 @@ protected: //Passive E
 	UPROPERTY()
 	FTimerHandle ETimer;
 
+	float GetEDuration();
+	float GetEHealthRate();
 	void StartETimer();
 	void QuitETimer();
 
