@@ -3,6 +3,7 @@
 
 #include "ColdWSkill.h"
 
+#include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWParticle.h"
@@ -93,6 +94,16 @@ void UColdWSkill::OnUse(FHitResult Hit)
 					projectile->wall = wall;
 					projectile->wallSpawnTransform = WallSpawnTransform;
 				}
+			}
+			if (character->IsSelectedTalent[1][1])
+			{
+				//방어력증가
+				character->AddDefencePoint("Cold_2_2", 50, 1.5);
+			}
+			if (character->IsSelectedTalent[1][2])
+			{
+				//속도증가
+				character->AddSpeed("Cold_2_3", 60, 3);
 			}
 		}
 		projectile->FinishSpawning(SpawnTransform);
