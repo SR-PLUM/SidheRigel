@@ -31,6 +31,8 @@ void UBlackWizardQSkill::SetSkillProperty(class ASidheRigelCharacter* Character,
 
 	character = Character;
 	skillstate = SkillState;
+
+	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &USkill::OnTick, 0.1f, true);
 }
 
 void UBlackWizardQSkill::OnUse(FHitResult Hit)
