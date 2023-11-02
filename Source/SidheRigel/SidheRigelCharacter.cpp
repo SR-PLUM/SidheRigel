@@ -617,6 +617,32 @@ float ASidheRigelCharacter::GetRemainDieCooldown()
 	return res;
 }
 
+void ASidheRigelCharacter::AddBarrierAmount(float value)
+{
+	float tmp = barrierAmount;
+	GetWorldTimerManager().ClearTimer(BarrierTimer);
+
+	barrierAmount = tmp + value;
+
+	GetWorldTimerManager().SetTimer(BarrierTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			barrierAmount = 0.f;
+		})
+		, barrierDuration, false);
+
+	UE_LOG(LogTemp, Error, TEXT("barrierAmount :: %f"), barrierAmount);
+}
+
+void ASidheRigelCharacter::DecreaseBarrierAmount(float value)
+{
+	barrierAmount -= value;
+
+	if (barrierAmount < 0)
+	{
+		barrierAmount = 0.f;
+	}
+}
+
 void ASidheRigelCharacter::InitProperty()
 {
 	level = 1;
@@ -748,7 +774,11 @@ void ASidheRigelCharacter::Silence(float time)
 
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
-	currentHP -= damage;
+	float tmp = damage - barrierAmount;
+	DecreaseBarrierAmount(damage);
+
+	currentHP -= tmp;
+
 	UE_LOG(LogTemp, Warning, TEXT("CurrentHP : %f"), currentHP);
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{

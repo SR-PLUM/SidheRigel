@@ -74,6 +74,19 @@ void UKerunWSkill::JumpIntoTarget(AActor* Actor)
 	{
 		Target->TakeDamage(10.0f, Cast<AActor>(character));
 	}
+
+	if (character->IsSelectedTalent[1][1])
+	{
+		if (ICCable* Target = Cast<ICCable>(Actor))
+		{
+			Target->Slow(3.f, -0.5f, "KerunWSkillTalent");
+		}
+	}
+
+	if (character->IsSelectedTalent[1][2])
+	{
+		character->AddBarrierAmount(Kerun12BarrierAmount);
+	}
 }
 
 bool UKerunWSkill::GetIsWorking()

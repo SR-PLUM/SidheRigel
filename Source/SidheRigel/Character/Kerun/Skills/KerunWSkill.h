@@ -29,6 +29,11 @@ private:
 
 	bool IsWorking = false;
 
+private: //Talent
+	float Kerun11SlowTime = 3.f;
+	float Kerun11SlowAmount = -0.5f;
+	float Kerun12BarrierAmount = 30.f;
+
 protected:
 	void JumpIntoTarget(AActor* Actor);
 	bool GetIsWorking();

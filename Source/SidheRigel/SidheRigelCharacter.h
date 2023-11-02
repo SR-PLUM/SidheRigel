@@ -183,9 +183,14 @@ protected:	//Stat
 		TMap<FString, int32> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> decreseDefencePoint;//방깍
+	UPROPERTY()
+		float barrierAmount =0.f;					//보호막
 
 	//DEBUG RED=MINION, BLUE = PLAYER
 	E_Team team = E_Team::Blue;
+
+private:
+	float barrierDuration = 4.f;
 
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
@@ -219,6 +224,9 @@ public:		//Getter, Setter
 	void AddDecreseDefencePercent(FString name, float value, float time);
 	float GetDecreseDefence();
 
+	void AddBarrierAmount(float value);
+	void DecreaseBarrierAmount(float value);
+
 	float GetRemainDieCooldown();
 
 	virtual void InitProperty();
@@ -247,6 +255,8 @@ protected:	//Move
 
 protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
+
+	FTimerHandle BarrierTimer;
  
 public:		//Interface Implement
 	UFUNCTION()
