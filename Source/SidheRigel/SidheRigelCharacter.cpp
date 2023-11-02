@@ -147,11 +147,6 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 			IsMoveVectorTrue = false;
 		}
 	}
-
-	for (auto skill : skills)
-	{
-		skill.Value->OnTick(DeltaSeconds);
-	}
 }
 
 void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

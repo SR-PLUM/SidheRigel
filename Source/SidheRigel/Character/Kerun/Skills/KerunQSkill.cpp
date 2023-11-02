@@ -53,6 +53,8 @@ void UKerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillStat
 
 	character = Character;
 	skillstate = SkillState;
+
+	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &UKerunQSkill::OnTick, 0.1f, true);
 }
 
 void UKerunQSkill::OnUse(FHitResult Hit)
@@ -61,13 +63,13 @@ void UKerunQSkill::OnUse(FHitResult Hit)
 	IsWorking = true;
 }
 
-void UKerunQSkill::OnTick(float DeltaTime)
+void UKerunQSkill::OnTick()
 {
-	Super::OnTick(DeltaTime);
+	Super::OnTick();
 
 	if (BuffDuration > 0)
 	{
-		BuffDuration -= DeltaTime;
+		BuffDuration -= 0.1f;
 
 		if (BuffDuration <= 0)
 		{

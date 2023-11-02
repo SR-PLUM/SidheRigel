@@ -11,6 +11,7 @@ USkill::USkill()
 
 USkill::~USkill()
 {
+	UE_LOG(LogTemp,Warning, TEXT("DELETE USKILL"))
 }
 
 void USkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
@@ -25,13 +26,15 @@ void USkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState Skil
 
 	character = Character;
 	skillstate = SkillState;
+
+	character->GetWorldTimerManager().SetTimer(cooldownTimer,this, &USkill::OnTick, 0.1f, true);
 }
 
-void USkill::OnTick(float DeltaTime)
+void USkill::OnTick()
 {
 	if (skillCooldown > 0)
 	{
-		skillCooldown -= DeltaTime;
+		skillCooldown -= 0.1f;
 
 		if (skillCooldown <= 0)
 		{

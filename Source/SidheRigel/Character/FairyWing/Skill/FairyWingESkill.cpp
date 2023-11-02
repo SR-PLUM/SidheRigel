@@ -32,6 +32,8 @@ void UFairyWingESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_Skill
 
 	character = Character;
 	skillstate = SkillState;
+
+	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &USkill::OnTick, 0.1f, true);
 }
 
 void UFairyWingESkill::OnUse(FHitResult Hit)

@@ -17,7 +17,7 @@ public:
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
-	virtual void OnTick(float DeltaTime) override;
+	virtual void OnTick() override;
 
 private:	//Property
 
