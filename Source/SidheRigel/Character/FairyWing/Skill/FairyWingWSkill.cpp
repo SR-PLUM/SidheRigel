@@ -54,7 +54,12 @@ void UFairyWingWSkill::OnUse(FHitResult Hit)
 		{
 			collider->colliderOwner = character;
 			collider->duration = colliderDuration;
-			collider->damage = colliderDamage;
+
+			if (character->IsSelectedTalent[0][1])
+				collider->damage = upgradeColliderDamage;
+			else
+				collider->damage = colliderDamage;
+
 			collider->force = colliderForce;
 		}
 

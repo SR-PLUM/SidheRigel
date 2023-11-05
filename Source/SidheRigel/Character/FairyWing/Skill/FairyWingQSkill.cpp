@@ -53,9 +53,22 @@ void UFairyWingQSkill::OnUse(FHitResult Hit)
 		if (collider)
 		{
 			collider->colliderOwner = character;
-			collider->duration = colliderDuration;
-			collider->damage = colliderDamage;
 			collider->force = colliderForce;
+
+			if (character->IsSelectedTalent[0][0])
+				collider->duration = upgradeColliderDuration;
+			else
+				collider->duration = colliderDuration;
+
+			if (character->IsSelectedTalent[1][2])
+				collider->damage = upgradeColliderDamage;
+			else
+				collider->damage = colliderDamage;			
+
+			if(character->IsSelectedTalent[1][0])
+				collider->restoreHPValue = colliderRestoreHPValue;
+			else
+				collider->restoreHPValue = 0.f;
 		}
 
 		collider->FinishSpawning(SpawnTransform);

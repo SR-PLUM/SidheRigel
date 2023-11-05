@@ -72,9 +72,14 @@ void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 					target->TakeDamage(damage, colliderOwner);
 				}
 			}
-			else
+			else if(team->GetTeam() == Cast<ITeam>(colliderOwner)->GetTeam())
 			{
 				// 같은 팀이면 이동속도 증가
+
+				if (IDamagable* target = Cast<IDamagable>(OtherActor))
+				{
+					target->RestoreHP(restoreHPValue);
+				}
 			}
 		}
 	}
