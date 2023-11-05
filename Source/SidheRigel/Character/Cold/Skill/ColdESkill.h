@@ -27,4 +27,6 @@ private:
 
 	float colliderFieldArea = 105.f;
 	float colliderDamage = 10.f;
+
+	float talentDamage = 30.f;
 };

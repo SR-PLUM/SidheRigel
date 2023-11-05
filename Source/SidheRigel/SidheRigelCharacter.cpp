@@ -557,6 +557,27 @@ int32 ASidheRigelCharacter::GetProtectPower()
 	return res;
 }
 
+void ASidheRigelCharacter::AddDefencePoint(FString name, float value, float time)
+{
+	if (defencePoint.Contains(name))
+		return;
+
+	defencePoint.Add(name, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle buffTimer;
+	GetWorldTimerManager().SetTimer(buffTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (defencePoint.Find(name))
+			{
+				defencePoint.Remove(name);
+			}
+		})
+		, time, false);
+}
+
 float ASidheRigelCharacter::GetDefencePoint()
 {
 	float res = 0.f;
@@ -570,12 +591,38 @@ float ASidheRigelCharacter::GetDefencePoint()
 	return res;
 }
 
+void ASidheRigelCharacter::AddSpeed(FString name, float value, float time)
+{
+	if (speed.Contains(name))
+		return;
+
+	speed.Add(name, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle buffTimer;
+	GetWorldTimerManager().SetTimer(buffTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (speed.Find(name))
+			{
+				speed.Remove(name);
+			}
+		})
+		, time, false);
+}
+
 float ASidheRigelCharacter::GetSpeed()
 {
 	float res = 0.f;
 	for (auto& value : speed)
 	{
 		res += value.Value;
+	}
+
+	for (auto& slowRate : speedRate)
+	{
+		res *= (1- slowRate.Value);
 	}
 
 	return res;
@@ -706,7 +753,7 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 
 void ASidheRigelCharacter::Stun(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
 	if (controller && controller->stateMachine)
 	{
 		controller->stateMachine->OnStun(time);
@@ -715,7 +762,7 @@ void ASidheRigelCharacter::Stun(float time)
 
 void ASidheRigelCharacter::Stop(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
 	if (controller && controller->stateMachine)
 	{
 		controller->stateMachine->OnStop(time);
@@ -747,7 +794,7 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 
 void ASidheRigelCharacter::Silence(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
 	if (controller && controller->stateMachine)
 	{
 		controller->stateMachine->OnSilence(time);

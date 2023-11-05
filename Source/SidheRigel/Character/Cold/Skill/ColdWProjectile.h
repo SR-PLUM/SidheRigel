@@ -42,4 +42,6 @@ public:
 	float force;
 	float damage;
 
+	class AColdWWall* wall;
+	FTransform wallSpawnTransform;
 };

@@ -41,9 +41,6 @@ protected:	//Attack
 private:	//State
 	E_UltType ultType;
 
-public:		//Talent
-	void TestTalent();
-
 protected:	//Talent
 	void InitColdTalent();
 

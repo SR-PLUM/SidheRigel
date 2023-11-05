@@ -6,6 +6,8 @@
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
 
+#include "SidheRigel/SidheRigelCharacter.h"
+
 // Sets default values
 AColdQProjectile::AColdQProjectile()
 {
@@ -62,6 +64,13 @@ void AColdQProjectile::Tick(float DeltaTime)
 			if (IDamagable* damagableTarget = Cast<IDamagable>(target))
 			{
 				damagableTarget->TakeDamage(damage, projectileOwner);
+			}
+			if (slowRate != 0)
+			{
+				if (ICCable* ccTarget = Cast<ICCable>(target))
+				{
+					ccTarget->Slow(slowTime, slowRate, "Cold_6_2");
+				}
 			}
 
 			Destroy();
