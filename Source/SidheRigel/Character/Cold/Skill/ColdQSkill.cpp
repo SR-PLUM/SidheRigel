@@ -51,7 +51,7 @@ void UColdQSkill::OnUse(FHitResult Hit)
 
 			if (character->IsSelectedTalent[4][0])
 			{
-				count = 10;
+				count = talentCount;
 			}
 
 			for (int32 i = 0; i < count; i++)
@@ -85,6 +85,16 @@ void UColdQSkill::OnUse(FHitResult Hit)
 								}
 								projectile->damage = colliderDamage;
 								projectile->speed = colliderSpeed;
+
+								if (character->IsSelectedTalent[5][1])
+								{
+									projectile->slowRate = talentSlow;
+									projectile->slowTime = talentSlowTime;
+								}
+								else
+								{
+									projectile->slowRate = 0;
+								}
 							}
 
 							projectile->FinishSpawning(SpawnTransform);

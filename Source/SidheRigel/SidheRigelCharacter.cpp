@@ -613,6 +613,11 @@ float ASidheRigelCharacter::GetSpeed()
 		res += value.Value;
 	}
 
+	for (auto& slowRate : speedRate)
+	{
+		res *= (1- slowRate.Value);
+	}
+
 	return res;
 }
 

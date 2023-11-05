@@ -29,6 +29,10 @@ private:	//Property
 	int32 count = 5;
 
 	float talentRange = 400.f;
+	int32 talentCount = 10;
+	float talentSlow = 0.5f;
+	float talentSlowTime = 2;
+	
 
 	TSubclassOf<class AColdQProjectile> projectileClass;
 };
