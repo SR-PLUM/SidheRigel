@@ -30,6 +30,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
+		TArray<USkeletalMesh*> meshArray;
+
+	UPROPERTY(EditAnywhere)
 		TEnumAsByte<E_Team> team = E_Team::Red;
 
 	UFUNCTION()

@@ -21,11 +21,13 @@ void UKerunWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillStat
 
 	character = Character;
 	skillstate = SkillState;
+
+	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &UKerunWSkill::OnTick, 0.1f, true);
 }
 
-void UKerunWSkill::OnTick(float DeltaTime)
+void UKerunWSkill::OnTick()
 {
-	Super::OnTick(DeltaTime);
+	Super::OnTick();
 
 	//Kerun WSkill
 	if (GetIsWorking())

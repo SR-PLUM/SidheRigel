@@ -29,8 +29,6 @@ AColdCharacter::AColdCharacter()
 
 	InitAttackProjectile();
 
-	
-
 	InitColdTalent();
 }
 
@@ -155,11 +153,11 @@ void AColdCharacter::InitColdTalent()
 	talentListArray[3].talentItems[0].imgPath = "";
 
 	//level 13
-	talentListArray[4].talentItems[0].talentName = "Cold_4_1";
+	talentListArray[4].talentItems[0].talentName = "Cold_5_1";
 	talentListArray[4].talentItems[0].talentDescription = "Q 유도탄 갯수 증가";
 	talentListArray[4].talentItems[0].imgPath = "";
 
-	talentListArray[4].talentItems[1].talentName = "Cold_4_2";
+	talentListArray[4].talentItems[1].talentName = "Cold_5_2";
 	talentListArray[4].talentItems[1].talentDescription = "Q 유도탄 1타 이후 데미지도 100%";
 	talentListArray[4].talentItems[1].imgPath = "";
 

@@ -45,7 +45,15 @@ AFairyWingCharacter::AFairyWingCharacter()
 
 	InitAttackProjectile();
 
-	skills.Add({ E_SkillState::Q_Ready, NewObject<UFairyWingQSkill>()});
+	InitFairyWingTalent();
+}
+
+// Called when the game starts or when spawned
+void AFairyWingCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	skills.Add({ E_SkillState::Q_Ready, NewObject<UFairyWingQSkill>() });
 	if (skills[E_SkillState::Q_Ready] != nullptr)
 	{
 		skills[E_SkillState::Q_Ready]->SetSkillProperty(this, E_SkillState::Q_Ready);
@@ -65,15 +73,6 @@ AFairyWingCharacter::AFairyWingCharacter()
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
-
-	InitFairyWingTalent();
-}
-
-// Called when the game starts or when spawned
-void AFairyWingCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 // Called every frame

@@ -20,25 +20,29 @@ public:
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState);
 
-	virtual void OnTick(float DeltaTime);
+	virtual void OnTick();
 	virtual void OnUse(FHitResult Hit);
-	float GetSkillDelay();
+	virtual float GetSkillDelay();
 	void SetCooldown();
 	float GetCooldown();
 	bool IsInstantCast();
 	bool IsTargeting();
 	bool CanUse();
-	float GetRange();
+	virtual float GetRange();
+	bool hasEnoughMana();
 
 protected:
 	float skillDelay;
 	float skillCooldown;
 	float skillMaxCooldown;
 	float range;
+	float requireMana;
 
 	bool bIsInstantCast;
 	bool bIsTargeting;
 
 	class ASidheRigelCharacter* character;
 	E_SkillState skillstate;
+
+	FTimerHandle cooldownTimer;
 };

@@ -26,16 +26,21 @@ void UColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 	skillCooldown = 0;
 	skillMaxCooldown = 9.5f;
 	range = 300.f;
+	requireMana = 20.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;
 
 	character = Character;
 	skillstate = SkillState;
+
+	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &USkill::OnTick, 0.1f, true);
 }
 
 void UColdQSkill::OnUse(FHitResult Hit)
 {
+	USkill::OnUse(Hit);
+
 	if (character == nullptr) return;
 	if (projectileClass == nullptr) return;
 
@@ -46,6 +51,12 @@ void UColdQSkill::OnUse(FHitResult Hit)
 		if (Cast<IDamagable>(_target))
 		{
 			auto ColdCharacter = Cast<AColdCharacter>(character);
+
+			if (character->IsSelectedTalent[4][0])
+			{
+				count = talentCount;
+			}
+
 			for (int32 i = 0; i < count; i++)
 			{
 				FTimerHandle projectileGenerateTimer;
@@ -71,8 +82,22 @@ void UColdQSkill::OnUse(FHitResult Hit)
 							{
 								projectile->target = _target;
 								projectile->projectileOwner = character;
+								if (i != 0 && !(character->IsSelectedTalent[4][1]))
+								{
+									colliderDamage *= 0.6;
+								}
 								projectile->damage = colliderDamage;
 								projectile->speed = colliderSpeed;
+
+								if (character->IsSelectedTalent[5][1])
+								{
+									projectile->slowRate = talentSlow;
+									projectile->slowTime = talentSlowTime;
+								}
+								else
+								{
+									projectile->slowRate = 0;
+								}
 							}
 
 							projectile->FinishSpawning(SpawnTransform);
@@ -81,4 +106,19 @@ void UColdQSkill::OnUse(FHitResult Hit)
 			}
 		}
 	}
+
+	if (character->IsSelectedTalent[4][2])
+	{
+		character->AddSpeed("Cold_5_3", 100, 2);
+	}
+}
+
+float UColdQSkill::GetRange()
+{
+	float appliedRange = range;
+
+	if (character->IsSelectedTalent[0][0])
+		appliedRange = talentRange;
+
+	return appliedRange;
 }

@@ -20,6 +20,8 @@ void UKerunR1Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillSta
 
 	character = Character;
 	skillstate = SkillState;
+
+	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &USkill::OnTick, 0.1f, true);
 }
 
 void UKerunR1Skill::OnUse(FHitResult Hit)
