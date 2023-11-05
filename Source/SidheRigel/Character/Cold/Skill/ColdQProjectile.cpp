@@ -7,6 +7,7 @@
 #include "SidheRigel/Interface/Damagable.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Character/Cold/Skill/ColdQParticle.h"
 
 // Sets default values
 AColdQProjectile::AColdQProjectile()
@@ -40,6 +41,12 @@ AColdQProjectile::AColdQProjectile()
 		ProjectileMovementComponent->Bounciness = 0.f;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint>particleRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdQParticle"));
+	if (particleRef.Object)
+	{
+		particleClass = (UClass*)particleRef.Object->GeneratedClass;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -72,6 +79,26 @@ void AColdQProjectile::Tick(float DeltaTime)
 					ccTarget->Slow(slowTime, slowRate, "Cold_6_2");
 				}
 			}
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters SpawnParams;
+				FTransform SpawnTransform;
+				SpawnTransform.SetLocation(GetActorLocation());
+				SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+				SpawnParams.Owner = projectileOwner;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				
+				AColdQParticle* particle = World->SpawnActorDeferred<AColdQParticle>(particleClass, SpawnTransform);
+				if (particle)
+				{
+					particle->particleDuration = 1.f;
+				}
+				particle->FinishSpawning(SpawnTransform);
+			}
+
+			
 
 			Destroy();
 		}

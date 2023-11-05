@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ColdWParticle.h"
+#include "ColdQParticle.h"
 
 // Sets default values
-AColdWParticle::AColdWParticle()
+AColdQParticle::AColdQParticle()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,12 +12,12 @@ AColdWParticle::AColdWParticle()
 }
 
 // Called when the game starts or when spawned
-void AColdWParticle::BeginPlay()
+void AColdQParticle::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	FTimerHandle WParticleTimer;
-	GetWorldTimerManager().SetTimer(WParticleTimer,
+
+	FTimerHandle QParticleTimer;
+	GetWorldTimerManager().SetTimer(QParticleTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
 				Destroy();
@@ -26,7 +26,7 @@ void AColdWParticle::BeginPlay()
 }
 
 // Called every frame
-void AColdWParticle::Tick(float DeltaTime)
+void AColdQParticle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
