@@ -193,6 +193,7 @@ public:		//Getter, Setter
 	virtual void SetCurrentHP(float _hp);
 	float GetCurrentHP();
 	void IE_GenerateHP();
+	void UseMana(float UseMP);
 	float GetCurrentMP();
 	int32 GetMoney();
 	void GiveMoney(int32 _money);

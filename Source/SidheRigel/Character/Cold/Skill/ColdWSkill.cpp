@@ -32,6 +32,7 @@ void UColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 	skillCooldown = 0;
 	skillMaxCooldown = 10.f;
 	range = 100.f;
+	requireMana = 40.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = false;
@@ -44,6 +45,8 @@ void UColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 
 void UColdWSkill::OnUse(FHitResult Hit)
 {
+	USkill::OnUse(Hit);
+
 	FVector PawnToTarget = (Hit.Location - character->GetActorLocation()).GetSafeNormal();
 	FVector MuzzleLocation = character->GetActorLocation() + PawnToTarget*50;
 	FRotator MuzzleRotation = PawnToTarget.Rotation();

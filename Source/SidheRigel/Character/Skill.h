@@ -29,12 +29,14 @@ public:
 	bool IsTargeting();
 	bool CanUse();
 	float GetRange();
+	bool hasEnoughMana();
 
 protected:
 	float skillDelay;
 	float skillCooldown;
 	float skillMaxCooldown;
 	float range;
+	float requireMana;
 
 	bool bIsInstantCast;
 	bool bIsTargeting;

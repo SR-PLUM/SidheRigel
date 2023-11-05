@@ -149,7 +149,6 @@ void StateMachine::OnKeyboard(E_SkillState SkillState)
 	currentSkill = SkillState;
 
 	float currentSkillRange = myCharacter->skills[currentSkill]->GetRange();
-	UE_LOG(LogTemp, Warning, TEXT("SkillRange : %f"), currentSkillRange);
 	myCharacter->skillRange->SetRelativeScale3D(FVector(currentSkillRange / 100, currentSkillRange / 100, 1));
 
 	myCharacter->skillRange->SetVisibility(true);
@@ -202,21 +201,24 @@ void StateMachine::HasAttackEnemy()
 
 void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 {
-	//Check Cooldown
-	if (myCharacter->skills[SkillState]->GetCooldown() <= 0)
+	auto& skill = myCharacter->skills[SkillState];
+	if (skill == nullptr)
+		return;
+
+	//Check Cooldown, Mana
+	if (skill->GetCooldown() <= 0 && skill->hasEnoughMana())
 	{
 		currentSkill = SkillState;
 		bSkillReady = true;
 
 		//Check Instant cast
-		if (myCharacter->skills[SkillState]->IsInstantCast() && myCharacter->skills[SkillState]->CanUse())
+		if (skill->IsInstantCast() && skill->CanUse())
 		{
 			ChangeState(UseSkill);
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SKILL HAS COOLTIME"));
 		currentSkill = E_SkillState::Skill_Null;
 		bSkillReady = false;
 		myCharacter->skillRange->SetVisibility(false);
