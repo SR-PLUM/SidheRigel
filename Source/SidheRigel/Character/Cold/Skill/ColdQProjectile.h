@@ -32,6 +32,10 @@ public:
 		float damage;
 	UPROPERTY()
 		float speed;
+	UPROPERTY()
+		float slowRate;
+	UPROPERTY()
+		float slowTime;
 
 private:
 	UPROPERTY(VisibleAnywhere)

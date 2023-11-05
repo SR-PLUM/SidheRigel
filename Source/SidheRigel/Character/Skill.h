@@ -22,13 +22,13 @@ public:
 
 	virtual void OnTick();
 	virtual void OnUse(FHitResult Hit);
-	float GetSkillDelay();
+	virtual float GetSkillDelay();
 	void SetCooldown();
 	float GetCooldown();
 	bool IsInstantCast();
 	bool IsTargeting();
 	bool CanUse();
-	float GetRange();
+	virtual float GetRange();
 
 protected:
 	float skillDelay;
