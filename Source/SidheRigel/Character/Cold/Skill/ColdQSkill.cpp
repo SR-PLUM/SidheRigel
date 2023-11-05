@@ -26,6 +26,7 @@ void UColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 	skillCooldown = 0;
 	skillMaxCooldown = 9.5f;
 	range = 300.f;
+	requireMana = 20.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;
@@ -38,6 +39,8 @@ void UColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 
 void UColdQSkill::OnUse(FHitResult Hit)
 {
+	USkill::OnUse(Hit);
+
 	if (character == nullptr) return;
 	if (projectileClass == nullptr) return;
 

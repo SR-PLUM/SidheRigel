@@ -350,6 +350,13 @@ void ASidheRigelCharacter::IE_GenerateHP()
 	RestoreHP(GetGenerateHealthPoint());
 }
 
+void ASidheRigelCharacter::UseMana(float UseMP)
+{
+	currentMP -= UseMP;
+	if (currentMP < 0)
+		currentMP = 0;
+}
+
 float ASidheRigelCharacter::GetCurrentMP()
 {
 	return currentMP;

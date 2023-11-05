@@ -32,6 +32,7 @@ void UColdESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 	skillCooldown = 0;
 	skillMaxCooldown = 3.f;
 	range = 500.f;
+	requireMana = 15.f;
 
 	bIsInstantCast = true;
 	bIsTargeting = false;
@@ -44,6 +45,8 @@ void UColdESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 
 void UColdESkill::OnUse(FHitResult Hit)
 {
+	USkill::OnUse(Hit);
+
 	FVector MuzzleLocation = character->GetActorLocation() + FVector::UpVector * 50;
 	FRotator MuzzleRotation = character->GetActorRotation();
 	

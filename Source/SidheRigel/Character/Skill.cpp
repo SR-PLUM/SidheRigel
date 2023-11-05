@@ -20,6 +20,7 @@ void USkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState Skil
 	skillCooldown = 0;
 	skillMaxCooldown = 2.f;
 	range = 500.f;
+	requireMana = 0.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;
@@ -50,6 +51,7 @@ void USkill::OnTick()
 void USkill::OnUse(FHitResult Hit)
 {
 	//Implement Skill Detail
+	character->UseMana(requireMana);
 }
 
 float USkill::GetSkillDelay()
@@ -105,4 +107,14 @@ bool USkill::CanUse()
 float USkill::GetRange()
 {
 	return range;
+}
+
+bool USkill::hasEnoughMana()
+{
+	if (requireMana > character->GetCurrentMP())
+	{
+		return false;
+	}
+
+	return true;
 }
