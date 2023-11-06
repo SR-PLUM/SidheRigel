@@ -8,6 +8,7 @@
 
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdQParticle.h"
+#include "SidheRigel/Character/Cold/Skill/ColdQSplash.h"
 
 // Sets default values
 AColdQProjectile::AColdQProjectile()
@@ -47,6 +48,12 @@ AColdQProjectile::AColdQProjectile()
 	{
 		particleClass = (UClass*)particleRef.Object->GeneratedClass;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint>splashRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdQSplash"));
+	if (splashRef.Object)
+	{
+		splashClass = (UClass*)splashRef.Object->GeneratedClass;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -83,19 +90,52 @@ void AColdQProjectile::Tick(float DeltaTime)
 			UWorld* World = GetWorld();
 			if (World)
 			{
-				FActorSpawnParameters SpawnParams;
-				FTransform SpawnTransform;
-				SpawnTransform.SetLocation(GetActorLocation());
-				SpawnTransform.SetRotation(GetActorRotation().Quaternion());
-				SpawnParams.Owner = projectileOwner;
-				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				
-				AColdQParticle* particle = World->SpawnActorDeferred<AColdQParticle>(particleClass, SpawnTransform);
-				if (particle)
+				if (auto character = Cast<ASidheRigelCharacter>(projectileOwner))
 				{
-					particle->particleDuration = 1.f;
+					FActorSpawnParameters SpawnParams;
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(target->GetActorLocation());
+					SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+					SpawnParams.Owner = projectileOwner;
+					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					AColdQSplash* splash = World->SpawnActorDeferred<AColdQSplash>(splashClass, SpawnTransform);
+					if (splash)
+					{
+						splash->damage = 20.f;
+						splash->particleDuration = 1.f;
+						splash->projectileOwner = projectileOwner;
+					}
+					splash->FinishSpawning(SpawnTransform);
+
+					/*if (character->IsSelectedTalent[5][0])
+					{
+						AColdQSplash* splash = World->SpawnActorDeferred<AColdQSplash>(splashClass, SpawnTransform);
+						if (splash)
+						{
+							splash->damage = 20.f;
+							splash->particleDuration = 1.f;
+							splash->projectileOwner = projectileOwner;
+						}
+						splash->FinishSpawning(SpawnTransform);
+					}
+					else
+					{
+						FActorSpawnParameters SpawnParams;
+						FTransform SpawnTransform;
+						SpawnTransform.SetLocation(GetActorLocation());
+						SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+						SpawnParams.Owner = projectileOwner;
+						SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+						AColdQParticle* particle = World->SpawnActorDeferred<AColdQParticle>(particleClass, SpawnTransform);
+						if (particle)
+						{
+							particle->particleDuration = 1.f;
+						}
+						particle->FinishSpawning(SpawnTransform);
+					}*/
 				}
-				particle->FinishSpawning(SpawnTransform);
 			}
 
 			
