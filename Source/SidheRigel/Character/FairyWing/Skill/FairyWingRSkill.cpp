@@ -59,6 +59,11 @@ void UFairyWingRSkill::OnUse(FHitResult Hit)
 			collider->duration = colliderDuration;
 			collider->damage = colliderDamage;
 			collider->force = colliderForce;
+
+			if (character->IsSelectedTalent[3][0])
+				collider->silenceTime = colliderSilenceTime;
+			else
+				collider->silenceTime = static_cast<int>(0.f);
 		}
 
 		collider->FinishSpawning(SpawnTransform);

@@ -70,7 +70,12 @@ void UFairyWingQSkill::OnUse(FHitResult Hit)
 			if(character->IsSelectedTalent[1][0])
 				collider->restoreHPValue = colliderRestoreHPValue;
 			else
-				collider->restoreHPValue = 0.f;
+				collider->restoreHPValue = static_cast<int>(0.f);
+
+			if (character->IsSelectedTalent[1][1])
+				collider->blindTime = colliderblindTime;
+			else
+				collider->blindTime = static_cast<int>(0.f);
 		}
 
 		collider->FinishSpawning(SpawnTransform);

@@ -25,5 +25,7 @@ private:
 	float colliderDuration = 2.f;
 	float colliderForce = 10000.f;
 
+	float colliderSilenceTime = 1.f;
+
 	TSubclassOf<class AFairyWingRCollider> colliderClass;
 };

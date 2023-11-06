@@ -67,13 +67,14 @@ void AFairyWingRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 		{
 			if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
 			{
-				IDamagable* target = Cast<IDamagable>(OtherActor);
-				if (target)
+				if (IDamagable* target = Cast<IDamagable>(OtherActor))
 					target->TakeDamage(damage, colliderOwner);
 
-				ICCable* CC = Cast<ICCable>(OtherActor);
-				if (CC)
-					CC->Stop(1.0f);
+				if (ICCable* target = Cast<ICCable>(OtherActor))
+				{
+					target->Stop(1.0f);
+					target->Silence(silenceTime);
+				}					
 			}
 		}		
 	}

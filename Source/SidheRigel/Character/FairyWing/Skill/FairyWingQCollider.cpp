@@ -3,6 +3,7 @@
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Team.h"
+#include "SidheRigel/Interface/CCable.h"
 
 // Sets default values
 AFairyWingQCollider::AFairyWingQCollider()
@@ -70,6 +71,11 @@ void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 				if (IDamagable* target = Cast<IDamagable>(OtherActor))
 				{
 					target->TakeDamage(damage, colliderOwner);
+				}
+
+				if (ICCable* target = Cast<ICCable>(OtherActor))
+				{
+					//target->Blind(blindTime);
 				}
 			}
 			else if(team->GetTeam() == Cast<ITeam>(colliderOwner)->GetTeam())

@@ -35,6 +35,7 @@ public:
 
 	float restoreHPValue;
 	float increaseAttackSpeed;
+	float blindTime;
 
 protected:
 	UFUNCTION()

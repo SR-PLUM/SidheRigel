@@ -30,6 +30,7 @@ private:
 	float upgradeColliderDamage = 240.f;
 	float upgradeColliderDuration = 4.f;
 	float increaseColliderAttackSpeed = 1.f;
+	float colliderblindTime = 1.f;
 
 	TSubclassOf<class AFairyWingQCollider> colliderClass;
 };
