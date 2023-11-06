@@ -23,7 +23,7 @@ public:
 	float GetRange() override;
 
 private:	//Property
-	float colliderSpeed = 500.f;
+	float colliderSpeed = 1000.f;
 	float colliderDelay = 0.1f;
 	float colliderDamage = 20.f;
 	int32 count = 5;
