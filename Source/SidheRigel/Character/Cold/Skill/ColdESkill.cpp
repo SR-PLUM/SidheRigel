@@ -88,3 +88,11 @@ void UColdESkill::OnUse(FHitResult Hit)
 		projectile->damageField->FinishSpawning(SpawnTransform);
 	}
 }
+
+float UColdESkill::GetRequireMana()
+{
+	if (character->IsSelectedTalent[0][2])
+		return talentMana;
+
+	return requireMana;
+}
