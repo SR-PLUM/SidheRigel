@@ -43,4 +43,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* ProjectileMesh;
+
+	TSubclassOf<class AColdQParticle> particleClass;
 };
