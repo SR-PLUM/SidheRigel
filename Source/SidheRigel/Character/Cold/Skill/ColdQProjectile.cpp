@@ -92,24 +92,15 @@ void AColdQProjectile::Tick(float DeltaTime)
 			{
 				if (auto character = Cast<ASidheRigelCharacter>(projectileOwner))
 				{
-					FActorSpawnParameters SpawnParams;
-					FTransform SpawnTransform;
-					SpawnTransform.SetLocation(target->GetActorLocation());
-					SpawnTransform.SetRotation(GetActorRotation().Quaternion());
-					SpawnParams.Owner = projectileOwner;
-					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-					AColdQSplash* splash = World->SpawnActorDeferred<AColdQSplash>(splashClass, SpawnTransform);
-					if (splash)
+					if (character->IsSelectedTalent[5][0])
 					{
-						splash->damage = 20.f;
-						splash->particleDuration = 1.f;
-						splash->projectileOwner = projectileOwner;
-					}
-					splash->FinishSpawning(SpawnTransform);
+						FActorSpawnParameters SpawnParams;
+						FTransform SpawnTransform;
+						SpawnTransform.SetLocation(target->GetActorLocation());
+						SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+						SpawnParams.Owner = projectileOwner;
+						SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-					/*if (character->IsSelectedTalent[5][0])
-					{
 						AColdQSplash* splash = World->SpawnActorDeferred<AColdQSplash>(splashClass, SpawnTransform);
 						if (splash)
 						{
@@ -134,7 +125,7 @@ void AColdQProjectile::Tick(float DeltaTime)
 							particle->particleDuration = 1.f;
 						}
 						particle->FinishSpawning(SpawnTransform);
-					}*/
+					}
 				}
 			}
 
