@@ -21,8 +21,6 @@ MoveState::~MoveState()
 
 void MoveState::OnBegin()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MOVE BEGIN"));
-
 	if (stateMachine->playerController)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
@@ -66,8 +64,6 @@ void MoveState::OnRightClick()
 
 void MoveState::OnRightRelease()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MOVE RIGHTRELEASE"));
-	// Player is no longer pressing the input
 	bInputPressed = false;
 
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);

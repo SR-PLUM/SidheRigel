@@ -18,8 +18,6 @@ IdleState::~IdleState()
 
 void IdleState::OnBegin()
 {
-	UE_LOG(LogTemp, Warning, TEXT("IDLE BEGIN"));
-
 	if (stateMachine->playerController)
 	{
 		stateMachine->playerController->StopMovement();

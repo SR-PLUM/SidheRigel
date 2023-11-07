@@ -16,7 +16,7 @@ StunState::~StunState()
 
 void StunState::OnBegin()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stun"));
+
 }
 
 void StunState::Update(float DeltaTime)
