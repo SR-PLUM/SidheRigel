@@ -22,16 +22,20 @@ UFairyWingESkill::~UFairyWingESkill()
 
 void UFairyWingESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
+	character = Character;
+	skillstate = SkillState;
+
 	skillDelay = 1.f;
 	skillCooldown = 0;
-	skillMaxCooldown = 1.f;
+	if(isProjectileHeroHit == true && character->IsSelectedTalent[6][2])
+		skillMaxCooldown = 2.f;
+	else
+		skillMaxCooldown = 5.f;
 	range = 500.f;
+	requireMana = 10.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;
-
-	character = Character;
-	skillstate = SkillState;
 
 	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &USkill::OnTick, 0.1f, true);
 }
@@ -62,6 +66,7 @@ void UFairyWingESkill::OnUse(FHitResult Hit)
 					projectile->target = _target;
 					projectile->damage = colliderDamage;
 					projectile->projectileOwner = character;
+					isProjectileHeroHit = projectile->isHerohit;
 				}
 
 				projectile->FinishSpawning(SpawnTransform);

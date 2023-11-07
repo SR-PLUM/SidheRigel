@@ -25,6 +25,7 @@ void UFairyWingWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_Skill
 	skillCooldown = 0;
 	skillMaxCooldown = 1.f;
 	range = 500.f;
+	requireMana = 10.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = false;

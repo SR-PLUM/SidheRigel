@@ -5,6 +5,8 @@
 #include "SidheRigel/Interface/Team.h"
 #include "SidheRigel/Interface/CCable.h"
 
+#include "SidheRigel/SidheRigelCharacter.h"
+
 // Sets default values
 AFairyWingQCollider::AFairyWingQCollider()
 {
@@ -80,7 +82,11 @@ void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 			}
 			else if(team->GetTeam() == Cast<ITeam>(colliderOwner)->GetTeam())
 			{
-				// 같은 팀이면 이동속도 증가
+				if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
+				{
+					target->AddSpeed(FString(TEXT("FairyWing_Q_SpeedBuf")), increaseSpeed, increaseSpeedTime);
+					target->AddAttackSpeed(FString(TEXT("FairyWing_Q_AttackSpeedBuf")), increaseAttackSpeed);
+				}
 
 				if (IDamagable* target = Cast<IDamagable>(OtherActor))
 				{

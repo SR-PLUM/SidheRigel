@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Team.h"
+#include "SidheRigel/SidheRigelCharacter.h"
 
 // Sets default values
 AFairyWingEProjectile::AFairyWingEProjectile()
@@ -50,6 +51,8 @@ AFairyWingEProjectile::AFairyWingEProjectile()
 		ProjectileMovementComponent->Bounciness = 0.f;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
+
+	isHerohit = false;
 }
 
 // Called when the game starts or when spawned
@@ -78,6 +81,9 @@ void AFairyWingEProjectile::Tick(float DeltaTime)
 					if (IDamagable* enemy = Cast<IDamagable>(target))
 					{
 						enemy->TakeDamage(damage, projectileOwner);
+
+						if (target->ActorHasTag("Hero"))
+							isHerohit = true;
 					}
 						
 					Destroy();

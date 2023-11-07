@@ -42,4 +42,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* ProjectileMesh;
+
+public:
+	bool isHerohit;
 };
