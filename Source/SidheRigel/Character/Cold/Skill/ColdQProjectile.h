@@ -32,6 +32,10 @@ public:
 		float damage;
 	UPROPERTY()
 		float speed;
+	UPROPERTY()
+		float slowRate;
+	UPROPERTY()
+		float slowTime;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -39,4 +43,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* ProjectileMesh;
+
+	TSubclassOf<class AColdQParticle> particleClass;
 };

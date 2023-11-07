@@ -116,9 +116,6 @@ void ASidheRigelCharacter::BeginPlay()
 	InGameUI->CharacterStatus->InitCharacterStatus(this);
 	
 	InitStatSummary();
-	
-
-	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
 
 	detectRange->OnComponentBeginOverlap.AddDynamic(this, &ASidheRigelCharacter::OnEnterEnemy);
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
@@ -195,7 +192,7 @@ void ASidheRigelCharacter::ChangeTarget()
 
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
+	
 }
 
 void ASidheRigelCharacter::InitTalentLIst()
@@ -316,11 +313,6 @@ void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 void ASidheRigelCharacter::SetLevel(int32 _level)
 {
 	level = _level;
-
-	if ((level != 19) && (level % 3 == 1 || level == 20))
-	{
-		
-	}
 }
 
 int32 ASidheRigelCharacter::GetCurrentLevel()
@@ -337,6 +329,10 @@ void ASidheRigelCharacter::SetCurrentHP(float _hp)
 	{
 		currentHP = var_MaxHP;
 	}
+
+	InGameUI->CharacterStatus->UpdateHP();
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+
 }
 
 float ASidheRigelCharacter::GetCurrentHP()
@@ -347,6 +343,15 @@ float ASidheRigelCharacter::GetCurrentHP()
 void ASidheRigelCharacter::IE_GenerateHP()
 {
 	RestoreHP(GetGenerateHealthPoint());
+}
+
+void ASidheRigelCharacter::UseMana(float UseMP)
+{
+	currentMP -= UseMP;
+	if (currentMP < 0)
+		currentMP = 0;
+
+	InGameUI->CharacterStatus->UpdateMP();
 }
 
 float ASidheRigelCharacter::GetCurrentMP()
@@ -363,7 +368,7 @@ void ASidheRigelCharacter::GiveMoney(int32 _money)
 {
 	money += _money;
 
-	InGameUI->CharacterStatus->UpdateMoney();
+	//InGameUI->CharacterStatus->UpdateMoney();
 }
 
 int32 ASidheRigelCharacter::GetExp()
@@ -549,6 +554,27 @@ int32 ASidheRigelCharacter::GetProtectPower()
 	return res;
 }
 
+void ASidheRigelCharacter::AddDefencePoint(FString name, float value, float time)
+{
+	if (defencePoint.Contains(name))
+		return;
+
+	defencePoint.Add(name, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle buffTimer;
+	GetWorldTimerManager().SetTimer(buffTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (defencePoint.Find(name))
+			{
+				defencePoint.Remove(name);
+			}
+		})
+		, time, false);
+}
+
 float ASidheRigelCharacter::GetDefencePoint()
 {
 	float res = 0.f;
@@ -562,12 +588,38 @@ float ASidheRigelCharacter::GetDefencePoint()
 	return res;
 }
 
+void ASidheRigelCharacter::AddSpeed(FString name, float value, float time)
+{
+	if (speed.Contains(name))
+		return;
+
+	speed.Add(name, value);
+
+	if (time == -1)
+		return;
+
+	FTimerHandle buffTimer;
+	GetWorldTimerManager().SetTimer(buffTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			if (speed.Find(name))
+			{
+				speed.Remove(name);
+			}
+		})
+		, time, false);
+}
+
 float ASidheRigelCharacter::GetSpeed()
 {
 	float res = 0.f;
 	for (auto& value : speed)
 	{
 		res += value.Value;
+	}
+
+	for (auto& slowRate : speedRate)
+	{
+		res *= (1- slowRate.Value);
 	}
 
 	return res;
@@ -724,7 +776,7 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 
 void ASidheRigelCharacter::Stun(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
 	if (controller && controller->stateMachine)
 	{
 		controller->stateMachine->OnStun(time);
@@ -733,7 +785,7 @@ void ASidheRigelCharacter::Stun(float time)
 
 void ASidheRigelCharacter::Stop(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
 	if (controller && controller->stateMachine)
 	{
 		controller->stateMachine->OnStop(time);
@@ -765,7 +817,7 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 
 void ASidheRigelCharacter::Silence(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
 	if (controller && controller->stateMachine)
 	{
 		controller->stateMachine->OnSilence(time);
@@ -780,13 +832,13 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 	currentHP -= tmp;
 
 	UE_LOG(LogTemp, Warning, TEXT("CurrentHP : %f"), currentHP);
+
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{
 		causerCharacter->LifeSteal(damage);
 	}
 	if (currentHP <= 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Die"));
 		currentHP = 0;
 	}
 

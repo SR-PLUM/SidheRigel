@@ -86,10 +86,12 @@ void UCharacterStatus::UpdateMP()
 	MPBar->SetPercent(CharacterRef->GetCurrentMP() / CharacterRef->GetMaxMP());
 }
 
+/*
 void UCharacterStatus::UpdateMoney()
 {
 	MoneyText->SetText(FText::FromString(FString::FromInt(CharacterRef->GetMoney())));
 }
+*/
 
 UTexture2D* UCharacterStatus::CastPathToTexture2D(FString Path)
 {

@@ -8,6 +8,8 @@
 #include "SidheRigel/Interface/Movable.h"
 #include "SidheRigel/Interface/Team.h"
 
+#include "SidheRigel/Character/Cold/Skill/ColdWWall.h"
+
 // Sets default values
 AColdWProjectile::AColdWProjectile()
 {
@@ -55,6 +57,8 @@ void AColdWProjectile::BeginPlay()
 	GetWorldTimerManager().SetTimer(WProjectileTimer, 
 		FTimerDelegate::CreateLambda([=]()
 			{
+				if(wall)
+					wall->FinishSpawning(wallSpawnTransform);
 				Destroy();
 			}
 	), duration, false);

@@ -22,7 +22,7 @@ void AColdWParticle::BeginPlay()
 			{
 				Destroy();
 			}
-	), 2, false);
+	), particleDuration, false);
 }
 
 // Called every frame
