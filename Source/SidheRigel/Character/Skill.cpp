@@ -11,7 +11,7 @@ USkill::USkill()
 
 USkill::~USkill()
 {
-	UE_LOG(LogTemp,Warning, TEXT("DELETE USKILL"))
+	
 }
 
 void USkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)

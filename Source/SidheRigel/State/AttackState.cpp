@@ -16,8 +16,6 @@ AttackState::~AttackState()
 
 void AttackState::OnBegin()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ATTACK BEGIN"));
-	
 	if (stateMachine->playerController)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
