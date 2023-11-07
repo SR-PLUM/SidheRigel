@@ -21,6 +21,10 @@ public:
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
 
+	virtual float GetRange() override;
+	virtual float GetSkillDelay() override;
+	virtual float GetRequireMana() override;
+
 private:
 	TSubclassOf<class AColdEProjectile> projectileClass;
 	TSubclassOf<class AColdEDamageField> damageFieldClass;
@@ -29,4 +33,7 @@ private:
 	float colliderDamage = 10.f;
 
 	float talentDamage = 30.f;
+	float talentMana = 30.f;
+	float talentDelay = 0.5f;
+	float talentRange = 800.f;
 };

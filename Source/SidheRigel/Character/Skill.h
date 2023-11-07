@@ -25,6 +25,7 @@ public:
 	virtual float GetSkillDelay();
 	void SetCooldown();
 	float GetCooldown();
+	virtual float GetRequireMana();
 	bool IsInstantCast();
 	bool IsTargeting();
 	bool CanUse();

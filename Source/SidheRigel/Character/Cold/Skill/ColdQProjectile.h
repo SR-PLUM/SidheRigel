@@ -45,4 +45,5 @@ private:
 		class UStaticMeshComponent* ProjectileMesh;
 
 	TSubclassOf<class AColdQParticle> particleClass;
+	TSubclassOf<class AColdQSplash> splashClass;
 };

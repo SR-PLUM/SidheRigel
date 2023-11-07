@@ -136,15 +136,15 @@ void AColdCharacter::InitColdTalent()
 
 	//level 7
 	talentListArray[2].talentItems[0].talentName = "Cold_3_1";
-	talentListArray[2].talentItems[0].talentDescription = "E 느린 속도로 이동 가능";
+	talentListArray[2].talentItems[0].talentDescription = "E 범위증가";
 	talentListArray[2].talentItems[0].imgPath = "";
 
 	talentListArray[2].talentItems[1].talentName = "Cold_3_2";
-	talentListArray[2].talentItems[1].talentDescription = "E 모드 변경 속도 감소";
+	talentListArray[2].talentItems[1].talentDescription = "E 사거리증가";
 	talentListArray[2].talentItems[1].imgPath = "";
 
 	talentListArray[2].talentItems[2].talentName = "Cold_3_3";
-	talentListArray[2].talentItems[2].talentDescription = "E 일정 시간이 지날때 마다 사거리 증가";
+	talentListArray[2].talentItems[2].talentDescription = "E 후딜레이감소";
 	talentListArray[2].talentItems[2].imgPath = "";
 
 	//level 10
