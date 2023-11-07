@@ -18,8 +18,6 @@ MoveToAttackState::~MoveToAttackState()
 
 void MoveToAttackState::OnBegin()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MOVETOATTACK BEGIN"));
-
 	if (stateMachine->playerController)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());

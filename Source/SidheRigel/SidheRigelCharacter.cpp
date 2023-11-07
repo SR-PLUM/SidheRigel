@@ -117,10 +117,6 @@ void ASidheRigelCharacter::BeginPlay()
 	
 	InitStatSummary();
 
-	
-
-	UE_LOG(LogTemp, Warning, TEXT("Character BeginPlay"));
-
 	detectRange->OnComponentBeginOverlap.AddDynamic(this, &ASidheRigelCharacter::OnEnterEnemy);
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
@@ -196,7 +192,7 @@ void ASidheRigelCharacter::ChangeTarget()
 
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UseSkill"));
+	
 }
 
 void ASidheRigelCharacter::InitTalentLIst()
@@ -317,11 +313,6 @@ void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 void ASidheRigelCharacter::SetLevel(int32 _level)
 {
 	level = _level;
-
-	if ((level != 19) && (level % 3 == 1 || level == 20))
-	{
-		
-	}
 }
 
 int32 ASidheRigelCharacter::GetCurrentLevel()
@@ -804,14 +795,12 @@ void ASidheRigelCharacter::Silence(float time)
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
 	currentHP -= damage;
-	UE_LOG(LogTemp, Warning, TEXT("CurrentHP : %f"), currentHP);
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{
 		causerCharacter->LifeSteal(damage);
 	}
 	if (currentHP <= 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Die"));
 		currentHP = 0;
 	}
 
