@@ -21,6 +21,8 @@ public:
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
 
+	virtual float GetRange() override;
+	virtual float GetSkillDelay() override;
 	virtual float GetRequireMana() override;
 
 private:
@@ -32,4 +34,6 @@ private:
 
 	float talentDamage = 30.f;
 	float talentMana = 30.f;
+	float talentDelay = 0.5f;
+	float talentRange = 800.f;
 };

@@ -6,8 +6,10 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 
+#include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Team.h"
+#include "SidheRigel/Character/Cold/Skill/ColdEGroundFireEffect.h"
 
 // Sets default values
 AColdEDamageField::AColdEDamageField()
@@ -38,12 +40,20 @@ AColdEDamageField::AColdEDamageField()
 		{
 			ProjectileMesh->SetStaticMesh(Mesh.Object);
 		}
+	}
 
+	static ConstructorHelpers::FObjectFinder<UBlueprint> groundFireRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdEGroundFireEffect"));
+	if (groundFireRef.Object)
+	{
+		groundFireClass = (UClass*)groundFireRef.Object->GeneratedClass;
 	}
 }
 
 void AColdEDamageField::NotifyActorBeginOverlap(AActor* OtherActor)
 {
+	if (!canEnter)
+		return;
+
 	IDamagable* target = Cast<IDamagable>(OtherActor);
 	if (target)
 	{
@@ -60,6 +70,9 @@ void AColdEDamageField::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void AColdEDamageField::NotifyActorEndOverlap(AActor* OtherActor)
 {
+	if (!canEnter)
+		return;
+
 	IDamagable* target = Cast<IDamagable>(OtherActor);
 	if (target)
 	{
@@ -71,6 +84,12 @@ void AColdEDamageField::NotifyActorEndOverlap(AActor* OtherActor)
 void AColdEDamageField::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
+	if (Cast<ASidheRigelCharacter>(projectileOwner)->IsSelectedTalent[2][0])
+	{
+		SetActorScale3D(FVector(2, 2, 2));
+	}
 }
 
 // Called every frame
@@ -82,12 +101,37 @@ void AColdEDamageField::Tick(float DeltaTime)
 
 void AColdEDamageField::Explosion()
 {
+	canEnter = false;
+
 	for (auto target : targets)
 	{
 		if (target)
 		{
 			target->TakeDamage(damage, projectileOwner);
 		}
+	}
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = projectileOwner;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		AColdEGroundFireEffect* groundFire = World->SpawnActorDeferred<AColdEGroundFireEffect>(groundFireClass, SpawnTransform);
+		if (groundFire)
+		{
+			groundFire->damageArea = 100.f;
+			groundFire->damage = 15.f;
+			groundFire->damageCycle = 0.2f;
+			groundFire->duration = 1.5f;
+			groundFire->projectileOwner = projectileOwner;
+		}
+
+		groundFire->FinishSpawning(SpawnTransform);
 	}
 
 	Destroy();

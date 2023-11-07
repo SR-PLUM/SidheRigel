@@ -26,6 +26,8 @@ private:
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 	TArray<IDamagable*> targets;
+
+	TSubclassOf<class AColdEGroundFireEffect> groundFireClass;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -41,4 +43,6 @@ public:
 	float damage;
 
 	void Explosion();
+
+	bool canEnter = true;
 };
