@@ -377,7 +377,7 @@ void ASidheRigelCharacter::GiveMoney(int32 _money)
 {
 	money += _money;
 
-	InGameUI->CharacterStatus->UpdateMoney();
+	//InGameUI->CharacterStatus->UpdateMoney();
 }
 
 int32 ASidheRigelCharacter::GetExp()
