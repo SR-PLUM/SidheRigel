@@ -45,4 +45,6 @@ public:
 	void Explosion();
 
 	bool canEnter = true;
+
+	float talentKillThreshold = 100.f;
 };

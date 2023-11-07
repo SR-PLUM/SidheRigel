@@ -108,6 +108,14 @@ void AColdEDamageField::Explosion()
 		if (target)
 		{
 			target->TakeDamage(damage, projectileOwner);
+
+			if (Cast<ASidheRigelCharacter>(projectileOwner)->IsSelectedTalent[6][1])
+			{
+				if (target->GetHP() <= talentKillThreshold)
+				{
+					//처형 함수
+				}
+			}
 		}
 	}
 
