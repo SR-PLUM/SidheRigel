@@ -42,4 +42,7 @@ protected:
 private:
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* ColliderMesh;
+
+public:
+	bool isR2Upgrade;
 };

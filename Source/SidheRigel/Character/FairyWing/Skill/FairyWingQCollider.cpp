@@ -75,6 +75,17 @@ void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 					target->TakeDamage(damage, colliderOwner);
 				}
 
+				if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
+				{
+					if (target->isBombMarkAlreadyHit)
+					{
+						if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
+						{
+							enemy->TakeDamage(damage, colliderOwner);
+						}
+					}						
+				}
+
 				if (ICCable* target = Cast<ICCable>(OtherActor))
 				{
 					//target->Blind(blindTime);

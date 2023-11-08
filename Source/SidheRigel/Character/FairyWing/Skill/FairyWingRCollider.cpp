@@ -5,6 +5,9 @@
 #include "SidheRigel/Interface/CCable.h"
 #include "SidheRigel/Interface/Team.h"
 
+#include "SidheRigel/SidheRigelCharacter.h"
+#include "../../../Minion/Minion.h"
+
 // Sets default values
 AFairyWingRCollider::AFairyWingRCollider()
 {
@@ -74,7 +77,13 @@ void AFairyWingRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 				{
 					target->Stop(1.0f);
 					target->Silence(silenceTime);
-				}					
+				}
+
+				if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
+				{
+					if(isR2Upgrade)
+						target->MoveVector(this->GetActorLocation(), this->GetDistanceTo(target));
+				}
 			}
 		}		
 	}

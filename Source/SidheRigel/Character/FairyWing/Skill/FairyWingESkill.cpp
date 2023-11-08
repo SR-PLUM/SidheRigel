@@ -67,6 +67,16 @@ void UFairyWingESkill::OnUse(FHitResult Hit)
 					projectile->damage = colliderDamage;
 					projectile->projectileOwner = character;
 					isProjectileHeroHit = projectile->isHerohit;
+
+					if (character->IsSelectedTalent[2][2])
+						projectile->isSelectedTalent2_2 = true;
+					else
+						projectile->isSelectedTalent2_2 = false;
+
+					if (character->IsSelectedTalent[5][0])
+						projectile->isSelectedTalent5_0 = true;
+					else
+						projectile->isSelectedTalent5_0 = false;
 				}
 
 				projectile->FinishSpawning(SpawnTransform);

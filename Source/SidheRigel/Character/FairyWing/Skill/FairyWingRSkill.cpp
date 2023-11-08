@@ -65,6 +65,11 @@ void UFairyWingRSkill::OnUse(FHitResult Hit)
 				collider->silenceTime = colliderSilenceTime;
 			else
 				collider->silenceTime = static_cast<int>(0.f);
+
+			if (character->IsSelectedTalent[6][0])
+				collider->isR2Upgrade = true;
+			else
+				collider->isR2Upgrade = false;
 		}
 
 		collider->FinishSpawning(SpawnTransform);

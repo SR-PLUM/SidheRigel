@@ -21,7 +21,7 @@ public:
 	virtual void OnUse(FHitResult Hit) override;
 
 private:
-	float colliderDamage = 120.f;
+	float colliderDamage = 10.f;
 	float colliderDuration = 2.f;
 	float colliderForce = 10000.f;
 

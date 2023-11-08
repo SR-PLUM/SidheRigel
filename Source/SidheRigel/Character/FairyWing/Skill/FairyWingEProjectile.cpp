@@ -7,6 +7,7 @@
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Team.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "../../../Minion/Minion.h"
 
 // Sets default values
 AFairyWingEProjectile::AFairyWingEProjectile()
@@ -84,6 +85,50 @@ void AFairyWingEProjectile::Tick(float DeltaTime)
 
 						if (target->ActorHasTag("Hero"))
 							isHerohit = true;
+
+						if (ASidheRigelCharacter* enemyTarget = Cast<ASidheRigelCharacter>(target))
+						{
+							if (isSelectedTalent2_2 == true)
+							{
+								if (enemyTarget->isStopMarkAlreadyHit)
+								{
+									enemyTarget->isStopMarkAlreadyHit = false;
+									if (ICCable* CCtarget = Cast<ICCable>(target))
+									{
+										CCtarget->Stop(3.f);
+									}
+								}
+								else
+								{
+									enemyTarget->isStopMarkAlreadyHit = true;
+									FTimerHandle markDestroyTimer;
+									GetWorldTimerManager().SetTimer(markDestroyTimer,
+										FTimerDelegate::CreateLambda([=]()
+											{
+												enemyTarget->isStopMarkAlreadyHit = false;
+											}
+									), 10.f, false);
+								}
+							}
+
+							if (isSelectedTalent5_0 == true)
+							{
+								if (enemyTarget->isBombMarkAlreadyHit == false)
+								{
+									enemyTarget->isBombMarkAlreadyHit = true;
+								}
+								else
+								{
+									FTimerHandle markDestroyTimer;
+									GetWorldTimerManager().SetTimer(markDestroyTimer,
+										FTimerDelegate::CreateLambda([=]()
+											{
+												enemyTarget->isBombMarkAlreadyHit = false;
+											}
+									), 10.f, false);
+								}
+							}
+						}
 					}
 						
 					Destroy();

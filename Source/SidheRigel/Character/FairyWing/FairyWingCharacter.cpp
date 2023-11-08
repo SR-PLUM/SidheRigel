@@ -197,7 +197,7 @@ void AFairyWingCharacter::InitFairyWingTalent()
 
 	//level 20
 	talentListArray[6].talentItems[0].talentName = "FairyWing_7_1";
-	talentListArray[6].talentItems[0].talentDescription = "R 중앙으로 끌어당김 추가";
+	talentListArray[6].talentItems[0].talentDescription = "R 중앙으로 끌어당김";
 	talentListArray[6].talentItems[0].imgPath = "";
 
 	talentListArray[6].talentItems[1].talentName = "FairyWing_7_2";
