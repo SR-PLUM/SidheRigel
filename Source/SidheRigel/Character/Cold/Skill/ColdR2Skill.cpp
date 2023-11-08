@@ -21,10 +21,14 @@ UColdR2Skill::~UColdR2Skill()
 
 void UColdR2Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
-	skillDelay = 1.f;
-	skillCooldown = 0;
-	skillMaxCooldown = 110.f;
+	skillDelay = 1.5f;
+	skillCooldown = 0.f;
+	skillMaxCooldown = 2.f;
+	range = 5000.f;
+	requireMana = 0; //100
+
 	bIsInstantCast = false;
+	bIsTargeting = false;
 
 	character = Character;
 	skillstate = SkillState;
@@ -34,7 +38,7 @@ void UColdR2Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillStat
 
 void UColdR2Skill::OnUse(FHitResult Hit)
 {
-	FVector PawnToTarget = (Hit.Location - character->GetActorLocation()).GetSafeNormal();
+	FVector PawnToTarget = ((Hit.Location - character->GetActorLocation()) * FVector(1,1,0)).GetSafeNormal();
 	FVector MuzzleLocation = character->GetActorLocation() + PawnToTarget * 50;
 	FRotator MuzzleRotation = PawnToTarget.Rotation();
 
@@ -53,9 +57,8 @@ void UColdR2Skill::OnUse(FHitResult Hit)
 		if (projectile)
 		{
 			projectile->projectileOwner = character;
-			projectile->startLocation = MuzzleLocation;
-			projectile->forwardVector = PawnToTarget;
 			projectile->damage = colliderDamage;
+			projectile->duration = colliderDuration;
 		}
 
 		projectile->FinishSpawning(SpawnTransform);
