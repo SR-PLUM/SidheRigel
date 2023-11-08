@@ -21,8 +21,10 @@ public:
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
 
-protected:
-	float colliderDamage = 500.f;
+private:
+	float colliderDamage = 5000.f;
+	float colliderDuration = 1.f;
 
 	TSubclassOf<class AColdR2Projectile> projectileClass;
+	
 };

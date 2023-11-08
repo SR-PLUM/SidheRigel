@@ -8,6 +8,7 @@
 #include "SidheRigel/Character/Cold/Skill/ColdWSkill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdESkill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdR1Skill.h"
+#include "SidheRigel/Character/Cold/Skill/ColdR2Skill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEDamageField.h"
@@ -19,8 +20,6 @@
 // Sets default values
 AColdCharacter::AColdCharacter()
 {
-	ultType = E_UltType::Ult1;
-
 	for (int i = 0; i < 5; i++)
 	{
 		QMuzzle.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Muzzle ") + i));
@@ -52,7 +51,7 @@ void AColdCharacter::BeginPlay()
 	{
 		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
 	}
-	skills.Add({ E_SkillState::R_Ready, NewObject<UColdR1Skill>() });
+	skills.Add({ E_SkillState::R_Ready, NewObject<UColdR2Skill>() });
 	if (skills[E_SkillState::R_Ready] != nullptr)
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);

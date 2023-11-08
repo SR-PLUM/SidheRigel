@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ColdR2Projectile.generated.h"
+#include "ColdR2Laser.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API AColdR2Projectile : public AActor
+class SIDHERIGEL_API AColdR2Laser : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AColdR2Projectile();
+	AColdR2Laser();
 
 protected:
 	// Called when the game starts or when spawned
@@ -23,17 +23,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-public:
 	UPROPERTY()
-		AActor* projectileOwner;
-	UPROPERTY()
-		float damage;
-	UPROPERTY()
-		float duration = 1.f;
-	UPROPERTY(VisibleAnywhere)
-		class USplineMeshComponent* splineComponent;
-
-private:
-	TSubclassOf<class AColdR2Laser> laserClass;
+		float duration = 0.5f;
 
 };
