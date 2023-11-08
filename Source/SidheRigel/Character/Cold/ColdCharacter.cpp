@@ -8,6 +8,7 @@
 #include "SidheRigel/Character/Cold/Skill/ColdWSkill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdESkill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdR1Skill.h"
+#include "SidheRigel/Character/Cold/Skill/ColdR2Skill.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEDamageField.h"
@@ -19,8 +20,6 @@
 // Sets default values
 AColdCharacter::AColdCharacter()
 {
-	ultType = E_UltType::Ult1;
-
 	for (int i = 0; i < 5; i++)
 	{
 		QMuzzle.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Muzzle ") + i));
@@ -52,7 +51,7 @@ void AColdCharacter::BeginPlay()
 	{
 		skills[E_SkillState::E_Ready]->SetSkillProperty(this, E_SkillState::E_Ready);
 	}
-	skills.Add({ E_SkillState::R_Ready, NewObject<UColdR1Skill>() });
+	skills.Add({ E_SkillState::R_Ready, NewObject<UColdR2Skill>() });
 	if (skills[E_SkillState::R_Ready] != nullptr)
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
@@ -136,15 +135,15 @@ void AColdCharacter::InitColdTalent()
 
 	//level 7
 	talentListArray[2].talentItems[0].talentName = "Cold_3_1";
-	talentListArray[2].talentItems[0].talentDescription = "E 느린 속도로 이동 가능";
+	talentListArray[2].talentItems[0].talentDescription = "E 범위증가";
 	talentListArray[2].talentItems[0].imgPath = "";
 
 	talentListArray[2].talentItems[1].talentName = "Cold_3_2";
-	talentListArray[2].talentItems[1].talentDescription = "E 모드 변경 속도 감소";
+	talentListArray[2].talentItems[1].talentDescription = "E 사거리증가";
 	talentListArray[2].talentItems[1].imgPath = "";
 
 	talentListArray[2].talentItems[2].talentName = "Cold_3_3";
-	talentListArray[2].talentItems[2].talentDescription = "E 일정 시간이 지날때 마다 사거리 증가";
+	talentListArray[2].talentItems[2].talentDescription = "E 후딜레이감소";
 	talentListArray[2].talentItems[2].imgPath = "";
 
 	//level 10

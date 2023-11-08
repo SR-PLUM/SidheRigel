@@ -36,9 +36,6 @@ private:	//State
 	UPROPERTY()
 		FTimerHandle destroyTimer;
 
-public:		//Talent
-	void TestTalent();
-
 protected:	//Talent
 	void InitFairyWingTalent();
 

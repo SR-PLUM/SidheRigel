@@ -2,9 +2,12 @@
 
 
 #include "ColdR2Projectile.h"
-#include "GameFramework/ProjectileMovementComponent.h"
-#include "Components/SphereComponent.h"
+#include "Components/SplineMeshComponent.h"
+
 #include "SidheRigel/Interface/Damagable.h"
+#include "SidheRigel/Interface/Team.h"
+#include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Character/Cold/Skill/ColdR2Laser.h"
 
 // Sets default values
 AColdR2Projectile::AColdR2Projectile()
@@ -16,49 +19,66 @@ AColdR2Projectile::AColdR2Projectile()
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
 	}
-	if (!CollisionComponent)
+	if (!splineComponent)
 	{
-		// Use a sphere as a simple collision representation.
-		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		// Set the sphere's collision radius.
-		CollisionComponent->InitSphereRadius(15.0f);
-		// Set the root component to be the collision component.
-		RootComponent = CollisionComponent;
-	}
-	if (!ProjectileMesh)
-	{
-		ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
-		ProjectileMesh->SetupAttachment(CollisionComponent);
-
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Heros/Cold/Skill/SM_ColdR2Projectile"));
-		if (Mesh.Succeeded())
-		{
-			ProjectileMesh->SetStaticMesh(Mesh.Object);
-		}
-
-	}
-	if (!ProjectileMovementComponent)
-	{
-		// Use this component to drive this projectile's movement.
-		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 2000.f;
-		ProjectileMovementComponent->MaxSpeed = 2000.f;
-		ProjectileMovementComponent->bRotationFollowsVelocity = true;
-		ProjectileMovementComponent->bShouldBounce = false;
-		ProjectileMovementComponent->Bounciness = 0.f;
-		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+		splineComponent = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SplineComponent"));
+		RootComponent = splineComponent;
 	}
 
-	range = 2000;
+	static ConstructorHelpers::FObjectFinder<UBlueprint>laserRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdR2Laser"));
+	if (laserRef.Object)
+	{
+		laserClass = (UClass*)laserRef.Object->GeneratedClass;
+	}
 }
 
 // Called when the game starts or when spawned
 void AColdR2Projectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AColdR2Projectile::OnColliderOverlap);
+
+	FTimerHandle R2ProjectileTimer;
+	GetWorldTimerManager().SetTimer(R2ProjectileTimer,
+		FTimerDelegate::CreateLambda([=]()
+		{
+			TSet<AActor*> overlapActors;
+			splineComponent->GetOverlappingActors(overlapActors);
+
+			for (auto& item : overlapActors)
+			{
+				if (ITeam* teamActor = Cast<ITeam>(item))
+				{
+					if (teamActor->GetTeam() != Cast<ITeam>(projectileOwner)->GetTeam())
+					{
+						if (IDamagable* damagableActor = Cast<IDamagable>(item))
+						{
+							damagableActor->TakeDamage(damage, projectileOwner);
+						}
+					}
+				}
+			}
+
+			if (UWorld* World = GetWorld())
+			{
+				FActorSpawnParameters SpawnParams;
+				FTransform SpawnTransform;
+				SpawnTransform.SetLocation(GetActorLocation());
+				SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+				SpawnParams.Owner = projectileOwner;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				AColdR2Laser* laser = World->SpawnActorDeferred<AColdR2Laser>(laserClass, SpawnTransform);
+				if (laser)
+				{
+					laser->duration = 0.5f;
+				}
+				laser->FinishSpawning(SpawnTransform);
+			}
+			
+			Destroy();
+		}
+	), duration, false);
+
 }
 
 // Called every frame
@@ -66,26 +86,5 @@ void AColdR2Projectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if ((GetActorLocation() - startLocation).Length() > range)
-	{
-		Destroy();
-	}
-	else
-	{
-		ProjectileMovementComponent->Velocity = forwardVector * ProjectileMovementComponent->InitialSpeed;
-	}
-}
-
-void AColdR2Projectile::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor != projectileOwner)
-	{
-		if (IDamagable* target = Cast<IDamagable>(OtherActor))
-		{
-			target->TakeDamage(damage, projectileOwner);
-
-			Destroy();
-		}
-	}
 }
 

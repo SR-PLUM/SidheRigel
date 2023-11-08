@@ -88,3 +88,31 @@ void UColdESkill::OnUse(FHitResult Hit)
 		projectile->damageField->FinishSpawning(SpawnTransform);
 	}
 }
+
+float UColdESkill::GetRange()
+{
+	if (character->IsSelectedTalent[2][1])
+	{
+		return talentRange;
+	}
+
+	return range;
+}
+
+float UColdESkill::GetSkillDelay()
+{
+	if (character->IsSelectedTalent[2][2])
+	{
+		return talentDelay;
+	}
+
+	return skillDelay;
+}
+
+float UColdESkill::GetRequireMana()
+{
+	if (character->IsSelectedTalent[0][2])
+		return talentMana;
+
+	return requireMana;
+}

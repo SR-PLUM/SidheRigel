@@ -23,8 +23,9 @@ public:
 	virtual void OnTick();
 	virtual void OnUse(FHitResult Hit);
 	virtual float GetSkillDelay();
-	void SetCooldown();
+	virtual void SetCooldown();
 	float GetCooldown();
+	virtual float GetRequireMana();
 	bool IsInstantCast();
 	bool IsTargeting();
 	bool CanUse();

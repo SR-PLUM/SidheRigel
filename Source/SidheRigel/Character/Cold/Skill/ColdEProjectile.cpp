@@ -69,7 +69,7 @@ void AColdEProjectile::Tick(float DeltaTime)
 
 void AColdEProjectile::Launch(FVector startLoc, FVector targetLoc)
 {
-	FVector outVelocity = FVector::ZeroVector;   // °á°ú Velocity
+	FVector outVelocity = FVector::ZeroVector;   // ê²°ê³¼ Velocity
 
 	UWorld* World = GetWorld();
 

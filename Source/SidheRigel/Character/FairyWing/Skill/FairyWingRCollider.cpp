@@ -5,6 +5,9 @@
 #include "SidheRigel/Interface/CCable.h"
 #include "SidheRigel/Interface/Team.h"
 
+#include "SidheRigel/SidheRigelCharacter.h"
+#include "../../../Minion/Minion.h"
+
 // Sets default values
 AFairyWingRCollider::AFairyWingRCollider()
 {
@@ -67,13 +70,23 @@ void AFairyWingRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 		{
 			if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
 			{
-				IDamagable* target = Cast<IDamagable>(OtherActor);
-				if (target)
+				if (IDamagable* target = Cast<IDamagable>(OtherActor))
 					target->TakeDamage(damage, colliderOwner);
 
-				ICCable* CC = Cast<ICCable>(OtherActor);
-				if (CC)
-					CC->Stop(1.0f);
+				if (ICCable* target = Cast<ICCable>(OtherActor))
+				{
+					target->Stop(1.0f);
+					target->Silence(silenceTime);
+				}
+
+				if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
+				{
+					if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(colliderOwner))
+					{
+						if(owner->IsSelectedTalent[7][1])
+							target->MoveVector(this->GetActorLocation(), this->GetDistanceTo(target));
+					}						
+				}
 			}
 		}		
 	}
