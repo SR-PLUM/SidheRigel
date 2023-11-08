@@ -39,5 +39,5 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* ColliderMesh;
+		class UStaticMeshComponent* ColliderMesh;;
 };

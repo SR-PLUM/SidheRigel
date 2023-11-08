@@ -5,6 +5,8 @@
 #include "SidheRigel/Interface/CCable.h"
 #include "SidheRigel/Interface/Team.h"
 
+#include "SidheRigel/SidheRigelCharacter.h"
+
 // Sets default values
 AFairyWingWCollider::AFairyWingWCollider()
 {
@@ -71,6 +73,33 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 				IDamagable* target = Cast<IDamagable>(OtherActor);
 				if (target)
 					target->TakeDamage(damage, colliderOwner);
+
+				if (ASidheRigelCharacter* markTarget = Cast<ASidheRigelCharacter>(OtherActor))
+				{
+					if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(colliderOwner))
+					{
+						if (markTarget->isBombMarkAlreadyHit)
+						{
+							if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
+							{
+								enemy->TakeDamage(damage, colliderOwner);
+							}
+						}
+
+						if (owner->IsSelectedTalent[4][0])
+						{
+							//remove sight
+
+							FTimerHandle sightRestoreTimer;
+							GetWorldTimerManager().SetTimer(sightRestoreTimer,
+								FTimerDelegate::CreateLambda([=]()
+									{
+										//restore sight
+									}
+							), 2.f, false);
+						}
+					}
+				}
 
 				ICCable* CC = Cast<ICCable>(OtherActor);
 				if (CC)

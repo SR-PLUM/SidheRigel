@@ -25,6 +25,7 @@ void UFairyWingQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_Skill
 	skillCooldown = 0;
 	skillMaxCooldown = 1.f;
 	range = 500.f;
+	requireMana = 10.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = false;
@@ -55,9 +56,32 @@ void UFairyWingQSkill::OnUse(FHitResult Hit)
 		if (collider)
 		{
 			collider->colliderOwner = character;
-			collider->duration = colliderDuration;
-			collider->damage = colliderDamage;
 			collider->force = colliderForce;
+
+			if (character->IsSelectedTalent[0][0])
+				collider->duration = upgradeColliderDuration;
+			else
+				collider->duration = colliderDuration;
+
+			if (character->IsSelectedTalent[1][2])
+				collider->damage = upgradeColliderDamage;
+			else
+				collider->damage = colliderDamage;			
+
+			if(character->IsSelectedTalent[1][0])
+				collider->restoreHPValue = colliderRestoreHPValue;
+			else
+				collider->restoreHPValue = static_cast<int>(0.f);
+
+			if (character->IsSelectedTalent[1][1])
+				collider->blindTime = colliderBlindTime;
+			else
+				collider->blindTime = static_cast<int>(0.f);
+
+			if (character->IsSelectedTalent[5][1])
+				collider->increaseAttackSpeed = increaseColliderAttackSpeed;
+			else
+				collider->increaseAttackSpeed = static_cast<int>(0.f);
 		}
 
 		collider->FinishSpawning(SpawnTransform);

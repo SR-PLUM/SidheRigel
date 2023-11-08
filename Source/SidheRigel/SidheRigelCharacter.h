@@ -272,5 +272,9 @@ public:		//Interface Implement
 		virtual void MoveVector(FVector Direction, float Force) override;
 
 	virtual E_Team GetTeam();
+
+public:	//FairyWing E Skill Talent
+	bool isStopMarkAlreadyHit = false;
+	bool isBombMarkAlreadyHit = false;
 };
 

@@ -25,6 +25,7 @@ void UFairyWingWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_Skill
 	skillCooldown = 0;
 	skillMaxCooldown = 1.f;
 	range = 500.f;
+	requireMana = 10.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = false;
@@ -56,7 +57,12 @@ void UFairyWingWSkill::OnUse(FHitResult Hit)
 		{
 			collider->colliderOwner = character;
 			collider->duration = colliderDuration;
-			collider->damage = colliderDamage;
+
+			if (character->IsSelectedTalent[0][1])
+				collider->damage = upgradeColliderDamage;
+			else
+				collider->damage = colliderDamage;
+
 			collider->force = colliderForce;
 		}
 

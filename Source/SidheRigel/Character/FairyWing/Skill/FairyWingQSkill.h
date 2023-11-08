@@ -25,6 +25,14 @@ private:
 	float colliderDamage = 120.f;
 	float colliderDuration = 2.f;
 	float colliderForce = 10000.f;
+	float colliderRestoreHPValue = 100.f;
+	float increaseColliderSpeed = 500.f;
+	float increaseColliderSpeedTime = 5.f;
+
+	float upgradeColliderDamage = 240.f;
+	float upgradeColliderDuration = 4.f;
+	float increaseColliderAttackSpeed = 1.f;	
+	float colliderBlindTime = 1.f;
 
 	TSubclassOf<class AFairyWingQCollider> colliderClass;
 };

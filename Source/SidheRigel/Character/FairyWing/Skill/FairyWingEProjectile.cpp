@@ -6,6 +6,8 @@
 #include "Components/SphereComponent.h"
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Team.h"
+#include "SidheRigel/SidheRigelCharacter.h"
+#include "../../../Minion/Minion.h"
 
 // Sets default values
 AFairyWingEProjectile::AFairyWingEProjectile()
@@ -50,6 +52,8 @@ AFairyWingEProjectile::AFairyWingEProjectile()
 		ProjectileMovementComponent->Bounciness = 0.f;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
+
+	isHerohit = false;
 }
 
 // Called when the game starts or when spawned
@@ -78,6 +82,56 @@ void AFairyWingEProjectile::Tick(float DeltaTime)
 					if (IDamagable* enemy = Cast<IDamagable>(target))
 					{
 						enemy->TakeDamage(damage, projectileOwner);
+
+						if (ASidheRigelCharacter* enemyTarget = Cast<ASidheRigelCharacter>(target))
+							isHerohit = true;
+
+						if (ASidheRigelCharacter* enemyTarget = Cast<ASidheRigelCharacter>(target))
+						{
+							if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(projectileOwner))
+							{
+								if (owner->IsSelectedTalent[2][2] == true)
+								{
+									if (enemyTarget->isStopMarkAlreadyHit)
+									{
+										enemyTarget->isStopMarkAlreadyHit = false;
+										if (ICCable* CCtarget = Cast<ICCable>(target))
+										{
+											CCtarget->Stop(3.f);
+										}
+									}
+									else
+									{
+										enemyTarget->isStopMarkAlreadyHit = true;
+										FTimerHandle markDestroyTimer;
+										GetWorldTimerManager().SetTimer(markDestroyTimer,
+											FTimerDelegate::CreateLambda([=]()
+												{
+													enemyTarget->isStopMarkAlreadyHit = false;
+												}
+										), 10.f, false);
+									}
+								}
+
+								if (owner->IsSelectedTalent[5][0] == true)
+								{
+									if (enemyTarget->isBombMarkAlreadyHit == false)
+									{
+										enemyTarget->isBombMarkAlreadyHit = true;
+									}
+									else
+									{
+										FTimerHandle markDestroyTimer;
+										GetWorldTimerManager().SetTimer(markDestroyTimer,
+											FTimerDelegate::CreateLambda([=]()
+												{
+													enemyTarget->isBombMarkAlreadyHit = false;
+												}
+										), 10.f, false);
+									}
+								}
+							}							
+						}
 					}
 						
 					Destroy();

@@ -170,11 +170,11 @@ void AFairyWingCharacter::InitFairyWingTalent()
 	talentListArray[3].talentItems[0].imgPath = "";
 
 	//level 13
-	talentListArray[4].talentItems[0].talentName = "FairyWing_4_1";
+	talentListArray[4].talentItems[0].talentName = "FairyWing_5_1";
 	talentListArray[4].talentItems[0].talentDescription = "W 시야 제거";
 	talentListArray[4].talentItems[0].imgPath = "";
 
-	talentListArray[4].talentItems[1].talentName = "FairyWing_4_2";
+	talentListArray[4].talentItems[1].talentName = "FairyWing_5_2";
 	talentListArray[4].talentItems[1].talentDescription = "E 아군에게 사용시 치유";
 	talentListArray[4].talentItems[1].imgPath = "";
 
@@ -197,7 +197,7 @@ void AFairyWingCharacter::InitFairyWingTalent()
 
 	//level 20
 	talentListArray[6].talentItems[0].talentName = "FairyWing_7_1";
-	talentListArray[6].talentItems[0].talentDescription = "R 중앙으로 끌어당김 추가";
+	talentListArray[6].talentItems[0].talentDescription = "R 중앙으로 끌어당김";
 	talentListArray[6].talentItems[0].imgPath = "";
 
 	talentListArray[6].talentItems[1].talentName = "FairyWing_7_2";
