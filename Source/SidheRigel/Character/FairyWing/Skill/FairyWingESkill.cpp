@@ -22,20 +22,17 @@ UFairyWingESkill::~UFairyWingESkill()
 
 void UFairyWingESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
-	character = Character;
-	skillstate = SkillState;
-
 	skillDelay = 1.f;
 	skillCooldown = 0;
-	if(isProjectileHeroHit == true && character->IsSelectedTalent[6][2])
-		skillMaxCooldown = 2.f;
-	else
-		skillMaxCooldown = 5.f;
+	skillMaxCooldown = 5.f;
 	range = 500.f;
 	requireMana = 10.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;
+
+	character = Character;
+	skillstate = SkillState;
 
 	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &USkill::OnTick, 0.1f, true);
 }
@@ -67,16 +64,6 @@ void UFairyWingESkill::OnUse(FHitResult Hit)
 					projectile->damage = colliderDamage;
 					projectile->projectileOwner = character;
 					isProjectileHeroHit = projectile->isHerohit;
-
-					if (character->IsSelectedTalent[2][2])
-						projectile->isSelectedTalent2_2 = true;
-					else
-						projectile->isSelectedTalent2_2 = false;
-
-					if (character->IsSelectedTalent[5][0])
-						projectile->isSelectedTalent5_0 = true;
-					else
-						projectile->isSelectedTalent5_0 = false;
 				}
 
 				projectile->FinishSpawning(SpawnTransform);
@@ -84,4 +71,12 @@ void UFairyWingESkill::OnUse(FHitResult Hit)
 		}
 	
 	}
+}
+
+void UFairyWingESkill::SetCooldown()
+{
+	if (isProjectileHeroHit == true && character->IsSelectedTalent[6][2])
+		skillCooldown = 2.f;
+	else
+		skillCooldown = skillMaxCooldown;
 }

@@ -45,6 +45,4 @@ private:
 
 public:
 	bool isHerohit;
-	bool isSelectedTalent2_2;
-	bool isSelectedTalent5_0;
 };

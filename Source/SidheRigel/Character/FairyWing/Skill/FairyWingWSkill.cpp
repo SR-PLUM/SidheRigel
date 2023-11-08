@@ -64,11 +64,6 @@ void UFairyWingWSkill::OnUse(FHitResult Hit)
 				collider->damage = colliderDamage;
 
 			collider->force = colliderForce;
-
-			if (character->IsSelectedTalent[4][0])
-				collider->isSelectedTalent4_0 = true;
-			else
-				collider->isSelectedTalent4_0 = false;
 		}
 
 		collider->FinishSpawning(SpawnTransform);

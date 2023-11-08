@@ -19,6 +19,7 @@ public:
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
+	virtual void SetCooldown() override;
 
 private:	//Property
 	float colliderSpeed = 500.f;

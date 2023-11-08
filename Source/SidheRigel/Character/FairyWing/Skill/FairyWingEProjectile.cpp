@@ -83,51 +83,54 @@ void AFairyWingEProjectile::Tick(float DeltaTime)
 					{
 						enemy->TakeDamage(damage, projectileOwner);
 
-						if (target->ActorHasTag("Hero"))
+						if (ASidheRigelCharacter* enemyTarget = Cast<ASidheRigelCharacter>(target))
 							isHerohit = true;
 
 						if (ASidheRigelCharacter* enemyTarget = Cast<ASidheRigelCharacter>(target))
 						{
-							if (isSelectedTalent2_2 == true)
+							if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(projectileOwner))
 							{
-								if (enemyTarget->isStopMarkAlreadyHit)
+								if (owner->IsSelectedTalent[2][2] == true)
 								{
-									enemyTarget->isStopMarkAlreadyHit = false;
-									if (ICCable* CCtarget = Cast<ICCable>(target))
+									if (enemyTarget->isStopMarkAlreadyHit)
 									{
-										CCtarget->Stop(3.f);
+										enemyTarget->isStopMarkAlreadyHit = false;
+										if (ICCable* CCtarget = Cast<ICCable>(target))
+										{
+											CCtarget->Stop(3.f);
+										}
+									}
+									else
+									{
+										enemyTarget->isStopMarkAlreadyHit = true;
+										FTimerHandle markDestroyTimer;
+										GetWorldTimerManager().SetTimer(markDestroyTimer,
+											FTimerDelegate::CreateLambda([=]()
+												{
+													enemyTarget->isStopMarkAlreadyHit = false;
+												}
+										), 10.f, false);
 									}
 								}
-								else
-								{
-									enemyTarget->isStopMarkAlreadyHit = true;
-									FTimerHandle markDestroyTimer;
-									GetWorldTimerManager().SetTimer(markDestroyTimer,
-										FTimerDelegate::CreateLambda([=]()
-											{
-												enemyTarget->isStopMarkAlreadyHit = false;
-											}
-									), 10.f, false);
-								}
-							}
 
-							if (isSelectedTalent5_0 == true)
-							{
-								if (enemyTarget->isBombMarkAlreadyHit == false)
+								if (owner->IsSelectedTalent[5][0] == true)
 								{
-									enemyTarget->isBombMarkAlreadyHit = true;
+									if (enemyTarget->isBombMarkAlreadyHit == false)
+									{
+										enemyTarget->isBombMarkAlreadyHit = true;
+									}
+									else
+									{
+										FTimerHandle markDestroyTimer;
+										GetWorldTimerManager().SetTimer(markDestroyTimer,
+											FTimerDelegate::CreateLambda([=]()
+												{
+													enemyTarget->isBombMarkAlreadyHit = false;
+												}
+										), 10.f, false);
+									}
 								}
-								else
-								{
-									FTimerHandle markDestroyTimer;
-									GetWorldTimerManager().SetTimer(markDestroyTimer,
-										FTimerDelegate::CreateLambda([=]()
-											{
-												enemyTarget->isBombMarkAlreadyHit = false;
-											}
-									), 10.f, false);
-								}
-							}
+							}							
 						}
 					}
 						

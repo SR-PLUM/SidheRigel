@@ -74,29 +74,31 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 				if (target)
 					target->TakeDamage(damage, colliderOwner);
 
-				if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
+				if (ASidheRigelCharacter* markTarget = Cast<ASidheRigelCharacter>(OtherActor))
 				{
-					if (target->isBombMarkAlreadyHit)
+					if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(colliderOwner))
 					{
-						if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
+						if (markTarget->isBombMarkAlreadyHit)
 						{
-							enemy->TakeDamage(damage, colliderOwner);
+							if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
+							{
+								enemy->TakeDamage(damage, colliderOwner);
+							}
+						}
+
+						if (owner->IsSelectedTalent[4][0])
+						{
+							//remove sight
+
+							FTimerHandle sightRestoreTimer;
+							GetWorldTimerManager().SetTimer(sightRestoreTimer,
+								FTimerDelegate::CreateLambda([=]()
+									{
+										//restore sight
+									}
+							), 2.f, false);
 						}
 					}
-
-					if (isSelectedTalent4_0)
-					{
-						//remove sight
-
-						FTimerHandle sightRestoreTimer;
-						GetWorldTimerManager().SetTimer(sightRestoreTimer,
-							FTimerDelegate::CreateLambda([=]()
-								{
-									//restore sight
-								}
-						), 2.f, false);
-					}
-
 				}
 
 				ICCable* CC = Cast<ICCable>(OtherActor);
