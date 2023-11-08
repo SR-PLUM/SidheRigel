@@ -11,7 +11,7 @@ USkill::USkill()
 
 USkill::~USkill()
 {
-	UE_LOG(LogTemp,Warning, TEXT("DELETE USKILL"))
+	
 }
 
 void USkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
@@ -51,7 +51,7 @@ void USkill::OnTick()
 void USkill::OnUse(FHitResult Hit)
 {
 	//Implement Skill Detail
-	character->UseMana(requireMana);
+	character->UseMana(GetRequireMana());
 }
 
 float USkill::GetSkillDelay()
@@ -67,6 +67,11 @@ void USkill::SetCooldown()
 float USkill::GetCooldown()
 {
 	return skillCooldown;
+}
+
+float USkill::GetRequireMana()
+{
+	return requireMana;
 }
 
 bool USkill::IsInstantCast()
@@ -111,7 +116,7 @@ float USkill::GetRange()
 
 bool USkill::hasEnoughMana()
 {
-	if (requireMana > character->GetCurrentMP())
+	if (GetRequireMana() > character->GetCurrentMP())
 	{
 		return false;
 	}

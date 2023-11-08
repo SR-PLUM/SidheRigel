@@ -118,7 +118,10 @@ void UColdWSkill::OnUse(FHitResult Hit)
 		}
 		particle->FinishSpawning(SpawnTransform);
 
-		
+		if (character->IsSelectedTalent[6][0])
+		{
+			character->MoveVector(-PawnToTarget, colliderForce);
+		}
 	}
 }
 

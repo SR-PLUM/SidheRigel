@@ -60,6 +60,7 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* MaxMpText;
 
+	/*
 	//ItemSlot
 	UPROPERTY(meta = (BindWidget))
 		class UItemSlot* ItemSlot1;
@@ -85,6 +86,7 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* MoneyText;
+		*/
 
 public :
 	UPROPERTY()
@@ -96,7 +98,7 @@ public :
 	void UpdateLevel();
 	void UpdateHP();
 	void UpdateMP();
-	void UpdateMoney();
+	//void UpdateMoney();
 
 
 

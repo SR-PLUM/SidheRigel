@@ -11,7 +11,7 @@ class SIDHERIGEL_API State
 {
 public:
 	State(StateMachine* StateMachine);
-	~State();
+	virtual ~State();
 
 protected:
 	class StateMachine* stateMachine;

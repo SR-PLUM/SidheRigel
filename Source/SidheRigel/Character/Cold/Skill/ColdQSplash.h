@@ -4,30 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ColdEDamageField.generated.h"
+#include "ColdQSplash.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API AColdEDamageField : public AActor
+class SIDHERIGEL_API AColdQSplash : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AColdEDamageField();
+	AColdQSplash();
 
 private:
 	UPROPERTY(VisibleAnywhere)
 		class USphereComponent* CollisionComponent;
 
-	UPROPERTY(VisibleAnywhere)
-		class UStaticMeshComponent* ProjectileMesh;
+	UPROPERTY()
+		float elapsedTime = 0.f;
 
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
-
-	TArray<IDamagable*> targets;
-
-	TSubclassOf<class AColdEGroundFireEffect> groundFireClass;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,13 +32,10 @@ public:
 
 	UPROPERTY()
 		AActor* projectileOwner;
+	
+	UFUNCTION()
+		void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	float fieldArea;
-	float damage;
-
-	void Explosion();
-
-	bool canEnter = true;
-
-	float talentKillThreshold = 100.f;
+	float damage = 20.f;
+	float particleDuration = 1.f;
 };

@@ -167,7 +167,6 @@ void ATower::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 				}
 
 				attackList.Add(OtherActor);
-				UE_LOG(LogTemp, Warning, TEXT("ENTER ENEMY IN TOWER : %s"), *OtherActor->GetName());
 			}
 		}
 	}
@@ -192,7 +191,6 @@ void ATower::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Other
 					currentTarget = attackList.Top();
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("EXIT ENEMY IN TOWER : %s"), *OtherActor->GetName());
 		}
 	}
 }
