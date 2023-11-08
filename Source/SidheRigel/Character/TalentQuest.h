@@ -23,7 +23,9 @@ protected:
 	void OnCompleted();
 
 public:
-	void IncreaseQuestGoal(int32 value);
+	void InitGoalPoint(int32 Point);
+
+	void IncreaseQuestGoal(int32 Value);
 
 	bool GetQuestState();
 
