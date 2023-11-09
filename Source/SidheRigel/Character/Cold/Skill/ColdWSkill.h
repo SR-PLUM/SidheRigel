@@ -22,7 +22,6 @@ public:
 
 	float GetSkillDelay() override;
 
-private:
 	float colliderDamage = 120.f;
 	float colliderDuration = 0.1f;
 	float colliderForce = 2000.f;
