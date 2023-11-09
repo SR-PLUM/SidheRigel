@@ -57,10 +57,6 @@ void UseSkillState::OnBegin()
 			//Skill Cooldown
 			myCharacter->skills[stateMachine->currentSkill]->SetCooldown();
 
-			//Return Flag
-			stateMachine->bSkillReady = false;
-			stateMachine->currentSkill = E_SkillState::Skill_Null;
-
 			myCharacter->skillRange->SetVisibility(false);
 		}
 	}
@@ -74,6 +70,10 @@ void UseSkillState::Update(float DeltaTime)
 	}
 	else
 	{
+		//Return Flag
+		stateMachine->bSkillReady = false;
+		stateMachine->currentSkill = E_SkillState::Skill_Null;
+
 		stateMachine->ChangePreviousState();
 	}
 }
