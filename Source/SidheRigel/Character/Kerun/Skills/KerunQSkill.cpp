@@ -81,6 +81,7 @@ void UKerunQSkill::OnUse(FHitResult Hit)
 {
 	character->AddAttackSpeed("QSkill", MaxAttackSpeed);
 	IsWorking = true;
+	BuffDuration = MaxDuration;
 }
 
 void UKerunQSkill::OnTick()

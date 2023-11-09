@@ -26,7 +26,7 @@ private:	//Property
 
 public :
 	int32 AttackCount = 0;
-	int32 MaxAttackCount = 2;
+	int32 MaxAttackCount = 3;
 
 	float MaxDuration = 5.0f;
 	float BuffDuration = 0.f;

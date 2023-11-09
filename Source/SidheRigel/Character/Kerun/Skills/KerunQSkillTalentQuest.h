@@ -15,7 +15,7 @@ class SIDHERIGEL_API UKerunQSkillTalentQuest : public UTalentQuest
 	GENERATED_BODY()
 
 protected:
-	int32 UpgradeQAttackCount = 4;
+	int32 UpgradeQAttackCount = 5;
 
 	UPROPERTY()
 		class UKerunQSkill* QSkillRef;

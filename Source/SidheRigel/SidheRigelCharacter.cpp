@@ -705,8 +705,6 @@ void ASidheRigelCharacter::AddBarrierAmount(float value)
 			barrierAmount = 0.f;
 		})
 		, barrierDuration, false);
-
-	UE_LOG(LogTemp, Error, TEXT("barrierAmount :: %f"), barrierAmount);
 }
 
 void ASidheRigelCharacter::DecreaseBarrierAmount(float value)
@@ -810,8 +808,8 @@ void ASidheRigelCharacter::Stun(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		float Time = time * (GetEndurance() / 100.f);
-		sidheRigelController->stateMachine->OnStun(Time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnStun(totalTime);
 	}
 }
 
@@ -819,8 +817,8 @@ void ASidheRigelCharacter::Stop(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		float Time = time * (GetEndurance() / 100.f);
-		sidheRigelController->stateMachine->OnStop(Time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnStop(totalTime);
 	}
 }
 
@@ -836,7 +834,7 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 	if (time == -1)
 		return;
 
-	float Time = time * (GetEndurance() / 100.f);
+	float totalTime = (1 - (GetEndurance() / 100.f)) * time;
 
 	FTimerHandle SlowTimer;
 	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
@@ -846,15 +844,15 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 				speedRate.Remove(key);
 			}
 		})
-		, Time, false);
+		, totalTime, false);
 }
 
 void ASidheRigelCharacter::Silence(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		float Time = time * (GetEndurance() / 100.f);
-		sidheRigelController->stateMachine->OnSilence(Time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnSilence(totalTime);
 	}
 }
 
@@ -864,8 +862,6 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 	DecreaseBarrierAmount(damage);
 
 	currentHP -= tmp;
-
-	UE_LOG(LogTemp, Warning, TEXT("CurrentHP : %f"), currentHP);
 
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{

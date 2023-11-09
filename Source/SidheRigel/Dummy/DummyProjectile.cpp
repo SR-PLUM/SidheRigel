@@ -71,7 +71,6 @@ void ADummyProjectile::Tick(float DeltaTime)
 
 			if (FMath::RandRange(0, 1) <= criticalRate)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("CRITICAL!"));
 				totalAttackDamage *= criticalDamage;
 			}
 
