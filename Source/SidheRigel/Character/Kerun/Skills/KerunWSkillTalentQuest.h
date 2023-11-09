@@ -17,11 +17,9 @@ class SIDHERIGEL_API UKerunWSkillTalentQuest : public UTalentQuest
 protected:
 	int32 AddEStackAmount = 5;
 
-	UPROPERTY()
-		class AKerunCharacter* Character;
-
 public:
-	void InitTalentQuestProperty(class AKerunCharacter* character);
+	inline void Initialize();
+	void InitTalentQuestProperty();
 	
 	int32 GetEStackAmount();
 };

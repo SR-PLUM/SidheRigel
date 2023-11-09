@@ -3,6 +3,13 @@
 #include "KerunQSkill.h"
 #include "../KerunCharacter.h"
 #include "TimerManager.h"
+#include "KerunQSkillTalentQuest.h"
+
+UKerunQSkill::UKerunQSkill()
+{
+	QSkillTalentQuest = NewObject<UKerunQSkillTalentQuest>();
+	QSkillTalentQuest->Initialize(this);
+}
 
 void UKerunQSkill::QuitQSkill()
 {
@@ -32,6 +39,14 @@ void UKerunQSkill::ApplyTalentWhenFullComboHits(AActor* target)
 			
 		}
 
+		if (character->IsSelectedTalent[0][0])
+		{
+			if (!(QSkillTalentQuest->GetQuestState()))
+			{
+				QSkillTalentQuest->IncreaseQuestGoal(1);
+			}
+		}
+
 		QuitQSkill();
 
 	}
@@ -41,6 +56,11 @@ float UKerunQSkill::GetQDamage()
 {
 	float amount = AttackCount * Kerun02UpgradeAmount;
 	return amount;
+}
+
+void UKerunQSkill::SetMaxAttackCount(int32 Value)
+{
+	MaxAttackCount = Value;
 }
 
 void UKerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)

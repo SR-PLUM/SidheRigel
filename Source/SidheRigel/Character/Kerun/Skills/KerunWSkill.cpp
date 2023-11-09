@@ -13,6 +13,7 @@
 UKerunWSkill::UKerunWSkill()
 {
 	WSkillTalentQuest = NewObject<UKerunWSkillTalentQuest>();
+	WSkillTalentQuest->Initialize();
 }
 
 void UKerunWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)

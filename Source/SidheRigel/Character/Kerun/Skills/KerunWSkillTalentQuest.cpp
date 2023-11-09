@@ -3,10 +3,13 @@
 
 #include "KerunWSkillTalentQuest.h"
 
-void UKerunWSkillTalentQuest::InitTalentQuestProperty(AKerunCharacter* character)
+inline void UKerunWSkillTalentQuest::Initialize()
 {
-	Character = character;
+	InitTalentQuestProperty();
+}
 
+void UKerunWSkillTalentQuest::InitTalentQuestProperty()
+{
 	GoalPoint = 20;
 }
 
