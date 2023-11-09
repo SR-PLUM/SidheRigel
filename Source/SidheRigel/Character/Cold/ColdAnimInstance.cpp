@@ -55,6 +55,20 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 				//In AnimationTime
 				if (ColdStateMachine->skillDelay > 0)
 				{
+					//Q Skill
+					if (!isQUse && ColdStateMachine->currentSkill == E_SkillState::Q_Ready)
+					{
+						isQUse = true;
+						qAnimationDuration = ColdCharacter->skills[E_SkillState::Q_Ready]->GetSkillDelay();
+
+						ColdCharacter->GetWorldTimerManager().SetTimer(qAnimationTimer,
+							FTimerDelegate::CreateLambda([&]()
+								{
+									isQUse = false;
+								}
+						), qAnimationDuration, false);
+					}
+
 					//W Skill
 					if (!isWUse && ColdStateMachine->currentSkill == E_SkillState::W_Ready)
 					{
@@ -67,6 +81,20 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 									isWUse = false;
 								}
 						), wAnimationDuration, false);
+					}
+
+					//E Skill
+					if (!isEUse && ColdStateMachine->currentSkill == E_SkillState::E_Ready)
+					{
+						isEUse = true;
+						eAnimationDuration = ColdCharacter->skills[E_SkillState::E_Ready]->GetSkillDelay();
+
+						ColdCharacter->GetWorldTimerManager().SetTimer(eAnimationTimer,
+							FTimerDelegate::CreateLambda([&]()
+								{
+									isEUse = false;
+								}
+						), eAnimationDuration, false);
 					}
 
 					//R Skill
