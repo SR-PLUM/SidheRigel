@@ -35,7 +35,6 @@ void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	stateMachine->Update(DeltaTime);
 }
 
 void ASidheRigelPlayerController::SetupInputComponent()
