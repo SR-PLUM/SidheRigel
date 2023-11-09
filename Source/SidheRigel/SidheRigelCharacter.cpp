@@ -107,6 +107,8 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	sidheRigelController = Cast<ASidheRigelPlayerController>(GetController());
+
 	InitProperty();
 
 	AInGameMapScriptActor* LevelScriptActor = Cast<AInGameMapScriptActor>(GetWorld()->GetLevelScriptActor());
@@ -123,6 +125,8 @@ void ASidheRigelCharacter::BeginPlay()
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 
 	DisplayTalentList(0);
+
+	GetWorldTimerManager().SetTimer(stateMachineTimer, this, &ASidheRigelCharacter::CustomTick, 0.05f, true);
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -671,10 +675,9 @@ float ASidheRigelCharacter::GetRemainDieCooldown()
 {
 	float res = 0;
 
-	auto myController = Cast<ASidheRigelPlayerController>(GetController());
-	if (myController)
+	if (sidheRigelController)
 	{
-		res = myController->stateMachine->DieTime;
+		res = sidheRigelController->stateMachine->DieTime;
 	}
 	return res;
 }
@@ -758,21 +761,27 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 	RestoreHP(damage * _lifeSteal);
 }
 
+void ASidheRigelCharacter::CustomTick()
+{
+	if (sidheRigelController && sidheRigelController->stateMachine)
+	{
+		sidheRigelController->stateMachine->Update();
+	}
+}
+
 void ASidheRigelCharacter::Stun(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
-	if (controller && controller->stateMachine)
+	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		controller->stateMachine->OnStun(time);
+		sidheRigelController->stateMachine->OnStun(time);
 	}
 }
 
 void ASidheRigelCharacter::Stop(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
-	if (controller && controller->stateMachine)
+	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		controller->stateMachine->OnStop(time);
+		sidheRigelController->stateMachine->OnStop(time);
 	}
 }
 
@@ -801,10 +810,9 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 
 void ASidheRigelCharacter::Silence(float time)
 {
-	ASidheRigelPlayerController* controller = Cast<ASidheRigelPlayerController>(GetController());
-	if (controller && controller->stateMachine)
+	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		controller->stateMachine->OnSilence(time);
+		sidheRigelController->stateMachine->OnSilence(time);
 	}
 }
 

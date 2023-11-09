@@ -68,8 +68,9 @@ State* StateMachine::GetCurrentState()
 }
 
 //Timer
-void StateMachine::Update(float DeltaTime)
+void StateMachine::Update()
 {
+	float DeltaTime = 0.05f;
 	if (attackDelay > 0)
 	{
 		attackDelay -= DeltaTime;

@@ -68,7 +68,7 @@ public:	//Timer
 	State* GetCurrentState();
 
 public:
-	void Update(float DeltaTime);
+	void Update();
 	void OnRightClick();
 	void OnRightRelease();
 	void OnLeftClick();
