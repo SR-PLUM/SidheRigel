@@ -59,6 +59,14 @@ void AKerunCharacter::BeginPlay()
 void AKerunCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsSelectedTalent[4][1])
+	{
+		if (!(endurance.Contains("Talent41")))
+		{
+			endurance.Add("Talent41", 20);
+		}
+	}
 }
 
 void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

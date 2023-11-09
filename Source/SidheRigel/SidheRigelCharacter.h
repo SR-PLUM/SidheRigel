@@ -220,6 +220,7 @@ public:		//Getter, Setter
 	float GetMaxMP();
 	int32 GetLifeSteal();
 	int32 GetProtectPower();
+	int32 GetEndurance();
 	void AddDefencePoint(FString name, float value, float time);
 	float GetDefencePoint();
 	void AddSpeed(FString name, float value, float time);

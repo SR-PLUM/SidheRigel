@@ -75,6 +75,7 @@ public:
 	void SetEAddAmount(int32 Value);
 
 protected:	//Talent
+	int32 KerunTalent40EnduranceAmount = 20;
 
 	void InitKerunTalent();
 	
