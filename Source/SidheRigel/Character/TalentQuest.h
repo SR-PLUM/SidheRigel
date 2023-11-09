@@ -20,9 +20,9 @@ protected:
 	int32 GoalPoint;
 	int32 CurrentPoint = 0;
 	
-	void OnCompleted();
-
 public:
+	virtual void OnCompleted();
+
 	void InitGoalPoint(int32 Point);
 
 	void IncreaseQuestGoal(int32 Value);

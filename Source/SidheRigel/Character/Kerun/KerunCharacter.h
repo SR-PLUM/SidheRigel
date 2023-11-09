@@ -48,7 +48,8 @@ public:
 
 protected: //Passive E
 
-	const int EMaxStack = 25;
+	int EMaxStack = 25;
+	int EAddAmount = 1;
 	const float EDuration = 3.5f;
 	const float UpgradeEDuration = 5.0f;
 	const float EHealthRate = 1.0f;
@@ -60,6 +61,9 @@ protected: //Passive E
 	UPROPERTY()
 	FTimerHandle ETimer;
 
+	UPROPERTY()
+	class UKerunESkillTalentQuest* ESkillTalentQuest;
+
 	float GetEDuration();
 	float GetEHealthRate();
 	void StartETimer();
@@ -67,6 +71,8 @@ protected: //Passive E
 
 public:
 	void ImproveEStack(int Count);
+	void SetEMaxStack(int32 Value);
+	void SetEAddAmount(int32 Value);
 
 protected:	//Talent
 	void InitKerunTalent();

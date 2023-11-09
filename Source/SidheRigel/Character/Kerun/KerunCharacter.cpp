@@ -6,6 +6,7 @@
 #include "Skills/KerunQSkill.h"
 #include "Skills/KerunWSkill.h"
 #include "Skills/KerunR1Skill.h"
+#include "Skills/KerunESkillTalentQuest.h"
 
 #include "KerunAttackProjectile.h"
 #include "KerunAnimInstance.h"
@@ -51,6 +52,8 @@ void AKerunCharacter::BeginPlay()
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
 
+	ESkillTalentQuest = NewObject<UKerunESkillTalentQuest>();
+	ESkillTalentQuest->InitTalentQuestProperty(this);
 }
 
 void AKerunCharacter::Tick(float DeltaTime)
@@ -65,7 +68,7 @@ void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AKerunCharacter::InitProperty()
 {
-	level = 1;
+	level = 6;
 	range.Add("Debug", 200.f);
 	attackDamage.Add("Debug", 5.f);
 	attackSpeed.Add("Debug", 1.f);
@@ -123,7 +126,7 @@ void AKerunCharacter::Attack(AActor* target)
 				TmpProjectile->AttackDamage = GetAttackDamage() + QSkillRef->GetQDamage();
 			}
 
-			ImproveEStack(1);
+			ImproveEStack(EAddAmount);
 
 			QSkillRef->ApplyTalentWhenFullComboHits(target);
 			
@@ -167,13 +170,28 @@ void AKerunCharacter::ImproveEStack(int Count)
 {
 
 	ECurrentStack += Count;
-
+	
 	if (ECurrentStack > EMaxStack)
 	{
 		ECurrentStack = EMaxStack;
+		if (IsSelectedTalent[2][0])
+		{
+			ESkillTalentQuest->OnCompleted();
+		}
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("EStack :: %d"), ECurrentStack);
 	StartETimer();
+}
+
+void AKerunCharacter::SetEMaxStack(int32 Value)
+{
+	EMaxStack = Value;
+}
+
+void AKerunCharacter::SetEAddAmount(int32 Value)
+{
+	EAddAmount = Value;
 }
 
 void AKerunCharacter::InitKerunTalent()
