@@ -23,8 +23,6 @@ protected:
 public:
 	virtual void OnCompleted();
 
-	void InitGoalPoint(int32 Point);
-
 	void IncreaseQuestGoal(int32 Value);
 
 	bool GetQuestState();

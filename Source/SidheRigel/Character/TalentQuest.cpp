@@ -8,14 +8,14 @@ void UTalentQuest::OnCompleted()
 	IsCompleted = true;
 }
 
-void UTalentQuest::InitGoalPoint(int32 Point)
-{
-	GoalPoint = Point;
-}
-
 void UTalentQuest::IncreaseQuestGoal(int32 Value)
 {
 	CurrentPoint += Value;
+
+	if (CurrentPoint >= GoalPoint)
+	{
+		OnCompleted();
+	}
 }
 
 bool UTalentQuest::GetQuestState()
