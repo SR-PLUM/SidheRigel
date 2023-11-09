@@ -6,6 +6,7 @@
 #include "SidheRigel/Interface/CCable.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "../../../Minion/Minion.h"
 
 // Sets default values
 AFairyWingQCollider::AFairyWingQCollider()
@@ -83,7 +84,15 @@ void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 						{
 							enemy->TakeDamage(damage, colliderOwner);
 						}
-					}						
+					}
+
+					if (target->isWSkillAlreadyHit)
+					{
+						if (ICCable* CCtarget = Cast<ICCable>(OtherActor))
+						{
+							CCtarget->Stun(3.f);
+						}
+					}
 				}
 
 				if (ICCable* target = Cast<ICCable>(OtherActor))

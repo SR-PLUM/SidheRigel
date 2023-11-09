@@ -20,13 +20,36 @@ public:
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnUse(FHitResult Hit) override;
 	virtual void SetCooldown() override;
+	virtual bool CanUse() override;
+	virtual void OnTick() override;
 
 private:	//Property
 	float colliderSpeed = 500.f;
 	float colliderDelay = 0.1f;
 	float colliderDamage = 20.f;
 
+	float addAttackDamage = 100.f;
+
+	float collideSlowValue = 0.2f;
+	float collideSlowTime = 1.f;
+
 	bool isProjectileHeroHit;
 
 	TSubclassOf<class AFairyWingEProjectile> projectileClass;
+
+public:
+	bool isWorking = false;
+	
+	float MaxDuration = 5.0f;
+	float BuffDuration = 0.f;
+
+	int32 AttackCount = 0;
+	int32 MaxAttackCount = 1;
+
+
+public:
+
+	void QuitESkill();
+
+	bool CheckAttackCount();
 };

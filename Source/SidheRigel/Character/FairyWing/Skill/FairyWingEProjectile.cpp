@@ -83,6 +83,11 @@ void AFairyWingEProjectile::Tick(float DeltaTime)
 					{
 						enemy->TakeDamage(damage, projectileOwner);
 
+						if (ICCable* CCtarget = Cast<ICCable>(target))
+						{
+							CCtarget->Slow(slowTime, slowValue, "FairyWing_E");
+						}
+
 						if (ASidheRigelCharacter* enemyTarget = Cast<ASidheRigelCharacter>(target))
 							isHerohit = true;
 
@@ -130,12 +135,24 @@ void AFairyWingEProjectile::Tick(float DeltaTime)
 										), 10.f, false);
 									}
 								}
+
+								
 							}							
 						}
 					}
 						
 					Destroy();
 				}
+			}
+			else if (team->GetTeam() == Cast<ITeam>(projectileOwner)->GetTeam())
+			{
+				if ((this->GetDistanceTo(target)) < 100.f)
+				{
+					if (IDamagable* healTarget = Cast<IDamagable>(target))
+						healTarget->RestoreHP(100.f);
+
+					Destroy();
+				}				
 			}
 		}		
 	}

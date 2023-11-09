@@ -203,6 +203,8 @@ public:		//Getter, Setter
 
 	float GetRange();
 	float GetAttackDamage();
+	void AddAttackDamage(FString name, float value);
+	void RemoveAttackDamage(FString name);
 	int32 GetCriticalRate();
 	int32 GetCriticalDamage();
 	float GetAttackSpeed();
@@ -276,5 +278,8 @@ public:		//Interface Implement
 public:	//FairyWing E Skill Talent
 	bool isStopMarkAlreadyHit = false;
 	bool isBombMarkAlreadyHit = false;
+
+public: //FairyWing W Skill Talent
+	bool isWSkillAlreadyHit = false;
 };
 

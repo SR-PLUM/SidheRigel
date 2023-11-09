@@ -5,6 +5,7 @@
 
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingQCollider.h"
+#include "Components/SphereComponent.h"
 
 UFairyWingQSkill::UFairyWingQSkill()
 {
@@ -55,6 +56,11 @@ void UFairyWingQSkill::OnUse(FHitResult Hit)
 		AFairyWingQCollider* collider = World->SpawnActorDeferred<AFairyWingQCollider>(colliderClass, SpawnTransform);
 		if (collider)
 		{
+			if (character->IsSelectedTalent[4][2])
+			{
+				collider->CollisionComponent->SetRelativeScale3D(FVector(2, 2, 2));
+			}
+
 			collider->colliderOwner = character;
 			collider->force = colliderForce;
 

@@ -118,6 +118,13 @@ void AFairyWingCharacter::Attack(AActor* target)
 			{
 				Projectile->Target = target;
 				InitProjectileProperty(Projectile);
+
+				UFairyWingESkill* ESkillRef = Cast<UFairyWingESkill>(skills[E_SkillState::E_Ready]);
+
+				if (ESkillRef->isWorking)
+				{
+					ESkillRef->AttackCount += 1;
+				}
 			}
 		}
 	}
@@ -135,7 +142,7 @@ void AFairyWingCharacter::InitFairyWingTalent()
 	talentListArray[0].talentItems[1].imgPath = "";
 
 	talentListArray[0].talentItems[2].talentName = "FairyWing_1_3";
-	talentListArray[0].talentItems[2].talentDescription = "E 맞은사람 시야 제공";
+	talentListArray[0].talentItems[2].talentDescription = "E 슬로우 추가";
 	talentListArray[0].talentItems[2].imgPath = "";
 
 	//level 4
@@ -153,11 +160,11 @@ void AFairyWingCharacter::InitFairyWingTalent()
 
 	//level 7
 	talentListArray[2].talentItems[0].talentName = "FairyWing_3_1";
-	talentListArray[2].talentItems[0].talentDescription = "W 마지막 공격 피흡";
+	talentListArray[2].talentItems[0].talentDescription = "W 피흡";
 	talentListArray[2].talentItems[0].imgPath = "";
 
 	talentListArray[2].talentItems[1].talentName = "FairyWing_3_2";
-	talentListArray[2].talentItems[1].talentDescription = "Q와 W를 동시에 맞추면 속박";
+	talentListArray[2].talentItems[1].talentDescription = "W를 맞추고 Q를 맞추면 기절";
 	talentListArray[2].talentItems[1].imgPath = "";
 
 	talentListArray[2].talentItems[2].talentName = "FairyWing_3_3";
@@ -201,7 +208,7 @@ void AFairyWingCharacter::InitFairyWingTalent()
 	talentListArray[6].talentItems[0].imgPath = "";
 
 	talentListArray[6].talentItems[1].talentName = "FairyWing_7_2";
-	talentListArray[6].talentItems[1].talentDescription = "W 마지막 공격의 데미지 감소 및 상시 적용";
+	talentListArray[6].talentItems[1].talentDescription = "W 마지막 공격의 데미지, 둔화율 증가";
 	talentListArray[6].talentItems[1].imgPath = "";
 
 	talentListArray[6].talentItems[2].talentName = "FairyWing_7_3";

@@ -6,6 +6,7 @@
 #include "SidheRigel/Interface/Team.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "../../../Minion/Minion.h"
 
 // Sets default values
 AFairyWingWCollider::AFairyWingWCollider()
@@ -78,6 +79,23 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 				{
 					if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(colliderOwner))
 					{
+						if (owner->IsSelectedTalent[2][0])
+						{
+							owner->RestoreHP(100.f);
+						}
+
+						if (1)
+						{
+							markTarget->isWSkillAlreadyHit = true;
+							FTimerHandle markDestroyTimer;
+							GetWorldTimerManager().SetTimer(markDestroyTimer,
+								FTimerDelegate::CreateLambda([=]()
+									{
+										markTarget->isWSkillAlreadyHit = false;
+									}
+							), 5.f, false);
+						}
+
 						if (markTarget->isBombMarkAlreadyHit)
 						{
 							if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
@@ -103,7 +121,7 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 
 				ICCable* CC = Cast<ICCable>(OtherActor);
 				if (CC)
-					CC->Slow(1.0f, 0.5f, "FairyWing_W");
+					CC->Slow(1.0f, slowValue, "FairyWing_W");
 			}			
 		}		
 	}
