@@ -79,9 +79,9 @@ public:
 		float maxAttackDelay = 1.5f;
 
 	UPROPERTY()
-		float hp = 477;
+		float hp = 250;
 	UPROPERTY()
-		float maxHp = 477;
+		float maxHp = 250;
 
 	UPROPERTY()
 		int32 gold = 20;

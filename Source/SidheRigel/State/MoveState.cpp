@@ -29,6 +29,8 @@ void MoveState::OnBegin()
 		bInputPressed = true;
 		//previous move will stop
 		stateMachine->playerController->StopMovement();
+
+		stateMachine->target = nullptr;
 	}
 }
 

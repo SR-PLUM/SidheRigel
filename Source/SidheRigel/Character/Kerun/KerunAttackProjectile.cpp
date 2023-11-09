@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "../../Interface/Damagable.h"
 #include "Math/UnrealMathUtility.h"
+#include "SidheRigel/Character/Kerun/KerunCharacter.h"
 
 // Sets default values
 AKerunAttackProjectile::AKerunAttackProjectile()
@@ -25,7 +26,44 @@ void AKerunAttackProjectile::BeginPlay()
 // Called every frame
 void AKerunAttackProjectile::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+	AActor::Tick(DeltaTime);
+
+	if (Target)
+	{
+		FVector Forward = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		ProjectileMovementComponent->Velocity = (Forward * speed);
+		if ((this->GetDistanceTo(Target)) < 100.f)
+		{
+			float totalAttackDamage = AttackDamage;
+
+			if (FMath::RandRange(0, 1) <= criticalRate)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("CRITICAL!"));
+				totalAttackDamage *= criticalDamage;
+			}
+
+			if (IDamagable* damagableTarget = Cast<IDamagable>(Target))
+			{
+				damagableTarget->TakeDamage(totalAttackDamage, projectileOwner);
+
+				AKerunCharacter* character = Cast<AKerunCharacter>(projectileOwner);
+
+				if (IsValid(character))
+				{
+					if (character->IsSelectedTalent[4][0])
+					{
+						float lifeSteal = character->KerunTalent40LifeStealAmount / 100.f;
+						
+						character->RestoreHP(lifeSteal);
+					}
+				}
+			}
+
+			Target = nullptr;
+
+			Destroy();
+		}
+	}
 
 }
 

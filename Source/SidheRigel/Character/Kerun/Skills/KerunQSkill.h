@@ -13,6 +13,9 @@ UCLASS()
 class SIDHERIGEL_API UKerunQSkill : public USkill
 {
 	GENERATED_BODY()
+
+UKerunQSkill();
+
 public:
 
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
@@ -23,7 +26,7 @@ private:	//Property
 
 public :
 	int32 AttackCount = 0;
-	int32 MaxAttackCount = 2;
+	int32 MaxAttackCount = 3;
 
 	float MaxDuration = 5.0f;
 	float BuffDuration = 0.f;
@@ -31,9 +34,25 @@ public :
 
 	bool IsWorking = false;
 
+private: // Talent
+	
+	float Kerun01DecreaseDefencePercent = 0.1f;
+	float Kerun01DecreaseDefenceTime = 4.f;
+
+	float Kerun02UpgradeAmount = 7.f;
+
+	UPROPERTY()
+	class UKerunQSkillTalentQuest* QSkillTalentQuest;
+
 public :
 	
 	void QuitQSkill();
 
 	bool CheckAttackCount();
+
+	void ApplyTalentWhenFullComboHits(AActor* target);
+
+	float GetQDamage();
+
+	void SetMaxAttackCount(int32 Value);
 };

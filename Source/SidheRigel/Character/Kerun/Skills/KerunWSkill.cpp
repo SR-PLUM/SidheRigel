@@ -8,6 +8,13 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
+#include "KerunWSkillTalentQuest.h"
+
+UKerunWSkill::UKerunWSkill()
+{
+	WSkillTalentQuest = NewObject<UKerunWSkillTalentQuest>();
+	WSkillTalentQuest->Initialize();
+}
 
 void UKerunWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
@@ -72,7 +79,39 @@ void UKerunWSkill::JumpIntoTarget(AActor* Actor)
 	character->GetCharacterMovement()->Launch(Velocity);
 	if (IDamagable* Target = Cast<IDamagable>(Actor))
 	{
-		Target->TakeDamage(10.0f, Cast<AActor>(character));
+		if (character->IsSelectedTalent[1][0])
+		{
+			if (WSkillTalentQuest->GetQuestState())
+			{
+				AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
+
+				KerunCharacter->ImproveEStack(WSkillTalentQuest->GetEStackAmount());
+			}
+			else
+			{
+				float hp = Target->GetHP() - damage;
+
+				if (hp <= 0)
+				{
+					WSkillTalentQuest->IncreaseQuestGoal(1);
+				}
+			}
+			
+		}
+		Target->TakeDamage(damage, Cast<AActor>(character));
+	}
+
+	if (character->IsSelectedTalent[1][1])
+	{
+		if (ICCable* Target = Cast<ICCable>(Actor))
+		{
+			Target->Slow(3.f, 0.5f, "KerunWSkillTalent");
+		}
+	}
+
+	if (character->IsSelectedTalent[1][2])
+	{
+		character->AddBarrierAmount(Kerun12BarrierAmount);
 	}
 }
 

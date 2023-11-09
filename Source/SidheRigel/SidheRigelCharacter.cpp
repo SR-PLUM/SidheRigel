@@ -544,6 +544,11 @@ int32 ASidheRigelCharacter::GetLifeSteal()
 		res += value.Value;
 	}
 
+	if (res > 100)
+	{
+		res = 100;
+	}
+
 	return res;
 }
 
@@ -553,6 +558,22 @@ int32 ASidheRigelCharacter::GetProtectPower()
 	for (auto& value : protectPower)
 	{
 		res += value.Value;
+	}
+
+	return res;
+}
+
+int32 ASidheRigelCharacter::GetEndurance()
+{
+	int32 res = 0;
+	for (auto& value : endurance)
+	{
+		res += value.Value;
+	}
+
+	if (res > 80)
+	{
+		res = 80;
 	}
 
 	return res;
@@ -672,6 +693,30 @@ float ASidheRigelCharacter::GetRemainDieCooldown()
 	return res;
 }
 
+void ASidheRigelCharacter::AddBarrierAmount(float value)
+{
+	float tmp = barrierAmount;
+	GetWorldTimerManager().ClearTimer(BarrierTimer);
+
+	barrierAmount = tmp + value;
+
+	GetWorldTimerManager().SetTimer(BarrierTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			barrierAmount = 0.f;
+		})
+		, barrierDuration, false);
+}
+
+void ASidheRigelCharacter::DecreaseBarrierAmount(float value)
+{
+	barrierAmount -= value;
+
+	if (barrierAmount < 0)
+	{
+		barrierAmount = 0.f;
+	}
+}
+
 void ASidheRigelCharacter::InitProperty()
 {
 	level = 1;
@@ -763,7 +808,8 @@ void ASidheRigelCharacter::Stun(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		sidheRigelController->stateMachine->OnStun(time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnStun(totalTime);
 	}
 }
 
@@ -771,7 +817,8 @@ void ASidheRigelCharacter::Stop(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		sidheRigelController->stateMachine->OnStop(time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnStop(totalTime);
 	}
 }
 
@@ -787,6 +834,8 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 	if (time == -1)
 		return;
 
+	float totalTime = (1 - (GetEndurance() / 100.f)) * time;
+
 	FTimerHandle SlowTimer;
 	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
 		{
@@ -795,20 +844,25 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 				speedRate.Remove(key);
 			}
 		})
-		, time, false);
+		, totalTime, false);
 }
 
 void ASidheRigelCharacter::Silence(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		sidheRigelController->stateMachine->OnSilence(time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnSilence(totalTime);
 	}
 }
 
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
-	currentHP -= damage;
+	float tmp = damage - barrierAmount;
+	DecreaseBarrierAmount(damage);
+
+	currentHP -= tmp;
+
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{
 		causerCharacter->LifeSteal(damage);
