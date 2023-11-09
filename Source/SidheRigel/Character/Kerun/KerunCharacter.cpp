@@ -14,6 +14,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "SidheRigel/SidheRigelPlayerController.h"
+
 AKerunCharacter::AKerunCharacter()
 {
 	InitAttackProjectile();
@@ -62,9 +64,27 @@ void AKerunCharacter::Tick(float DeltaTime)
 
 	if (IsSelectedTalent[4][1])
 	{
-		if (!(endurance.Contains("Talent41")))
+		if (!(endurance.Contains("KerunTalent41")))
 		{
-			endurance.Add("Talent41", 20);
+			endurance.Add("KerunTalent41", 20);
+		}
+	}
+
+	if (IsSelectedTalent[4][2])
+	{
+		if (sidheRigelController->stateMachine->target)
+		{
+			if (!(speed.Contains("KerunTalent42")))
+			{
+				speed.Add("KerunTalent42", 300.f);
+			}
+		}
+		else
+		{
+			if (speed.Contains("KerunTalent42"))
+			{
+				speed.Remove("KerunTalent42");
+			}
 		}
 	}
 }
@@ -249,11 +269,11 @@ void AKerunCharacter::InitKerunTalent()
 	talentListArray[3].talentItems[0].imgPath = "";
 
 	//level 13
-	talentListArray[4].talentItems[0].talentName = "Kerun_4_1";
+	talentListArray[4].talentItems[0].talentName = "Kerun_5_1";
 	talentListArray[4].talentItems[0].talentDescription = "패시브 흡혈 15%";
 	talentListArray[4].talentItems[0].imgPath = "";
 
-	talentListArray[4].talentItems[1].talentName = "Kerun_4_2";
+	talentListArray[4].talentItems[1].talentName = "Kerun_5_2";
 	talentListArray[4].talentItems[1].talentDescription = "패시브 인내력 20%";
 	talentListArray[4].talentItems[1].imgPath = "";
 
