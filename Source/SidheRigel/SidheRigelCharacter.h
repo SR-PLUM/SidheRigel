@@ -54,6 +54,7 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
+	ASidheRigelPlayerController* sidheRigelController;
 protected:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -250,6 +251,8 @@ protected:	//Move
 
 protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
+	FTimerHandle stateMachineTimer;
+	void CustomTick();
  
 public:		//Interface Implement
 	UFUNCTION()
