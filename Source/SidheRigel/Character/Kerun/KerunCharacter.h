@@ -75,6 +75,9 @@ public:
 	void SetEAddAmount(int32 Value);
 
 protected:	//Talent
+
 	void InitKerunTalent();
 	
+public: 
+	float KerunTalent40LifeStealAmount = 25.f;
 };
