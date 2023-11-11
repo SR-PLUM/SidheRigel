@@ -133,19 +133,13 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-	if (IsMoveVectorTrue)
+	//치유감소
+	if (reduceHealDuration > 0)
 	{
-		FVector Location = GetActorLocation();
-		Location += moveDirection * (moveForce/10) * DeltaSeconds;
-		SetActorLocation(Location);
-		moveCnt++;
-		if (moveCnt <= 10)
+		reduceHealDuration -= DeltaSeconds;
+		if (reduceHealDuration <= 0)
 		{
-			moveDirection = FVector::ZeroVector;
-			moveForce = 0;
-			moveCnt = 0;
-
-			IsMoveVectorTrue = false;
+			reduceMyHeal = 0;
 		}
 	}
 }
@@ -692,6 +686,40 @@ float ASidheRigelCharacter::GetDecreseDefence()
 	return res;
 }
 
+void ASidheRigelCharacter::SetReduceMyHeal(int32 reduceHeal, float duration)
+{
+	if (reduceMyHeal <= reduceHeal)
+	{
+		reduceMyHeal = reduceHeal;
+
+		reduceHealDuration = duration;
+	}
+}
+
+FReduceHeal ASidheRigelCharacter::GetReduceOtherHeal()
+{
+	FReduceHeal res;
+	res.debuffAmout = 0;
+	res.debuffDuration = 0;
+
+	for (auto& item : reduceOtherHeal)
+	{
+		if (item.Value.debuffAmout > res.debuffAmout)
+		{
+			res = item.Value;
+		}
+		else if (item.Value.debuffAmout == res.debuffAmout)
+		{
+			if (item.Value.debuffDuration > res.debuffDuration)
+			{
+				res = item.Value;
+			}
+		}
+	}
+
+	return res;
+}
+
 float ASidheRigelCharacter::GetRemainDieCooldown()
 {
 	float res = 0;
@@ -875,6 +903,11 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{
+		//치유감소 설정
+		auto reduceHeal = causerCharacter->GetReduceOtherHeal();
+		SetReduceMyHeal(reduceHeal.debuffAmout, reduceHeal.debuffDuration);
+
+		//흡혈
 		causerCharacter->LifeSteal(damage);
 	}
 	if (currentHP <= 0)
@@ -888,7 +921,8 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 
 void ASidheRigelCharacter::RestoreHP(float value)
 {
-	currentHP += value;
+	float restoreHP = value * (1 - reduceMyHeal / 100);
+	currentHP += restoreHP;
 	
 	float var_MaxHP = GetMaxHP();
 
