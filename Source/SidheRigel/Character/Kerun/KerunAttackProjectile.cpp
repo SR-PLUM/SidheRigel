@@ -7,6 +7,7 @@
 #include "../../Interface/Damagable.h"
 #include "Math/UnrealMathUtility.h"
 #include "SidheRigel/Character/Kerun/KerunCharacter.h"
+#include "SidheRigel/Character/Kerun/Skills/KerunQSkill.h"
 
 // Sets default values
 AKerunAttackProjectile::AKerunAttackProjectile()
@@ -36,17 +37,27 @@ void AKerunAttackProjectile::Tick(float DeltaTime)
 		{
 			float totalAttackDamage = AttackDamage;
 
-			if (FMath::RandRange(0, 1) <= criticalRate)
+			AKerunCharacter* character = Cast<AKerunCharacter>(projectileOwner);
+
+			UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(character->skills[E_SkillState::Q_Ready]);
+
+			if (character->IsSelectedTalent[5][0] && QSkillRef->IsWorking)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("CRITICAL!"));
 				totalAttackDamage *= criticalDamage;
+			}
+			else
+			{
+				if (FMath::RandRange(0, 1) <= criticalRate)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("CRITICAL!"));
+					totalAttackDamage *= criticalDamage;
+				}
 			}
 
 			if (IDamagable* damagableTarget = Cast<IDamagable>(Target))
 			{
 				damagableTarget->TakeDamage(totalAttackDamage, projectileOwner);
-
-				AKerunCharacter* character = Cast<AKerunCharacter>(projectileOwner);
 
 				if (IsValid(character))
 				{
