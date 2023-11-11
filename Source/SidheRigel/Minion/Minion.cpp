@@ -47,6 +47,8 @@ AMinion::AMinion()
 void AMinion::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitProperty();
 	
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWayPoint::StaticClass(), WayPoints);
 
@@ -260,6 +262,18 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 			}
 		}
 	}
+}
+
+void AMinion::InitProperty()
+{
+	//DEBUG BALNACE
+	maxHp = 100;
+	hp = maxHp;
+	projectileDamage = 5;
+	attackDelay = 1.5;
+	range = 200;
+	gold = 20;
+	exp = 60;
 }
 
 E_Team AMinion::GetTeam()
