@@ -38,6 +38,9 @@ protected:
 
 	virtual void SetCurrentHP(float _hp) override;
 
+public: //Interface Implement
+		virtual void TakeDamage(float damage, AActor* damageCauser) override;
+
 private:
 
 	class UKerunAnimInstance* AnimInstance;
@@ -76,6 +79,7 @@ public:
 
 protected:	//Talent
 	int32 KerunTalent40EnduranceAmount = 20;
+	float KerunTalent61ReduceDamangeAmount = 0.3f;
 
 	void InitKerunTalent();
 	
