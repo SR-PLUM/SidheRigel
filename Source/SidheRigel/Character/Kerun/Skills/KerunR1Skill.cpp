@@ -8,6 +8,17 @@
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/CCable.h"
 
+#include "KerunR1SkillTalentCollider.h"
+
+UKerunR1Skill::UKerunR1Skill()
+{
+	static ConstructorHelpers::FObjectFinder<UBlueprint>colliderRef(TEXT("/Game/Heros/Kerun/Skills/BP_R1SkillTalentCollider"));
+	if (colliderRef.Object)
+	{
+		colliderClass = (UClass*)colliderRef.Object->GeneratedClass;
+	}
+}
+
 void UKerunR1Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillDelay = 1.f;
@@ -40,6 +51,29 @@ void UKerunR1Skill::OnUse(FHitResult Hit)
 			AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
 
 			KerunCharacter->ImproveEStack(6);
+
+			if (KerunCharacter->IsSelectedTalent[6][2])
+			{
+				UWorld* world = character->GetWorld();
+				if (world)
+				{
+					FActorSpawnParameters SpawnParams;
+					FTransform SpawnTransform;
+					SpawnTransform.SetLocation(Actor->GetActorLocation());
+					SpawnTransform.SetRotation(character->GetActorRotation().Quaternion());
+					SpawnParams.Owner = character;
+					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+					
+					AKerunR1SkillTalentCollider* collider = world->SpawnActorDeferred<AKerunR1SkillTalentCollider>(colliderClass, SpawnTransform);
+					if (collider)
+					{
+						collider->colliderOwner = character;
+					}
+					collider->FinishSpawning(SpawnTransform);
+
+				}
+			}
 		}
 	}
 }

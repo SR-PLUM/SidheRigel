@@ -31,6 +31,14 @@ void AColdQSplash::BeginPlay()
 	Super::BeginPlay();
 	
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AColdQSplash::OnOverlap);
+	
+	FTimerHandle QSpalshParticleTimer;
+	GetWorldTimerManager().SetTimer(QSpalshParticleTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				Destroy();
+			}
+	), particleDuration, false);
 }
 
 // Called every frame
@@ -40,13 +48,7 @@ void AColdQSplash::Tick(float DeltaTime)
 
 	elapsedTime += DeltaTime;
 
-	FTimerHandle QSpalshParticleTimer;
-	GetWorldTimerManager().SetTimer(QSpalshParticleTimer,
-		FTimerDelegate::CreateLambda([=]()
-			{
-				Destroy();
-			}
-	), particleDuration, false);
+	
 
 }
 
