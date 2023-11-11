@@ -48,6 +48,7 @@ public:
 	UFUNCTION()
 		void OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	virtual void InitProperty();
 public:
 	//MOVE
 	UPROPERTY(EditAnywhere)
@@ -69,7 +70,7 @@ public:
 		AActor* currentTarget;
 
 	UPROPERTY()
-		float range = 250.f;
+		float range = 200.f;
 	UPROPERTY()
 		float projectileDamage = 10.f;
 

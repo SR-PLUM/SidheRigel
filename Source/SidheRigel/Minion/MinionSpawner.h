@@ -24,6 +24,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AMinion> minionClass;
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ARangeMinion> rangeMinionClass;
 
 public:	
 	// Called every frame
@@ -36,7 +38,11 @@ public:
 		TEnumAsByte<E_Team> team = E_Team::Red;
 
 	UFUNCTION()
+		void SpawnMinionWave();
+	UFUNCTION()
 		void SpawnMinion();
+	UFUNCTION()
+		void SpawnRangeMinion();
 
 	UPROPERTY()
 		float DebugTimer = 0;
