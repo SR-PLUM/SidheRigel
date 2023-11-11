@@ -5,6 +5,7 @@
 
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/FairyWing/FairyWingCharacter.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingEProjectile.h"
 
 UFairyWingESkill::UFairyWingESkill()
@@ -63,11 +64,30 @@ void UFairyWingESkill::OnUse(FHitResult Hit)
 					projectile->target = _target;
 					projectile->damage = colliderDamage;
 					projectile->projectileOwner = character;
+
+					if (character->IsSelectedTalent[0][2])
+					{
+						projectile->slowValue = collideSlowValue;
+						projectile->slowTime = collideSlowTime;
+					}
+					else
+					{
+						projectile->slowValue = static_cast<int>(0.f);
+						projectile->slowTime = static_cast<int>(0.f);
+
+					}
+
 					isProjectileHeroHit = projectile->isHerohit;
 				}
 
 				projectile->FinishSpawning(SpawnTransform);
 			}
+
+			if (character->IsSelectedTalent[5][2])
+			{
+				character->AddAttackDamage("QSkill", addAttackDamage);
+				BuffDuration = MaxDuration;
+			}				
 		}
 	
 	}
@@ -79,4 +99,66 @@ void UFairyWingESkill::SetCooldown()
 		skillCooldown = 2.f;
 	else
 		skillCooldown = skillMaxCooldown;
+}
+
+bool UFairyWingESkill::CanUse()
+{
+	if (!bIsTargeting)
+	{
+		return true;
+	}
+
+	auto SRController = Cast<ASidheRigelPlayerController>(character->GetController());
+	if (SRController)
+	{
+		auto hit = SRController->GetHitResult();
+
+		if (character->GetDistanceTo(hit.GetActor()) > range)
+			return false;
+
+		auto teamActor = Cast<ITeam>(hit.GetActor());
+		if (teamActor && teamActor->GetTeam() != character->GetTeam())
+			return true;
+
+		if (teamActor && teamActor->GetTeam() == character->GetTeam() && character->IsSelectedTalent[4][1])
+			return true;
+
+	}
+
+	return false;
+}
+
+void UFairyWingESkill::OnTick()
+{
+	Super::OnTick();
+
+	if (character->IsSelectedTalent[5][2])
+	{
+		if (CheckAttackCount())
+		{
+			QuitESkill();
+		}
+
+		if (BuffDuration > 0)
+		{
+			BuffDuration -= 0.1f;
+
+			if (BuffDuration <= 0)
+			{
+				QuitESkill();
+			}
+		}
+	}	
+}
+
+void UFairyWingESkill::QuitESkill()
+{
+	character->RemoveAttackDamage("ESkill");
+	isWorking = false;
+	AttackCount = 0;
+}
+
+bool UFairyWingESkill::CheckAttackCount()
+{
+	return false;
 }

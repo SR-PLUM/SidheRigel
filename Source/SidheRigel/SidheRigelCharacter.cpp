@@ -451,6 +451,16 @@ float ASidheRigelCharacter::GetAttackDamage()
 	return res;
 }
 
+void ASidheRigelCharacter::AddAttackDamage(FString name, float value)
+{
+	attackDamage.Add(name, value);
+}
+
+void ASidheRigelCharacter::RemoveAttackDamage(FString name)
+{
+	attackDamage.Remove(name);
+}
+
 int32 ASidheRigelCharacter::GetCriticalRate()
 {
 	int32 res = 0;

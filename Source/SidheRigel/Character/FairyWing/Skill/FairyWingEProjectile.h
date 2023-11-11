@@ -32,6 +32,10 @@ public:
 		float damage;
 	UPROPERTY()
 		float speed;
+	UPROPERTY()
+		float slowValue;
+	UPROPERTY()
+		float slowTime;
 
 private:
 	UPROPERTY(EditAnywhere)

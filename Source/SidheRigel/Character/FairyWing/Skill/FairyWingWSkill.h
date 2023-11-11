@@ -21,11 +21,13 @@ public:
 	virtual void OnUse(FHitResult Hit) override;
 
 private:
-	float colliderDamage = 120.f;
+	float colliderDamage = 50.f;
 	float colliderDuration = 2.f;
-	float colliderForce = 10000.f;
+	float colliderSlow = 0.5f;
 
 	float upgradeColliderDamage = 240.f;
+	float addColliderDamage = 50.f;
+	float addColliderSlow = 0.7f;
 
 	TSubclassOf<class AFairyWingWCollider> colliderClass;
 };
