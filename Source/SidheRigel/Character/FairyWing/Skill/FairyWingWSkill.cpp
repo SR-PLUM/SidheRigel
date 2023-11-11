@@ -57,13 +57,18 @@ void UFairyWingWSkill::OnUse(FHitResult Hit)
 		{
 			collider->colliderOwner = character;
 			collider->duration = colliderDuration;
+			collider->slowValue = colliderSlow;
 
 			if (character->IsSelectedTalent[0][1])
 				collider->damage = upgradeColliderDamage;
 			else
 				collider->damage = colliderDamage;
 
-			collider->force = colliderForce;
+			if (character->IsSelectedTalent[6][1])
+			{
+				collider->slowValue += addColliderSlow;
+				collider->damage += addColliderDamage;
+			}				
 		}
 
 		collider->FinishSpawning(SpawnTransform);

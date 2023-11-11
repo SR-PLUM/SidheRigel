@@ -30,7 +30,7 @@ public:
 		class USphereComponent* CollisionComponent;
 
 	float duration;
-	float force;
+	float slowValue;
 	float damage;
 
 protected:

@@ -28,7 +28,7 @@ public:
 	virtual float GetRequireMana();
 	bool IsInstantCast();
 	bool IsTargeting();
-	bool CanUse();
+	virtual bool CanUse();
 	virtual float GetRange();
 	bool hasEnoughMana();
 
