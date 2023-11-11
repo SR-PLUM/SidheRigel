@@ -164,6 +164,8 @@ void AMinion::Tick(float DeltaTime)
 					{
 						projectile->Target = currentTarget;
 						projectile->AttackDamage = projectileDamage;
+						projectile->criticalDamage = 1;
+						projectile->criticalRate = 0;
 
 						projectile->projectileOwner = this;
 					}
