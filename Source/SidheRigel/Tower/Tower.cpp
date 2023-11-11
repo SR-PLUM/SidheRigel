@@ -141,6 +141,8 @@ void ATower::Tick(float DeltaTime)
 					{
 						projectile->Target = currentTarget;
 						projectile->AttackDamage = damage;
+						projectile->criticalDamage = 1;
+						projectile->criticalRate = 0;
 						
 						projectile->projectileOwner = this;
 					}
