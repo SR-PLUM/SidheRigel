@@ -65,6 +65,11 @@ void UKerunWSkill::OnUse(FHitResult Hit)
 	}
 }
 
+bool UKerunWSkill::CanUse()
+{
+	return false;
+}
+
 void UKerunWSkill::JumpIntoTarget(AActor* Actor)
 {
 	IsWorking = true;
@@ -77,41 +82,20 @@ void UKerunWSkill::JumpIntoTarget(AActor* Actor)
 	Velocity *= Speed - 1;
 
 	character->GetCharacterMovement()->Launch(Velocity);
-	if (IDamagable* Target = Cast<IDamagable>(Actor))
+
+	if (character->IsSelectedTalent[5][2])
 	{
-		if (character->IsSelectedTalent[1][0])
+		if (ITeam* team = Cast<ITeam>(Actor))
 		{
-			if (WSkillTalentQuest->GetQuestState())
+			if (team->GetTeam() != Cast<ITeam>(character)->GetTeam())
 			{
-				AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
-
-				KerunCharacter->ImproveEStack(WSkillTalentQuest->GetEStackAmount());
+				AttackTarget(Actor);
 			}
-			else
-			{
-				float hp = Target->GetHP() - damage;
-
-				if (hp <= 0)
-				{
-					WSkillTalentQuest->IncreaseQuestGoal(1);
-				}
-			}
-			
-		}
-		Target->TakeDamage(damage, Cast<AActor>(character));
-	}
-
-	if (character->IsSelectedTalent[1][1])
-	{
-		if (ICCable* Target = Cast<ICCable>(Actor))
-		{
-			Target->Slow(3.f, 0.5f, "KerunWSkillTalent");
 		}
 	}
-
-	if (character->IsSelectedTalent[1][2])
+	else
 	{
-		character->AddBarrierAmount(Kerun12BarrierAmount);
+		AttackTarget(Actor);
 	}
 }
 
@@ -141,4 +125,44 @@ void UKerunWSkill::KnockDownTarget(AKerunCharacter* Owner)
 double UKerunWSkill::GetLimitZValue()
 {
 	return TargetLocation.Z + ZValue;
+}
+
+void UKerunWSkill::AttackTarget(AActor* Actor)
+{
+	if (IDamagable* Target = Cast<IDamagable>(Actor))
+	{
+		if (character->IsSelectedTalent[1][0])
+		{
+			if (WSkillTalentQuest->GetQuestState())
+			{
+				AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
+
+				KerunCharacter->ImproveEStack(WSkillTalentQuest->GetEStackAmount());
+			}
+			else
+			{
+				float hp = Target->GetHP() - damage;
+
+				if (hp <= 0)
+				{
+					WSkillTalentQuest->IncreaseQuestGoal(1);
+				}
+			}
+
+		}
+		Target->TakeDamage(damage, Cast<AActor>(character));
+	}
+
+	if (character->IsSelectedTalent[1][1])
+	{
+		if (ICCable* Target = Cast<ICCable>(Actor))
+		{
+			Target->Slow(3.f, 0.5f, "KerunWSkillTalent");
+		}
+	}
+
+	if (character->IsSelectedTalent[1][2])
+	{
+		character->AddBarrierAmount(Kerun12BarrierAmount);
+	}
 }

@@ -46,5 +46,6 @@ protected:
 	bool GetIsWorking();
 	void SetIsWorking(bool flag);
 	void KnockDownTarget(class AKerunCharacter* Owner);
+	void AttackTarget(AActor* Actor);
 	double GetLimitZValue();
 };
