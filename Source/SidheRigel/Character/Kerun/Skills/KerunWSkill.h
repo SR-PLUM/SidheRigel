@@ -19,6 +19,7 @@ public:
 	virtual void SetSkillProperty(class ASidheRigelCharacter* Character, E_SkillState SkillState) override;
 	virtual void OnTick() override;
 	virtual void OnUse(FHitResult Hit) override;
+	virtual bool CanUse() override;
 
 private:
 	FVector TargetLocation = FVector::ZeroVector;

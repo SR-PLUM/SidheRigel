@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
 #include "KerunWSkillTalentQuest.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
 
 UKerunWSkill::UKerunWSkill()
 {
@@ -67,6 +68,28 @@ void UKerunWSkill::OnUse(FHitResult Hit)
 
 bool UKerunWSkill::CanUse()
 {
+	if (!bIsTargeting)
+	{
+		return true;
+	}
+
+	auto SRController = Cast<ASidheRigelPlayerController>(character->GetController());
+	if (SRController)
+	{
+		auto hit = SRController->GetHitResult();
+
+		if (character->GetDistanceTo(hit.GetActor()) > range)
+			return false;
+
+		auto teamActor = Cast<ITeam>(hit.GetActor());
+		if (teamActor && teamActor->GetTeam() != character->GetTeam())
+			return true;
+
+		if (teamActor && teamActor->GetTeam() == character->GetTeam() && character->IsSelectedTalent[5][2])
+			return true;
+
+	}
+
 	return false;
 }
 
