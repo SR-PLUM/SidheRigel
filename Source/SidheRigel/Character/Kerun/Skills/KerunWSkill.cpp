@@ -173,7 +173,21 @@ void UKerunWSkill::AttackTarget(AActor* Actor)
 			}
 
 		}
-		Target->TakeDamage(damage, Cast<AActor>(character));
+		
+		if (character->IsSelectedTalent[5][1])
+		{
+			FString name = "KerunWSkill Talent51";
+			character->AddReduceOtherHeal(name , Kerun51ReduceHealAmount, Kerun51ReduceHealDuration);
+
+			Target->TakeDamage(damage, Cast<AActor>(character));
+
+			character->RemoveReduceOtherHeal(name);
+		}
+		else
+		{
+			Target->TakeDamage(damage, Cast<AActor>(character));
+		}
+
 	}
 
 	if (character->IsSelectedTalent[1][1])

@@ -250,6 +250,9 @@ public:		//Getter, Setter
 	void SetReduceMyHeal(int32 reduceHeal, float duration);
 	FReduceHeal GetReduceOtherHeal();
 
+	void AddReduceOtherHeal(FString name, int32 reduceHeal, float duration);
+	void RemoveReduceOtherHeal(FString name);
+
 	void AddBarrierAmount(float value);
 	void DecreaseBarrierAmount(float value);
 

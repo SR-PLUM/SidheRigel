@@ -39,6 +39,9 @@ private: //Talent
 	float Kerun11SlowAmount = -0.5f;
 	float Kerun12BarrierAmount = 30.f;
 
+	int32 Kerun51ReduceHealAmount = 30.f;
+	float Kerun51ReduceHealDuration = 3.f;
+
 	UPROPERTY()
 	class UKerunWSkillTalentQuest* WSkillTalentQuest;
 
