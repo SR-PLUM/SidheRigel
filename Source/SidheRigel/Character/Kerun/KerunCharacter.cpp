@@ -16,6 +16,10 @@
 
 #include "SidheRigel/SidheRigelPlayerController.h"
 
+#include "SidheRigel/UI/InGameUI.h"
+#include "SidheRigel/UI/CharacterStatus.h"
+#include "SidheRigel/UI/StatSummary.h"
+
 AKerunCharacter::AKerunCharacter()
 {
 	InitAttackProjectile();
@@ -192,6 +196,37 @@ void AKerunCharacter::SetCurrentHP(float _hp)
 		}
 	}
 	*/
+}
+
+void AKerunCharacter::TakeDamage(float damage, AActor* damageCauser)
+{
+	if (IsSelectedTalent[6][1])
+	{
+		UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(skills[E_SkillState::Q_Ready]);
+
+		if (QSkillRef && QSkillRef->IsWorking)
+		{
+			damage *= (1 - KerunTalent61ReduceDamangeAmount);
+		}
+	}
+
+	float tmp = damage - barrierAmount;
+	DecreaseBarrierAmount(damage);
+
+	currentHP -= tmp;
+
+	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
+	{
+		causerCharacter->LifeSteal(damage);
+	}
+
+	if (currentHP <= 0)
+	{
+		currentHP = 0;
+	}
+
+	InGameUI->CharacterStatus->UpdateHP();
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
 }
 
 void AKerunCharacter::ImproveEStack(int Count)

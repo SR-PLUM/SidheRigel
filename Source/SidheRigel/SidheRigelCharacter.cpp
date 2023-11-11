@@ -827,6 +827,24 @@ void ASidheRigelCharacter::InitProjectileProperty(ADummyProjectile* projectile)
 	projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
 }
 
+
+
+void ASidheRigelCharacter::RemoveReduceOtherHeal(FString name)
+{
+	reduceOtherHeal.Remove(name);
+}
+
+
+
+void ASidheRigelCharacter::AddReduceOtherHeal(FString name, int32 reduceHeal, float duration)
+{
+	FReduceHeal tmp;
+	tmp.debuffAmout = reduceHeal;
+	tmp.debuffDuration = duration;
+
+	reduceOtherHeal.Add(name, tmp);
+}
+
 void ASidheRigelCharacter::LifeSteal(float damage)
 {
 	float _lifeSteal = (float)GetLifeSteal() / 100.f;
