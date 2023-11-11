@@ -28,6 +28,10 @@ public:
 protected:	//InitFunction
 	virtual void SetProjectileMesh() override;
 	virtual void SetProjectileMovementComponent() override;
+
+private:
+
+	TSubclassOf<class AKerunAttackTalentCollider> colliderClass;
 	/*
 public:
 	UPROPERTY()

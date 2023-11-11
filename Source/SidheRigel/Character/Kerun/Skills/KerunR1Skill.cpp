@@ -59,7 +59,7 @@ void UKerunR1Skill::OnUse(FHitResult Hit)
 				{
 					FActorSpawnParameters SpawnParams;
 					FTransform SpawnTransform;
-					SpawnTransform.SetLocation(Actor->GetActorLocation());
+					SpawnTransform.SetLocation(character->GetActorLocation());
 					SpawnTransform.SetRotation(character->GetActorRotation().Quaternion());
 					SpawnParams.Owner = character;
 					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
