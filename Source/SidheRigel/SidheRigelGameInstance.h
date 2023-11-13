@@ -65,4 +65,6 @@ private:
 
 public:
 	E_Character CharacterNum = E_Character::Character_Null;
+
+	void SetInputUI(TSharedPtr<SWidget> InWidgetToFocus);
 };

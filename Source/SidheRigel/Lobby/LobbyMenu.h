@@ -36,6 +36,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* StartGameButton;
 
+	USidheRigelGameInstance* SidheRigelInstance;
+
 	UFUNCTION()
 		void SetCharacterACM();
 	UFUNCTION()

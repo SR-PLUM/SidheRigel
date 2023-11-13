@@ -40,11 +40,7 @@ void USidheRigelGameInstance::LoadMenu()
 
 	Menu->Setup();
 
-	APlayerController* playerController = GetFirstLocalPlayerController();
-	if (playerController)
-	{
-		playerController->bShowMouseCursor = true;
-	}
+	SetInputUI(Menu->TakeWidget());
 
 	Menu->SetMenuInterface(this);
 }
@@ -274,5 +270,19 @@ void USidheRigelGameInstance::CreateSession()
 		SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 		SessionInterface->CreateSession(20, SESSION_NAME, SessionSettings);
+	}
+}
+
+void USidheRigelGameInstance::SetInputUI(TSharedPtr<SWidget> InWidgetToFocus)
+{
+	APlayerController* playerController = GetFirstLocalPlayerController();
+	if (playerController)
+	{
+		FInputModeUIOnly InputModeData;
+		InputModeData.SetWidgetToFocus(InWidgetToFocus);
+		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
+		playerController->bShowMouseCursor = true;
+		playerController->SetInputMode(InputModeData);
 	}
 }

@@ -32,77 +32,38 @@ bool ULobbyMenu::Initialize()
 	if (!StartGameButton) return false;
 	StartGameButton->OnClicked.AddDynamic(this, &ULobbyMenu::StartGame);
 
+	SidheRigelInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+	if (SidheRigelInstance)
+	{
+		SidheRigelInstance->SetInputUI(TakeWidget());
+	}
+
 	return true;
 }
 
 void ULobbyMenu::SetCharacterACM()
 {
-	UGameInstance* Instance = GetGameInstance();
-	if (Instance)
-	{
-		USidheRigelGameInstance* SidheRigelInstance = Cast<USidheRigelGameInstance>(Instance);
-
-		if (SidheRigelInstance)
-		{
-			SidheRigelInstance->CharacterNum = ACM;
-		}
-	}
+	SidheRigelInstance->CharacterNum = ACM;
 }
 
 void ULobbyMenu::SetCharacterBlackWizard()
 {
-	UGameInstance* Instance = GetGameInstance();
-	if (Instance)
-	{
-		USidheRigelGameInstance* SidheRigelInstance = Cast<USidheRigelGameInstance>(Instance);
-
-		if (SidheRigelInstance)
-		{
-			SidheRigelInstance->CharacterNum = BlackWizard;
-		}
-	}
+	SidheRigelInstance->CharacterNum = BlackWizard;
 }
 
 void ULobbyMenu::SetCharacterCold()
 {
-	UGameInstance* Instance = GetGameInstance();
-	if (Instance)
-	{
-		USidheRigelGameInstance* SidheRigelInstance = Cast<USidheRigelGameInstance>(Instance);
-
-		if (SidheRigelInstance)
-		{
-			SidheRigelInstance->CharacterNum = Cold;
-		}
-	}
+	SidheRigelInstance->CharacterNum = Cold;
 }
 
 void ULobbyMenu::SetCharacterFairyWing()
 {
-	UGameInstance* Instance = GetGameInstance();
-	if (Instance)
-	{
-		USidheRigelGameInstance* SidheRigelInstance = Cast<USidheRigelGameInstance>(Instance);
-
-		if (SidheRigelInstance)
-		{
-			SidheRigelInstance->CharacterNum = FairyWing;
-		}
-	}
+	SidheRigelInstance->CharacterNum = FairyWing;
 }
 
 void ULobbyMenu::SetCharacterKerun()
 {
-	UGameInstance* Instance = GetGameInstance();
-	if (Instance)
-	{
-		USidheRigelGameInstance* SidheRigelInstance = Cast<USidheRigelGameInstance>(Instance);
-
-		if (SidheRigelInstance)
-		{
-			SidheRigelInstance->CharacterNum = Kerun;
-		}
-	}
+	SidheRigelInstance->CharacterNum = Kerun;
 }
 
 void ULobbyMenu::StartGame()
