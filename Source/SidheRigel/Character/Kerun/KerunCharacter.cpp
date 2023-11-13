@@ -20,6 +20,8 @@
 #include "SidheRigel/UI/CharacterStatus.h"
 #include "SidheRigel/UI/StatSummary.h"
 
+#include "Animation/AnimMontage.h"
+
 AKerunCharacter::AKerunCharacter()
 {
 	InitAttackProjectile();
@@ -165,6 +167,8 @@ void AKerunCharacter::Attack(AActor* target)
 		}
 	}
 
+	PlayAttackMontage();
+
 	/*
 	if (AnimInstance)
 	{
@@ -227,6 +231,37 @@ void AKerunCharacter::TakeDamage(float damage, AActor* damageCauser)
 
 	InGameUI->CharacterStatus->UpdateHP();
 	StatSummary->SetHPBar(currentHP / GetMaxHP());
+}
+
+void AKerunCharacter::PlayAttackMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AttackMontage)
+	{
+		AnimInstance->Montage_Play(AttackMontage);
+		FName SectionName = FName();
+		switch (AnimAttackCount)
+		{
+		case 0:
+			SectionName = FName("Attack1");
+			break;
+		case 1:
+			SectionName = FName("Attack2");
+			break;
+		case 2:
+			SectionName = FName("Attack3");
+			break;
+		default:
+			break;
+		}
+		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+		
+		AnimAttackCount++;
+		if (AnimAttackCount >= 3)
+		{
+			AnimAttackCount -= 3;
+		}
+	}
 }
 
 void AKerunCharacter::ImproveEStack(int Count)

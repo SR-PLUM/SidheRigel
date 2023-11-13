@@ -41,9 +41,17 @@ protected:
 public: //Interface Implement
 		virtual void TakeDamage(float damage, AActor* damageCauser) override;
 
-private:
+private: //Animation
 
-	class UKerunAnimInstance* AnimInstance;
+	class UKerunAnimInstance* AnimInstanceRef;
+
+	int32 AnimAttackCount = 0;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	class UAnimMontage* AttackMontage;
+
+protected :
+	void PlayAttackMontage();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
