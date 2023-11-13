@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ColdQSplash.h"
+#include "KerunAttackTalentCollider.h"
 
 #include "Components/SphereComponent.h"
 
@@ -9,7 +9,7 @@
 #include "SidheRigel/Interface/Damagable.h"
 
 // Sets default values
-AColdQSplash::AColdQSplash()
+AKerunAttackTalentCollider::AKerunAttackTalentCollider()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,47 +23,42 @@ AColdQSplash::AColdQSplash()
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
 	}
+
+	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AKerunAttackTalentCollider::OnOverlap);
+
+
 }
 
 // Called when the game starts or when spawned
-void AColdQSplash::BeginPlay()
+void AKerunAttackTalentCollider::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AColdQSplash::OnOverlap);
-	
-	FTimerHandle QSpalshParticleTimer;
-	GetWorldTimerManager().SetTimer(QSpalshParticleTimer,
+
+	FTimerHandle R1TalentColliderTimer;
+	GetWorldTimerManager().SetTimer(R1TalentColliderTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
 				Destroy();
 			}
-	), particleDuration, false);
+	), ColliderDuration, false);	
 }
 
 // Called every frame
-void AColdQSplash::Tick(float DeltaTime)
+void AKerunAttackTalentCollider::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	elapsedTime += DeltaTime;
-
-	
-
 }
 
-void AColdQSplash::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AKerunAttackTalentCollider::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (elapsedTime > 0.1f)
-		return;
-
 	if (ITeam* Enemy = Cast<ITeam>(OtherActor))
 	{
-		if (Enemy->GetTeam() != Cast<ITeam>(projectileOwner)->GetTeam())
+		if (Enemy->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
 		{
 			if (IDamagable* DamagableActor = Cast<IDamagable>(OtherActor))
 			{
-				DamagableActor->TakeDamage(damage, projectileOwner);
+				DamagableActor->TakeDamage(damage, colliderOwner);
 			}
 		}
 	}

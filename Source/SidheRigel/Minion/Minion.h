@@ -48,6 +48,7 @@ public:
 	UFUNCTION()
 		void OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	virtual void InitProperty();
 public:
 	//MOVE
 	UPROPERTY(EditAnywhere)
@@ -69,7 +70,7 @@ public:
 		AActor* currentTarget;
 
 	UPROPERTY()
-		float range = 250.f;
+		float range = 200.f;
 	UPROPERTY()
 		float projectileDamage = 10.f;
 
@@ -79,9 +80,9 @@ public:
 		float maxAttackDelay = 1.5f;
 
 	UPROPERTY()
-		float hp = 477;
+		float hp = 250;
 	UPROPERTY()
-		float maxHp = 477;
+		float maxHp = 250;
 
 	UPROPERTY()
 		int32 gold = 20;

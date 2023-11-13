@@ -133,19 +133,13 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-	if (IsMoveVectorTrue)
+	//치유감소
+	if (reduceHealDuration > 0)
 	{
-		FVector Location = GetActorLocation();
-		Location += moveDirection * (moveForce/10) * DeltaSeconds;
-		SetActorLocation(Location);
-		moveCnt++;
-		if (moveCnt <= 10)
+		reduceHealDuration -= DeltaSeconds;
+		if (reduceHealDuration <= 0)
 		{
-			moveDirection = FVector::ZeroVector;
-			moveForce = 0;
-			moveCnt = 0;
-
-			IsMoveVectorTrue = false;
+			reduceMyHeal = 0;
 		}
 	}
 }
@@ -554,6 +548,11 @@ int32 ASidheRigelCharacter::GetLifeSteal()
 		res += value.Value;
 	}
 
+	if (res > 100)
+	{
+		res = 100;
+	}
+
 	return res;
 }
 
@@ -563,6 +562,22 @@ int32 ASidheRigelCharacter::GetProtectPower()
 	for (auto& value : protectPower)
 	{
 		res += value.Value;
+	}
+
+	return res;
+}
+
+int32 ASidheRigelCharacter::GetEndurance()
+{
+	int32 res = 0;
+	for (auto& value : endurance)
+	{
+		res += value.Value;
+	}
+
+	if (res > 80)
+	{
+		res = 80;
 	}
 
 	return res;
@@ -671,6 +686,40 @@ float ASidheRigelCharacter::GetDecreseDefence()
 	return res;
 }
 
+void ASidheRigelCharacter::SetReduceMyHeal(int32 reduceHeal, float duration)
+{
+	if (reduceMyHeal <= reduceHeal)
+	{
+		reduceMyHeal = reduceHeal;
+
+		reduceHealDuration = duration;
+	}
+}
+
+FReduceHeal ASidheRigelCharacter::GetReduceOtherHeal()
+{
+	FReduceHeal res;
+	res.debuffAmout = 0;
+	res.debuffDuration = 0;
+
+	for (auto& item : reduceOtherHeal)
+	{
+		if (item.Value.debuffAmout > res.debuffAmout)
+		{
+			res = item.Value;
+		}
+		else if (item.Value.debuffAmout == res.debuffAmout)
+		{
+			if (item.Value.debuffDuration > res.debuffDuration)
+			{
+				res = item.Value;
+			}
+		}
+	}
+
+	return res;
+}
+
 float ASidheRigelCharacter::GetRemainDieCooldown()
 {
 	float res = 0;
@@ -680,6 +729,30 @@ float ASidheRigelCharacter::GetRemainDieCooldown()
 		res = sidheRigelController->stateMachine->DieTime;
 	}
 	return res;
+}
+
+void ASidheRigelCharacter::AddBarrierAmount(float value)
+{
+	float tmp = barrierAmount;
+	GetWorldTimerManager().ClearTimer(BarrierTimer);
+
+	barrierAmount = tmp + value;
+
+	GetWorldTimerManager().SetTimer(BarrierTimer, FTimerDelegate::CreateLambda([=]()
+		{
+			barrierAmount = 0.f;
+		})
+		, barrierDuration, false);
+}
+
+void ASidheRigelCharacter::DecreaseBarrierAmount(float value)
+{
+	barrierAmount -= value;
+
+	if (barrierAmount < 0)
+	{
+		barrierAmount = 0.f;
+	}
 }
 
 void ASidheRigelCharacter::InitProperty()
@@ -754,6 +827,24 @@ void ASidheRigelCharacter::InitProjectileProperty(ADummyProjectile* projectile)
 	projectile->criticalDamage = (float)GetCriticalDamage() / 100.f + 1;
 }
 
+
+
+void ASidheRigelCharacter::RemoveReduceOtherHeal(FString name)
+{
+	reduceOtherHeal.Remove(name);
+}
+
+
+
+void ASidheRigelCharacter::AddReduceOtherHeal(FString name, int32 reduceHeal, float duration)
+{
+	FReduceHeal tmp;
+	tmp.debuffAmout = reduceHeal;
+	tmp.debuffDuration = duration;
+
+	reduceOtherHeal.Add(name, tmp);
+}
+
 void ASidheRigelCharacter::LifeSteal(float damage)
 {
 	float _lifeSteal = (float)GetLifeSteal() / 100.f;
@@ -773,7 +864,8 @@ void ASidheRigelCharacter::Stun(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		sidheRigelController->stateMachine->OnStun(time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnStun(totalTime);
 	}
 }
 
@@ -781,7 +873,8 @@ void ASidheRigelCharacter::Stop(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		sidheRigelController->stateMachine->OnStop(time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnStop(totalTime);
 	}
 }
 
@@ -797,6 +890,8 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 	if (time == -1)
 		return;
 
+	float totalTime = (1 - (GetEndurance() / 100.f)) * time;
+
 	FTimerHandle SlowTimer;
 	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
 		{
@@ -805,22 +900,32 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 				speedRate.Remove(key);
 			}
 		})
-		, time, false);
+		, totalTime, false);
 }
 
 void ASidheRigelCharacter::Silence(float time)
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
-		sidheRigelController->stateMachine->OnSilence(time);
+		float totalTime = time * (1 - (GetEndurance() / 100.f));
+		sidheRigelController->stateMachine->OnSilence(totalTime);
 	}
 }
 
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
-	currentHP -= damage;
+	float tmp = damage - barrierAmount;
+	DecreaseBarrierAmount(damage);
+
+	currentHP -= tmp;
+
 	if (ASidheRigelCharacter* causerCharacter = Cast<ASidheRigelCharacter>(damageCauser))
 	{
+		//치유감소 설정
+		auto reduceHeal = causerCharacter->GetReduceOtherHeal();
+		SetReduceMyHeal(reduceHeal.debuffAmout, reduceHeal.debuffDuration);
+
+		//흡혈
 		causerCharacter->LifeSteal(damage);
 	}
 	if (currentHP <= 0)
@@ -834,7 +939,8 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 
 void ASidheRigelCharacter::RestoreHP(float value)
 {
-	currentHP += value;
+	float restoreHP = value * (1 - reduceMyHeal / 100);
+	currentHP += restoreHP;
 	
 	float var_MaxHP = GetMaxHP();
 

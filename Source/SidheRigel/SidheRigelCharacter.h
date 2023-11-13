@@ -34,6 +34,16 @@ public:
 	}
 };
 
+USTRUCT()
+struct FReduceHeal
+{
+	GENERATED_USTRUCT_BODY()
+
+public:
+	int32 debuffAmout;
+	float debuffDuration;
+};
+
 UCLASS(Blueprintable)
 class ASidheRigelCharacter : public ACharacter, public IAttackable, public ICCable, public IDamagable, public IMovable, public ITeam
 {
@@ -184,9 +194,20 @@ protected:	//Stat
 		TMap<FString, int32> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> decreseDefencePoint;//방깍
+	UPROPERTY()
+		int32 reduceMyHeal;						//본인에게 적용중인 치유감소 (20% == 20) (높은 값이 우선적용)
+	UPROPERTY()
+		float reduceHealDuration;				//치유감소 남은 시간
+	UPROPERTY()
+		TMap<FString, FReduceHeal> reduceOtherHeal;	//상대방에게 적용시킬 치유감소 (20% == 20)
+	UPROPERTY()
+		float barrierAmount =0.f;				//보호막
 
 	//DEBUG RED=MINION, BLUE = PLAYER
 	E_Team team = E_Team::Blue;
+
+private:
+	float barrierDuration = 4.f;
 
 public:		//Getter, Setter
 	void SetLevel(int32 _level);
@@ -217,6 +238,7 @@ public:		//Getter, Setter
 	float GetMaxMP();
 	int32 GetLifeSteal();
 	int32 GetProtectPower();
+	int32 GetEndurance();
 	void AddDefencePoint(FString name, float value, float time);
 	float GetDefencePoint();
 	void AddSpeed(FString name, float value, float time);
@@ -224,6 +246,15 @@ public:		//Getter, Setter
 
 	void AddDecreseDefencePercent(FString name, float value, float time);
 	float GetDecreseDefence();
+
+	void SetReduceMyHeal(int32 reduceHeal, float duration);
+	FReduceHeal GetReduceOtherHeal();
+
+	void AddReduceOtherHeal(FString name, int32 reduceHeal, float duration);
+	void RemoveReduceOtherHeal(FString name);
+
+	void AddBarrierAmount(float value);
+	void DecreaseBarrierAmount(float value);
 
 	float GetRemainDieCooldown();
 
@@ -245,14 +276,9 @@ public:	//Attack
 	UFUNCTION()
 		void LifeSteal(float damage);
 
-protected:	//Move
-	bool IsMoveVectorTrue = false;
-	FVector moveDirection = FVector::ZeroVector;
-	float moveForce = 0;
-	int32 moveCnt = 0;
-
 protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
+	FTimerHandle BarrierTimer;
 	FTimerHandle stateMachineTimer;
 	void CustomTick();
  

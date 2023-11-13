@@ -8,6 +8,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/GameplayStaticsTypes.h"
+#include "KerunWSkillTalentQuest.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
+
+UKerunWSkill::UKerunWSkill()
+{
+	WSkillTalentQuest = NewObject<UKerunWSkillTalentQuest>();
+	WSkillTalentQuest->Initialize();
+}
 
 void UKerunWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
@@ -58,6 +66,33 @@ void UKerunWSkill::OnUse(FHitResult Hit)
 	}
 }
 
+bool UKerunWSkill::CanUse()
+{
+	if (!bIsTargeting)
+	{
+		return true;
+	}
+
+	auto SRController = Cast<ASidheRigelPlayerController>(character->GetController());
+	if (SRController)
+	{
+		auto hit = SRController->GetHitResult();
+
+		if (character->GetDistanceTo(hit.GetActor()) > range)
+			return false;
+
+		auto teamActor = Cast<ITeam>(hit.GetActor());
+		if (teamActor && teamActor->GetTeam() != character->GetTeam())
+			return true;
+
+		if (teamActor && teamActor->GetTeam() == character->GetTeam() && character->IsSelectedTalent[5][2])
+			return true;
+
+	}
+
+	return false;
+}
+
 void UKerunWSkill::JumpIntoTarget(AActor* Actor)
 {
 	IsWorking = true;
@@ -70,9 +105,20 @@ void UKerunWSkill::JumpIntoTarget(AActor* Actor)
 	Velocity *= Speed - 1;
 
 	character->GetCharacterMovement()->Launch(Velocity);
-	if (IDamagable* Target = Cast<IDamagable>(Actor))
+
+	if (character->IsSelectedTalent[5][2])
 	{
-		Target->TakeDamage(10.0f, Cast<AActor>(character));
+		if (ITeam* team = Cast<ITeam>(Actor))
+		{
+			if (team->GetTeam() != Cast<ITeam>(character)->GetTeam())
+			{
+				AttackTarget(Actor);
+			}
+		}
+	}
+	else
+	{
+		AttackTarget(Actor);
 	}
 }
 
@@ -102,4 +148,58 @@ void UKerunWSkill::KnockDownTarget(AKerunCharacter* Owner)
 double UKerunWSkill::GetLimitZValue()
 {
 	return TargetLocation.Z + ZValue;
+}
+
+void UKerunWSkill::AttackTarget(AActor* Actor)
+{
+	if (IDamagable* Target = Cast<IDamagable>(Actor))
+	{
+		if (character->IsSelectedTalent[1][0])
+		{
+			if (WSkillTalentQuest->GetQuestState())
+			{
+				AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
+
+				KerunCharacter->ImproveEStack(WSkillTalentQuest->GetEStackAmount());
+			}
+			else
+			{
+				float hp = Target->GetHP() - damage;
+
+				if (hp <= 0)
+				{
+					WSkillTalentQuest->IncreaseQuestGoal(1);
+				}
+			}
+
+		}
+		
+		if (character->IsSelectedTalent[5][1])
+		{
+			FString name = "KerunWSkill Talent51";
+			character->AddReduceOtherHeal(name , Kerun51ReduceHealAmount, Kerun51ReduceHealDuration);
+
+			Target->TakeDamage(damage, Cast<AActor>(character));
+
+			character->RemoveReduceOtherHeal(name);
+		}
+		else
+		{
+			Target->TakeDamage(damage, Cast<AActor>(character));
+		}
+
+	}
+
+	if (character->IsSelectedTalent[1][1])
+	{
+		if (ICCable* Target = Cast<ICCable>(Actor))
+		{
+			Target->Slow(3.f, 0.5f, "KerunWSkillTalent");
+		}
+	}
+
+	if (character->IsSelectedTalent[1][2])
+	{
+		character->AddBarrierAmount(Kerun12BarrierAmount);
+	}
 }

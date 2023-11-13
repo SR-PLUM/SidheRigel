@@ -38,6 +38,9 @@ protected:
 
 	virtual void SetCurrentHP(float _hp) override;
 
+public: //Interface Implement
+		virtual void TakeDamage(float damage, AActor* damageCauser) override;
+
 private:
 
 	class UKerunAnimInstance* AnimInstance;
@@ -48,9 +51,12 @@ public:
 
 protected: //Passive E
 
-	const int EMaxStack = 25;
+	int EMaxStack = 25;
+	int EAddAmount = 1;
 	const float EDuration = 3.5f;
+	const float UpgradeEDuration = 5.0f;
 	const float EHealthRate = 1.0f;
+	const float UpgradeEHealthRate = 3.0f;
 
 	UPROPERTY()
 	int ECurrentStack = 0;
@@ -58,11 +64,25 @@ protected: //Passive E
 	UPROPERTY()
 	FTimerHandle ETimer;
 
+	UPROPERTY()
+	class UKerunESkillTalentQuest* ESkillTalentQuest;
+
+	float GetEDuration();
+	float GetEHealthRate();
 	void StartETimer();
 	void QuitETimer();
 
 public:
 	void ImproveEStack(int Count);
+	void SetEMaxStack(int32 Value);
+	void SetEAddAmount(int32 Value);
 
+protected:	//Talent
+	int32 KerunTalent40EnduranceAmount = 20;
+	float KerunTalent61ReduceDamangeAmount = 0.3f;
+
+	void InitKerunTalent();
 	
+public: 
+	float KerunTalent40LifeStealAmount = 25.f;
 };

@@ -31,4 +31,28 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		bool isAttack;
+
+	UPROPERTY(BlueprintREadOnly)
+		bool isQUse;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool isWUse;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool isEUse;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool isRUse;
+
+	FTimerHandle qAnimationTimer;
+	float qAnimationDuration;
+
+	FTimerHandle wAnimationTimer;
+	float wAnimationDuration;
+
+	FTimerHandle eAnimationTimer;
+	float eAnimationDuration;
+
+	FTimerHandle rAnimationTimer;
+	float rAnimationDuration;
 };
