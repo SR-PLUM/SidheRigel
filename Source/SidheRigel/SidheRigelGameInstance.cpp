@@ -211,7 +211,6 @@ void USidheRigelGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSe
 {
 	if (!SessionInterface.IsValid()) return;
 
-	/*
 	FString Address;
 	if (!SessionInterface->GetResolvedConnectString(SessionName, Address))
 	{
@@ -223,7 +222,7 @@ void USidheRigelGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSe
 	if (PlayerController == nullptr) return;
 
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
-	*/
+	
 }
 
 void USidheRigelGameInstance::OnSessionInviteReceived(const FUniqueNetId& UserId, const FUniqueNetId& FromId, const FString& AppId, const FOnlineSessionSearchResult& OnlineSessionSearchResult)
@@ -271,12 +270,10 @@ void USidheRigelGameInstance::CreateSession()
 			SessionSettings.bIsLANMatch = false;
 		}
 
-		/*
 		SessionSettings.bUseLobbiesIfAvailable = true;
 		SessionSettings.bAllowInvites = true;
 		SessionSettings.bAllowJoinInProgress = true;
 		SessionSettings.bAllowJoinViaPresence = true;
-		*/
 
 		SessionSettings.NumPublicConnections = 6;
 		SessionSettings.bShouldAdvertise = true;
