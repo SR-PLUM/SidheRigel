@@ -18,6 +18,8 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* Exiting) override;
 
+	TArray<APlayerController*> players;
+
 private:
 	uint32 NumberOfPlayers = 0;
 };

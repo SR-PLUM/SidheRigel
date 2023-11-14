@@ -33,6 +33,11 @@ public:
 
 	void SelectIndex(uint32 Index);
 
+	UFUNCTION()
+		void OpenLobbyMenu();
+
+	void RefreshPlayerList();
+
 protected:
 	virtual bool Initialize() override;
 
@@ -77,6 +82,18 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* Host_CancelButton;
+
+	UPROPERTY(meta = (BindWidget))
+		class UWidget* LobbyMenu;
+
+	UPROPERTY(meta = (BindWidget))
+		class UTextBlock* Player_1;
+
+	UPROPERTY(meta = (BindWidget))
+		class UTextBlock* Player_2;
+
+	UPROPERTY(meta = (BindWidget))
+		class UButton* Lobby_StartButton;
 
 	TOptional<uint32> SelectedIndex;
 

@@ -86,7 +86,7 @@ void UMainMenu::HostServer()
 {
 	if (MenuInterface != nullptr)
 	{
-		FString ServerName = ServerHostName->Text.ToString();
+		FString ServerName = ServerHostName->GetText().ToString();
 
 		MenuInterface->Host(ServerName);
 	}
@@ -155,4 +155,11 @@ void UMainMenu::UpdateChildren()
 			Row->Selected = (SelectedIndex.IsSet() && SelectedIndex.GetValue() == i);
 		}
 	}
+}
+
+void UMainMenu::OpenLobbyMenu()
+{
+	if (MenuSwitcher == nullptr) return;
+
+	MenuSwitcher->SetActiveWidget(LobbyMenu);
 }

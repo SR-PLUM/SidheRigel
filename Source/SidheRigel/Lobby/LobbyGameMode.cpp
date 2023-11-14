@@ -6,14 +6,14 @@
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	++NumberOfPlayers;
+	players.Add(NewPlayer);
 
-	if (NumberOfPlayers >= 6)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Reached Max Player"));
-	}
+	UE_LOG(LogTemp, Warning, TEXT("LOGIN :: %s"), *NewPlayer->GetName());
 }
 
 void ALobbyGameMode::Logout(AController* Exiting)
 {
 	--NumberOfPlayers;
+
+	UE_LOG(LogTemp, Warning, TEXT("LOGIN :: %s"), *Exiting->GetName());
 }
