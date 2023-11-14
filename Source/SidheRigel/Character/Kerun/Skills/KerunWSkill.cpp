@@ -10,6 +10,8 @@
 #include "Kismet/GameplayStaticsTypes.h"
 #include "KerunWSkillTalentQuest.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
+#include "Engine/EngineTypes.h"
+#include "Components/CapsuleComponent.h"
 
 UKerunWSkill::UKerunWSkill()
 {
@@ -21,14 +23,16 @@ void UKerunWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillStat
 {
 	skillDelay = 1.f;
 	skillCooldown = 0.f;
-	skillMaxCooldown = 10.f;
-	range = 300.f;
+	skillMaxCooldown = 2.f;
+	range = 500.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;
 
 	character = Character;
 	skillstate = SkillState;
+
+	KerunCharacter = Cast<AKerunCharacter>(character);
 
 	character->GetWorldTimerManager().SetTimer(cooldownTimer, this, &UKerunWSkill::OnTick, 0.1f, true);
 }
@@ -38,16 +42,29 @@ void UKerunWSkill::OnTick()
 	Super::OnTick();
 
 	//Kerun WSkill
-	if (GetIsWorking())
+	if (GetIsWorking() && !IsLanding)
 	{
 		FVector Loc = character->GetActorLocation();
 
 		if (Loc.Z >= GetLimitZValue())
 		{
-			AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
-			KnockDownTarget(KerunCharacter);
+			LandingIntoTarget(KerunCharacter);
+			IsLanding = true;
+			KerunCharacter->PlayWSkillEndMontage();
 		}
 
+	}
+
+	if (IsLanding)
+	{
+		FVector Loc = character->GetActorLocation();
+
+		if (Loc.Z <= LandingZValue)
+		{
+			KnockDownTarget(KerunCharacter);
+			
+			IsLanding = false;
+		}
 	}
 }
 
@@ -58,8 +75,6 @@ void UKerunWSkill::OnUse(FHitResult Hit)
 		if (IDamagable* Target = Cast<IDamagable>(Actor))
 		{
 			JumpIntoTarget(Actor);
-
-			AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
 
 			KerunCharacter->ImproveEStack(3);
 		}
@@ -96,30 +111,19 @@ bool UKerunWSkill::CanUse()
 void UKerunWSkill::JumpIntoTarget(AActor* Actor)
 {
 	IsWorking = true;
+	TargetActor = Actor;
 	// Move Owner
 	FVector StartLoc = character->GetActorLocation();
 	FVector EndLoc = Actor->GetActorLocation();
 	TargetLocation = EndLoc;
-	FVector Velocity = EndLoc - StartLoc;
+	FVector Velocity = (EndLoc - StartLoc) *0.2f;
+	PrevVelocity = StartLoc-EndLoc;
 	Velocity.Z = StartLoc.Z + ZValue;
 	Velocity *= Speed - 1;
 
 	character->GetCharacterMovement()->Launch(Velocity);
 
-	if (character->IsSelectedTalent[5][2])
-	{
-		if (ITeam* team = Cast<ITeam>(Actor))
-		{
-			if (team->GetTeam() != Cast<ITeam>(character)->GetTeam())
-			{
-				AttackTarget(Actor);
-			}
-		}
-	}
-	else
-	{
-		AttackTarget(Actor);
-	}
+	KerunCharacter->PlayWSkillStartMontage();
 }
 
 bool UKerunWSkill::GetIsWorking()
@@ -134,15 +138,22 @@ void UKerunWSkill::SetIsWorking(bool flag)
 
 void UKerunWSkill::KnockDownTarget(AKerunCharacter* Owner)
 {
-	FVector StartLoc = Owner->GetActorLocation();
-	
-	FVector Velocity = TargetLocation - StartLoc;
+	if (character->IsSelectedTalent[5][2])
+	{
+		if (ITeam* team = Cast<ITeam>(TargetActor))
+		{
+			if (team->GetTeam() != Cast<ITeam>(character)->GetTeam())
+			{
+				AttackTarget(TargetActor);
+			}
+		}
+	}
+	else
+	{
+		AttackTarget(TargetActor);
+	}
 
-	Velocity *= Speed;
-
-	Owner->GetCharacterMovement()->Launch(Velocity);
-
-	IsWorking = false;
+	Owner->GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
 }
 
 double UKerunWSkill::GetLimitZValue()
@@ -158,8 +169,6 @@ void UKerunWSkill::AttackTarget(AActor* Actor)
 		{
 			if (WSkillTalentQuest->GetQuestState())
 			{
-				AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character);
-
 				KerunCharacter->ImproveEStack(WSkillTalentQuest->GetEStackAmount());
 			}
 			else
@@ -203,3 +212,22 @@ void UKerunWSkill::AttackTarget(AActor* Actor)
 		character->AddBarrierAmount(Kerun12BarrierAmount);
 	}
 }
+
+void UKerunWSkill::LandingIntoTarget(AKerunCharacter* Owner)
+{
+	//SpawnCollider();
+	Owner->GetCapsuleComponent()->SetCollisionProfileName(FName("IgnoreOnlyPawn"));
+
+	FVector StartLoc = Owner->GetActorLocation();
+	
+	FVector Velocity = TargetLocation - StartLoc;
+
+	FVector TotalVelocity = Velocity + PrevVelocity * 0.5f;
+
+	TotalVelocity *= Speed;
+
+	Owner->GetCharacterMovement()->Launch(TotalVelocity);
+
+	IsWorking = false;
+}
+

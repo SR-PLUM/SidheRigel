@@ -53,11 +53,18 @@ private: //Animation
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	class UAnimMontage* RSkillMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	class UAnimMontage* WSkillStartMontage;
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	class UAnimMontage* WSkillEndMontage;
+
 protected :
 	void PlayAttackMontage();
 
 public:
 	void PlayRSkillMontage();
+	void PlayWSkillStartMontage();
+	void PlayWSkillEndMontage();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)

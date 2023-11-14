@@ -273,6 +273,24 @@ void AKerunCharacter::PlayRSkillMontage()
 	}
 }
 
+void AKerunCharacter::PlayWSkillStartMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && WSkillStartMontage)
+	{
+		AnimInstance->Montage_Play(WSkillStartMontage);
+	}
+}
+
+void AKerunCharacter::PlayWSkillEndMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && WSkillEndMontage)
+	{
+		AnimInstance->Montage_Play(WSkillEndMontage, 1.3f);
+	}
+}
+
 void AKerunCharacter::ImproveEStack(int Count)
 {
 
