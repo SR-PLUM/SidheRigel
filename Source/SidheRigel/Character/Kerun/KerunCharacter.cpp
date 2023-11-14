@@ -264,6 +264,15 @@ void AKerunCharacter::PlayAttackMontage()
 	}
 }
 
+void AKerunCharacter::PlayRSkillMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && RSkillMontage)
+	{
+		AnimInstance->Montage_Play(RSkillMontage);
+	}
+}
+
 void AKerunCharacter::ImproveEStack(int Count)
 {
 

@@ -50,8 +50,14 @@ private: //Animation
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	class UAnimMontage* AttackMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	class UAnimMontage* RSkillMontage;
+
 protected :
 	void PlayAttackMontage();
+
+public:
+	void PlayRSkillMontage();
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
