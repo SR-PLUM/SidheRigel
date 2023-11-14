@@ -20,7 +20,10 @@ public:
 	UFUNCTION()
 		void OpenCharacterSelectMenu();
 
-	void RefreshPlayerList();
+	UFUNCTION()
+		void OnLobbyStartButton();
+
+	void RefreshPlayerList(TArray<class APlayerController*> playerList);
 
 protected:
 	virtual bool Initialize() override;
@@ -62,7 +65,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* StartGameButton;
 
-	USidheRigelGameInstance* SidheRigelInstance;
+	class USidheRigelGameInstance* SidheRigelInstance;
+	class ALobbyGameMode* LobbyGameMode;
 
 	UFUNCTION()
 		void SetCharacterACM();

@@ -18,7 +18,12 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	virtual void Logout(AController* Exiting) override;
 
+	void AddUIList(class ULobbyMenu* UI);
+	void OpenCharacterSelectMenu(APlayerController* selector);
+	void RefreshPlayerText();
+
 	TArray<APlayerController*> players;
+	TArray<class ULobbyMenu*> UIList;
 
 private:
 	uint32 NumberOfPlayers = 0;

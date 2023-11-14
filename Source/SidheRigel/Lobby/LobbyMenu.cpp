@@ -5,8 +5,11 @@
 
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
+#include "Components/TextBlock.h"
+#include "GameFramework/PlayerState.h"
 
 #include "SidheRigel/SidheRigelGameInstance.h"
+#include "SidheRigel/Lobby/LobbyGameMode.h"
 
 #include "SidheRigel/Enum/E_Character.h"
 
@@ -34,12 +37,20 @@ bool ULobbyMenu::Initialize()
 	StartGameButton->OnClicked.AddDynamic(this, &ULobbyMenu::StartGame);
 
 	if (!Lobby_StartButton) return false;
-	Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OpenCharacterSelectMenu);
+	Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OnLobbyStartButton);
 
 	SidheRigelInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
 	if (SidheRigelInstance)
 	{
 		SidheRigelInstance->SetInputUI(TakeWidget());
+	}
+
+	LobbyGameMode = Cast<ALobbyGameMode>(GetWorld()->GetAuthGameMode());
+	if (LobbyGameMode)
+	{
+		LobbyGameMode->AddUIList(this);
+
+		LobbyGameMode->RefreshPlayerText();
 	}
 
 	return true;
@@ -49,14 +60,35 @@ void ULobbyMenu::OpenLobbyMenu()
 {
 	if (LobbySwitcher == nullptr) return;
 	LobbySwitcher->SetActiveWidget(LobbyMenu);
-
-	//if(GetWorld()->GetAuthGameMode())
 }
 
 void ULobbyMenu::OpenCharacterSelectMenu()
 {
 	if (LobbySwitcher == nullptr) return;
+	
 	LobbySwitcher->SetActiveWidget(CharacterSelectMenu);
+}
+
+void ULobbyMenu::OnLobbyStartButton()
+{
+	LobbyGameMode->OpenCharacterSelectMenu(GetOwningPlayer());
+}
+
+void ULobbyMenu::RefreshPlayerList(TArray<class APlayerController*> playerList)
+{
+	int32 cnt = 0;
+	for (auto& player : playerList)
+	{
+		if (cnt == 0)
+		{
+			Player_1->SetText(FText::FromString(player->PlayerState->UniqueId->ToString()));
+		}
+		else if (cnt == 1)
+		{
+			Player_2->SetText(FText::FromString(player->PlayerState->UniqueId->ToString()));
+		}
+		cnt++;
+	}
 }
 
 void ULobbyMenu::SetCharacterACM()

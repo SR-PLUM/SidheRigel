@@ -4,17 +4,41 @@
 #include "LobbyGameMode.h"
 #include "GameFramework/PlayerState.h"
 
+#include "SidheRigel/Lobby/LobbyMenu.h"
+
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	++NumberOfPlayers;
 	players.Add(NewPlayer);
-
-	UE_LOG(LogTemp, Warning, TEXT("LOGIN :: %s"), *NewPlayer->PlayerState->UniqueId->ToString());
 }
 
 void ALobbyGameMode::Logout(AController* Exiting)
 {
 	--NumberOfPlayers;
 
-	UE_LOG(LogTemp, Warning, TEXT("LOGIN :: %s"), *Exiting->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("LogOut :: %s"), *Exiting->GetName());
+}
+
+void ALobbyGameMode::AddUIList(ULobbyMenu* UI)
+{
+	UIList.Add(UI);
+}
+
+void ALobbyGameMode::OpenCharacterSelectMenu(APlayerController* selector)
+{
+	if (selector == players[0])
+	{
+		for (auto& UI : UIList)
+		{
+			UI->OpenCharacterSelectMenu();
+		}
+	}
+}
+
+void ALobbyGameMode::RefreshPlayerText()
+{
+	for (auto& UI : UIList)
+	{
+		UI->RefreshPlayerList(players);
+	}
 }
