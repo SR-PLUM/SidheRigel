@@ -156,10 +156,3 @@ void UMainMenu::UpdateChildren()
 		}
 	}
 }
-
-void UMainMenu::OpenLobbyMenu()
-{
-	if (MenuSwitcher == nullptr) return;
-
-	MenuSwitcher->SetActiveWidget(LobbyMenu);
-}

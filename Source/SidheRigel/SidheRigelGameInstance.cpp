@@ -146,14 +146,6 @@ void USidheRigelGameInstance::OnCreateSessionComplete(FName SessionName, bool Su
 
 	if (Menu != nullptr)
 	{
-		Menu->OpenLobbyMenu();
-		
-		
-	}
-
-	/*	MOVE TO MAP
-	if (Menu != nullptr)
-	{
 		Menu->Teardown();
 	}
 
@@ -161,7 +153,7 @@ void USidheRigelGameInstance::OnCreateSessionComplete(FName SessionName, bool Su
 	if (World == nullptr) return;
 
 	World->ServerTravel(LobbyURL);
-	*/
+	
 
 }
 

@@ -4,6 +4,7 @@
 #include "LobbyMenu.h"
 
 #include "Components/Button.h"
+#include "Components/WidgetSwitcher.h"
 
 #include "SidheRigel/SidheRigelGameInstance.h"
 
@@ -32,6 +33,9 @@ bool ULobbyMenu::Initialize()
 	if (!StartGameButton) return false;
 	StartGameButton->OnClicked.AddDynamic(this, &ULobbyMenu::StartGame);
 
+	if (!Lobby_StartButton) return false;
+	Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OpenCharacterSelectMenu);
+
 	SidheRigelInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
 	if (SidheRigelInstance)
 	{
@@ -39,6 +43,20 @@ bool ULobbyMenu::Initialize()
 	}
 
 	return true;
+}
+
+void ULobbyMenu::OpenLobbyMenu()
+{
+	if (LobbySwitcher == nullptr) return;
+	LobbySwitcher->SetActiveWidget(LobbyMenu);
+
+	//if(GetWorld()->GetAuthGameMode())
+}
+
+void ULobbyMenu::OpenCharacterSelectMenu()
+{
+	if (LobbySwitcher == nullptr) return;
+	LobbySwitcher->SetActiveWidget(CharacterSelectMenu);
 }
 
 void ULobbyMenu::SetCharacterACM()
