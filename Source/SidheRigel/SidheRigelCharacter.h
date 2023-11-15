@@ -141,6 +141,16 @@ public: //UI
 	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
 	void ClearUISkillCoolDown(E_SkillState SkillState);
 
+public:	//CC Particle
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AStunParticle> stunParticleClass;
+	UFUNCTION()
+		void SpawnStunParticle();
+	UPROPERTY()
+		class AStunParticle* stunParticle;
+	UFUNCTION()
+		void RemoveStunParticle();
+
 protected:	//Stat
 	UPROPERTY()
 		int32 level;							//레벨

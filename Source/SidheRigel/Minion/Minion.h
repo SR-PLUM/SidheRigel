@@ -109,6 +109,16 @@ protected: //UI
 	void InitMinionWidget();
 	void InitMinionUI();
 
+public:	//CC Particle
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AStunParticle> stunParticleClass;
+	UFUNCTION()
+		void SpawnStunParticle();
+	UPROPERTY()
+		class AStunParticle* stunParticle;
+	UFUNCTION()
+		void RemoveStunParticle();
+
 protected:	//Move
 	bool IsMoveVectorTrue = false;
 	FVector moveDirection = FVector::ZeroVector;

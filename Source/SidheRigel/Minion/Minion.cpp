@@ -7,6 +7,7 @@
 #include "WayPoint.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "MinionProjectile.h"
+#include "SidheRigel/Character/Common/StunParticle.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -38,6 +39,13 @@ AMinion::AMinion()
 	if (projectileRef.Object)
 	{
 		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+	}
+
+	//StunParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> StunParticle(TEXT("/Game/Heros/Common/BP_StunParticle"));
+	if (StunParticle.Object)
+	{
+		stunParticleClass = (UClass*)StunParticle.Object->GeneratedClass;
 	}
 
 	InitMinionWidget();
@@ -312,6 +320,42 @@ void AMinion::InitMinionUI()
 	}
 }
 
+void AMinion::SpawnStunParticle()
+{
+	if (stunParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters FieldSpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation() + FVector::UpVector * 100);
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		FieldSpawnParams.Owner = this;
+		FieldSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		stunParticle = World->SpawnActorDeferred<AStunParticle>(stunParticleClass, SpawnTransform);
+
+		if (stunParticle)
+		{
+			stunParticle->target = this;
+		}
+
+		stunParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AMinion::RemoveStunParticle()
+{
+	if (!stunParticle)
+		return;
+
+	stunParticle->Destroy();
+	stunParticle = nullptr;
+}
+
 void AMinion::Attack(AActor* Target)
 {
 }
@@ -321,11 +365,15 @@ void AMinion::Stun(float time)
 	IsStun = true;
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 
+	SpawnStunParticle();
+
 	GetWorldTimerManager().SetTimer(CheckStunTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
 				IsStun = false;
 				GetCharacterMovement()->MaxWalkSpeed = currentSpeed;
+
+				RemoveStunParticle();
 			}
 
 	), time, false);

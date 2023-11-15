@@ -29,6 +29,7 @@
 #include "SidheRigel/Tower/Tower.h"
 #include "SidheRigel/UI/TalentUI.h"
 #include "SidheRigel/UI/TalentItem.h"
+#include "SidheRigel/Character/Common/StunParticle.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -82,6 +83,13 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitAttackProjectile();
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
+
+	//StunParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> StunParticle(TEXT("/Game/Heros/Common/BP_StunParticle"));
+	if (StunParticle.Object)
+	{
+		stunParticleClass = (UClass*)StunParticle.Object->GeneratedClass;
+	}
 
 	//StatWidget
 	InitStatWidget();
@@ -306,6 +314,42 @@ void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Per
 void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 {
 	InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
+}
+
+void ASidheRigelCharacter::SpawnStunParticle()
+{
+	if (stunParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters FieldSpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation() + FVector::UpVector * 100);
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		FieldSpawnParams.Owner = this;
+		FieldSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		stunParticle = World->SpawnActorDeferred<AStunParticle>(stunParticleClass, SpawnTransform);
+		
+		if (stunParticle)
+		{
+			stunParticle->target = this;
+		}
+
+		stunParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveStunParticle()
+{
+	if (!stunParticle)
+		return;
+
+	stunParticle->Destroy();
+	stunParticle = nullptr;
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)
