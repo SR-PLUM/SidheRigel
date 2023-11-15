@@ -118,10 +118,15 @@ void ULobbyMenu::SetCharacterKerun()
 
 void ULobbyMenu::StartGame()
 {
-	UWorld* World = GetWorld();
-	if (World == nullptr) return;
-
-	World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+	if (!isReady)
+	{
+		LobbyGameMode->Ready();
+		isReady = true;
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("ALREADY PUSH READY BUTTON"))
+	}
 	//World->ServerTravel("/Game/Maps/TwistedDesert?listen");
 	//World->ServerTravel("/Game/TopDown/Maps/TopDownMap?listen");
 }

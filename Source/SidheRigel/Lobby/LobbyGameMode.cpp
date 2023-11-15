@@ -15,13 +15,25 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 void ALobbyGameMode::Logout(AController* Exiting)
 {
 	--NumberOfPlayers;
-
-	UE_LOG(LogTemp, Warning, TEXT("LogOut :: %s"), *Exiting->GetName());
+	auto exitPlayer = Cast<APlayerController>(Exiting);
+	int32 idx = players.Find(exitPlayer);
+	players.RemoveAt(idx);
+	UIList.RemoveAt(idx);
 }
 
 void ALobbyGameMode::AddUIList(ULobbyMenu* UI)
 {
 	UIList.Add(UI);
+
+	/*
+	if (UIList.Num() == 2)
+	{
+		for (auto& UI : UIList)
+		{
+			UI->OpenCharacterSelectMenu();
+		}
+	}
+	*/
 }
 
 void ALobbyGameMode::OpenCharacterSelectMenu(APlayerController* selector)
@@ -40,5 +52,17 @@ void ALobbyGameMode::RefreshPlayerText()
 	for (auto& UI : UIList)
 	{
 		UI->RefreshPlayerList(players);
+	}
+}
+
+void ALobbyGameMode::Ready()
+{
+	ReadyCount++;
+	if (ReadyCount == players.Num())
+	{
+		UWorld* World = GetWorld();
+		if (World == nullptr) return;
+
+		World->ServerTravel("/Game/Maps/TrainingRoom?listen");
 	}
 }

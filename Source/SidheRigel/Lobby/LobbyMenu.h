@@ -81,4 +81,6 @@ private:
 
 	UFUNCTION()
 		void StartGame();
+
+	bool isReady = false;
 };

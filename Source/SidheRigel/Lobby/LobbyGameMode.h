@@ -21,10 +21,12 @@ public:
 	void AddUIList(class ULobbyMenu* UI);
 	void OpenCharacterSelectMenu(APlayerController* selector);
 	void RefreshPlayerText();
+	void Ready();
 
 	TArray<APlayerController*> players;
 	TArray<class ULobbyMenu*> UIList;
 
 private:
 	uint32 NumberOfPlayers = 0;
+	uint32 ReadyCount = 0;
 };
