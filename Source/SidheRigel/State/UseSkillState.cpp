@@ -33,6 +33,8 @@ void UseSkillState::OnBegin()
 			FHitResult Hit;
 			stateMachine->playerController->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
 
+			FVector ForwardDirection = ((Hit.Location - myCharacter->GetActorLocation()) * FVector(1, 1, 0)).GetSafeNormal();
+
 			if (myCharacter->skills.Contains(stateMachine->currentSkill))
 			{
 				if (!(myCharacter->skills[stateMachine->currentSkill]->IsTargeting()))
@@ -49,9 +51,7 @@ void UseSkillState::OnBegin()
 				}
 				myCharacter->skills[stateMachine->currentSkill]->OnUse(Hit);
 			}
-
 			//Set Character Rotation
-			FVector ForwardDirection = ((Hit.Location - myCharacter->GetActorLocation()) * FVector(1, 1, 0)).GetSafeNormal();
 			myCharacter->SetActorRotation(ForwardDirection.Rotation());
 
 			//Skill Cooldown
