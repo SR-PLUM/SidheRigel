@@ -76,6 +76,10 @@ void UKerunR1Skill::OnUse(FHitResult Hit)
 			}
 
 			KerunCharacter->PlayRSkillMontage();
+
+			//Particle
+			KerunCharacter->UseParticleSystem(R_Ready);
+
 		}
 	}
 

@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "KerunCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
 #include "../../Dummy/DummyProjectile.h"
 
 #include "Skills/KerunQSkill.h"
@@ -288,6 +290,45 @@ void AKerunCharacter::PlayWSkillEndMontage()
 	if (AnimInstance && WSkillEndMontage)
 	{
 		AnimInstance->Montage_Play(WSkillEndMontage, 1.3f);
+	}
+}
+
+void AKerunCharacter::UseParticleSystem(E_SkillState SkillState)
+{
+	UParticleSystem* Particle;
+
+	switch (SkillState)
+	{
+	case Q_Ready:
+		Particle = QSkillParticle;
+		break;
+	case W_Ready:
+		Particle = WSkillParticle;
+		break;
+	case E_Ready:
+		Particle = ESkillParticle;
+		break;
+	case R_Ready:
+		Particle = RSkillParticle;
+		break;
+	default :
+		Particle = nullptr;
+		break;
+	}
+
+	if (Particle != nullptr)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			Particle,
+			SpawnTransform
+		);
 	}
 }
 

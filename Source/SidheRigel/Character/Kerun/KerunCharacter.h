@@ -66,6 +66,19 @@ public:
 	void PlayWSkillStartMontage();
 	void PlayWSkillEndMontage();
 
+private: //Particle
+	UPROPERTY(EditDefaultsOnly, Category = VisualEffects)
+		UParticleSystem* QSkillParticle;
+	UPROPERTY(EditDefaultsOnly, Category = VisualEffects)
+		UParticleSystem* ESkillParticle;
+	UPROPERTY(EditDefaultsOnly, Category = VisualEffects)
+		UParticleSystem* WSkillParticle;
+	UPROPERTY(EditDefaultsOnly, Category = VisualEffects)
+		UParticleSystem* RSkillParticle;
+
+public:
+	void UseParticleSystem(E_SkillState SkillState);
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UProjectileMovementComponent* ProjectileMovementComponent;
