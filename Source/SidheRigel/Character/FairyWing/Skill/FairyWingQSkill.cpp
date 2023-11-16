@@ -2,6 +2,7 @@
 
 
 #include "FairyWingQSkill.h"
+#include "../FairyWingCharacter.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingQCollider.h"
@@ -56,6 +57,12 @@ void UFairyWingQSkill::OnUse(FHitResult Hit)
 		AFairyWingQCollider* collider = World->SpawnActorDeferred<AFairyWingQCollider>(colliderClass, SpawnTransform);
 		if (collider)
 		{
+			if (AFairyWingCharacter* FairyWingCharacter = Cast<AFairyWingCharacter>(character))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("UseQSkill2"));
+				FairyWingCharacter->PlayQSkillMontage();
+			}
+
 			if (character->IsSelectedTalent[4][2])
 			{
 				collider->CollisionComponent->SetRelativeScale3D(FVector(2, 2, 2));
