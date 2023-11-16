@@ -154,6 +154,7 @@ void UKerunWSkill::KnockDownTarget(AKerunCharacter* Owner)
 	}
 
 	Owner->GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
+	Owner->UseParticleSystem(W_Ready);
 }
 
 double UKerunWSkill::GetLimitZValue()
