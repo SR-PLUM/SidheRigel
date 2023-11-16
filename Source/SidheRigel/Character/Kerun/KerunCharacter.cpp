@@ -23,6 +23,7 @@
 #include "SidheRigel/UI/StatSummary.h"
 
 #include "Animation/AnimMontage.h"
+#include "Particles/ParticleSystem.h"
 
 AKerunCharacter::AKerunCharacter()
 {
@@ -143,17 +144,22 @@ void AKerunCharacter::Attack(AActor* target)
 		AKerunAttackProjectile* Projectile = World->SpawnActor<AKerunAttackProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 		if (Projectile)
 		{
-			//Kerun QSkill
-			UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(skills[E_SkillState::Q_Ready]);
-
-			if (QSkillRef->IsWorking)
-			{
-				QSkillRef->AttackCount += 1;
-			}
-
 			// Set the projectile's initial trajectory.
 			Projectile->Target = target;
 			InitProjectileProperty(Projectile);
+			
+			//Kerun QSkill
+			UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(skills[E_SkillState::Q_Ready]);
+
+			/*
+			if (QSkillRef->IsWorking)
+			{
+				QSkillRef->AttackCount += 1;
+
+				UE_LOG(LogTemp, Warning, TEXT("Add Attackcount :: %d"), QSkillRef->AttackCount);
+			}
+			*/
+			
 
 			if (IsSelectedTalent[0][2])
 			{
@@ -164,7 +170,7 @@ void AKerunCharacter::Attack(AActor* target)
 
 			ImproveEStack(EAddAmount);
 
-			QSkillRef->ApplyTalentWhenFullComboHits(target);
+			//QSkillRef->ApplyTalentWhenFullComboHits(target);
 			
 		}
 	}
@@ -299,9 +305,6 @@ void AKerunCharacter::UseParticleSystem(E_SkillState SkillState)
 
 	switch (SkillState)
 	{
-	case Q_Ready:
-		Particle = QSkillParticle;
-		break;
 	case W_Ready:
 		Particle = WSkillParticle;
 		break;
@@ -322,6 +325,7 @@ void AKerunCharacter::UseParticleSystem(E_SkillState SkillState)
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(GetActorLocation());
 		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		//SpawnTransform.SetScale3D(FVector(0.6f, 0.6f, 0.6));
 		SpawnParams.Owner = this;
 
 		UGameplayStatics::SpawnEmitterAtLocation(
@@ -329,6 +333,28 @@ void AKerunCharacter::UseParticleSystem(E_SkillState SkillState)
 			Particle,
 			SpawnTransform
 		);
+	}
+}
+
+void AKerunCharacter::UseQParticle(AActor* Target)
+{
+	UParticleSystem* Particle = QSkillParticle;
+
+	if (Particle != nullptr)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(Target->GetActorLocation());
+		SpawnTransform.SetRotation(Target->GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			Particle,
+			SpawnTransform
+		);
+
+		UE_LOG(LogTemp, Warning , TEXT("QParticle Spawn"))
 	}
 }
 

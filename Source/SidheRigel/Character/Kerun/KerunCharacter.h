@@ -78,6 +78,7 @@ private: //Particle
 
 public:
 	void UseParticleSystem(E_SkillState SkillState);
+	void UseQParticle(AActor* Target);
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
