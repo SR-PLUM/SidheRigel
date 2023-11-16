@@ -8,6 +8,7 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "MinionProjectile.h"
 #include "SidheRigel/Character/Common/StunParticle.h"
+#include "SidheRigel/Character/Common/SlowParticle.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -46,6 +47,12 @@ AMinion::AMinion()
 	if (StunParticle.Object)
 	{
 		stunParticleClass = (UClass*)StunParticle.Object->GeneratedClass;
+	}
+	//SlowParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> SlowParticle(TEXT("/Game/Heros/Common/BP_SlowParticle"));
+	if (SlowParticle.Object)
+	{
+		slowParticleClass = (UClass*)SlowParticle.Object->GeneratedClass;
 	}
 
 	InitMinionWidget();
@@ -356,6 +363,42 @@ void AMinion::RemoveStunParticle()
 	stunParticle = nullptr;
 }
 
+void AMinion::SpawnSlowParticle()
+{
+	if (slowParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		slowParticle = World->SpawnActorDeferred<ASlowParticle>(slowParticleClass, SpawnTransform);
+
+		if (slowParticle)
+		{
+			slowParticle->target = this;
+		}
+
+		slowParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AMinion::RemoveSlowParticle()
+{
+	if (!slowParticle)
+		return;
+
+	slowParticle->Destroy();
+	slowParticle = nullptr;
+}
+
 void AMinion::Attack(AActor* Target)
 {
 }
@@ -404,12 +447,29 @@ void AMinion::Slow(float time, float value, FString key)
 	if (time == -1)
 		return;
 
-	FTimerHandle SlowTimer;
+	SpawnSlowParticle();
+
+	FTimerHandle SlowTimer;	//작동 안하지 않나?
 	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
 		{
 			if (speedRate.Find(key))
 			{
 				speedRate.Remove(key);
+
+				bool hasSlowItem = false;
+				for (auto& speedRateItem : speedRate)
+				{
+					if (speedRateItem.Value < 0)
+					{
+						hasSlowItem = true;
+						break;
+					}
+				}
+
+				if (!hasSlowItem)
+				{
+					RemoveSlowParticle();
+				}
 			}
 		})
 		, time, false);

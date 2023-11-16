@@ -119,6 +119,15 @@ public:	//CC Particle
 	UFUNCTION()
 		void RemoveStunParticle();
 
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ASlowParticle> slowParticleClass;
+	UFUNCTION()
+		void SpawnSlowParticle();
+	UPROPERTY()
+		class ASlowParticle* slowParticle;
+	UFUNCTION()
+		void RemoveSlowParticle();
+
 protected:	//Move
 	bool IsMoveVectorTrue = false;
 	FVector moveDirection = FVector::ZeroVector;

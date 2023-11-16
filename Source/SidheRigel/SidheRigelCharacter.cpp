@@ -30,6 +30,7 @@
 #include "SidheRigel/UI/TalentUI.h"
 #include "SidheRigel/UI/TalentItem.h"
 #include "SidheRigel/Character/Common/StunParticle.h"
+#include "SidheRigel/Character/Common/SlowParticle.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -89,6 +90,12 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	if (StunParticle.Object)
 	{
 		stunParticleClass = (UClass*)StunParticle.Object->GeneratedClass;
+	}
+	//SlowParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> SlowParticle(TEXT("/Game/Heros/Common/BP_SlowParticle"));
+	if (SlowParticle.Object)
+	{
+		slowParticleClass = (UClass*)SlowParticle.Object->GeneratedClass;
 	}
 
 	//StatWidget
@@ -324,12 +331,12 @@ void ASidheRigelCharacter::SpawnStunParticle()
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		FActorSpawnParameters FieldSpawnParams;
+		FActorSpawnParameters SpawnParams;
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(GetActorLocation() + FVector::UpVector * 100);
 		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
-		FieldSpawnParams.Owner = this;
-		FieldSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		// Spawn the projectile at the muzzle.
 		stunParticle = World->SpawnActorDeferred<AStunParticle>(stunParticleClass, SpawnTransform);
@@ -350,6 +357,42 @@ void ASidheRigelCharacter::RemoveStunParticle()
 
 	stunParticle->Destroy();
 	stunParticle = nullptr;
+}
+
+void ASidheRigelCharacter::SpawnSlowParticle()
+{
+	if (slowParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		slowParticle = World->SpawnActorDeferred<ASlowParticle>(slowParticleClass, SpawnTransform);
+
+		if (slowParticle)
+		{
+			slowParticle->target = this;
+		}
+
+		slowParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveSlowParticle()
+{
+	if (!slowParticle)
+		return;
+
+	slowParticle->Destroy();
+	slowParticle = nullptr;
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)
@@ -936,12 +979,29 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 
 	float totalTime = (1 - (GetEndurance() / 100.f)) * time;
 
-	FTimerHandle SlowTimer;
+	SpawnSlowParticle();
+
+	FTimerHandle SlowTimer;	//잘 동작하는지 확인하기
 	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
 		{
 			if (speedRate.Find(key))
 			{
 				speedRate.Remove(key);
+
+				bool hasSlowItem = false;
+				for (auto& speedRateItem : speedRate)
+				{
+					if (speedRateItem.Value < 0)
+					{
+						hasSlowItem = true;
+						break;
+					}
+				}
+
+				if (!hasSlowItem)
+				{
+					RemoveSlowParticle();
+				}
 			}
 		})
 		, totalTime, false);
