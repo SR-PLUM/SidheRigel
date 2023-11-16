@@ -100,7 +100,7 @@ void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AKerunCharacter::InitProperty()
 {
-	level = 19;
+	level = 1;
 	range.Add("Debug", 200.f);
 	attackDamage.Add("Debug", 5.f);
 	attackSpeed.Add("Debug", 1.f);
