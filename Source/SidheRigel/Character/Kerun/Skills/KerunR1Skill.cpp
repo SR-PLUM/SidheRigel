@@ -21,7 +21,7 @@ UKerunR1Skill::UKerunR1Skill()
 
 void UKerunR1Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
-	skillDelay = 1.f;
+	skillDelay = 2.5f;
 	skillCooldown = 0.f;
 	skillMaxCooldown = 20.f;
 	range = 300.f;
@@ -74,6 +74,14 @@ void UKerunR1Skill::OnUse(FHitResult Hit)
 
 				}
 			}
+
+			KerunCharacter->PlayRSkillMontage();
+
+			//Particle
+			KerunCharacter->UseParticleSystem(R_Ready);
+
 		}
 	}
+
+	
 }

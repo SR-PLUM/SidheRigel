@@ -24,15 +24,23 @@ public:
 private:
 	FVector TargetLocation = FVector::ZeroVector;
 
+	FVector PrevVelocity = FVector::ZeroVector;
+
 	//Z value
-	double ZValue = 300.0f;
+	double ZValue = 500.0f;
+	double LandingZValue = 250.0f;
 
 	//Speed
 	int32 Speed = 5;
 
 	double damage = 10.0f;
 
+	class AKerunCharacter* KerunCharacter;
+
+	AActor* TargetActor;
+
 	bool IsWorking = false;
+	bool IsLanding = false;
 
 private: //Talent
 	float Kerun11SlowTime = 3.f;
@@ -49,7 +57,9 @@ protected:
 	void JumpIntoTarget(AActor* Actor);
 	bool GetIsWorking();
 	void SetIsWorking(bool flag);
+	void LandingIntoTarget(class AKerunCharacter* Owner);
 	void KnockDownTarget(class AKerunCharacter* Owner);
 	void AttackTarget(AActor* Actor);
 	double GetLimitZValue();
+	void SpawnCollider();
 };
