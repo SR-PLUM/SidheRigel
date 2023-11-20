@@ -26,6 +26,15 @@ protected:
 protected:
 	class USphereComponent* rangeArea;
 
+	UPROPERTY(EditAnywhere)
+		class UParticleSystemComponent* destroyParticle;
+
+	UPROPERTY(EditAnywhere)
+		class USoundBase* destroySound;
+
+	UPROPERTY(EditAnywhere)
+		class USoundBase* AttackSound;
+
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* mesh;
 

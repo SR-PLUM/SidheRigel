@@ -6,6 +6,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "kismet/GameplayStatics.h"
 
 #include "SidheRigel/UI/HPUI.h"
 #include "SidheRigel/Nexus/NexusAttackProjectile.h"
@@ -39,6 +41,13 @@ ANexus::ANexus()
 		rangeArea = CreateDefaultSubobject<USphereComponent>(TEXT("rangeArea"));
 		rangeArea->InitSphereRadius(30.0f);
 		rangeArea->SetupAttachment(mesh);
+	}
+
+	if (!destroyParticle)
+	{
+		destroyParticle = CreateAbstractDefaultSubobject<UParticleSystemComponent>(TEXT("destroyParticle"));
+		destroyParticle->SetupAttachment(mesh);
+		destroyParticle->SetAutoActivate(false);
 	}
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Nexus/BP_NexusAttackProjectile"));
@@ -79,6 +88,8 @@ void ANexus::Tick(float DeltaTime)
 
 	if (currentTarget)
 	{
+		DrawDebugLine(GetWorld(), this->GetActorLocation() + FVector(0, 0, 150), currentTarget->GetActorLocation(), FColor(255, 0, 0));	
+
 		IDamagable* damagableTarget = Cast<IDamagable>(currentTarget);
 		if (damagableTarget)
 		{
@@ -113,6 +124,7 @@ void ANexus::Tick(float DeltaTime)
 					ANexusAttackProjectile* projectile = World->SpawnActorDeferred<ANexusAttackProjectile>(projectileClass, SpawnTransform);
 					if (projectile)
 					{
+						UGameplayStatics::PlaySoundAtLocation(this, AttackSound, this->GetActorLocation());
 						projectile->Target = currentTarget;
 						projectile->AttackDamage = damage;
 						projectile->criticalDamage = 1;
@@ -178,6 +190,8 @@ void ANexus::TakeDamage(float _damage, AActor* damageCauser)
 	if (HP <= 0)
 	{
 		//Destroy Animation
+		UGameplayStatics::PlaySoundAtLocation(this, destroySound, destroyParticle->GetComponentLocation());
+		destroyParticle->Activate();
 		Destroy();
 	}
 }

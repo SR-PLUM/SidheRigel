@@ -6,6 +6,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "kismet/GameplayStatics.h"
 
 #include "SidheRigel/UI/HPUI.h"
 #include "SidheRigel/Tower/TowerAttackProjectile.h"
@@ -39,6 +41,13 @@ ATower::ATower()
 		rangeArea = CreateDefaultSubobject<USphereComponent>(TEXT("rangeArea"));
 		rangeArea->InitSphereRadius(500.0f);
 		rangeArea->SetupAttachment(mesh);
+	}
+
+	if (!destroyParticle)
+	{
+		destroyParticle = CreateAbstractDefaultSubobject<UParticleSystemComponent>(TEXT("destroyParticle"));
+		destroyParticle->SetupAttachment(mesh);
+		destroyParticle->SetAutoActivate(false);
 	}
 
 	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Tower/BP_TowerAttackProjectile"));
@@ -105,6 +114,8 @@ void ATower::Tick(float DeltaTime)
 
 	if (currentTarget)
 	{
+		DrawDebugLine(GetWorld(), this->GetActorLocation() + FVector(0, 0, 250), currentTarget->GetActorLocation(), FColor(255, 0, 0));
+
 		IDamagable* damagableTarget = Cast<IDamagable>(currentTarget);
 		if (damagableTarget)
 		{
@@ -139,6 +150,7 @@ void ATower::Tick(float DeltaTime)
 					ATowerAttackProjectile* projectile = World->SpawnActorDeferred<ATowerAttackProjectile>(projectileClass, SpawnTransform);
 					if (projectile)
 					{
+						UGameplayStatics::PlaySoundAtLocation(this, AttackSound, this->GetActorLocation());
 						projectile->Target = currentTarget;
 						projectile->AttackDamage = damage;
 						projectile->criticalDamage = 1;
@@ -206,6 +218,8 @@ void ATower::TakeDamage(float _damage, AActor* damageCauser)
 	if (HP <= 0)
 	{
 		//Destroy Animation
+		UGameplayStatics::PlaySoundAtLocation(this, destroySound, destroyParticle->GetComponentLocation());
+		destroyParticle->Activate();
 		Destroy();
 	}
 }
