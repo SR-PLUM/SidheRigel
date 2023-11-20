@@ -7,6 +7,10 @@
 #include "WayPoint.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "MinionProjectile.h"
+#include "SidheRigel/Character/Common/StunParticle.h"
+#include "SidheRigel/Character/Common/SlowParticle.h"
+#include "SidheRigel/Character/Common/StopParticle.h"
+#include "SidheRigel/Character/Common/SilenceParticle.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -38,6 +42,31 @@ AMinion::AMinion()
 	if (projectileRef.Object)
 	{
 		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+	}
+
+	//StunParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> StunParticle(TEXT("/Game/Heros/Common/BP_StunParticle"));
+	if (StunParticle.Object)
+	{
+		stunParticleClass = (UClass*)StunParticle.Object->GeneratedClass;
+	}
+	//SlowParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> SlowParticle(TEXT("/Game/Heros/Common/BP_SlowParticle"));
+	if (SlowParticle.Object)
+	{
+		slowParticleClass = (UClass*)SlowParticle.Object->GeneratedClass;
+	}
+	//StopParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> StopParticle(TEXT("/Game/Heros/Common/BP_StopParticle"));
+	if (StopParticle.Object)
+	{
+		stopParticleClass = (UClass*)StopParticle.Object->GeneratedClass;
+	}
+	//SilenceParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> SlienceParticle(TEXT("/Game/Heros/Common/BP_SilenceParticle"));
+	if (SlienceParticle.Object)
+	{
+		silenceParticleClass = (UClass*)SlienceParticle.Object->GeneratedClass;
 	}
 
 	InitMinionWidget();
@@ -312,6 +341,144 @@ void AMinion::InitMinionUI()
 	}
 }
 
+void AMinion::SpawnStunParticle()
+{
+	if (stunParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters FieldSpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation() + FVector::UpVector * 100);
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		FieldSpawnParams.Owner = this;
+		FieldSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		stunParticle = World->SpawnActorDeferred<AStunParticle>(stunParticleClass, SpawnTransform);
+
+		if (stunParticle)
+		{
+			stunParticle->target = this;
+		}
+
+		stunParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AMinion::RemoveStunParticle()
+{
+	if (!stunParticle)
+		return;
+
+	stunParticle->Destroy();
+	stunParticle = nullptr;
+}
+
+void AMinion::SpawnSlowParticle()
+{
+	if (slowParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		slowParticle = World->SpawnActorDeferred<ASlowParticle>(slowParticleClass, SpawnTransform);
+
+		if (slowParticle)
+		{
+			slowParticle->target = this;
+		}
+
+		slowParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AMinion::RemoveSlowParticle()
+{
+	if (!slowParticle)
+		return;
+
+	slowParticle->Destroy();
+	slowParticle = nullptr;
+}
+
+void AMinion::SpawnStopParticle()
+{
+	if (stopParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		// Spawn the projectile at the muzzle.
+		stopParticle = World->SpawnActorDeferred<AStopParticle>(stopParticleClass, SpawnTransform);
+
+		if (stopParticle)
+		{
+			stopParticle->target = this;
+		}
+
+		stopParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AMinion::RemoveStopParticle()
+{
+	if (!stopParticle)
+		return;
+
+	stopParticle->Destroy();
+	stopParticle = nullptr;
+}
+
+void AMinion::SpawnSilenceParticle()
+{
+	if (silenceParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		// Spawn the projectile at the muzzle.
+		silenceParticle = World->SpawnActorDeferred<ASilenceParticle>(silenceParticleClass, SpawnTransform);
+
+		if (silenceParticle)
+		{
+			silenceParticle->target = this;
+		}
+
+		silenceParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AMinion::RemoveSilenceParticle()
+{
+	if (!silenceParticle)
+		return;
+
+	silenceParticle->Destroy();
+	silenceParticle = nullptr;
+}
+
 void AMinion::Attack(AActor* Target)
 {
 }
@@ -321,11 +488,15 @@ void AMinion::Stun(float time)
 	IsStun = true;
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 
+	SpawnStunParticle();
+
 	GetWorldTimerManager().SetTimer(CheckStunTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
 				IsStun = false;
 				GetCharacterMovement()->MaxWalkSpeed = currentSpeed;
+
+				RemoveStunParticle();
 			}
 
 	), time, false);
@@ -335,10 +506,14 @@ void AMinion::Stop(float time)
 {
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 
+	SpawnStopParticle();
+
 	GetWorldTimerManager().SetTimer(CheckStunTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
 				GetCharacterMovement()->MaxWalkSpeed = currentSpeed;
+
+				RemoveStopParticle();
 			}
 
 	), time, false);
@@ -356,12 +531,29 @@ void AMinion::Slow(float time, float value, FString key)
 	if (time == -1)
 		return;
 
-	FTimerHandle SlowTimer;
+	SpawnSlowParticle();
+
+	FTimerHandle SlowTimer;	//작동 안하지 않나?
 	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
 		{
 			if (speedRate.Find(key))
 			{
 				speedRate.Remove(key);
+
+				bool hasSlowItem = false;
+				for (auto& speedRateItem : speedRate)
+				{
+					if (speedRateItem.Value < 0)
+					{
+						hasSlowItem = true;
+						break;
+					}
+				}
+
+				if (!hasSlowItem)
+				{
+					RemoveSlowParticle();
+				}
 			}
 		})
 		, time, false);

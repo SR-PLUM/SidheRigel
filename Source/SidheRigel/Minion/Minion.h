@@ -109,6 +109,43 @@ protected: //UI
 	void InitMinionWidget();
 	void InitMinionUI();
 
+public:	//CC Particle
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AStunParticle> stunParticleClass;
+	UFUNCTION()
+		void SpawnStunParticle();
+	UPROPERTY()
+		class AStunParticle* stunParticle;
+	UFUNCTION()
+		void RemoveStunParticle();
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ASlowParticle> slowParticleClass;
+	UFUNCTION()
+		void SpawnSlowParticle();
+	UPROPERTY()
+		class ASlowParticle* slowParticle;
+	UFUNCTION()
+		void RemoveSlowParticle();
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AStopParticle> stopParticleClass;
+	UFUNCTION()
+		void SpawnStopParticle();
+	UPROPERTY()
+		class AStopParticle* stopParticle;
+	UFUNCTION()
+		void RemoveStopParticle();
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ASilenceParticle> silenceParticleClass;
+	UFUNCTION()
+		void SpawnSilenceParticle();
+	UPROPERTY()
+		class ASilenceParticle* silenceParticle;
+	UFUNCTION()
+		void RemoveSilenceParticle();
+
 protected:	//Move
 	bool IsMoveVectorTrue = false;
 	FVector moveDirection = FVector::ZeroVector;

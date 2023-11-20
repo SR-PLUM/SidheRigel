@@ -29,6 +29,10 @@
 #include "SidheRigel/Tower/Tower.h"
 #include "SidheRigel/UI/TalentUI.h"
 #include "SidheRigel/UI/TalentItem.h"
+#include "SidheRigel/Character/Common/StunParticle.h"
+#include "SidheRigel/Character/Common/SlowParticle.h"
+#include "SidheRigel/Character/Common/StopParticle.h"
+#include "SidheRigel/Character/Common/SilenceParticle.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -82,6 +86,31 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitAttackProjectile();
 	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
+
+	//StunParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> StunParticle(TEXT("/Game/Heros/Common/BP_StunParticle"));
+	if (StunParticle.Object)
+	{
+		stunParticleClass = (UClass*)StunParticle.Object->GeneratedClass;
+	}
+	//SlowParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> SlowParticle(TEXT("/Game/Heros/Common/BP_SlowParticle"));
+	if (SlowParticle.Object)
+	{
+		slowParticleClass = (UClass*)SlowParticle.Object->GeneratedClass;
+	}
+	//StopParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> StopParticle(TEXT("/Game/Heros/Common/BP_StopParticle"));
+	if (StopParticle.Object)
+	{
+		stopParticleClass = (UClass*)StopParticle.Object->GeneratedClass;
+	}
+	//SilenceParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> SlienceParticle(TEXT("/Game/Heros/Common/BP_SilenceParticle"));
+	if (SlienceParticle.Object)
+	{
+		silenceParticleClass = (UClass*)SlienceParticle.Object->GeneratedClass;
+	}
 
 	//StatWidget
 	InitStatWidget();
@@ -306,6 +335,144 @@ void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Per
 void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 {
 	InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
+}
+
+void ASidheRigelCharacter::SpawnStunParticle()
+{
+	if (stunParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation() + FVector::UpVector * 100);
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		stunParticle = World->SpawnActorDeferred<AStunParticle>(stunParticleClass, SpawnTransform);
+		
+		if (stunParticle)
+		{
+			stunParticle->target = this;
+		}
+
+		stunParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveStunParticle()
+{
+	if (!stunParticle)
+		return;
+
+	stunParticle->Destroy();
+	stunParticle = nullptr;
+}
+
+void ASidheRigelCharacter::SpawnSlowParticle()
+{
+	if (slowParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		// Spawn the projectile at the muzzle.
+		slowParticle = World->SpawnActorDeferred<ASlowParticle>(slowParticleClass, SpawnTransform);
+
+		if (slowParticle)
+		{
+			slowParticle->target = this;
+		}
+
+		slowParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveSlowParticle()
+{
+	if (!slowParticle)
+		return;
+
+	slowParticle->Destroy();
+	slowParticle = nullptr;
+}
+
+void ASidheRigelCharacter::SpawnStopParticle()
+{
+	if (stopParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		// Spawn the projectile at the muzzle.
+		stopParticle = World->SpawnActorDeferred<AStopParticle>(stopParticleClass, SpawnTransform);
+
+		if (stopParticle)
+		{
+			stopParticle->target = this;
+		}
+
+		stopParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveStopParticle()
+{
+	if (!stopParticle)
+		return;
+
+	stopParticle->Destroy();
+	stopParticle = nullptr;
+}
+
+void ASidheRigelCharacter::SpawnSilenceParticle()
+{
+	if (silenceParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		// Spawn the projectile at the muzzle.
+		silenceParticle = World->SpawnActorDeferred<ASilenceParticle>(silenceParticleClass, SpawnTransform);
+
+		if (silenceParticle)
+		{
+			silenceParticle->target = this;
+		}
+
+		silenceParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveSilenceParticle()
+{
+	if (!silenceParticle)
+		return;
+
+	silenceParticle->Destroy();
+	silenceParticle = nullptr;
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)
@@ -892,12 +1059,29 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 
 	float totalTime = (1 - (GetEndurance() / 100.f)) * time;
 
-	FTimerHandle SlowTimer;
+	SpawnSlowParticle();
+
+	FTimerHandle SlowTimer;	//잘 동작하는지 확인하기
 	GetWorldTimerManager().SetTimer(SlowTimer, FTimerDelegate::CreateLambda([=]()
 		{
 			if (speedRate.Find(key))
 			{
 				speedRate.Remove(key);
+
+				bool hasSlowItem = false;
+				for (auto& speedRateItem : speedRate)
+				{
+					if (speedRateItem.Value < 0)
+					{
+						hasSlowItem = true;
+						break;
+					}
+				}
+
+				if (!hasSlowItem)
+				{
+					RemoveSlowParticle();
+				}
 			}
 		})
 		, totalTime, false);
