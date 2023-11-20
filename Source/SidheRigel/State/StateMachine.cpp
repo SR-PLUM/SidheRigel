@@ -91,6 +91,10 @@ void StateMachine::Update()
 	{
 		stopTime -= DeltaTime;
 		ChangeCharacterSpeed(0);
+		if (stopTime <= 0)
+		{
+			myCharacter->RemoveStopParticle();
+		}
 	}
 	else
 	{
@@ -106,6 +110,10 @@ void StateMachine::Update()
 	if (silenceTime > 0)
 	{
 		silenceTime -= DeltaTime;
+		if (silenceTime <= 0)
+		{
+			myCharacter->RemoveSilenceParticle();
+		}
 	}
 	if (DieTime > 0)
 	{
@@ -170,11 +178,15 @@ void StateMachine::OnStun(float _stunTime)
 
 void StateMachine::OnStop(float _stopTime)
 {
+	if(myCharacter)
+		myCharacter->SpawnStopParticle();
 	stopTime = _stopTime;
 }
 
 void StateMachine::OnSilence(float _silenceTime)
 {
+	if (myCharacter)
+		myCharacter->SpawnSilenceParticle();
 	silenceTime = _silenceTime;
 }
 
