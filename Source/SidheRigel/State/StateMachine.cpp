@@ -146,9 +146,14 @@ void StateMachine::OnKeyboard(E_SkillState SkillState)
 		return;
 	}
 
-	bSkillReady = true;
 	currentSkill = SkillState;
+	if (!myCharacter->skills.Contains(currentSkill))
+	{
+		currentSkill = E_SkillState::Skill_Null;
+		return;
+	}
 
+	bSkillReady = true;
 	float currentSkillRange = myCharacter->skills[currentSkill]->GetRange();
 	myCharacter->skillRange->SetRelativeScale3D(FVector(currentSkillRange / 100, currentSkillRange / 100, 1));
 
@@ -202,6 +207,13 @@ void StateMachine::HasAttackEnemy()
 
 void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 {
+	currentSkill = SkillState;
+	if (!myCharacter->skills.Contains(currentSkill))
+	{
+		currentSkill = E_SkillState::Skill_Null;
+		return;
+	}
+
 	auto& skill = myCharacter->skills[SkillState];
 	if (skill == nullptr)
 		return;

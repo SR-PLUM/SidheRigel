@@ -47,6 +47,16 @@ void AKerunAttackProjectile::Tick(float DeltaTime)
 
 			UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(character->skills[E_SkillState::Q_Ready]);
 
+			if (QSkillRef->IsWorking)
+			{
+				character->UseQParticle(Target);
+
+				QSkillRef->AttackCount += 1;
+				UE_LOG(LogTemp, Warning, TEXT("AttackCount :: %d"), QSkillRef->AttackCount)
+			}
+
+			QSkillRef->ApplyTalentWhenFullComboHits(Target);
+
 			if (character->IsSelectedTalent[5][0] && QSkillRef->IsWorking)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("CRITICAL!"));
