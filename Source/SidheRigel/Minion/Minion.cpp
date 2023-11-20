@@ -9,6 +9,8 @@
 #include "MinionProjectile.h"
 #include "SidheRigel/Character/Common/StunParticle.h"
 #include "SidheRigel/Character/Common/SlowParticle.h"
+#include "SidheRigel/Character/Common/StopParticle.h"
+#include "SidheRigel/Character/Common/SilenceParticle.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -53,6 +55,18 @@ AMinion::AMinion()
 	if (SlowParticle.Object)
 	{
 		slowParticleClass = (UClass*)SlowParticle.Object->GeneratedClass;
+	}
+	//StopParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> StopParticle(TEXT("/Game/Heros/Common/BP_StopParticle"));
+	if (StopParticle.Object)
+	{
+		stopParticleClass = (UClass*)StopParticle.Object->GeneratedClass;
+	}
+	//SilenceParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> SlienceParticle(TEXT("/Game/Heros/Common/BP_SilenceParticle"));
+	if (SlienceParticle.Object)
+	{
+		silenceParticleClass = (UClass*)SlienceParticle.Object->GeneratedClass;
 	}
 
 	InitMinionWidget();
@@ -399,6 +413,72 @@ void AMinion::RemoveSlowParticle()
 	slowParticle = nullptr;
 }
 
+void AMinion::SpawnStopParticle()
+{
+	if (stopParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		// Spawn the projectile at the muzzle.
+		stopParticle = World->SpawnActorDeferred<AStopParticle>(stopParticleClass, SpawnTransform);
+
+		if (stopParticle)
+		{
+			stopParticle->target = this;
+		}
+
+		stopParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AMinion::RemoveStopParticle()
+{
+	if (!stopParticle)
+		return;
+
+	stopParticle->Destroy();
+	stopParticle = nullptr;
+}
+
+void AMinion::SpawnSilenceParticle()
+{
+	if (silenceParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		// Spawn the projectile at the muzzle.
+		silenceParticle = World->SpawnActorDeferred<ASilenceParticle>(silenceParticleClass, SpawnTransform);
+
+		if (silenceParticle)
+		{
+			silenceParticle->target = this;
+		}
+
+		silenceParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void AMinion::RemoveSilenceParticle()
+{
+	if (!silenceParticle)
+		return;
+
+	silenceParticle->Destroy();
+	silenceParticle = nullptr;
+}
+
 void AMinion::Attack(AActor* Target)
 {
 }
@@ -426,10 +506,14 @@ void AMinion::Stop(float time)
 {
 	GetCharacterMovement()->MaxWalkSpeed = 0;
 
+	SpawnStopParticle();
+
 	GetWorldTimerManager().SetTimer(CheckStunTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
 				GetCharacterMovement()->MaxWalkSpeed = currentSpeed;
+
+				RemoveStopParticle();
 			}
 
 	), time, false);

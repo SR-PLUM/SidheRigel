@@ -31,6 +31,8 @@
 #include "SidheRigel/UI/TalentItem.h"
 #include "SidheRigel/Character/Common/StunParticle.h"
 #include "SidheRigel/Character/Common/SlowParticle.h"
+#include "SidheRigel/Character/Common/StopParticle.h"
+#include "SidheRigel/Character/Common/SilenceParticle.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -96,6 +98,18 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	if (SlowParticle.Object)
 	{
 		slowParticleClass = (UClass*)SlowParticle.Object->GeneratedClass;
+	}
+	//StopParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> StopParticle(TEXT("/Game/Heros/Common/BP_StopParticle"));
+	if (StopParticle.Object)
+	{
+		stopParticleClass = (UClass*)StopParticle.Object->GeneratedClass;
+	}
+	//SilenceParticle
+	static ConstructorHelpers::FObjectFinder<UBlueprint> SlienceParticle(TEXT("/Game/Heros/Common/BP_SilenceParticle"));
+	if (SlienceParticle.Object)
+	{
+		silenceParticleClass = (UClass*)SlienceParticle.Object->GeneratedClass;
 	}
 
 	//StatWidget
@@ -393,6 +407,72 @@ void ASidheRigelCharacter::RemoveSlowParticle()
 
 	slowParticle->Destroy();
 	slowParticle = nullptr;
+}
+
+void ASidheRigelCharacter::SpawnStopParticle()
+{
+	if (stopParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		// Spawn the projectile at the muzzle.
+		stopParticle = World->SpawnActorDeferred<AStopParticle>(stopParticleClass, SpawnTransform);
+
+		if (stopParticle)
+		{
+			stopParticle->target = this;
+		}
+
+		stopParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveStopParticle()
+{
+	if (!stopParticle)
+		return;
+
+	stopParticle->Destroy();
+	stopParticle = nullptr;
+}
+
+void ASidheRigelCharacter::SpawnSilenceParticle()
+{
+	if (silenceParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		// Spawn the projectile at the muzzle.
+		silenceParticle = World->SpawnActorDeferred<ASilenceParticle>(silenceParticleClass, SpawnTransform);
+
+		if (silenceParticle)
+		{
+			silenceParticle->target = this;
+		}
+
+		silenceParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveSilenceParticle()
+{
+	if (!silenceParticle)
+		return;
+
+	silenceParticle->Destroy();
+	silenceParticle = nullptr;
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)

@@ -160,6 +160,24 @@ public:	//CC Particle
 	UFUNCTION()
 		void RemoveSlowParticle();
 
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class AStopParticle> stopParticleClass;
+	UFUNCTION()
+		void SpawnStopParticle();
+	UPROPERTY()
+		class AStopParticle* stopParticle;
+	UFUNCTION()
+		void RemoveStopParticle();
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ASilenceParticle> silenceParticleClass;
+	UFUNCTION()
+		void SpawnSilenceParticle();
+	UPROPERTY()
+		class ASilenceParticle* silenceParticle;
+	UFUNCTION()
+		void RemoveSilenceParticle();
+
 protected:	//Stat
 	UPROPERTY()
 		int32 level;							//레벨
