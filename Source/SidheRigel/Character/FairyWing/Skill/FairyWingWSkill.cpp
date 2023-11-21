@@ -4,6 +4,7 @@
 #include "FairyWingWSkill.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Character/FairyWing/FairyWingCharacter.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingWCollider.h"
 
 UFairyWingWSkill::UFairyWingWSkill()
@@ -55,6 +56,11 @@ void UFairyWingWSkill::OnUse(FHitResult Hit)
 		AFairyWingWCollider* collider = World->SpawnActorDeferred<AFairyWingWCollider>(colliderClass, SpawnTransform);
 		if (collider)
 		{
+			if (AFairyWingCharacter* FairyWingCharacter = Cast<AFairyWingCharacter>(character))
+			{
+				FairyWingCharacter->PlayWSkillMontage();
+			}
+
 			collider->colliderOwner = character;
 			collider->duration = colliderDuration;
 			collider->slowValue = colliderSlow;
