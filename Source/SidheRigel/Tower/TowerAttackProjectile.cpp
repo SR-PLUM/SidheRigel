@@ -29,7 +29,7 @@ void ATowerAttackProjectile::SetProjectileMesh()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Tower/MaterialSphere"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Tower/SM_TowerAttackProjectile"));
 	if (Mesh.Succeeded())
 	{
 		ProjectileMesh->SetStaticMesh(Mesh.Object);
@@ -44,7 +44,7 @@ void ATowerAttackProjectile::SetProjectileMovementComponent()
 {
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(ProjectileMesh);
-	ProjectileMovementComponent->InitialSpeed = 10.f;
+	ProjectileMovementComponent->InitialSpeed = 5.f;
 	ProjectileMovementComponent->MaxSpeed = 0.f;
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->bShouldBounce = false;
