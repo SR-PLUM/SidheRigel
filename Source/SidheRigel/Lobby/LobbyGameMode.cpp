@@ -10,6 +10,8 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	++NumberOfPlayers;
 	players.Add(NewPlayer);
+
+	UE_LOG(LogTemp,Warning,TEXT("IN SERVER :: PlayerNum : %d, NewPlayer : %s"), NumberOfPlayers, *NewPlayer->GetName())
 }
 
 void ALobbyGameMode::Logout(AController* Exiting)
@@ -38,6 +40,7 @@ void ALobbyGameMode::AddUIList(ULobbyMenu* UI)
 
 void ALobbyGameMode::OpenCharacterSelectMenu(APlayerController* selector)
 {
+	/*
 	if (selector == players[0])
 	{
 		for (auto& UI : UIList)
@@ -45,14 +48,16 @@ void ALobbyGameMode::OpenCharacterSelectMenu(APlayerController* selector)
 			UI->OpenCharacterSelectMenu();
 		}
 	}
+	*/
 }
 
 void ALobbyGameMode::RefreshPlayerText()
 {
+	/*
 	for (auto& UI : UIList)
 	{
 		UI->RefreshPlayerList(players);
-	}
+	}*/
 }
 
 void ALobbyGameMode::Ready()
