@@ -42,6 +42,11 @@ void UFairyWingESkill::OnUse(FHitResult Hit)
 {
 	if (AActor* _target = Hit.GetActor())
 	{
+		if (AFairyWingCharacter* FairyWingCharacter = Cast<AFairyWingCharacter>(character))
+		{
+			FairyWingCharacter->PlayESkillMontage();
+		}
+
 		if (projectileClass)
 		{			
 			FVector MuzzleLocation = character->GetActorLocation();
