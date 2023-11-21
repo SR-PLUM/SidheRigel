@@ -14,15 +14,12 @@ class SIDHERIGEL_API AFairyWingCharacter : public ASidheRigelCharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AFairyWingCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:	//Attack
@@ -51,4 +48,29 @@ protected:	//Skill Projectile
 
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AFairyWingRCollider> RColliderClass;
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+		class UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+		class UAnimMontage* QSkillMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+		class UAnimMontage* WSkillMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+		class UAnimMontage* ESkillMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+		class UAnimMontage* RSkillMontage;
+
+protected:
+	void PlayAttackMontage();
+
+public:
+	void PlayQSkillMontage();
+	void PlayWSkillMontage();
+	void PlayESkillMontage();
+	void PlayRSkillMontage();
 };

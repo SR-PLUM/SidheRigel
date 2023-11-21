@@ -15,6 +15,7 @@
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingESkill.h"
 #include "SidheRigel/Character/FairyWing/FairyWingAttackProjectile.h"
 #include "SidheRigel/InGameMapScriptActor.h"
+#include "Animation/AnimMontage.h"
 
 // Sets default values
 AFairyWingCharacter::AFairyWingCharacter()
@@ -128,6 +129,8 @@ void AFairyWingCharacter::Attack(AActor* target)
 			}
 		}
 	}
+
+	PlayAttackMontage();
 }
 
 void AFairyWingCharacter::InitFairyWingTalent()
@@ -214,4 +217,50 @@ void AFairyWingCharacter::InitFairyWingTalent()
 	talentListArray[6].talentItems[2].talentName = "FairyWing_7_3";
 	talentListArray[6].talentItems[2].talentDescription = "E 영웅에게 적중시 쿨타임 감소";
 	talentListArray[6].talentItems[2].imgPath = "";
+}
+
+void AFairyWingCharacter::PlayAttackMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AttackMontage)
+	{
+		AnimInstance->Montage_Play(AttackMontage);
+	}
+}
+
+void AFairyWingCharacter::PlayQSkillMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && QSkillMontage)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UseQSkill1"));
+		AnimInstance->Montage_Play(QSkillMontage);
+	}
+}
+
+void AFairyWingCharacter::PlayWSkillMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && WSkillMontage)
+	{
+		AnimInstance->Montage_Play(WSkillMontage);
+	}
+}
+
+void AFairyWingCharacter::PlayESkillMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && ESkillMontage)
+	{
+		AnimInstance->Montage_Play(ESkillMontage);
+	}
+}
+
+void AFairyWingCharacter::PlayRSkillMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && RSkillMontage)
+	{
+		AnimInstance->Montage_Play(RSkillMontage);
+	}
 }
