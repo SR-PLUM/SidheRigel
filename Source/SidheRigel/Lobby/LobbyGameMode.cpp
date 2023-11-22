@@ -3,67 +3,62 @@
 
 #include "LobbyGameMode.h"
 #include "GameFramework/PlayerState.h"
+#include "ThirdParty/Steamworks/Steamv151/sdk/public/steam/steam_api.h"
 
 #include "SidheRigel/Lobby/LobbyMenu.h"
+#include "LobbyPlayerController.h"
+
+ALobbyGameMode::ALobbyGameMode()
+{
+	PlayerControllerClass = ALobbyPlayerController::StaticClass();
+}
 
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	++NumberOfPlayers;
-	players.Add(NewPlayer);
+	auto lobbyPC = Cast<ALobbyPlayerController>(NewPlayer);
+	players.Add(lobbyPC);
 
-	UE_LOG(LogTemp,Warning,TEXT("IN SERVER :: PlayerNum : %d, NewPlayer : %s"), NumberOfPlayers, *NewPlayer->GetName())
+	UE_LOG(LogTemp,Warning,TEXT("IN SERVER :: PlayerNum : %d, NewPlayer : %s"), NumberOfPlayers, *NewPlayer->PlayerState->UniqueId->ToDebugString())
 }
 
 void ALobbyGameMode::Logout(AController* Exiting)
 {
 	--NumberOfPlayers;
-	auto exitPlayer = Cast<APlayerController>(Exiting);
+	auto exitPlayer = Cast<ALobbyPlayerController>(Exiting);
 	int32 idx = players.Find(exitPlayer);
-	players.RemoveAt(idx);
-	UIList.RemoveAt(idx);
-}
-
-void ALobbyGameMode::AddUIList(ULobbyMenu* UI)
-{
-	UIList.Add(UI);
-
-	/*
-	if (UIList.Num() == 2)
-	{
-		for (auto& UI : UIList)
-		{
-			UI->OpenCharacterSelectMenu();
-		}
-	}
-	*/
+	players.Remove(exitPlayer);
 }
 
 void ALobbyGameMode::OpenCharacterSelectMenu(APlayerController* selector)
 {
-	/*
-	if (selector == players[0])
+	if(HasAuthority() && players.Num() == 2)
 	{
-		for (auto& UI : UIList)
+		for (auto& player : players)
 		{
-			UI->OpenCharacterSelectMenu();
+			if (player->LobbyUI)
+			{
+				player->LobbyUI->OpenCharacterSelectMenu();
+			}
 		}
 	}
-	*/
 }
 
 void ALobbyGameMode::RefreshPlayerText()
 {
-	/*
-	for (auto& UI : UIList)
+	for (auto& player : players)
 	{
-		UI->RefreshPlayerList(players);
-	}*/
+		if (player->LobbyUI)
+		{
+			player->LobbyUI->RefreshPlayerList(players);
+		}
+	}
 }
 
 void ALobbyGameMode::Ready()
 {
 	ReadyCount++;
-	if (ReadyCount == players.Num())
+	if (ReadyCount == players.Num() && HasAuthority())
 	{
 		UWorld* World = GetWorld();
 		if (World == nullptr) return;

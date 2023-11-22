@@ -282,7 +282,6 @@ void USidheRigelGameInstance::SetInputUI(TSharedPtr<SWidget> InWidgetToFocus)
 	if (playerController)
 	{
 		FInputModeUIOnly InputModeData;
-		InputModeData.SetWidgetToFocus(InWidgetToFocus);
 		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
 		playerController->bShowMouseCursor = true;

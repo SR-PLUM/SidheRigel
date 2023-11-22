@@ -9,6 +9,9 @@ public class SidheRigelTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
+
+		bUsesSteam = true;
+
 		ExtraModuleNames.Add("SidheRigel");
 	}
 }

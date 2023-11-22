@@ -10,6 +10,7 @@
 
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Lobby/LobbyGameMode.h"
+#include "SidheRigel/Lobby/LobbyPlayerController.h"
 
 #include "SidheRigel/Enum/E_Character.h"
 
@@ -18,39 +19,73 @@ bool ULobbyMenu::Initialize()
 	bool Success = Super::Initialize();
 	if (!Success) return false;
 
-	if (!ACMButton) return false;
-	ACMButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterACM);
+	if (ACMButton)
+	{
+		ACMButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterACM);
 
-	if (!BlackWizardButton) return false;
-	BlackWizardButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterBlackWizard);
+		ACMButton->WidgetStyle.Normal.SetImageSize(FVector2D(200, 200));
+		ACMButton->WidgetStyle.Hovered.SetImageSize(FVector2D(210, 210));
+		ACMButton->WidgetStyle.Pressed.SetImageSize(FVector2D(190, 190));
+	}
+	
 
-	if (!ColdButton) return false;
-	ColdButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterCold);
+	if (BlackWizardButton)
+	{
+		BlackWizardButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterBlackWizard);
 
-	if (!FairyWingButton) return false;
-	FairyWingButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterFairyWing);
+		BlackWizardButton->WidgetStyle.Normal.SetImageSize(FVector2D(200, 200));
+		BlackWizardButton->WidgetStyle.Hovered.SetImageSize(FVector2D(210, 210));
+		BlackWizardButton->WidgetStyle.Pressed.SetImageSize(FVector2D(190, 190));
+	}
+	
 
-	if (!KerunButton) return false;
-	KerunButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterKerun);
+	if (ColdButton)
+	{
+		ColdButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterCold);
 
-	if (!StartGameButton) return false;
-	StartGameButton->OnClicked.AddDynamic(this, &ULobbyMenu::StartGame);
+		ColdButton->WidgetStyle.Normal.SetImageSize(FVector2D(200, 200));
+		ColdButton->WidgetStyle.Hovered.SetImageSize(FVector2D(210, 210));
+		ColdButton->WidgetStyle.Pressed.SetImageSize(FVector2D(190, 190));
+	}
+	
 
-	if (!Lobby_StartButton) return false;
-	Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OnLobbyStartButton);
+	if (FairyWingButton)
+	{
+		FairyWingButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterFairyWing);
+
+		FairyWingButton->WidgetStyle.Normal.SetImageSize(FVector2D(200, 200));
+		FairyWingButton->WidgetStyle.Hovered.SetImageSize(FVector2D(210, 210));
+		FairyWingButton->WidgetStyle.Pressed.SetImageSize(FVector2D(190, 190));
+	}
+	
+
+	if (KerunButton)
+	{
+		KerunButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterKerun);
+
+		KerunButton->WidgetStyle.Normal.SetImageSize(FVector2D(200, 200));
+		KerunButton->WidgetStyle.Hovered.SetImageSize(FVector2D(210, 210));
+		KerunButton->WidgetStyle.Pressed.SetImageSize(FVector2D(190, 190));
+	}
+	
+
+	if (StartGameButton)
+	{
+		StartGameButton->OnClicked.AddDynamic(this, &ULobbyMenu::StartGame);
+	}
+	
+
+	if (Lobby_StartButton)
+	{
+		Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OnLobbyStartButton);
+	}
+
+	ResetButtonSize();
 
 	SidheRigelInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
 	if (SidheRigelInstance)
 	{
 		SidheRigelInstance->SetInputUI(TakeWidget());
-	}
-
-	LobbyGameMode = Cast<ALobbyGameMode>(GetWorld()->GetAuthGameMode());
-	if (LobbyGameMode)
-	{
-		LobbyGameMode->AddUIList(this);
-
-		LobbyGameMode->RefreshPlayerText();
 	}
 
 	return true;
@@ -71,10 +106,33 @@ void ULobbyMenu::OpenCharacterSelectMenu()
 
 void ULobbyMenu::OnLobbyStartButton()
 {
-	LobbyGameMode->OpenCharacterSelectMenu(GetOwningPlayer());
+	//LobbyGameMode->OpenCharacterSelectMenu(GetOwningPlayer());
 }
 
-void ULobbyMenu::RefreshPlayerList(TArray<class APlayerController*> playerList)
+void ULobbyMenu::ResetButtonSize()
+{
+	ACMButton->WidgetStyle.Normal.OutlineSettings.Width = 1;
+	ACMButton->WidgetStyle.Hovered.OutlineSettings.Width = 1;
+	ACMButton->WidgetStyle.Pressed.OutlineSettings.Width = 1;
+
+	BlackWizardButton->WidgetStyle.Normal.OutlineSettings.Width = 1;
+	BlackWizardButton->WidgetStyle.Hovered.OutlineSettings.Width = 1;
+	BlackWizardButton->WidgetStyle.Pressed.OutlineSettings.Width = 1;
+
+	ColdButton->WidgetStyle.Normal.OutlineSettings.Width = 1;
+	ColdButton->WidgetStyle.Hovered.OutlineSettings.Width = 1;
+	ColdButton->WidgetStyle.Pressed.OutlineSettings.Width = 1;
+
+	FairyWingButton->WidgetStyle.Normal.OutlineSettings.Width = 1;
+	FairyWingButton->WidgetStyle.Hovered.OutlineSettings.Width = 1;
+	FairyWingButton->WidgetStyle.Pressed.OutlineSettings.Width = 1;
+
+	KerunButton->WidgetStyle.Normal.OutlineSettings.Width = 1;
+	KerunButton->WidgetStyle.Hovered.OutlineSettings.Width = 1;
+	KerunButton->WidgetStyle.Pressed.OutlineSettings.Width = 1;
+}
+
+void ULobbyMenu::RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList)
 {
 	int32 cnt = 0;
 	for (auto& player : playerList)
@@ -94,33 +152,58 @@ void ULobbyMenu::RefreshPlayerList(TArray<class APlayerController*> playerList)
 void ULobbyMenu::SetCharacterACM()
 {
 	SidheRigelInstance->CharacterNum = ACM;
+	ResetButtonSize();
+
+	ACMButton->WidgetStyle.Normal.OutlineSettings.Width = 5;
+	ACMButton->WidgetStyle.Hovered.OutlineSettings.Width = 5;
+	ACMButton->WidgetStyle.Pressed.OutlineSettings.Width = 5;
 }
 
 void ULobbyMenu::SetCharacterBlackWizard()
 {
 	SidheRigelInstance->CharacterNum = BlackWizard;
+	ResetButtonSize();
+
+	BlackWizardButton->WidgetStyle.Normal.OutlineSettings.Width = 5;
+	BlackWizardButton->WidgetStyle.Hovered.OutlineSettings.Width = 5;
+	BlackWizardButton->WidgetStyle.Pressed.OutlineSettings.Width = 5;
 }
 
 void ULobbyMenu::SetCharacterCold()
 {
 	SidheRigelInstance->CharacterNum = Cold;
+	ResetButtonSize();
+
+	ColdButton->WidgetStyle.Normal.OutlineSettings.Width = 5;
+	ColdButton->WidgetStyle.Hovered.OutlineSettings.Width = 5;
+	ColdButton->WidgetStyle.Pressed.OutlineSettings.Width = 5;
 }
 
 void ULobbyMenu::SetCharacterFairyWing()
 {
 	SidheRigelInstance->CharacterNum = FairyWing;
+	ResetButtonSize();
+
+	FairyWingButton->WidgetStyle.Normal.OutlineSettings.Width = 5;
+	FairyWingButton->WidgetStyle.Hovered.OutlineSettings.Width = 5;
+	FairyWingButton->WidgetStyle.Pressed.OutlineSettings.Width = 5;
 }
 
 void ULobbyMenu::SetCharacterKerun()
 {
 	SidheRigelInstance->CharacterNum = Kerun;
+	ResetButtonSize();
+
+	KerunButton->WidgetStyle.Normal.OutlineSettings.Width = 5;
+	KerunButton->WidgetStyle.Hovered.OutlineSettings.Width = 5;
+	KerunButton->WidgetStyle.Pressed.OutlineSettings.Width = 5;
 }
 
 void ULobbyMenu::StartGame()
 {
 	if (!isReady)
 	{
-		LobbyGameMode->Ready();
+		//LobbyGameMode->Ready();
 		isReady = true;
 	}
 	else

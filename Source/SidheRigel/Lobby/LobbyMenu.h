@@ -23,7 +23,10 @@ public:
 	UFUNCTION()
 		void OnLobbyStartButton();
 
-	void RefreshPlayerList(TArray<class APlayerController*> playerList);
+	UFUNCTION()
+		void ResetButtonSize();
+
+	void RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList);
 
 protected:
 	virtual bool Initialize() override;
@@ -66,7 +69,7 @@ private:
 		class UButton* StartGameButton;
 
 	class USidheRigelGameInstance* SidheRigelInstance;
-	class ALobbyGameMode* LobbyGameMode;
+	class ALobbyPlayerController* LobbyPlayerController;
 
 	UFUNCTION()
 		void SetCharacterACM();
