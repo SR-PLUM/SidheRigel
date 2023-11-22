@@ -106,13 +106,13 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 
 						if (owner->IsSelectedTalent[4][0])
 						{
-							//remove sight
+							markTarget->AddAttackDamage("FariyWing_W", 20.f);
 
 							FTimerHandle sightRestoreTimer;
 							GetWorldTimerManager().SetTimer(sightRestoreTimer,
 								FTimerDelegate::CreateLambda([=]()
 									{
-										//restore sight
+										markTarget->RemoveAttackDamage("FariyWing_W");
 									}
 							), 2.f, false);
 						}

@@ -29,6 +29,9 @@ protected:	//Attack
 	virtual void InitAttackProjectile() override;
 	virtual void Attack(AActor* target) override;
 
+public:
+	virtual void InitProperty() override;
+
 private:	//State
 	UPROPERTY()
 		FTimerHandle destroyTimer;

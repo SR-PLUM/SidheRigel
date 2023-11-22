@@ -133,6 +133,31 @@ void AFairyWingCharacter::Attack(AActor* target)
 	PlayAttackMontage();
 }
 
+void AFairyWingCharacter::InitProperty()
+{
+	level = 1;
+	range.Add("Debug", 200.f);
+	attackDamage.Add("Debug", 5.f);
+	attackSpeed.Add("Debug", 1.f);
+	criticalRate.Add("Debug", 50);
+	criticalDamage.Add("Debug", 50);
+
+	MaxHP.Add("Debug", 100.f);
+	generateHealthPoint.Add("Debug", 0.2f);
+	MaxMP.Add("Debug", 100.f);
+	lifeSteal.Add("Debug", 5.f);
+	protectPower.Add("Debug", 20);
+
+	defencePoint.Add("Debug", 100);
+
+	speed.Add("Debug", 600.f);
+
+	currentHP = GetMaxHP();
+	currentMP = GetMaxMP();
+
+	MaxExperience = 20;
+}
+
 void AFairyWingCharacter::InitFairyWingTalent()
 {
 	//level 1
@@ -181,7 +206,7 @@ void AFairyWingCharacter::InitFairyWingTalent()
 
 	//level 13
 	talentListArray[4].talentItems[0].talentName = "FairyWing_5_1";
-	talentListArray[4].talentItems[0].talentDescription = "W 시야 제거";
+	talentListArray[4].talentItems[0].talentDescription = "W 공격력 감소";
 	talentListArray[4].talentItems[0].imgPath = "";
 
 	talentListArray[4].talentItems[1].talentName = "FairyWing_5_2";
