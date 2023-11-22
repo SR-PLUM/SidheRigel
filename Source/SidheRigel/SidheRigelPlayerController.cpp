@@ -11,6 +11,8 @@
 
 #include "Engine/World.h"
 
+#include "SidheRigelCamera.h"
+
 ASidheRigelPlayerController::ASidheRigelPlayerController()
 {
 	bShowMouseCursor = true;
@@ -86,4 +88,16 @@ void ASidheRigelPlayerController::PressedEButton()
 void ASidheRigelPlayerController::PressedRButton()
 {
 	stateMachine->OnKeyboard(E_SkillState::R_Ready);
+}
+
+void ASidheRigelPlayerController::OnPossess(APawn* aPawn)
+{
+	// It is important to call the super OnPossess method to make sure the default logic also gets executed
+	Super::OnPossess(aPawn);
+	// Set the target of our camera to be equal to the pawn this controller possesses (thus when the controller will possess the player when the game starts, the camera's target will be set to reference that player)
+	Camera->SetTargetToFollow(aPawn);
+	// Make sure our camera is the one used to present player with view (make sure that our camera will be used as player camera)
+	SetViewTarget(Camera);
+
+	UE_LOG(LogTemp, Warning, TEXT("OnPossess"));
 }

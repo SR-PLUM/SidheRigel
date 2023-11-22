@@ -60,19 +60,19 @@ public:
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 
 	/** Returns TopDownCameraComponent subobject **/
-	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
+	//FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	ASidheRigelPlayerController* sidheRigelController;
-protected:
-	/** Top down camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class UCameraComponent* TopDownCameraComponent;
-
-	/** Camera boom positioning the camera above the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class USpringArmComponent* CameraBoom;
+//protected:
+//	/** Top down camera */
+//	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+//		class UCameraComponent* TopDownCameraComponent;
+//
+//	/** Camera boom positioning the camera above the character */
+//	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+//		class USpringArmComponent* CameraBoom;
 
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly)

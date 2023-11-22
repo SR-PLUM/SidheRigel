@@ -55,6 +55,18 @@ protected:
 private:
 	bool bInputPressed; // Input is bring pressed
 	float FollowTime; // For how long it has been pressed
+
+private: //Camera
+	// Reference to our camera
+	class ASidheRigelCamera* Camera;
+
+public:
+	// Setter to set camera from another scripts
+	FORCEINLINE void SetCamera(class ASidheRigelCamera* NewCamera) { Camera = NewCamera; }
+
+protected:
+	// Declare an override for the OnPossess method. This method will be called when the controller possesses will possess our player at the start of the game
+	virtual void OnPossess(APawn* aPawn) override;
 };
 
 
