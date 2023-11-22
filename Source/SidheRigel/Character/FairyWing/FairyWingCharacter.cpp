@@ -181,7 +181,7 @@ void AFairyWingCharacter::InitFairyWingTalent()
 
 	//level 13
 	talentListArray[4].talentItems[0].talentName = "FairyWing_5_1";
-	talentListArray[4].talentItems[0].talentDescription = "W 시야 제거";
+	talentListArray[4].talentItems[0].talentDescription = "W 공격력 감소";
 	talentListArray[4].talentItems[0].imgPath = "";
 
 	talentListArray[4].talentItems[1].talentName = "FairyWing_5_2";
