@@ -4,7 +4,9 @@
 #include "LobbyPlayerController.h"
 
 #include "Kismet/GameplayStatics.h"
+
 #include "SidheRigel/Lobby/LobbyMenu.h"
+#include "LobbyGameMode.h"
 
 ALobbyPlayerController::ALobbyPlayerController()
 {
@@ -15,7 +17,23 @@ ALobbyPlayerController::ALobbyPlayerController()
 		if (LobbyUI)
 		{
 			LobbyUI->AddToViewport();
+
+			LobbyUI->LobbyPlayerController = this;
 		}
+	}
+}
+
+void ALobbyPlayerController::Ready()
+{
+	if (!isReady)
+	{
+		isReady = true;
+	}
+
+	auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (currentGM)
+	{
+		currentGM->Ready();
 	}
 }
 

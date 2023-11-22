@@ -7,6 +7,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Lobby/LobbyGameMode.h"
@@ -77,7 +78,7 @@ bool ULobbyMenu::Initialize()
 
 	if (Lobby_StartButton)
 	{
-		Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OnLobbyStartButton);
+		Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OpenCharacterSelectMenu);
 	}
 
 	ResetButtonSize();
@@ -106,7 +107,11 @@ void ULobbyMenu::OpenCharacterSelectMenu()
 
 void ULobbyMenu::OnLobbyStartButton()
 {
-	//LobbyGameMode->OpenCharacterSelectMenu(GetOwningPlayer());
+	auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (currentGM)
+	{
+		currentGM->OpenCharacterSelectMenu();
+	}
 }
 
 void ULobbyMenu::ResetButtonSize()
@@ -134,18 +139,18 @@ void ULobbyMenu::ResetButtonSize()
 
 void ULobbyMenu::RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList)
 {
-	int32 cnt = 0;
+	int32 idx = 0;
 	for (auto& player : playerList)
 	{
-		if (cnt == 0)
+		if (idx == 0)
 		{
-			Player_1->SetText(FText::FromString(player->PlayerState->UniqueId->ToString()));
+			Player_1->SetText(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
 		}
-		else if (cnt == 1)
+		else if (idx == 1)
 		{
-			Player_2->SetText(FText::FromString(player->PlayerState->UniqueId->ToString()));
+			Player_2->SetText(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
 		}
-		cnt++;
+		idx++;
 	}
 }
 
@@ -201,15 +206,8 @@ void ULobbyMenu::SetCharacterKerun()
 
 void ULobbyMenu::StartGame()
 {
-	if (!isReady)
-	{
-		//LobbyGameMode->Ready();
-		isReady = true;
-	}
-	else
-	{
-		UE_LOG(LogTemp,Warning,TEXT("ALREADY PUSH READY BUTTON"))
-	}
+	LobbyPlayerController->Ready();
+	
 	//World->ServerTravel("/Game/Maps/TwistedDesert?listen");
 	//World->ServerTravel("/Game/TopDown/Maps/TopDownMap?listen");
 }

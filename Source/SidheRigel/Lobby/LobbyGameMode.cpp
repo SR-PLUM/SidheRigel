@@ -19,7 +19,15 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 	auto lobbyPC = Cast<ALobbyPlayerController>(NewPlayer);
 	players.Add(lobbyPC);
 
-	UE_LOG(LogTemp,Warning,TEXT("IN SERVER :: PlayerNum : %d, NewPlayer : %s"), NumberOfPlayers, *NewPlayer->PlayerState->UniqueId->ToDebugString())
+	UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: PlayerNum : %d, NewPlayer : %s"), NumberOfPlayers, *NewPlayer->PlayerState->UniqueId->ToDebugString());
+
+	for (auto& player : players)
+	{
+		if (player->LobbyUI)
+		{
+			player->LobbyUI->RefreshPlayerList(players);
+		}
+	}
 }
 
 void ALobbyGameMode::Logout(AController* Exiting)
@@ -30,9 +38,9 @@ void ALobbyGameMode::Logout(AController* Exiting)
 	players.Remove(exitPlayer);
 }
 
-void ALobbyGameMode::OpenCharacterSelectMenu(APlayerController* selector)
+void ALobbyGameMode::OpenCharacterSelectMenu()
 {
-	if(HasAuthority() && players.Num() == 2)
+	if(HasAuthority())
 	{
 		for (auto& player : players)
 		{
@@ -57,12 +65,24 @@ void ALobbyGameMode::RefreshPlayerText()
 
 void ALobbyGameMode::Ready()
 {
-	ReadyCount++;
-	if (ReadyCount == players.Num() && HasAuthority())
+	//게임 시작 버튼 따로 만들어야할듯
+	if (HasAuthority())
 	{
-		UWorld* World = GetWorld();
-		if (World == nullptr) return;
+		int32 ReadyCount = 0;
+		for (auto& player : players)
+		{
+			if (player->isReady)
+			{
+				ReadyCount++;
+			}
+		}
 
-		World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+		if (ReadyCount == NumberOfPlayers)
+		{
+			UWorld* World = GetWorld();
+			if (World == nullptr) return;
+
+			World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+		}
 	}
 }

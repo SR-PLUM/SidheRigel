@@ -26,7 +26,11 @@ public:
 	UFUNCTION()
 		void ResetButtonSize();
 
-	void RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList);
+	UFUNCTION()
+		void RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList);
+
+	UPROPERTY()
+		class ALobbyPlayerController* LobbyPlayerController;
 
 protected:
 	virtual bool Initialize() override;
@@ -69,7 +73,6 @@ private:
 		class UButton* StartGameButton;
 
 	class USidheRigelGameInstance* SidheRigelInstance;
-	class ALobbyPlayerController* LobbyPlayerController;
 
 	UFUNCTION()
 		void SetCharacterACM();
@@ -84,6 +87,4 @@ private:
 
 	UFUNCTION()
 		void StartGame();
-
-	bool isReady = false;
 };

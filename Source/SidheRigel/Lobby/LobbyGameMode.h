@@ -6,11 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "LobbyGameMode.generated.h"
 
-/**
- * 
- */
-
-USTRUCT()
+/*USTRUCT()
 struct FPlayerInfo
 {
 	GENERATED_USTRUCT_BODY()
@@ -20,7 +16,8 @@ public:
 	FText playerName;
 	bool bReady;
 	APlayerState* playerState;
-};
+};*/
+
 
 UCLASS()
 class SIDHERIGEL_API ALobbyGameMode : public AGameModeBase
@@ -33,7 +30,7 @@ public:
 
 	ALobbyGameMode();
 
-	void OpenCharacterSelectMenu(APlayerController* selector);
+	void OpenCharacterSelectMenu();
 	void RefreshPlayerText();
 	void Ready();
 
@@ -41,5 +38,4 @@ public:
 
 private:
 	uint32 NumberOfPlayers = 0;
-	uint32 ReadyCount = 0;
 };

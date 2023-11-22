@@ -20,6 +20,12 @@ public:
 	UPROPERTY()
 		class ULobbyMenu* LobbyUI;
 
+	UFUNCTION()
+		void Ready();
+
+	UPROPERTY()
+		bool isReady = false;
+
 protected:
 	virtual void BeginPlay() override;
 };
