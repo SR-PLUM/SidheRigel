@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Camera/CameraActor.h"
 #include "SidheRigelCamera.generated.h"
 
 UCLASS()
-class SIDHERIGEL_API ASidheRigelCamera : public AActor
+class SIDHERIGEL_API ASidheRigelCamera : public ACameraActor
 {
 	GENERATED_BODY()
 	
