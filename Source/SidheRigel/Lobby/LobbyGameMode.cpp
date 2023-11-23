@@ -55,7 +55,10 @@ void ALobbyGameMode::Logout(AController* Exiting)
 
 void ALobbyGameMode::RefreshPlayerText()
 {
-	players[0]->RefreshPlayerList(players);
+	for (auto player : players)
+	{
+		player->RefreshPlayerList(players);
+	}
 }
 
 void ALobbyGameMode::Ready()

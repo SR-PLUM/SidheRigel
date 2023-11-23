@@ -39,7 +39,8 @@ public:
 	UFUNCTION()
 		void Ready();
 
-	TArray<class ALobbyPlayerController*> players;
+	UPROPERTY()
+		TArray<class ALobbyPlayerController*> players;
 
 private:
 	uint32 NumberOfPlayers = 0;

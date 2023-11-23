@@ -22,6 +22,8 @@ ALobbyPlayerController::ALobbyPlayerController()
 			LobbyUI->LobbyPlayerController = this;
 		}
 	}
+
+	bReplicates = true;
 }
 
 void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<class ALobbyPlayerController*>& playerList)
