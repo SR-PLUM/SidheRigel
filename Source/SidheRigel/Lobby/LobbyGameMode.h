@@ -29,12 +29,6 @@ public:
 	virtual void Logout(AController* Exiting) override;
 
 	ALobbyGameMode();
-	
-	/*UFUNCTION()
-		void OpenCharacterSelectMenu();
-		*/
-	UFUNCTION()
-		void RefreshPlayerText();
 
 	UFUNCTION()
 		void Ready();

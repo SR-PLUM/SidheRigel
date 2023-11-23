@@ -109,13 +109,7 @@ void ULobbyMenu::OnLobbyStartButton()
 {
 	if (LobbyPlayerController->HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TEST In LobbyStartButton :: This Controller is %s"), *GetName());
-		
 		LobbyPlayerController->OpenCharacterSelectMenu();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: Cant Access GameMode"));
 	}
 }
 
@@ -142,27 +136,25 @@ void ULobbyMenu::ResetButtonSize()
 	KerunButton->WidgetStyle.Pressed.OutlineSettings.Width = 1;
 }
 
-void ULobbyMenu::RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList)
+void ULobbyMenu::RefreshPlayerList(TArray<FText> nameList)
 {
-	UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: playerList Num : %d"), playerList.Num());
-
-	int32 idx = 0;
-	for (auto player : playerList)
+	UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: ListOwner : %s"), *LobbyPlayerController->GetName());
+	if (LobbyPlayerController->HasAuthority())
 	{
-		if (!player)
+		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: HasAuthority!"));
+	}
+	int32 idx = 0;
+	for (auto name : nameList)
+	{
+		if (idx == 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: NONE player"))
+			UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: playerName : 1"), );
+			Player_1->SetText(name);
 		}
-		else
+		else if (idx == 1)
 		{
-			if (idx == 0)
-			{
-				Player_1->SetText(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
-			}
-			else if (idx == 1)
-			{
-				Player_2->SetText(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
-			}
+			UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: playerName : 2"), );
+			Player_2->SetText(name);
 		}
 		idx++;
 	}
@@ -220,7 +212,7 @@ void ULobbyMenu::SetCharacterKerun()
 
 void ULobbyMenu::StartGame()
 {
-	LobbyPlayerController->Ready();
+	LobbyPlayerController->Client_Ready();
 	
 	//World->ServerTravel("/Game/Maps/TwistedDesert?listen");
 	//World->ServerTravel("/Game/TopDown/Maps/TopDownMap?listen");

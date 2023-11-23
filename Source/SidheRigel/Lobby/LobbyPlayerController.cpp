@@ -23,49 +23,51 @@ ALobbyPlayerController::ALobbyPlayerController()
 			LobbyUI->LobbyPlayerController = this;
 		}
 	}
-
-	bReplicates = true;
 }
 
-void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<class ALobbyPlayerController*>& playerList)
+void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<FText>& nameList)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST In RefreshPlayerList :: This Controller is %s"), *GetName());
-	LobbyUI->RefreshPlayerList(playerList);
-
+	LobbyUI->RefreshPlayerList(nameList);
 }
 
-void ALobbyPlayerController::Ready()
+void ALobbyPlayerController::Server_RefreshPlayerList_Implementation(const TArray<class ALobbyPlayerController*>& playerList)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST In Ready :: This Controller is %s"), *GetName());
-	if (!isReady)
+	TArray<FText> NameList;
+	for (auto player : playerList)
 	{
-		isReady = true;
-		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: State Is Ready"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: Already Ready State"));
+		NameList.Add(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
 	}
 
-	auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (currentGM)
+	LobbyUI->RefreshPlayerList(NameList);
+	RefreshPlayerList(NameList);
+}
+
+void ALobbyPlayerController::Ready_Implementation()
+{
+	readyCount++;
+	
+	if (readyCount >= 2)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: Try Access LobbyGameMode"));
-		currentGM->Ready();
+		auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (currentGM)
+		{
+			currentGM->Ready();
+		}
 	}
 }
 
 void ALobbyPlayerController::OpenCharacterSelectMenu_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST In OpenCharacterMenu :: This Controller is %s"), *GetName());
 	LobbyUI->OpenCharacterSelectMenu();
 }
 
-void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void ALobbyPlayerController::Client_Ready()
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ALobbyPlayerController, isReady);
+	if (!isReady)
+	{
+		isReady = true;
+		Ready();
+	}
 }
 
 void ALobbyPlayerController::BeginPlay()

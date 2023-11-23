@@ -27,7 +27,7 @@ public:
 		void ResetButtonSize();
 
 	UFUNCTION()
-		void RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList);
+		void RefreshPlayerList(TArray<FText> nameList);
 
 	UPROPERTY()
 		class ALobbyPlayerController* LobbyPlayerController;

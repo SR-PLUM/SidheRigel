@@ -19,16 +19,22 @@ public:
 
 	UPROPERTY()
 		class ULobbyMenu* LobbyUI;
-	UPROPERTY(replicated)
+	UPROPERTY()
 		bool isReady = false;
+	UPROPERTY()
+		int32 readyCount = 0;
 
 public:
-	UFUNCTION(NetMulticast, Reliable)
-		void RefreshPlayerList(const TArray<class ALobbyPlayerController*>& playerList);
+	UFUNCTION(Client, Reliable)
+		void RefreshPlayerList(const TArray<FText>& nameList);
+	UFUNCTION(Server, Reliable)
+		void Server_RefreshPlayerList(const TArray<class ALobbyPlayerController*>& playerList);
 	UFUNCTION(NetMulticast, Reliable)
 		void OpenCharacterSelectMenu();
-	UFUNCTION()
+	UFUNCTION(Server, Reliable)
 		void Ready();
+	UFUNCTION()
+		void Client_Ready();
 
 protected:
 	virtual void BeginPlay() override;
