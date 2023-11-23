@@ -11,6 +11,9 @@
 
 #include "Engine/World.h"
 
+#include "SidheRigelCamera.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+
 ASidheRigelPlayerController::ASidheRigelPlayerController()
 {
 	bShowMouseCursor = true;
@@ -35,6 +38,31 @@ void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
+	if (!(Camera->GetIsCameraFixed()))
+	{
+		FVector2D Location = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
+
+		if (Location.X <= 1.f)
+		{
+			Camera->MoveCameraY(-1.f);
+		}
+
+		if (Location.X >= Camera->GetScreenX() - 1.f)
+		{
+			Camera->MoveCameraY(1.f);
+		}
+
+		if (Location.Y <= 1.f)
+		{
+			Camera->MoveCameraX(1.f);
+		}
+
+		if (Location.Y >= Camera->GetScreenY() - 1.f)
+		{
+			Camera->MoveCameraX(-1.f);
+		}
+	}
+
 }
 
 void ASidheRigelPlayerController::SetupInputComponent()
@@ -51,6 +79,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("WPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedWButton);
 	InputComponent->BindAction("EPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedEButton);
 	InputComponent->BindAction("RPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedRButton);
+	InputComponent->BindAction("YPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedYButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
@@ -86,4 +115,23 @@ void ASidheRigelPlayerController::PressedEButton()
 void ASidheRigelPlayerController::PressedRButton()
 {
 	stateMachine->OnKeyboard(E_SkillState::R_Ready);
+}
+
+void ASidheRigelPlayerController::PressedYButton()
+{
+	Camera->SwitchIsCameraFixed();
+}
+
+void ASidheRigelPlayerController::OnPossess(APawn* aPawn)
+{
+	// It is important to call the super OnPossess method to make sure the default logic also gets executed
+	Super::OnPossess(aPawn);
+	// Set the target of our camera to be equal to the pawn this controller possesses (thus when the controller will possess the player when the game starts, the camera's target will be set to reference that player)
+	Camera->SetTargetToFollow(aPawn);
+	// Make sure our camera is the one used to present player with view (make sure that our camera will be used as player camera)
+	SetViewTarget(Camera);
+
+	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+
+	Camera->SetScreenSize(ViewportSize.X*2.f, ViewportSize.Y*2.f);
 }
