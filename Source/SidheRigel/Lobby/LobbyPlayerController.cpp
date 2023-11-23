@@ -29,14 +29,14 @@ ALobbyPlayerController::ALobbyPlayerController()
 
 void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<class ALobbyPlayerController*>& playerList)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST In RefreshPlayerList :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
+	UE_LOG(LogTemp, Warning, TEXT("TEST In RefreshPlayerList :: This Controller is %s"), *GetName());
 	LobbyUI->RefreshPlayerList(playerList);
 
 }
 
 void ALobbyPlayerController::Ready_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST In Ready :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
+	UE_LOG(LogTemp, Warning, TEXT("TEST In Ready :: This Controller is %s"), *GetName());
 	if (!isReady)
 	{
 		isReady = true;
@@ -57,7 +57,7 @@ void ALobbyPlayerController::Ready_Implementation()
 
 void ALobbyPlayerController::OpenCharacterSelectMenu_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST In OpenCharacterMenu :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
+	UE_LOG(LogTemp, Warning, TEXT("TEST In OpenCharacterMenu :: This Controller is %s"), *GetName());
 	LobbyUI->OpenCharacterSelectMenu();
 }
 

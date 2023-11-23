@@ -109,7 +109,7 @@ void ULobbyMenu::OnLobbyStartButton()
 {
 	if (LobbyPlayerController->HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TEST In LobbyStartButton :: This Controller is %s"), *LobbyPlayerController->PlayerState->UniqueId->ToDebugString());
+		UE_LOG(LogTemp, Warning, TEXT("TEST In LobbyStartButton :: This Controller is %s"), *GetName());
 		
 		LobbyPlayerController->OpenCharacterSelectMenu();
 	}
@@ -151,11 +151,11 @@ void ULobbyMenu::RefreshPlayerList(TArray<class ALobbyPlayerController*> playerL
 	{
 		if (idx == 0)
 		{
-			Player_1->SetText(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
+			Player_1->SetText(FText::FromString(player->GetName()));
 		}
 		else if (idx == 1)
 		{
-			Player_2->SetText(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
+			Player_2->SetText(FText::FromString(player->GetName()));
 		}
 		idx++;
 	}
