@@ -53,6 +53,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("WPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedWButton);
 	InputComponent->BindAction("EPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedEButton);
 	InputComponent->BindAction("RPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedRButton);
+	InputComponent->BindAction("YPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedYButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
@@ -88,6 +89,11 @@ void ASidheRigelPlayerController::PressedEButton()
 void ASidheRigelPlayerController::PressedRButton()
 {
 	stateMachine->OnKeyboard(E_SkillState::R_Ready);
+}
+
+void ASidheRigelPlayerController::PressedYButton()
+{
+	Camera->SwitchIsCameraFixed();
 }
 
 void ASidheRigelPlayerController::OnPossess(APawn* aPawn)

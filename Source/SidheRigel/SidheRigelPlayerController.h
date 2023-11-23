@@ -52,6 +52,8 @@ protected:
 	void PressedWButton();
 	void PressedEButton();
 	void PressedRButton();
+	
+	void PressedYButton();
 private:
 	bool bInputPressed; // Input is bring pressed
 	float FollowTime; // For how long it has been pressed
