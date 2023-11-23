@@ -30,6 +30,14 @@ void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<class
 {
 	UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
 	LobbyUI->RefreshPlayerList(playerList);
+
+	Client_RefreshPlayerList(playerList);
+}
+
+void ALobbyPlayerController::Client_RefreshPlayerList_Implementation(const TArray<class ALobbyPlayerController*>& playerList)
+{
+	UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
+	LobbyUI->RefreshPlayerList(playerList);
 }
 
 void ALobbyPlayerController::Ready_Implementation()

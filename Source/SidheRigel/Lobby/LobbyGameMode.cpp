@@ -57,7 +57,10 @@ void ALobbyGameMode::RefreshPlayerText()
 {
 	for (auto player : players)
 	{
-		player->RefreshPlayerList(players);
+		if (player->HasAuthority())
+		{
+			player->RefreshPlayerList(players);
+		}
 	}
 }
 
