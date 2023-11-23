@@ -4,6 +4,7 @@
 #include "LobbyGameMode.h"
 #include "GameFramework/PlayerState.h"
 #include "ThirdParty/Steamworks/Steamv151/sdk/public/steam/steam_api.h"
+#include "Net/UnrealNetwork.h"
 
 #include "SidheRigel/Lobby/LobbyMenu.h"
 #include "LobbyPlayerController.h"
@@ -11,6 +12,13 @@
 ALobbyGameMode::ALobbyGameMode()
 {
 	PlayerControllerClass = ALobbyPlayerController::StaticClass();
+}
+
+void ALobbyGameMode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ALobbyGameMode, players);
 }
 
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)

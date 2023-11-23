@@ -39,7 +39,7 @@ public:
 	UFUNCTION()
 		void Ready();
 
-	UPROPERTY()
+	UPROPERTY(replicated)
 		TArray<class ALobbyPlayerController*> players;
 
 private:

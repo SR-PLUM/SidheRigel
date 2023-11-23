@@ -149,13 +149,20 @@ void ULobbyMenu::RefreshPlayerList(TArray<class ALobbyPlayerController*> playerL
 	int32 idx = 0;
 	for (auto player : playerList)
 	{
-		if (idx == 0)
+		if (!player)
 		{
-			Player_1->SetText(FText::FromString(player->GetName()));
+			UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: NONE player"))
 		}
-		else if (idx == 1)
+		else
 		{
-			Player_2->SetText(FText::FromString(player->GetName()));
+			if (idx == 0)
+			{
+				Player_1->SetText(FText::FromString(player->GetName()));
+			}
+			else if (idx == 1)
+			{
+				Player_2->SetText(FText::FromString(player->GetName()));
+			}
 		}
 		idx++;
 	}
