@@ -109,7 +109,7 @@ void ULobbyMenu::OnLobbyStartButton()
 {
 	if (LobbyPlayerController->HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *LobbyPlayerController->PlayerState->UniqueId->ToDebugString());
+		UE_LOG(LogTemp, Warning, TEXT("TEST In LobbyStartButton :: This Controller is %s"), *LobbyPlayerController->PlayerState->UniqueId->ToDebugString());
 		
 		LobbyPlayerController->OpenCharacterSelectMenu();
 	}

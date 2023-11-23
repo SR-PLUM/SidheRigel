@@ -5,6 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 #include "SidheRigel/Lobby/LobbyMenu.h"
 #include "LobbyGameMode.h"
@@ -28,21 +29,14 @@ ALobbyPlayerController::ALobbyPlayerController()
 
 void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<class ALobbyPlayerController*>& playerList)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
+	UE_LOG(LogTemp, Warning, TEXT("TEST In RefreshPlayerList :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
 	LobbyUI->RefreshPlayerList(playerList);
 
-	Client_RefreshPlayerList(playerList);
-}
-
-void ALobbyPlayerController::Client_RefreshPlayerList_Implementation(const TArray<class ALobbyPlayerController*>& playerList)
-{
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
-	LobbyUI->RefreshPlayerList(playerList);
 }
 
 void ALobbyPlayerController::Ready_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
+	UE_LOG(LogTemp, Warning, TEXT("TEST In Ready :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
 	if (!isReady)
 	{
 		isReady = true;
@@ -63,8 +57,15 @@ void ALobbyPlayerController::Ready_Implementation()
 
 void ALobbyPlayerController::OpenCharacterSelectMenu_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
+	UE_LOG(LogTemp, Warning, TEXT("TEST In OpenCharacterMenu :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
 	LobbyUI->OpenCharacterSelectMenu();
+}
+
+void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ALobbyPlayerController, isReady);
 }
 
 void ALobbyPlayerController::BeginPlay()
