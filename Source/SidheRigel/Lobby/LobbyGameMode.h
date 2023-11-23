@@ -30,9 +30,9 @@ public:
 
 	ALobbyGameMode();
 	
-	UFUNCTION()
+	/*UFUNCTION()
 		void OpenCharacterSelectMenu();
-
+		*/
 	UFUNCTION()
 		void RefreshPlayerText();
 

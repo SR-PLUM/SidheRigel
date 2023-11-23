@@ -39,19 +39,19 @@ void ALobbyGameMode::Logout(AController* Exiting)
 	players.Remove(exitPlayer);
 }
 
-void ALobbyGameMode::OpenCharacterSelectMenu()
-{
-	if(HasAuthority())
-	{
-		for (auto player : players)
-		{
-			if (player->LobbyUI)
-			{
-				player->LobbyUI->OpenCharacterSelectMenu();
-			}
-		}
-	}
-}
+//void ALobbyGameMode::OpenCharacterSelectMenu()
+//{
+//	if(HasAuthority())
+//	{
+//		for (auto player : players)
+//		{
+//			if (player->LobbyUI)
+//			{
+//				player->LobbyUI->OpenCharacterSelectMenu();
+//			}
+//		}
+//	}
+//}
 
 void ALobbyGameMode::RefreshPlayerText()
 {
