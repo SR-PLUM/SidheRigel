@@ -47,7 +47,7 @@ void ASidheRigelCamera::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Check if a target is set
-	if (TargetToFollow) {
+	if (IsCameraFixed && TargetToFollow) {
 		// Get location of the target
 		FVector TargetLocation = TargetToFollow->GetActorLocation();
 
@@ -55,5 +55,11 @@ void ASidheRigelCamera::Tick(float DeltaTime)
 		// Set camera location to be equal to the location of the target (this will make sure our camera actor is always at the position of the target)
 		SetActorLocation(Location);
 	}
+}
+
+void ASidheRigelCamera::SwitchIsCameraFixed()
+{
+	if (IsCameraFixed) IsCameraFixed = false;
+	else IsCameraFixed = true;
 }
 

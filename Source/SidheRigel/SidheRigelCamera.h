@@ -47,4 +47,11 @@ private:
 
 public:
 	FORCEINLINE void SetTargetToFollow(AActor* NewTargetToFollow) { TargetToFollow = NewTargetToFollow; UE_LOG(LogTemp, Warning, TEXT("Target :: %s"), *TargetToFollow->GetName()) }
+
+private:
+	bool IsCameraFixed = true;
+
+public:
+	void SwitchIsCameraFixed();
+
 };
