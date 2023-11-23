@@ -29,6 +29,12 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s PC Is Not LobbyPC"), *NewPlayer->PlayerState->UniqueId->ToDebugString());
 	}
+
+	Server_Test_Func();
+
+	Client_Test_Func();
+
+	Mult_Test_Func();
 }
 
 void ALobbyGameMode::Logout(AController* Exiting)
@@ -39,7 +45,7 @@ void ALobbyGameMode::Logout(AController* Exiting)
 	players.Remove(exitPlayer);
 }
 
-void ALobbyGameMode::OpenCharacterSelectMenu_Implementation()
+void ALobbyGameMode::OpenCharacterSelectMenu()
 {
 	if(HasAuthority())
 	{
@@ -53,12 +59,7 @@ void ALobbyGameMode::OpenCharacterSelectMenu_Implementation()
 	}
 }
 
-bool ALobbyGameMode::OpenCharacterSelectMenu_Validate()
-{
-	return true;
-}
-
-void ALobbyGameMode::RefreshPlayerText_Implementation()
+void ALobbyGameMode::RefreshPlayerText()
 {
 	for (auto player : players)
 	{
@@ -71,11 +72,6 @@ void ALobbyGameMode::RefreshPlayerText_Implementation()
 			UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s Lobby UI Is NULL"), *player->PlayerState->UniqueId->ToDebugString());
 		}
 	}
-}
-
-bool ALobbyGameMode::RefreshPlayerText_Validate()
-{
-	return true;
 }
 
 void ALobbyGameMode::Ready()
@@ -109,4 +105,34 @@ void ALobbyGameMode::Ready()
 			UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: Not Enough ReadyCount, Current ReadyCount : %d"), ReadyCount);
 		}
 	}
+}
+
+void ALobbyGameMode::Server_Test_Func_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TEST :: Server_Test_Func In GAMEMODE"));
+}
+
+bool ALobbyGameMode::Server_Test_Func_Validate()
+{
+	return true;
+}
+
+void ALobbyGameMode::Client_Test_Func_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TEST :: Client_Test_Func In GAMEMODE"));
+}
+
+bool ALobbyGameMode::Client_Test_Func_Validate()
+{
+	return true;
+}
+
+void ALobbyGameMode::Mult_Test_Func_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TEST :: Mult_Test_Func In GAMEMODE"));
+}
+
+bool ALobbyGameMode::Mult_Test_Func_Validate()
+{
+	return true;
 }

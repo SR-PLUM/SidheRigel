@@ -29,10 +29,10 @@ public:
 	UFUNCTION(Server, Reliable, WithValidation)
 		void Server_Test_Func();
 
-	UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION(Client, Reliable, WithValidation)
 		void Client_Test_Func();
 
-	UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
 		void Mult_Test_Func();
 
 protected:
