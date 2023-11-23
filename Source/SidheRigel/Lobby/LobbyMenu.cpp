@@ -78,7 +78,7 @@ bool ULobbyMenu::Initialize()
 
 	if (Lobby_StartButton)
 	{
-		Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OpenCharacterSelectMenu);
+		Lobby_StartButton->OnClicked.AddDynamic(this, &ULobbyMenu::OnLobbyStartButton);
 	}
 
 	ResetButtonSize();
@@ -112,6 +112,10 @@ void ULobbyMenu::OnLobbyStartButton()
 	{
 		currentGM->OpenCharacterSelectMenu();
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: Cant Access GameMode"));
+	}
 }
 
 void ULobbyMenu::ResetButtonSize()
@@ -139,6 +143,8 @@ void ULobbyMenu::ResetButtonSize()
 
 void ULobbyMenu::RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList)
 {
+	UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: playerList Num : %d"), playerList.Num());
+
 	int32 idx = 0;
 	for (auto player : playerList)
 	{
