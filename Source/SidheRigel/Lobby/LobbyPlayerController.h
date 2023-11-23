@@ -27,7 +27,7 @@ public:
 		void RefreshPlayerList(const TArray<class ALobbyPlayerController*>& playerList);
 	UFUNCTION(NetMulticast, Reliable)
 		void OpenCharacterSelectMenu();
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(Server, Reliable)
 		void Ready();
 
 protected:

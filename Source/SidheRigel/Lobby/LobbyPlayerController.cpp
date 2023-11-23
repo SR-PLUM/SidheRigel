@@ -59,5 +59,5 @@ void ALobbyPlayerController::OpenCharacterSelectMenu_Implementation()
 
 void ALobbyPlayerController::BeginPlay()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
+	
 }
