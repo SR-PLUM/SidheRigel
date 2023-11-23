@@ -12,6 +12,7 @@
 #include "Engine/World.h"
 
 #include "SidheRigelCamera.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 
 ASidheRigelPlayerController::ASidheRigelPlayerController()
 {
@@ -36,6 +37,31 @@ FHitResult ASidheRigelPlayerController::GetHitResult()
 void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
+
+	if (!(Camera->GetIsCameraFixed()))
+	{
+		FVector2D Location = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
+
+		if (Location.X <= 1.f)
+		{
+			Camera->MoveCameraY(-1.f);
+		}
+
+		if (Location.X >= Camera->GetScreenX() - 1.f)
+		{
+			Camera->MoveCameraY(1.f);
+		}
+
+		if (Location.Y <= 1.f)
+		{
+			Camera->MoveCameraX(1.f);
+		}
+
+		if (Location.Y >= Camera->GetScreenY() - 1.f)
+		{
+			Camera->MoveCameraX(-1.f);
+		}
+	}
 
 }
 
@@ -105,5 +131,7 @@ void ASidheRigelPlayerController::OnPossess(APawn* aPawn)
 	// Make sure our camera is the one used to present player with view (make sure that our camera will be used as player camera)
 	SetViewTarget(Camera);
 
-	UE_LOG(LogTemp, Warning, TEXT("OnPossess"));
+	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+
+	Camera->SetScreenSize(ViewportSize.X*2.f, ViewportSize.Y*2.f);
 }

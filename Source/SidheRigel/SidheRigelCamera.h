@@ -51,7 +51,18 @@ public:
 private:
 	bool IsCameraFixed = true;
 
+	float ScreenX;
+	float ScreenY;
+
 public:
 	void SwitchIsCameraFixed();
+	bool GetIsCameraFixed();
+	void SetScreenSize(float X, float Y);
+	float GetScreenX();
+	float GetScreenY();
+
+
+	void MoveCameraX(float Axis);
+	void MoveCameraY(float Axis);
 
 };

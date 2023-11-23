@@ -63,3 +63,44 @@ void ASidheRigelCamera::SwitchIsCameraFixed()
 	else IsCameraFixed = true;
 }
 
+bool ASidheRigelCamera::GetIsCameraFixed()
+{
+	return IsCameraFixed;
+}
+
+void ASidheRigelCamera::SetScreenSize(float X, float Y)
+{
+	ScreenX = X;
+	ScreenY = Y;
+}
+
+float ASidheRigelCamera::GetScreenX()
+{
+	return ScreenX;
+}
+
+float ASidheRigelCamera::GetScreenY()
+{
+	return ScreenY;
+}
+
+void ASidheRigelCamera::MoveCameraX(float Axis)
+{
+	FVector Location = GetActorLocation();
+	
+	Location.X += Axis * 5.f;
+
+
+	SetActorLocation(Location);
+}
+
+void ASidheRigelCamera::MoveCameraY(float Axis)
+{
+	FVector Location = GetActorLocation();
+
+	Location.Y += Axis * 5.f;
+
+
+	SetActorLocation(Location);
+}
+
