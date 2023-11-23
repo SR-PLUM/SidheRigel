@@ -23,11 +23,11 @@ public:
 		bool isReady = false;
 
 public:
-	UFUNCTION(Client, Reliable)
+	UFUNCTION(NetMulticast, Reliable)
 		void RefreshPlayerList(const TArray<class ALobbyPlayerController*>& playerList);
 	UFUNCTION(NetMulticast, Reliable)
 		void OpenCharacterSelectMenu();
-	UFUNCTION(Server, Reliable)
+	UFUNCTION()
 		void Ready();
 
 protected:

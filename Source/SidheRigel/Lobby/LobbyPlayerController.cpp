@@ -34,7 +34,7 @@ void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<class
 
 }
 
-void ALobbyPlayerController::Ready_Implementation()
+void ALobbyPlayerController::Ready()
 {
 	UE_LOG(LogTemp, Warning, TEXT("TEST In Ready :: This Controller is %s"), *GetName());
 	if (!isReady)

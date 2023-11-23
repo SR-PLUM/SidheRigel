@@ -157,11 +157,11 @@ void ULobbyMenu::RefreshPlayerList(TArray<class ALobbyPlayerController*> playerL
 		{
 			if (idx == 0)
 			{
-				Player_1->SetText(FText::FromString(player->GetName()));
+				Player_1->SetText(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
 			}
 			else if (idx == 1)
 			{
-				Player_2->SetText(FText::FromString(player->GetName()));
+				Player_2->SetText(FText::FromString(player->PlayerState->UniqueId->ToDebugString()));
 			}
 		}
 		idx++;
