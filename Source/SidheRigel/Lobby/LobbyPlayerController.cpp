@@ -43,7 +43,41 @@ void ALobbyPlayerController::Ready()
 	}
 }
 
+void ALobbyPlayerController::Server_Test_Func_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TEST :: Server_Test_Func"));
+}
+
+bool ALobbyPlayerController::Server_Test_Func_Validate()
+{
+	return true;
+}
+
+void ALobbyPlayerController::Client_Test_Func_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TEST :: Client_Test_Func"));
+}
+
+bool ALobbyPlayerController::Client_Test_Func_Validate()
+{
+	return true;
+}
+
+void ALobbyPlayerController::Mult_Test_Func_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TEST :: Mult_Test_Func"));
+}
+
+bool ALobbyPlayerController::Mult_Test_Func_Validate()
+{
+	return true;
+}
+
 void ALobbyPlayerController::BeginPlay()
 {
-	
+	Server_Test_Func();
+
+	Client_Test_Func();
+
+	Mult_Test_Func();
 }

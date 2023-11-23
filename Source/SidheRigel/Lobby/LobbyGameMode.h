@@ -29,11 +29,11 @@ public:
 	virtual void Logout(AController* Exiting) override;
 
 	ALobbyGameMode();
-
-	UFUNCTION(NetMulticast, Reliable, WithValidation)
+	
+	UFUNCTION(Server, Reliable, WithValidation)
 		void OpenCharacterSelectMenu();
 
-	UFUNCTION(NetMulticast, Reliable, WithValidation)
+	UFUNCTION(Client, Reliable, WithValidation)
 		void RefreshPlayerText();
 
 	UFUNCTION()

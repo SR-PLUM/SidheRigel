@@ -26,6 +26,15 @@ public:
 	UPROPERTY()
 		bool isReady = false;
 
+	UFUNCTION(Server, Reliable, WithValidation)
+		void Server_Test_Func();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void Client_Test_Func();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void Mult_Test_Func();
+
 protected:
 	virtual void BeginPlay() override;
 };
