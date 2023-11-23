@@ -39,15 +39,6 @@ public:
 	UFUNCTION()
 		void Ready();
 
-	UFUNCTION(Server, Reliable, WithValidation)
-		void Server_Test_Func();
-
-	UFUNCTION(Client, Reliable, WithValidation)
-		void Client_Test_Func();
-
-	UFUNCTION(NetMulticast, Reliable, WithValidation)
-		void Mult_Test_Func();
-
 	TArray<class ALobbyPlayerController*> players;
 
 private:

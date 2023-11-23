@@ -107,10 +107,9 @@ void ULobbyMenu::OpenCharacterSelectMenu()
 
 void ULobbyMenu::OnLobbyStartButton()
 {
-	auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (currentGM)
+	if (LobbyPlayerController->HasAuthority())
 	{
-		currentGM->OpenCharacterSelectMenu();
+		LobbyPlayerController->OpenCharacterSelectMenu();
 	}
 	else
 	{

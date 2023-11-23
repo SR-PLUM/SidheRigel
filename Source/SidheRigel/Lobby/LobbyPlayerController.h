@@ -19,21 +19,16 @@ public:
 
 	UPROPERTY()
 		class ULobbyMenu* LobbyUI;
-
-	UFUNCTION()
-		void Ready();
-
 	UPROPERTY()
 		bool isReady = false;
 
-	UFUNCTION(Server, Reliable, WithValidation)
-		void Server_Test_Func();
-
-	UFUNCTION(Client, Reliable, WithValidation)
-		void Client_Test_Func();
-
-	UFUNCTION(NetMulticast, Reliable, WithValidation)
-		void Mult_Test_Func();
+public:
+	UFUNCTION(NetMulticast, Reliable)
+		void RefreshPlayerList(const TArray<class ALobbyPlayerController*>& playerList);
+	UFUNCTION(NetMulticast, Reliable)
+		void OpenCharacterSelectMenu();
+	UFUNCTION(Server, Reliable)
+		void Ready();
 
 protected:
 	virtual void BeginPlay() override;

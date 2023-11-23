@@ -4,6 +4,7 @@
 #include "LobbyPlayerController.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerState.h"
 
 #include "SidheRigel/Lobby/LobbyMenu.h"
 #include "LobbyGameMode.h"
@@ -23,8 +24,14 @@ ALobbyPlayerController::ALobbyPlayerController()
 	}
 }
 
-void ALobbyPlayerController::Ready()
+void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<class ALobbyPlayerController*>& playerList)
 {
+	LobbyUI->RefreshPlayerList(playerList);
+}
+
+void ALobbyPlayerController::Ready_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TEST :: This Controller is %s"), *PlayerState->UniqueId->ToDebugString());
 	if (!isReady)
 	{
 		isReady = true;
@@ -43,41 +50,12 @@ void ALobbyPlayerController::Ready()
 	}
 }
 
-void ALobbyPlayerController::Server_Test_Func_Implementation()
+void ALobbyPlayerController::OpenCharacterSelectMenu_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: Server_Test_Func"));
-}
-
-bool ALobbyPlayerController::Server_Test_Func_Validate()
-{
-	return true;
-}
-
-void ALobbyPlayerController::Client_Test_Func_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: Client_Test_Func"));
-}
-
-bool ALobbyPlayerController::Client_Test_Func_Validate()
-{
-	return true;
-}
-
-void ALobbyPlayerController::Mult_Test_Func_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: Mult_Test_Func"));
-}
-
-bool ALobbyPlayerController::Mult_Test_Func_Validate()
-{
-	return true;
+	LobbyUI->OpenCharacterSelectMenu();
 }
 
 void ALobbyPlayerController::BeginPlay()
 {
-	Server_Test_Func();
 
-	Client_Test_Func();
-
-	Mult_Test_Func();
 }

@@ -29,12 +29,6 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s PC Is Not LobbyPC"), *NewPlayer->PlayerState->UniqueId->ToDebugString());
 	}
-
-	Server_Test_Func();
-
-	Client_Test_Func();
-
-	Mult_Test_Func();
 }
 
 void ALobbyGameMode::Logout(AController* Exiting)
@@ -105,34 +99,4 @@ void ALobbyGameMode::Ready()
 			UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: Not Enough ReadyCount, Current ReadyCount : %d"), ReadyCount);
 		}
 	}
-}
-
-void ALobbyGameMode::Server_Test_Func_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: Server_Test_Func In GAMEMODE"));
-}
-
-bool ALobbyGameMode::Server_Test_Func_Validate()
-{
-	return true;
-}
-
-void ALobbyGameMode::Client_Test_Func_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: Client_Test_Func In GAMEMODE"));
-}
-
-bool ALobbyGameMode::Client_Test_Func_Validate()
-{
-	return true;
-}
-
-void ALobbyGameMode::Mult_Test_Func_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("TEST :: Mult_Test_Func In GAMEMODE"));
-}
-
-bool ALobbyGameMode::Mult_Test_Func_Validate()
-{
-	return true;
 }
