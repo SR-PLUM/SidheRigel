@@ -30,9 +30,14 @@ public:
 
 	ALobbyGameMode();
 
-	void OpenCharacterSelectMenu();
-	void RefreshPlayerText();
-	void Ready();
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+		void OpenCharacterSelectMenu();
+
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+		void RefreshPlayerText();
+
+	UFUNCTION()
+		void Ready();
 
 	TArray<class ALobbyPlayerController*> players;
 

@@ -39,7 +39,7 @@ void ALobbyGameMode::Logout(AController* Exiting)
 	players.Remove(exitPlayer);
 }
 
-void ALobbyGameMode::OpenCharacterSelectMenu()
+void ALobbyGameMode::OpenCharacterSelectMenu_Implementation()
 {
 	if(HasAuthority())
 	{
@@ -53,7 +53,12 @@ void ALobbyGameMode::OpenCharacterSelectMenu()
 	}
 }
 
-void ALobbyGameMode::RefreshPlayerText()
+bool ALobbyGameMode::OpenCharacterSelectMenu_Validate()
+{
+	return true;
+}
+
+void ALobbyGameMode::RefreshPlayerText_Implementation()
 {
 	for (auto player : players)
 	{
@@ -66,6 +71,11 @@ void ALobbyGameMode::RefreshPlayerText()
 			UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s Lobby UI Is NULL"), *player->PlayerState->UniqueId->ToDebugString());
 		}
 	}
+}
+
+bool ALobbyGameMode::RefreshPlayerText_Validate()
+{
+	return true;
 }
 
 void ALobbyGameMode::Ready()
