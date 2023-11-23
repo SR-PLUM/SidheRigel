@@ -23,7 +23,7 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 
 		UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: PlayerNum : %d, NewPlayer : %s"), NumberOfPlayers, *NewPlayer->PlayerState->UniqueId->ToDebugString());
 
-		for (auto& player : players)
+		for (auto player : players)
 		{
 			if (player->LobbyUI)
 			{
@@ -53,7 +53,7 @@ void ALobbyGameMode::OpenCharacterSelectMenu()
 {
 	if(HasAuthority())
 	{
-		for (auto& player : players)
+		for (auto player : players)
 		{
 			if (player->LobbyUI)
 			{
@@ -65,7 +65,7 @@ void ALobbyGameMode::OpenCharacterSelectMenu()
 
 void ALobbyGameMode::RefreshPlayerText()
 {
-	for (auto& player : players)
+	for (auto player : players)
 	{
 		if (player->LobbyUI)
 		{
@@ -80,7 +80,7 @@ void ALobbyGameMode::Ready()
 	if (HasAuthority())
 	{
 		int32 ReadyCount = 0;
-		for (auto& player : players)
+		for (auto player : players)
 		{
 			if (player->isReady)
 			{
@@ -89,7 +89,7 @@ void ALobbyGameMode::Ready()
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s PC Is Ready State"), *player->PlayerState->UniqueId->ToDebugString());
+				UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s PC Is Not Ready State"), *player->PlayerState->UniqueId->ToDebugString());
 			}
 		}
 

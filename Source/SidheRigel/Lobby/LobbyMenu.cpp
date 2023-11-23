@@ -140,7 +140,7 @@ void ULobbyMenu::ResetButtonSize()
 void ULobbyMenu::RefreshPlayerList(TArray<class ALobbyPlayerController*> playerList)
 {
 	int32 idx = 0;
-	for (auto& player : playerList)
+	for (auto player : playerList)
 	{
 		if (idx == 0)
 		{
