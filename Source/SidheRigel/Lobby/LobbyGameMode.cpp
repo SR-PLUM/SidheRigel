@@ -57,14 +57,7 @@ void ALobbyGameMode::RefreshPlayerText()
 {
 	for (auto player : players)
 	{
-		if (player->LobbyUI)
-		{
-			player->LobbyUI->RefreshPlayerList(players);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s Lobby UI Is NULL"), *player->PlayerState->UniqueId->ToDebugString());
-		}
+		player->RefreshPlayerList(players);
 	}
 }
 
