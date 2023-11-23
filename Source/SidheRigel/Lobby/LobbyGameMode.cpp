@@ -17,16 +17,27 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	++NumberOfPlayers;
 	auto lobbyPC = Cast<ALobbyPlayerController>(NewPlayer);
-	players.Add(lobbyPC);
-
-	UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: PlayerNum : %d, NewPlayer : %s"), NumberOfPlayers, *NewPlayer->PlayerState->UniqueId->ToDebugString());
-
-	for (auto& player : players)
+	if (lobbyPC)
 	{
-		if (player->LobbyUI)
+		players.Add(lobbyPC);
+
+		UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: PlayerNum : %d, NewPlayer : %s"), NumberOfPlayers, *NewPlayer->PlayerState->UniqueId->ToDebugString());
+
+		for (auto& player : players)
 		{
-			player->LobbyUI->RefreshPlayerList(players);
+			if (player->LobbyUI)
+			{
+				player->LobbyUI->RefreshPlayerList(players);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s Lobby UI Is NULL"), *NewPlayer->PlayerState->UniqueId->ToDebugString());
+			}
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s PC Is Not LobbyPC"), *NewPlayer->PlayerState->UniqueId->ToDebugString());
 	}
 }
 
@@ -74,6 +85,11 @@ void ALobbyGameMode::Ready()
 			if (player->isReady)
 			{
 				ReadyCount++;
+				UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s PC Is Ready State"), *player->PlayerState->UniqueId->ToDebugString());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: %s PC Is Ready State"), *player->PlayerState->UniqueId->ToDebugString());
 			}
 		}
 
@@ -83,6 +99,10 @@ void ALobbyGameMode::Ready()
 			if (World == nullptr) return;
 
 			World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("IN SERVER :: Not Enough ReadyCount, Current ReadyCount : %d"), ReadyCount);
 		}
 	}
 }

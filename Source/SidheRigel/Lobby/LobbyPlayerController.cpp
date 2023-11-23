@@ -28,11 +28,17 @@ void ALobbyPlayerController::Ready()
 	if (!isReady)
 	{
 		isReady = true;
+		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: State Is Ready"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: Already Ready State"));
 	}
 
 	auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (currentGM)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: Try Access LobbyGameMode"));
 		currentGM->Ready();
 	}
 }
