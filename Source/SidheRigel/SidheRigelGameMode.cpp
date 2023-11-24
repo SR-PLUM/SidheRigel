@@ -19,13 +19,6 @@ ASidheRigelGameMode::ASidheRigelGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	// set default controller to our Blueprinted controller
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBPClass(TEXT("/Game/TopDown/Blueprints/BP_TopDownPlayerController"));
-	if(PlayerControllerBPClass.Class != NULL)
-	{
-		PlayerControllerClass = PlayerControllerBPClass.Class;
-	}
-
 	static ConstructorHelpers::FClassFinder<APawn> ACMBPClass(TEXT("/Game/Heros/ACM/BP_ACMCharacter"));
 	if (ACMBPClass.Class != nullptr)
 	{

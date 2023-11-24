@@ -40,11 +40,7 @@ void USidheRigelGameInstance::LoadMenu()
 
 	Menu->Setup();
 
-	APlayerController* playerController = GetFirstLocalPlayerController();
-	if (playerController)
-	{
-		playerController->bShowMouseCursor = true;
-	}
+	SetInputUI(Menu->TakeWidget());
 
 	Menu->SetMenuInterface(this);
 }
@@ -157,6 +153,8 @@ void USidheRigelGameInstance::OnCreateSessionComplete(FName SessionName, bool Su
 	if (World == nullptr) return;
 
 	World->ServerTravel(LobbyURL);
+	
+
 }
 
 void USidheRigelGameInstance::OnDestroySessionComplete(FName SessionName, bool Success)
@@ -216,6 +214,7 @@ void USidheRigelGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSe
 	if (PlayerController == nullptr) return;
 
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+	
 }
 
 void USidheRigelGameInstance::OnSessionInviteReceived(const FUniqueNetId& UserId, const FUniqueNetId& FromId, const FString& AppId, const FOnlineSessionSearchResult& OnlineSessionSearchResult)
@@ -274,5 +273,18 @@ void USidheRigelGameInstance::CreateSession()
 		SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 		SessionInterface->CreateSession(20, SESSION_NAME, SessionSettings);
+	}
+}
+
+void USidheRigelGameInstance::SetInputUI(TSharedPtr<SWidget> InWidgetToFocus)
+{
+	APlayerController* playerController = GetFirstLocalPlayerController();
+	if (playerController)
+	{
+		FInputModeUIOnly InputModeData;
+		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
+		playerController->bShowMouseCursor = true;
+		playerController->SetInputMode(InputModeData);
 	}
 }

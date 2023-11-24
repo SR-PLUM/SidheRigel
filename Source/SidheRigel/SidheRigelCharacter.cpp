@@ -144,6 +144,15 @@ void ASidheRigelCharacter::BeginPlay()
 	Super::BeginPlay();
 	sidheRigelController = Cast<ASidheRigelPlayerController>(GetController());
 
+	if (sidheRigelController)
+	{
+		FInputModeGameAndUI InputModeData;
+		InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+		InputModeData.SetHideCursorDuringCapture(false);
+
+		sidheRigelController->SetInputMode(InputModeData);
+	}
+
 	InitProperty();
 
 	AInGameMapScriptActor* LevelScriptActor = Cast<AInGameMapScriptActor>(GetWorld()->GetLevelScriptActor());
