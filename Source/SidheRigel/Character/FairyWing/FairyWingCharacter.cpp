@@ -163,85 +163,85 @@ void AFairyWingCharacter::InitFairyWingTalent()
 	//level 1
 	talentListArray[0].talentItems[0].talentName = "FairyWing_1_1";
 	talentListArray[0].talentItems[0].talentDescription = "Q 장판 지속시간 증가";
-	talentListArray[0].talentItems[0].imgPath = "";
+	talentListArray[0].talentItems[0].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_1_1";
 
 	talentListArray[0].talentItems[1].talentName = "FairyWing_1_2";
 	talentListArray[0].talentItems[1].talentDescription = "W 데미지 증가";
-	talentListArray[0].talentItems[1].imgPath = "";
+	talentListArray[0].talentItems[1].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_1_2";
 
 	talentListArray[0].talentItems[2].talentName = "FairyWing_1_3";
 	talentListArray[0].talentItems[2].talentDescription = "E 슬로우 추가";
-	talentListArray[0].talentItems[2].imgPath = "";
+	talentListArray[0].talentItems[2].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_1_3";
 
 	//level 4
 	talentListArray[1].talentItems[0].talentName = "FairyWing_2_1";
 	talentListArray[1].talentItems[0].talentDescription = "Q 아군 치유";
-	talentListArray[1].talentItems[0].imgPath = "";
+	talentListArray[1].talentItems[0].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_2_1";
 
 	talentListArray[1].talentItems[1].talentName = "FairyWing_2_2";
 	talentListArray[1].talentItems[1].talentDescription = "Q 적에게 디버프(실명)";
-	talentListArray[1].talentItems[1].imgPath = "";
+	talentListArray[1].talentItems[1].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_2_2";
 
 	talentListArray[1].talentItems[2].talentName = "FairyWing_2_3";
 	talentListArray[1].talentItems[2].talentDescription = "Q 데미지 증가";
-	talentListArray[1].talentItems[2].imgPath = "";
+	talentListArray[1].talentItems[2].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_2_3";
 
 	//level 7
 	talentListArray[2].talentItems[0].talentName = "FairyWing_3_1";
 	talentListArray[2].talentItems[0].talentDescription = "W 피흡";
-	talentListArray[2].talentItems[0].imgPath = "";
+	talentListArray[2].talentItems[0].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_3_1";
 
 	talentListArray[2].talentItems[1].talentName = "FairyWing_3_2";
 	talentListArray[2].talentItems[1].talentDescription = "W를 맞추고 Q를 맞추면 기절";
-	talentListArray[2].talentItems[1].imgPath = "";
+	talentListArray[2].talentItems[1].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_3_2";
 
 	talentListArray[2].talentItems[2].talentName = "FairyWing_3_3";
 	talentListArray[2].talentItems[2].talentDescription = "E 같은 대상에게 E 연속으로 맞추면 속박";
-	talentListArray[2].talentItems[2].imgPath = "";
+	talentListArray[2].talentItems[2].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_3_3";
 
 	//level 10
 	talentListArray[3].talentItems[0].talentName = "FairyWing_4_1";
 	talentListArray[3].talentItems[0].talentDescription = "R 침묵 추가 (일시적)";
-	talentListArray[3].talentItems[0].imgPath = "";
+	talentListArray[3].talentItems[0].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_4_1";
 
 	//level 13
 	talentListArray[4].talentItems[0].talentName = "FairyWing_5_1";
 	talentListArray[4].talentItems[0].talentDescription = "W 공격력 감소";
-	talentListArray[4].talentItems[0].imgPath = "";
+	talentListArray[4].talentItems[0].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_5_1";
 
 	talentListArray[4].talentItems[1].talentName = "FairyWing_5_2";
 	talentListArray[4].talentItems[1].talentDescription = "E 아군에게 사용시 치유";
-	talentListArray[4].talentItems[1].imgPath = "";
+	talentListArray[4].talentItems[1].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_5_2";
 
 	talentListArray[4].talentItems[2].talentName = "FairyWing_5_3";
 	talentListArray[4].talentItems[2].talentDescription = "Q 장판 면적 증가";
-	talentListArray[4].talentItems[2].imgPath = "";
+	talentListArray[4].talentItems[2].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_5_3";
 
 	//level 16
 	talentListArray[5].talentItems[0].talentName = "FairyWing_6_1";
 	talentListArray[5].talentItems[0].talentDescription = "E 맞춘 대상에게 표식을 남겨 다른 스킬로 터트리기";
-	talentListArray[5].talentItems[0].imgPath = "";
+	talentListArray[5].talentItems[0].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_6_1";
 
 	talentListArray[5].talentItems[1].talentName = "FairyWing_6_2";
 	talentListArray[5].talentItems[1].talentDescription = "Q 아군 공격속도 증가 버프";
-	talentListArray[5].talentItems[1].imgPath = "";
+	talentListArray[5].talentItems[1].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_6_2";
 
 	talentListArray[5].talentItems[2].talentName = "FairyWing_6_3";
 	talentListArray[5].talentItems[2].talentDescription = "E 다음 일반공격 강화";
-	talentListArray[5].talentItems[2].imgPath = "";
+	talentListArray[5].talentItems[2].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_6_3";
 
 	//level 20
 	talentListArray[6].talentItems[0].talentName = "FairyWing_7_1";
 	talentListArray[6].talentItems[0].talentDescription = "R 중앙으로 끌어당김";
-	talentListArray[6].talentItems[0].imgPath = "";
+	talentListArray[6].talentItems[0].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_7_1";
 
 	talentListArray[6].talentItems[1].talentName = "FairyWing_7_2";
 	talentListArray[6].talentItems[1].talentDescription = "W 마지막 공격의 데미지, 둔화율 증가";
-	talentListArray[6].talentItems[1].imgPath = "";
+	talentListArray[6].talentItems[1].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_7_2";
 
 	talentListArray[6].talentItems[2].talentName = "FairyWing_7_3";
 	talentListArray[6].talentItems[2].talentDescription = "E 영웅에게 적중시 쿨타임 감소";
-	talentListArray[6].talentItems[2].imgPath = "";
+	talentListArray[6].talentItems[2].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_7_3";
 }
 
 void AFairyWingCharacter::PlayAttackMontage()
