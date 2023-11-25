@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "TalentToolTip.h"
+#include "Styling/SlateBrush.h"
 
 UTalentItem::UTalentItem(const FObjectInitializer& ObjectInitializer) : UUserWidget(ObjectInitializer)
 {
@@ -26,11 +27,18 @@ void UTalentItem::InitTalentItemRef(class ASidheRigelCharacter* Character, int32
 
 void UTalentItem::InitTalentItemInfo()
 {
+	FString ImagePath = CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].imgPath;
+	UTexture2D* TalentImage = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), NULL, *ImagePath));
+
+	BtnTalentItem->WidgetStyle.Normal.SetResourceObject(TalentImage);
+	BtnTalentItem->WidgetStyle.Hovered.SetResourceObject(TalentImage);
+	BtnTalentItem->WidgetStyle.Pressed.SetResourceObject(TalentImage);
+
 	TalentDescription = CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentDescription;
-	TalentNameText->SetText(FText::FromString(CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentName));
+	//TalentNameText->SetText(FText::FromString(CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentName));
 	BtnTalentItem->SetToolTipText(FText::FromString(TalentDescription));
 
-	if (!TalentToolTipWidget)
+	/*if (!TalentToolTipWidget)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TalentToolTipWidget is null"));
 		return;
@@ -39,7 +47,7 @@ void UTalentItem::InitTalentItemInfo()
 	ToolTip = CreateWidget<UTalentToolTip>(this, TalentToolTipWidget);
 
 	ToolTip->DescriptionText->SetText(FText::FromString(TalentDescription));
-	BtnTalentItem->SetToolTip(ToolTip);
+	BtnTalentItem->SetToolTip(ToolTip);*/
 
 }
 
