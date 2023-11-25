@@ -31,7 +31,7 @@ public:
 	ALobbyGameMode();
 
 	UFUNCTION()
-		void Ready();
+		void Ready(int32 readyCount);
 
 	UPROPERTY(replicated)
 		TArray<class ALobbyPlayerController*> players;

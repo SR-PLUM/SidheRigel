@@ -42,11 +42,14 @@ void ALobbyGameMode::Logout(AController* Exiting)
 }
 
 
-void ALobbyGameMode::Ready()
+void ALobbyGameMode::Ready(int32 readyCount)
 {
-	//게임 시작 버튼 따로 만들어야할듯
-	UWorld* World = GetWorld();
-	if (World == nullptr) return;
+	if (readyCount >= players.Num())
+	{
+		//게임 시작 버튼 따로 만들어야할듯
+		UWorld* World = GetWorld();
+		if (World == nullptr) return;
 
-	World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+		World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+	}
 }

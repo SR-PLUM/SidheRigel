@@ -46,13 +46,10 @@ void ALobbyPlayerController::Ready_Implementation()
 {
 	readyCount++;
 	
-	if (readyCount >= 2)
+	auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (currentGM)
 	{
-		auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-		if (currentGM)
-		{
-			currentGM->Ready();
-		}
+		currentGM->Ready(readyCount);
 	}
 }
 
