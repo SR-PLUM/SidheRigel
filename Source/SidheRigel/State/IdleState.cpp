@@ -5,6 +5,7 @@
 
 #include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/Interface/Damagable.h"
 
 IdleState::IdleState(StateMachine* StateMachine) : State(StateMachine)

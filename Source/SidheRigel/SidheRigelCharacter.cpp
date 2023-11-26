@@ -50,7 +50,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
-	/*
+	
 	// Create a camera boom...
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -63,11 +63,11 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-	*/
+	
 
-	// Make sure camera won't respond to collision with the player character
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
-	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	//// Make sure camera won't respond to collision with the player character
+	//GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	//GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
 	// Create Can Detect Range
 	detectRange = CreateDefaultSubobject<USphereComponent>(TEXT("DetectRange"));
@@ -1034,11 +1034,20 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 	RestoreHP(damage * _lifeSteal);
 }
 
+void ASidheRigelCharacter::SetCustomTick()
+{
+	GetWorldTimerManager().SetTimer(stateMachineTimer, this, &ASidheRigelCharacter::CustomTick, 0.05f, true);
+}
+
 void ASidheRigelCharacter::CustomTick()
 {
 	if (sidheRigelController && sidheRigelController->stateMachine)
 	{
 		sidheRigelController->stateMachine->Update();
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(stateMachineTimer);
 	}
 }
 

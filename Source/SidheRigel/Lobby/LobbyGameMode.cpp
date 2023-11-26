@@ -46,7 +46,6 @@ void ALobbyGameMode::Ready(int32 readyCount)
 {
 	if (readyCount >= players.Num())
 	{
-		//게임 시작 버튼 따로 만들어야할듯
 		UWorld* World = GetWorld();
 		if (World == nullptr) return;
 
