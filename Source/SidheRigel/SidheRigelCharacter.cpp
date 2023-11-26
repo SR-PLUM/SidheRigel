@@ -17,6 +17,8 @@
 #include "Components/VerticalBox.h"
 #include "Components/OverlaySlot.h"
 #include "Components/VerticalBoxSlot.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/InGameMapScriptActor.h"
@@ -139,6 +141,11 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	InitTalentWidget();
 }
 
+//void ASidheRigelCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+//{
+//	//DOREPLIFETIME(ASidheRigelCharacter, sidheRigelController);
+//}
+
 void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -192,6 +199,26 @@ void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 {
 	check(PlayerInputComponent);
 
+}
+
+void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
+{
+
+	APlayerController* movePC = Cast<APlayerController>(GetController());
+	if (movePC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SERVER_MoveToPoint :: PlayerController is Not Null"));
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(movePC, Location);
+		Client_MoveToPoint(Location);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SERVER_MoveToPoint :: PlayerController is Null"));
+	}
+}
+
+void ASidheRigelCharacter::Client_MoveToPoint_Implementation(FVector Location)
+{
 }
 
 void ASidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -998,6 +1025,10 @@ void ASidheRigelCharacter::Attack(AActor* target)
 				}
 			}
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT(""))
 	}
 }
 

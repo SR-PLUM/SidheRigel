@@ -64,7 +64,8 @@ public:
 	/** Returns CameraBoom subobject **/
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-	ASidheRigelPlayerController* sidheRigelController;
+	//UPROPERTY(replicated)
+		ASidheRigelPlayerController* sidheRigelController;
 protected:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -80,6 +81,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 		class USphereComponent* detectRange;
+
+public://SERVER
+	UFUNCTION(Reliable, Server)
+		void Server_MoveToPoint(FVector Location);
+	UFUNCTION(Reliable, Client)
+		void Client_MoveToPoint(FVector Location);
 
 public:
 	UPROPERTY(VisibleAnywhere)

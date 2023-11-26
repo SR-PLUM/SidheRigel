@@ -21,6 +21,7 @@ MoveState::~MoveState()
 
 void MoveState::OnBegin()
 {
+	UE_LOG(LogTemp, Warning, TEXT("MoveState :: Begin"));
 	if (stateMachine->playerController)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
@@ -53,7 +54,8 @@ void MoveState::Update(float DeltaTime)
 
 				FVector WorldDirection = (stateMachine->location - myCharacter->GetActorLocation()).GetSafeNormal();
 				
-				UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
+				myCharacter->Server_MoveToPoint(stateMachine->location);
+				//UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
 			}
 		}
 	}
@@ -68,7 +70,8 @@ void MoveState::OnRightRelease()
 {
 	bInputPressed = false;
 
-	UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
+	myCharacter->Server_MoveToPoint(stateMachine->location);
+	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
 }
 
 void MoveState::OnLeftClick()
