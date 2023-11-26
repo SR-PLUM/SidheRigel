@@ -138,22 +138,15 @@ void ULobbyMenu::ResetButtonSize()
 
 void ULobbyMenu::RefreshPlayerList(TArray<FText> nameList)
 {
-	UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: ListOwner : %s"), *LobbyPlayerController->GetName());
-	if (LobbyPlayerController->HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: HasAuthority!"));
-	}
 	int32 idx = 0;
 	for (auto name : nameList)
 	{
 		if (idx == 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: playerName : 1"), );
 			Player_1->SetText(name);
 		}
 		else if (idx == 1)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("IN CLIENT :: playerName : 2"), );
 			Player_2->SetText(name);
 		}
 		idx++;

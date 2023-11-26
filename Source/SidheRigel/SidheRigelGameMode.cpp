@@ -97,8 +97,21 @@ void ASidheRigelGameMode::InitGameState()
 	}
 }
 
+UClass* ASidheRigelGameMode::GetDefaultPawnClassForController_Implementation(AController* InController)
+{
+	ASidheRigelPlayerController* SRController = Cast<ASidheRigelPlayerController>(InController);
+	if (SRController)
+	{
+		return SRController->GetPlayerPawnClass();
+	}
+
+	return DefaultPawnClass;
+}
+
+/*
 APlayerController* ASidheRigelGameMode::SpawnPlayerController(ENetRole InRemoteRole, const FString& Options)
 {
+	
 	// Make sure that our own player controller class will be used
 	PlayerControllerClass = ASidheRigelPlayerController::StaticClass();
 	// Call the super method: thats where the class will get instantiated and returned
@@ -118,4 +131,6 @@ APlayerController* ASidheRigelGameMode::SpawnPlayerController(ENetRole InRemoteR
 	MyPlayerController->SetCamera(MyCamera);
 	// Return the instantiated player controller
 	return PlayerController;
+	
 }
+*/

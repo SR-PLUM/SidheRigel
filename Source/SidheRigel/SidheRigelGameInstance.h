@@ -60,7 +60,6 @@ private:
 	FString DesiredServerName;
 	void CreateSession();
 
-	const FString GameMapURL = "/Game/TopDown/Maps/TopDownMap?listen";
 	const FString LobbyURL = "/Game/Maps/Lobby?listen";
 
 public:

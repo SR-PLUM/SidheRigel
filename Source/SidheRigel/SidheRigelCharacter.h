@@ -64,15 +64,16 @@ public:
 	/** Returns CameraBoom subobject **/
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-	ASidheRigelPlayerController* sidheRigelController;
-//protected:
-//	/** Top down camera */
-//	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-//		class UCameraComponent* TopDownCameraComponent;
-//
-//	/** Camera boom positioning the camera above the character */
-//	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-//		class USpringArmComponent* CameraBoom;
+	//UPROPERTY(replicated)
+		ASidheRigelPlayerController* sidheRigelController;
+protected:
+	/** Top down camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class UCameraComponent* TopDownCameraComponent;
+
+	/** Camera boom positioning the camera above the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class USpringArmComponent* CameraBoom;
 
 	// Projectile class to spawn.
 	UPROPERTY(EditDefaultsOnly)
@@ -80,6 +81,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 		class USphereComponent* detectRange;
+
+public://SERVER
+	UFUNCTION(Reliable, Server)
+		void Server_MoveToPoint(FVector Location);
+	UFUNCTION(Reliable, Client)
+		void Client_MoveToPoint(FVector Location);
 
 public:
 	UPROPERTY(VisibleAnywhere)
@@ -317,6 +324,7 @@ protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
 	FTimerHandle BarrierTimer;
 	FTimerHandle stateMachineTimer;
+	void SetCustomTick();
 	void CustomTick();
  
 public:		//Interface Implement

@@ -39,7 +39,8 @@ void MoveToAttackState::Update(float DeltaTime)
 			//Move
 			if (stateMachine->target)
 			{
-				UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->target->GetActorLocation());
+				myCharacter->Server_MoveToPoint(stateMachine->location);
+				//UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->target->GetActorLocation());
 			}
 		}
 	}
