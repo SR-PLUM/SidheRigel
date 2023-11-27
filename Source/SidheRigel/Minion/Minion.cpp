@@ -15,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 #include "Components/WidgetComponent.h"
 #include "SidheRigel/UI/HPUI.h"
@@ -70,6 +71,16 @@ AMinion::AMinion()
 	}
 
 	InitMinionWidget();
+
+	bReplicates = true;
+}
+
+void AMinion::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMinion, team);
+	DOREPLIFETIME(AMinion, AIController);
 }
 
 // Called when the game starts or when spawned
@@ -229,10 +240,11 @@ void AMinion::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AMinion::MoveToWayPoint()
+void AMinion::MoveToWayPoint_Implementation()
 {
 	if (AIController)
 	{
+		UE_LOG(LogTemp,Warning,TEXT("In Minion :: Has AIController"))
 		for (auto wayPoint : WayPoints)
 		{
 			AWayPoint* wayPointItr = Cast<AWayPoint>(wayPoint);
@@ -246,6 +258,10 @@ void AMinion::MoveToWayPoint()
 				}
 			}
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("In Minion :: Has Not AIController"))
 	}
 }
 

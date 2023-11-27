@@ -74,11 +74,6 @@ protected:
 
 	UFUNCTION(Reliable, Server)
 		void ServerSetPawn(TSubclassOf<APawn> InPawnClass);
-private:
-	UFUNCTION()
-		void SetSRCharacter();
-	UPROPERTY()
-		UClass* ColdBPClassRef;
 
 private:
 	bool bInputPressed; // Input is bring pressed

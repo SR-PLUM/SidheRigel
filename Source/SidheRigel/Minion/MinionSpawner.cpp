@@ -2,6 +2,7 @@
 
 
 #include "MinionSpawner.h"
+#include "Net/UnrealNetwork.h"
 
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRigel/Minion/RangeMinion.h"
@@ -23,6 +24,36 @@ AMinionSpawner::AMinionSpawner()
 	{
 		rangeMinionClass = (UClass*)BPRangeMinion.Object->GeneratedClass;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> WMMesh(TEXT("/Game/Minion/Minion_Lane_Melee_Dawn"));
+	if (WMMesh.Succeeded())
+	{
+		whiteMeleeMinionMesh = WMMesh.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> WRMesh(TEXT("/Game/Minion/Minion_Lane_Ranged_Dawn"));
+	if (WRMesh.Succeeded())
+	{
+		whiteRangeMinionMesh = WRMesh.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> BMMesh(TEXT("/Game/Minion/Minion_Lane_Melee_Dusk")); 
+	if (BMMesh.Succeeded())
+	{
+		blackMeleeMinionMesh = BMMesh.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> BRMesh(TEXT("/Game/Minion/Minion_Lane_Ranged_Dusk"));
+	if (BRMesh.Succeeded())
+	{
+		blackRangeMinionMesh = BRMesh.Object;
+	}
+
+	bReplicates = true;
+}
+
+void AMinionSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMinionSpawner, team);
 }
 
 // Called when the game starts or when spawned
@@ -30,7 +61,7 @@ void AMinionSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SpawnMinionWave();
+	Server_SpawnMinionWave();
 }
 
 // Called every frame
@@ -42,28 +73,28 @@ void AMinionSpawner::Tick(float DeltaTime)
 
 	if (DebugTimer > 40.f)
 	{
-		SpawnMinionWave();
+		Server_SpawnMinionWave();
 		DebugTimer = 0;
 	}
 }
 
-void AMinionSpawner::SpawnMinionWave()
+void AMinionSpawner::Server_SpawnMinionWave_Implementation()
 {
 	for (int i = 0; i < 6; i++)
 	{
 		FTimerHandle minionGenerateTimer;
 		if (i < 3)
 		{
-			GetWorldTimerManager().SetTimer(minionGenerateTimer, this, &AMinionSpawner::SpawnMinion, i+0.1, false);
+			GetWorldTimerManager().SetTimer(minionGenerateTimer, this, &AMinionSpawner::Server_SpawnMinion, i+0.1, false);
 		}
 		else
 		{
-			GetWorldTimerManager().SetTimer(minionGenerateTimer, this, &AMinionSpawner::SpawnRangeMinion, i+0.1, false);
+			GetWorldTimerManager().SetTimer(minionGenerateTimer, this, &AMinionSpawner::Server_SpawnRangeMinion, i+0.1, false);
 		}
 	}
 }
 
-void AMinionSpawner::SpawnMinion()
+void AMinionSpawner::Server_SpawnMinion()
 {
 	if (minionClass)
 	{
@@ -84,15 +115,21 @@ void AMinionSpawner::SpawnMinion()
 			if (minion)
 			{
 				minion->SetTeam(GetTeam());
-				minion->GetMesh()->SetSkeletalMesh(meshArray[0]);
+				if (GetTeam() == E_Team::Blue)
+				{
+					minion->GetMesh()->SetSkeletalMesh(whiteMeleeMinionMesh);
+				}
+				else
+				{
+					minion->GetMesh()->SetSkeletalMesh(blackMeleeMinionMesh);
+				}
 			}
-
 			minion->FinishSpawning(SpawnTransform);
 		}
 	}
 }
 
-void AMinionSpawner::SpawnRangeMinion()
+void AMinionSpawner::Server_SpawnRangeMinion()
 {
 	if (rangeMinionClass)
 	{
@@ -113,7 +150,14 @@ void AMinionSpawner::SpawnRangeMinion()
 			if (rangeMinion)
 			{
 				rangeMinion->SetTeam(GetTeam());
-				rangeMinion->GetMesh()->SetSkeletalMesh(meshArray[1]);
+				if (GetTeam() == E_Team::Blue)
+				{
+					rangeMinion->GetMesh()->SetSkeletalMesh(whiteRangeMinionMesh);
+				}
+				else
+				{
+					rangeMinion->GetMesh()->SetSkeletalMesh(blackRangeMinionMesh);
+				}
 			}
 
 			rangeMinion->FinishSpawning(SpawnTransform);

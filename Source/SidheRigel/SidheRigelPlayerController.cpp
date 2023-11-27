@@ -75,7 +75,6 @@ void ASidheRigelPlayerController::BeginPlay()
 	}
 
 	//SetSRCamera();
-	//SetSRCharacter();
 }
 
 FHitResult ASidheRigelPlayerController::GetHitResult()
@@ -184,10 +183,10 @@ void ASidheRigelPlayerController::PressedRButton()
 
 void ASidheRigelPlayerController::DeterminePawnClass_Implementation()
 {
-	if (IsLocalController()) //Only Do This Locally (NOT Client-Only, since Server wants this too!)
+	if (IsLocalController())
 	{
 		auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
-		/* Use PawnA if the Text File tells us to */
+		
 		if (SRGameInstance)
 		{
 			if (SRGameInstance->CharacterNum == E_Character::Cold)
@@ -221,60 +220,6 @@ void ASidheRigelPlayerController::ServerSetPawn_Implementation(TSubclassOf<APawn
 	MyPawnClass = InPawnClass;
 
 	GetWorld()->GetAuthGameMode()->RestartPlayer(this);
-}
-
-void ASidheRigelPlayerController::SetSRCharacter()
-{
-	APawn* SROldPawn = GetPawn();
-	APawn* NewPawn = nullptr;
-	UGameInstance* gameInstance = GetGameInstance();
-	if (!gameInstance) return;
-	USidheRigelGameInstance* SRGameInstance = Cast<USidheRigelGameInstance>(gameInstance);
-	if (SRGameInstance)
-	{
-		UWorld* world = GetWorld();
-		if (!world) return;
-
-		auto myCharacterType = SRGameInstance->CharacterNum;
-		if (myCharacterType == E_Character::Cold)
-		{
-			NewPawn = world->SpawnActor<AColdCharacter>(ColdBPClassRef, FVector(1500, 2400, 100), FRotator::ZeroRotator);
-		}
-		else if (myCharacterType == E_Character::FairyWing)
-		{
-			NewPawn = world->SpawnActor<AFairyWingCharacter>(FVector(1500, 2800, 100), FRotator::ZeroRotator);
-		}
-		else if (myCharacterType == E_Character::Kerun)
-		{
-			NewPawn = world->SpawnActor<AKerunCharacter>(FVector(1500, 3200, 100), FRotator::ZeroRotator);
-		}
-		else
-		{
-			NewPawn = world->SpawnActor<AColdCharacter>(FVector(1500, 3600, 100), FRotator::ZeroRotator);
-		}
-
-		if (NewPawn)
-		{
-			Possess(NewPawn);
-			auto SRCharacter = Cast<ASidheRigelCharacter>(NewPawn);
-			if (SRCharacter)
-			{
-				//Set stateMachine
-				delete stateMachine;
-				stateMachine = new StateMachine(this);
-
-				//Set Controller
-				SRCharacter->sidheRigelController = this;
-
-				//Set CustomTick
-				SRCharacter->SetCustomTick();
-			}
-		}
-	}
-	if (SROldPawn)
-	{
-		SROldPawn->Destroy();
-	}
 }
 
 /*

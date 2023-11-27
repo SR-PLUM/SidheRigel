@@ -207,7 +207,6 @@ void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
 	APlayerController* movePC = Cast<APlayerController>(GetController());
 	if (movePC)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SERVER_MoveToPoint :: PlayerController is Not Null"));
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(movePC, Location);
 		Client_MoveToPoint(Location);
 	}

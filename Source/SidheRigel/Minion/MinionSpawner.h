@@ -26,23 +26,28 @@ protected:
 		TSubclassOf<class AMinion> minionClass;
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class ARangeMinion> rangeMinionClass;
+	UPROPERTY()
+		class USkeletalMesh* whiteMeleeMinionMesh;
+	UPROPERTY()
+		class USkeletalMesh* whiteRangeMinionMesh;
+	UPROPERTY()
+		class USkeletalMesh* blackMeleeMinionMesh;
+	UPROPERTY()
+		class USkeletalMesh* blackRangeMinionMesh;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere)
-		TArray<USkeletalMesh*> meshArray;
+	UPROPERTY(EditAnywhere, replicated)
+		TEnumAsByte<E_Team> team;
 
-	UPROPERTY(EditAnywhere)
-		TEnumAsByte<E_Team> team = E_Team::Red;
-
+	UFUNCTION(reliable, server)
+		void Server_SpawnMinionWave();
 	UFUNCTION()
-		void SpawnMinionWave();
+		void Server_SpawnMinion();
 	UFUNCTION()
-		void SpawnMinion();
-	UFUNCTION()
-		void SpawnRangeMinion();
+		void Server_SpawnRangeMinion();
 
 	UPROPERTY()
 		float DebugTimer = 0;

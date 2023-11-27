@@ -28,11 +28,12 @@ protected:
 protected:
 	class USphereComponent* detectArea;
 
-	class AMinionAIController* AIController;
+	UPROPERTY(replicated)
+		class AMinionAIController* AIController;
 
 	//DEBUG RED=MINION, BLUE = PLAYER
-	UPROPERTY(EditAnywhere)
-		TEnumAsByte<E_Team> team = E_Team::Red;
+	UPROPERTY(EditAnywhere, replicated)
+		TEnumAsByte<E_Team> team;
 
 public:	
 	// Called every frame
@@ -41,7 +42,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void MoveToWayPoint();
+	UFUNCTION(reliable, server)
+		void MoveToWayPoint();
 
 	UFUNCTION()
 		void OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
