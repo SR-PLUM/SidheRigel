@@ -5,6 +5,7 @@
 
 #include "MinionAIController.h"
 #include "WayPoint.h"
+#include "MinionSpawner.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "MinionProjectile.h"
 #include "SidheRigel/Character/Common/StunParticle.h"
@@ -91,7 +92,7 @@ void AMinion::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMinion, team);
-	DOREPLIFETIME(AMinion, AIController);
+	DOREPLIFETIME(AMinion, ownerSpawner);
 }
 
 // Called when the game starts or when spawned
@@ -107,18 +108,6 @@ void AMinion::BeginPlay()
 	detectArea->OnComponentEndOverlap.AddDynamic(this, &AMinion::OnExitEnemy);
 
 	AIController = Cast<AMinionAIController>(GetController());
-	if (!GetController())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("MINION :: Not Controller"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("MINION :: Has Controller"));
-		if (AIController)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has AI Controller"));
-		}
-	}
 
 	if (team == E_Team::Red)
 	{
@@ -141,12 +130,32 @@ void AMinion::BeginPlay()
 	{
 			GetMesh()->SetSkeletalMesh(blackMeleeMinionMesh);
 	}
+
+	SetOwner(ownerSpawner);
 }
 
 // Called every frame
 void AMinion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!GetController())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MINION :: Not Controller"));
+		SpawnDefaultController();
+		AIController = Cast<AMinionAIController>(GetController());
+	}
+	else
+	{
+		if (AIController)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has AI Controller"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has Controller"));
+		}
+	}
 
 	if (IsMoveVectorTrue)
 	{
@@ -217,7 +226,6 @@ void AMinion::MoveToWayPoint_Implementation()
 	{
 		if (AIController)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("In Minion :: Has AIController"))
 				for (auto wayPoint : WayPoints)
 				{
 					AWayPoint* wayPointItr = Cast<AWayPoint>(wayPoint);
@@ -234,7 +242,7 @@ void AMinion::MoveToWayPoint_Implementation()
 		}
 		else
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("In Minion :: Has Not AIController"))
+
 		}
 	}
 }

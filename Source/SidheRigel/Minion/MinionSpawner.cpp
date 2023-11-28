@@ -129,7 +129,7 @@ void AMinionSpawner::Server_SpawnMinion()
 					minion->GetMesh()->SetSkeletalMesh(blackMeleeMinionMesh);
 				}
 
-				minion->SetOwner(this);
+				minion->ownerSpawner = this;
 			}
 			minion->FinishSpawning(SpawnTransform);
 		}
@@ -168,7 +168,7 @@ void AMinionSpawner::Server_SpawnRangeMinion()
 					rangeMinion->GetMesh()->SetSkeletalMesh(blackRangeMinionMesh);
 				}
 
-				rangeMinion->SetOwner(this);
+				rangeMinion->ownerSpawner = this;
 			}
 
 			rangeMinion->FinishSpawning(SpawnTransform);
