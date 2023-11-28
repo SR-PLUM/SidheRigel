@@ -34,9 +34,9 @@ void UTalentItem::InitTalentItemInfo()
 	BtnTalentItem->WidgetStyle.Hovered.SetResourceObject(TalentImage);
 	BtnTalentItem->WidgetStyle.Pressed.SetResourceObject(TalentImage);
 
-	TalentDescription = CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentDescription;
+	//TalentDescription = CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentDescription;
 	//TalentNameText->SetText(FText::FromString(CharacterRef->talentListArray[TalentLevel].talentItems[TalentIndex].talentName));
-	BtnTalentItem->SetToolTipText(FText::FromString(TalentDescription));
+	//BtnTalentItem->SetToolTipText(FText::FromString(TalentDescription));
 
 	/*if (!TalentToolTipWidget)
 	{
