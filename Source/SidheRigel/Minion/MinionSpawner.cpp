@@ -80,22 +80,27 @@ void AMinionSpawner::Tick(float DeltaTime)
 
 void AMinionSpawner::Server_SpawnMinionWave_Implementation()
 {
-	for (int i = 0; i < 6; i++)
+	if (HasAuthority())
 	{
-		FTimerHandle minionGenerateTimer;
-		if (i < 3)
+		for (int i = 0; i < 6; i++)
 		{
-			GetWorldTimerManager().SetTimer(minionGenerateTimer, this, &AMinionSpawner::Server_SpawnMinion, i+0.1, false);
-		}
-		else
-		{
-			GetWorldTimerManager().SetTimer(minionGenerateTimer, this, &AMinionSpawner::Server_SpawnRangeMinion, i+0.1, false);
+			FTimerHandle minionGenerateTimer;
+			if (i < 3)
+			{
+				GetWorldTimerManager().SetTimer(minionGenerateTimer, this, &AMinionSpawner::Server_SpawnMinion, i + 0.1, false);
+			}
+			else
+			{
+				GetWorldTimerManager().SetTimer(minionGenerateTimer, this, &AMinionSpawner::Server_SpawnRangeMinion, i + 0.1, false);
+			}
 		}
 	}
 }
 
 void AMinionSpawner::Server_SpawnMinion()
 {
+	if(!HasAuthority())
+		UE_LOG(LogTemp,Warning,TEXT("NotServer In ServerSpawnMinion"))
 	if (minionClass)
 	{
 		FVector SpawnLocation = GetActorLocation();
@@ -123,6 +128,8 @@ void AMinionSpawner::Server_SpawnMinion()
 				{
 					minion->GetMesh()->SetSkeletalMesh(blackMeleeMinionMesh);
 				}
+
+				minion->SetOwner(this);
 			}
 			minion->FinishSpawning(SpawnTransform);
 		}
@@ -152,12 +159,16 @@ void AMinionSpawner::Server_SpawnRangeMinion()
 				rangeMinion->SetTeam(GetTeam());
 				if (GetTeam() == E_Team::Blue)
 				{
+					UE_LOG(LogTemp, Warning, TEXT("MinionSpawner :: Team is Blue"));
 					rangeMinion->GetMesh()->SetSkeletalMesh(whiteRangeMinionMesh);
 				}
 				else
 				{
+					UE_LOG(LogTemp, Warning, TEXT("MinionSpawner :: Team is Red"));
 					rangeMinion->GetMesh()->SetSkeletalMesh(blackRangeMinionMesh);
 				}
+
+				rangeMinion->SetOwner(this);
 			}
 
 			rangeMinion->FinishSpawning(SpawnTransform);

@@ -28,12 +28,21 @@ protected:
 protected:
 	class USphereComponent* detectArea;
 
-	UPROPERTY(replicated)
+	UPROPERTY(EditAnywhere, replicated)
 		class AMinionAIController* AIController;
 
 	//DEBUG RED=MINION, BLUE = PLAYER
 	UPROPERTY(EditAnywhere, replicated)
 		TEnumAsByte<E_Team> team;
+
+	UPROPERTY()
+		class USkeletalMesh* whiteMeleeMinionMesh;
+	UPROPERTY()
+		class USkeletalMesh* whiteRangeMinionMesh;
+	UPROPERTY()
+		class USkeletalMesh* blackMeleeMinionMesh;
+	UPROPERTY()
+		class USkeletalMesh* blackRangeMinionMesh;
 
 public:	
 	// Called every frame
