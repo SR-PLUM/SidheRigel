@@ -5,6 +5,7 @@
 
 #include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
 
 AttackState::AttackState(StateMachine* StateMachine) : State(StateMachine)
 {
@@ -16,6 +17,7 @@ AttackState::~AttackState()
 
 void AttackState::OnBegin()
 {
+	UE_LOG(LogTemp,Warning,TEXT("AttackState :: Begin"))
 	if (stateMachine->playerController)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());

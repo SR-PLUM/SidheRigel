@@ -15,5 +15,7 @@ class SIDHERIGEL_API ARangeMinion : public AMinion
 	GENERATED_BODY()
 	
 public:
+	ARangeMinion();
+	void BeginPlay() override;
 	void InitProperty() override;
 };

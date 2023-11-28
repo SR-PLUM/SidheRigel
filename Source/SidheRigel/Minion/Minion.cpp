@@ -5,6 +5,7 @@
 
 #include "MinionAIController.h"
 #include "WayPoint.h"
+#include "MinionSpawner.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "MinionProjectile.h"
 #include "SidheRigel/Character/Common/StunParticle.h"
@@ -15,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 #include "Components/WidgetComponent.h"
 #include "SidheRigel/UI/HPUI.h"
@@ -69,7 +71,28 @@ AMinion::AMinion()
 		silenceParticleClass = (UClass*)SlienceParticle.Object->GeneratedClass;
 	}
 
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> WMMesh(TEXT("/Game/Minion/Minion_Lane_Melee_Dawn"));
+	if (WMMesh.Succeeded())
+	{
+		whiteMeleeMinionMesh = WMMesh.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> BMMesh(TEXT("/Game/Minion/Minion_Lane_Melee_Dusk"));
+	if (BMMesh.Succeeded())
+	{
+		blackMeleeMinionMesh = BMMesh.Object;
+	}
+
 	InitMinionWidget();
+
+	bReplicates = true;
+}
+
+void AMinion::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMinion, team);
+	DOREPLIFETIME(AMinion, ownerSpawner);
 }
 
 // Called when the game starts or when spawned
@@ -98,12 +121,41 @@ void AMinion::BeginPlay()
 	MoveToWayPoint();
 
 	InitMinionUI();
+
+	if (GetTeam() == E_Team::Blue)
+	{
+			GetMesh()->SetSkeletalMesh(whiteMeleeMinionMesh);
+	}
+	else
+	{
+			GetMesh()->SetSkeletalMesh(blackMeleeMinionMesh);
+	}
+
+	SetOwner(ownerSpawner);
 }
 
 // Called every frame
 void AMinion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!GetController())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MINION :: Not Controller"));
+		SpawnDefaultController();
+		AIController = Cast<AMinionAIController>(GetController());
+	}
+	else
+	{
+		if (AIController)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has AI Controller"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has Controller"));
+		}
+	}
 
 	if (IsMoveVectorTrue)
 	{
@@ -157,68 +209,7 @@ void AMinion::Tick(float DeltaTime)
 
 	if (currentTarget)
 	{
-		IDamagable* damagableTarget = Cast<IDamagable>(currentTarget);
-		if (damagableTarget)
-		{
-			if (damagableTarget->GetHP() <= 0)
-			{
-				attackList.Remove(currentTarget);
-
-				if (attackList.Num() == 0)
-				{
-					currentTarget = nullptr;
-					MoveToWayPoint();
-				}
-				else
-				{
-					currentTarget = attackList.Top();
-				}
-			}
-			else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0 && IsStun == false)
-			{
-				IsAttackAnim = true;
-				FVector MuzzleLocation = GetActorLocation();
-				FRotator MuzzleRotation = GetActorRotation();
-
-				UWorld* World = GetWorld();
-				if (World)
-				{
-					FActorSpawnParameters SpawnParams;
-					FTransform SpawnTransform;
-					SpawnTransform.SetLocation(MuzzleLocation);
-					SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
-					SpawnParams.Owner = this;
-					SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-					AMinionProjectile* projectile = World->SpawnActorDeferred<AMinionProjectile>(projectileClass, SpawnTransform);
-					if (projectile)
-					{
-						projectile->Target = currentTarget;
-						projectile->AttackDamage = projectileDamage;
-						projectile->criticalDamage = 1;
-						projectile->criticalRate = 0;
-
-						projectile->projectileOwner = this;
-					}
-					projectile->FinishSpawning(SpawnTransform);
-				}
-
-				attackDelay = maxAttackDelay;
-			}
-			else
-			{
-				if (AIController)
-				{
-					AIController->MoveToActor(currentTarget, range - 80);
-				}
-				else
-				{
-					AIController = Cast<AMinionAIController>(GetController());
-				}
-			}
-		}
-
-		
+		Attack(nullptr);
 	}
 }
 
@@ -229,22 +220,29 @@ void AMinion::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AMinion::MoveToWayPoint()
+void AMinion::MoveToWayPoint_Implementation()
 {
-	if (AIController)
+	if (HasAuthority())
 	{
-		for (auto wayPoint : WayPoints)
+		if (AIController)
 		{
-			AWayPoint* wayPointItr = Cast<AWayPoint>(wayPoint);
-			
-			if (wayPointItr)
-			{
-				if (wayPointItr->wayPointOrder == currentWayPointOrder)
+				for (auto wayPoint : WayPoints)
 				{
-					currentWayPoint = wayPointItr;
-					AIController->MoveToActor(wayPointItr);
+					AWayPoint* wayPointItr = Cast<AWayPoint>(wayPoint);
+
+					if (wayPointItr)
+					{
+						if (wayPointItr->wayPointOrder == currentWayPointOrder)
+						{
+							currentWayPoint = wayPointItr;
+							AIController->MoveToActor(wayPointItr);
+						}
+					}
 				}
-			}
+		}
+		else
+		{
+
 		}
 	}
 }
@@ -481,6 +479,66 @@ void AMinion::RemoveSilenceParticle()
 
 void AMinion::Attack(AActor* Target)
 {
+	IDamagable* damagableTarget = Cast<IDamagable>(currentTarget);
+	if (damagableTarget)
+	{
+		if (damagableTarget->GetHP() <= 0)
+		{
+			attackList.Remove(currentTarget);
+
+			if (attackList.Num() == 0)
+			{
+				currentTarget = nullptr;
+				MoveToWayPoint();
+			}
+			else
+			{
+				currentTarget = attackList.Top();
+			}
+		}
+		else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0 && IsStun == false)
+		{
+			IsAttackAnim = true;
+			FVector MuzzleLocation = GetActorLocation();
+			FRotator MuzzleRotation = GetActorRotation();
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FActorSpawnParameters SpawnParams;
+				FTransform SpawnTransform;
+				SpawnTransform.SetLocation(MuzzleLocation);
+				SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+				SpawnParams.Owner = this;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+				AMinionProjectile* projectile = World->SpawnActorDeferred<AMinionProjectile>(projectileClass, SpawnTransform);
+				if (projectile)
+				{
+					projectile->Target = currentTarget;
+					projectile->AttackDamage = projectileDamage;
+					projectile->criticalDamage = 1;
+					projectile->criticalRate = 0;
+
+					projectile->projectileOwner = this;
+				}
+				projectile->FinishSpawning(SpawnTransform);
+			}
+
+			attackDelay = maxAttackDelay;
+		}
+		else
+		{
+			if (AIController)
+			{
+				AIController->MoveToActor(currentTarget, range - 80);
+			}
+			else
+			{
+				AIController = Cast<AMinionAIController>(GetController());
+			}
+		}
+	}
 }
 
 void AMinion::Stun(float time)
