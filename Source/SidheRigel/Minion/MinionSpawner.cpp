@@ -61,7 +61,10 @@ void AMinionSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Server_SpawnMinionWave();
+	if (HasAuthority())
+	{
+		Server_SpawnMinionWave();
+	}
 }
 
 // Called every frame
