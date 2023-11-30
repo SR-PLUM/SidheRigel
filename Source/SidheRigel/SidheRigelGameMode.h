@@ -22,7 +22,7 @@ public:
 
 public:
 	// Override this method to change what happens when a player controller is spawned
-	//virtual class APlayerController* SpawnPlayerController(ENetRole InRemoteRole, const FString& Options) override;
+	virtual class APlayerController* SpawnPlayerController(ENetRole InRemoteRole, const FString& Options) override;
 };
 
 

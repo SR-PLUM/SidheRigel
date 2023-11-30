@@ -61,6 +61,8 @@ void ASidheRigelCamera::SwitchIsCameraFixed()
 {
 	if (IsCameraFixed) IsCameraFixed = false;
 	else IsCameraFixed = true;
+
+	UE_LOG(LogTemp, Error, TEXT("SwitchIsCameraFixed :: %d"), IsCameraFixed);
 }
 
 bool ASidheRigelCamera::GetIsCameraFixed()

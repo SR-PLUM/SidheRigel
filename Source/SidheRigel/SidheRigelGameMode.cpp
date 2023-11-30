@@ -108,7 +108,7 @@ UClass* ASidheRigelGameMode::GetDefaultPawnClassForController_Implementation(ACo
 	return DefaultPawnClass;
 }
 
-/*
+
 APlayerController* ASidheRigelGameMode::SpawnPlayerController(ENetRole InRemoteRole, const FString& Options)
 {
 	
@@ -133,4 +133,4 @@ APlayerController* ASidheRigelGameMode::SpawnPlayerController(ENetRole InRemoteR
 	return PlayerController;
 	
 }
-*/
+

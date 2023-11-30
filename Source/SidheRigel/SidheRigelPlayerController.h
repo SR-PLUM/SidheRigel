@@ -55,7 +55,7 @@ protected:
 	void PressedEButton();
 	void PressedRButton();
 	
-	//void PressedYButton();
+	void PressedYButton();
 public:
 	FORCEINLINE UClass* GetPlayerPawnClass() { return MyPawnClass; }
 
@@ -79,24 +79,27 @@ private:
 	bool bInputPressed; // Input is bring pressed
 	float FollowTime; // For how long it has been pressed
 
-private: //Camera
-	/*
-	* UFUNCTION()
-		void SetSRCamera();
+public: //Camera
+	
+	UFUNCTION()
+		void SetSRCamera(APawn* aPawn);
+
+protected:
 	// Reference to our camera
-	class ASidheRigelCamera* Camera;
-	*/
+	UPROPERTY()
+	class ASidheRigelCamera* SRCamera;
 	
 	
-	/*
-	* public:
+	
+	
+ public:
 	// Setter to set camera from another scripts
-	FORCEINLINE void SetCamera(class ASidheRigelCamera* NewCamera) { Camera = NewCamera; }
+	FORCEINLINE void SetCamera(class ASidheRigelCamera* NewCamera) { SRCamera = NewCamera; }
 
 protected:
 	// Declare an override for the OnPossess method. This method will be called when the controller possesses will possess our player at the start of the game
 	virtual void OnPossess(APawn* aPawn) override;
-	*/
+	
 
 };
 
