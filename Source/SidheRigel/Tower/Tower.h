@@ -91,4 +91,7 @@ public:
 
 	UFUNCTION()
 		virtual E_Team GetTeam();
+
+private:
+	TSubclassOf<class ATowerDestroyParticle> particleClass;
 };

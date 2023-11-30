@@ -11,6 +11,7 @@
 
 #include "SidheRigel/UI/HPUI.h"
 #include "SidheRigel/Tower/TowerAttackProjectile.h"
+#include "TowerDestroyParticle.h"
 
 // Sets default values
 ATower::ATower()
@@ -54,6 +55,12 @@ ATower::ATower()
 	if (projectileRef.Object)
 	{
 		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint>particleRef(TEXT("/Game/Tower/BP_DestroyTowerParticle"));
+	if (particleRef.Object)
+	{
+		particleClass = (UClass*)particleRef.Object->GeneratedClass;
 	}
 
 	if (!muzzleLocation)
@@ -217,9 +224,21 @@ void ATower::TakeDamage(float _damage, AActor* damageCauser)
 
 	if (HP <= 0)
 	{
+		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
 		//Destroy Animation
-		UGameplayStatics::PlaySoundAtLocation(this, destroySound, destroyParticle->GetComponentLocation());
-		destroyParticle->Activate();
+		UGameplayStatics::PlaySoundAtLocation(this, destroySound, this->GetActorLocation());
+		ATowerDestroyParticle* particle = GetWorld()->SpawnActorDeferred<ATowerDestroyParticle>(particleClass, SpawnTransform);
+		if (particle)
+		{
+			particle->particleDuration = 1.f;
+		}
+		particle->FinishSpawning(SpawnTransform);
 		Destroy();
 	}
 }
