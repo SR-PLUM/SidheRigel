@@ -11,6 +11,7 @@
 
 #include "SidheRigel/UI/HPUI.h"
 #include "SidheRigel/Nexus/NexusAttackProjectile.h"
+#include "NexusDestroyParticle.h"
 
 // Sets default values
 ANexus::ANexus()
@@ -54,6 +55,12 @@ ANexus::ANexus()
 	if (projectileRef.Object)
 	{
 		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint>particleRef(TEXT("/Game/Nexus/BP_DestroyNexusParticle"));
+	if (particleRef.Object)
+	{
+		particleClass = (UClass*)particleRef.Object->GeneratedClass;
 	}
 
 	if (!muzzleLocation)
@@ -188,10 +195,21 @@ void ANexus::TakeDamage(float _damage, AActor* damageCauser)
 	HP -= _damage;
 
 	if (HP <= 0)
-	{
+	{		FActorSpawnParameters SpawnParams;
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
 		//Destroy Animation
-		UGameplayStatics::PlaySoundAtLocation(this, destroySound, destroyParticle->GetComponentLocation());
-		destroyParticle->Activate();
+		UGameplayStatics::PlaySoundAtLocation(this, destroySound, this->GetActorLocation());
+		ANexusDestroyParticle* particle = GetWorld()->SpawnActorDeferred<ANexusDestroyParticle>(particleClass, SpawnTransform);
+		if (particle)
+		{
+			particle->particleDuration = 1.f;
+		}
+		particle->FinishSpawning(SpawnTransform);
 		Destroy();
 	}
 }
