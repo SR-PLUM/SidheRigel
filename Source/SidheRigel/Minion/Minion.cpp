@@ -139,24 +139,6 @@ void AMinion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!GetController())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("MINION :: Not Controller"));
-		SpawnDefaultController();
-		AIController = Cast<AMinionAIController>(GetController());
-	}
-	else
-	{
-		if (AIController)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has AI Controller"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has Controller"));
-		}
-	}
-
 	if (IsMoveVectorTrue)
 	{
 		FVector Location = GetActorLocation();

@@ -23,6 +23,12 @@ ALobbyPlayerController::ALobbyPlayerController()
 			LobbyUI->LobbyPlayerController = this;
 		}
 	}
+
+	FInputModeUIOnly InputModeData;
+	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
+	bShowMouseCursor = true;
+	SetInputMode(InputModeData);
 }
 
 void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<FText>& nameList)
