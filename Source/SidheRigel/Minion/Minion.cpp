@@ -118,17 +118,20 @@ void AMinion::BeginPlay()
 		currentWayPointOrder = WayPoints.Num() - 1;
 	}
 
-	MoveToWayPoint();
+	if (HasAuthority())
+	{
+		MoveToWayPoint();
+	}
 
 	InitMinionUI();
 
 	if (GetTeam() == E_Team::Blue)
 	{
-			GetMesh()->SetSkeletalMesh(whiteMeleeMinionMesh);
+		GetMesh()->SetSkeletalMesh(whiteMeleeMinionMesh);
 	}
 	else
 	{
-			GetMesh()->SetSkeletalMesh(blackMeleeMinionMesh);
+		GetMesh()->SetSkeletalMesh(blackMeleeMinionMesh);
 	}
 
 	SetOwner(ownerSpawner);
@@ -138,25 +141,6 @@ void AMinion::BeginPlay()
 void AMinion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (!GetController())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("MINION :: Not Controller"));
-		SpawnDefaultController();
-		AIController = Cast<AMinionAIController>(GetController());
-	}
-	else
-	{
-		if (AIController)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has AI Controller"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MINION :: Has Controller"));
-		}
-	}
-
 	if (IsMoveVectorTrue)
 	{
 		FVector Location = GetActorLocation();
@@ -173,29 +157,32 @@ void AMinion::Tick(float DeltaTime)
 		}
 	}
 
-	//If Goal WayPoint Move To Next WayPoint
-	if (currentWayPoint)
+	if (HasAuthority())
 	{
-		if (WayPoints.Num() > 0)
+		//If Goal WayPoint Move To Next WayPoint
+		if (currentWayPoint)
 		{
-			if (GetDistanceTo(currentWayPoint) <= 100.f)
+			if (WayPoints.Num() > 0)
 			{
-				if (team == E_Team::Red)
+				if (GetDistanceTo(currentWayPoint) <= 100.f)
 				{
-					currentWayPointOrder++;
+					if (team == E_Team::Red)
+					{
+						currentWayPointOrder++;
+					}
+					else
+					{
+						currentWayPointOrder--;
+					}
+					WayPoints.Remove(currentWayPoint);
+					MoveToWayPoint();
 				}
-				else
-				{
-					currentWayPointOrder--;
-				}
-				WayPoints.Remove(currentWayPoint);
-				MoveToWayPoint();
 			}
 		}
-	}
-	else
-	{
-		MoveToWayPoint();
+		else
+		{
+			MoveToWayPoint();
+		}
 	}
 
 	if (attackDelay > 0)
@@ -489,7 +476,10 @@ void AMinion::Attack(AActor* Target)
 			if (attackList.Num() == 0)
 			{
 				currentTarget = nullptr;
-				MoveToWayPoint();
+				if (HasAuthority())
+				{
+					MoveToWayPoint();
+				}
 			}
 			else
 			{
@@ -531,7 +521,10 @@ void AMinion::Attack(AActor* Target)
 		{
 			if (AIController)
 			{
-				AIController->MoveToActor(currentTarget, range - 80);
+				if (HasAuthority())
+				{
+					AIController->MoveToActor(currentTarget, range - 80);
+				}
 			}
 			else
 			{

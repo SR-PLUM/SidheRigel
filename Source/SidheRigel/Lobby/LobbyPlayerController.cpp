@@ -69,5 +69,9 @@ void ALobbyPlayerController::Client_Ready()
 
 void ALobbyPlayerController::BeginPlay()
 {
-	
+	FInputModeUIOnly InputModeData;
+	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
+	bShowMouseCursor = true;
+	SetInputMode(InputModeData);
 }
