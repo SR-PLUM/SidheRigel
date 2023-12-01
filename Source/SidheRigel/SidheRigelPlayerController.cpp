@@ -74,6 +74,12 @@ void ASidheRigelPlayerController::BeginPlay()
 		SRCharacter->SetCustomTick();
 	}
 
+	FInputModeGameAndUI InputModeData;
+	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
+	InputModeData.SetHideCursorDuringCapture(false);
+
+	SetInputMode(InputModeData);
+
 	//SetSRCamera();
 }
 
