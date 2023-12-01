@@ -125,7 +125,6 @@ void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 		}
 	}
 	*/
-	
 }
 
 void ASidheRigelPlayerController::SetupInputComponent()

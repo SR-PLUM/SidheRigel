@@ -85,8 +85,6 @@ protected:
 public://SERVER
 	UFUNCTION(Reliable, Server)
 		void Server_MoveToPoint(FVector Location);
-	UFUNCTION(Reliable, Client)
-		void Client_MoveToPoint(FVector Location);
 
 public:
 	UPROPERTY(VisibleAnywhere)
