@@ -136,7 +136,7 @@ void AFairyWingCharacter::Attack(AActor* target)
 void AFairyWingCharacter::InitProperty()
 {
 	level = 1;
-	range.Add("Debug", 200.f);
+	range.Add("Debug", 500.f);
 	attackDamage.Add("Debug", 5.f);
 	attackSpeed.Add("Debug", 1.f);
 	criticalRate.Add("Debug", 50);

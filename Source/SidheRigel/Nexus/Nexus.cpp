@@ -192,6 +192,8 @@ void ANexus::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Other
 
 void ANexus::TakeDamage(float _damage, AActor* damageCauser)
 {
+	if (HP <= 0)	return;
+
 	HP -= _damage;
 
 	if (HP <= 0)
