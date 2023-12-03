@@ -28,6 +28,9 @@ ASidheRigelCamera::ASidheRigelCamera()
 	
 	// Camera class will be constructed with target set to nullptr
 	TargetToFollow = nullptr;
+
+	bReplicates = true;
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
@@ -84,7 +87,7 @@ float ASidheRigelCamera::GetScreenY()
 	return ScreenY;
 }
 
-void ASidheRigelCamera::MoveCameraX(float Axis)
+void ASidheRigelCamera::MoveCameraX_Implementation(float Axis)
 {
 	FVector Location = GetActorLocation();
 	
@@ -94,12 +97,11 @@ void ASidheRigelCamera::MoveCameraX(float Axis)
 	SetActorLocation(Location);
 }
 
-void ASidheRigelCamera::MoveCameraY(float Axis)
+void ASidheRigelCamera::MoveCameraY_Implementation(float Axis)
 {
 	FVector Location = GetActorLocation();
 
 	Location.Y += Axis * 5.f;
-
 
 	SetActorLocation(Location);
 }
