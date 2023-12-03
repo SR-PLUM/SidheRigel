@@ -149,6 +149,7 @@ void ASidheRigelCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ASidheRigelCharacter, team);
+	DOREPLIFETIME(ASidheRigelCharacter, sidheRigelController);
 }
 
 void ASidheRigelCharacter::BeginPlay()
@@ -179,33 +180,6 @@ void ASidheRigelCharacter::BeginPlay()
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-
-	/*if (sidheRigelController && team == E_Team::Team_Null)
-	{
-		if (GetController())
-		{
-			if (auto gameInstance = GetController()->GetGameInstance())
-			{
-				team = Cast<USidheRigelGameInstance>(gameInstance)->myTeam;
-				FString teamName;
-				if (team == E_Team::Blue)
-					teamName = "Blue";
-				else if (team == E_Team::Red)
-					teamName = "Red";
-				else
-				{
-					teamName = "ERROR";
-					team = E_Team::Blue;
-				}
-					
-				UE_LOG(LogTemp, Warning, TEXT("Character : %s, Team : %s"), *GetName(), *teamName);
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Cant Access Controller, Character : %s"), *GetName());
-		}
-	}*/
 
 	//치유감소
 	if (reduceHealDuration > 0)

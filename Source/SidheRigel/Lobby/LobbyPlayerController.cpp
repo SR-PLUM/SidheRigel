@@ -70,10 +70,7 @@ void ALobbyPlayerController::Ready_Implementation()
 
 		UE_LOG(LogTemp, Warning, TEXT("READY :: CUrrentPlayer : %s, current Team : %s"), *GetName(), *teamName);
 
-		if (auto GI = Cast<USidheRigelGameInstance>(GetGameInstance()))
-		{
-			GI->myTeam = myTeam;
-		}
+		SetGameInstanceTeam(myTeam);
 
 		auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (currentGM)
@@ -88,23 +85,20 @@ void ALobbyPlayerController::OpenCharacterSelectMenu_Implementation()
 	LobbyUI->OpenCharacterSelectMenu();
 }
 
-void ALobbyPlayerController::Client_Ready()
-{
-	if (!isReady)
-	{
-		isReady = true;
-
-		UE_LOG(LogTemp,Warning,TEXT("READY :: CUrrentPlayer : %s"), *GetName())
-
-		Ready();
-	}
-}
-
-void ALobbyPlayerController::TEST_Implementation(E_Team setTeam)
+void ALobbyPlayerController::SetPlayerControllerTeam_Implementation(E_Team setTeam)
 {
 	UE_LOG(LogTemp, Error, TEXT("TEST :: This Controller is %s"), *GetName());
 
 	myTeam = setTeam;
+}
+
+void ALobbyPlayerController::SetGameInstanceTeam_Implementation(E_Team setGITeam)
+{
+	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+	if (SRGameInstance)
+	{
+		SRGameInstance->myTeam = setGITeam;
+	}
 }
 
 void ALobbyPlayerController::BeginPlay()

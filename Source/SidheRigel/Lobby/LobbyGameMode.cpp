@@ -48,7 +48,7 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 			controllers.Add(player.playerController);
 		}
 
-		lobbyPC->TEST(tempPlayerInfo.team);
+		lobbyPC->SetPlayerControllerTeam(tempPlayerInfo.team);
 
 		lobbyPC->Server_RefreshPlayerList(controllers);
 		

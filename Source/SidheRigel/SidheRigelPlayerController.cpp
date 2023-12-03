@@ -65,10 +65,8 @@ void ASidheRigelPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (HasAuthority())
-	{
-		UE_LOG(LogTemp, Error, TEXT("BeginPlay :: Authority Controller is %s"), *GetName())
-	}
+	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay :: GameInstnce: %s, playerController: %s"), *SRGameInstance->GetName(), *GetName());
 	DeterminePawnClass();
 
 	//Set stateMachine
@@ -78,10 +76,10 @@ void ASidheRigelPlayerController::BeginPlay()
 	auto SRCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
 	if (SRCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BeginPlay :: Has SRCHaracter"))
+		UE_LOG(LogTemp, Warning, TEXT("In Begin :: myCharacter %s"), *SRCharacter->GetName());
+
 		//Set Controller
 		SRCharacter->sidheRigelController = this;
-		SRCharacter->team = myTeam;
 
 		//Set CustomTick
 		SRCharacter->SetCustomTick();
@@ -227,6 +225,31 @@ void ASidheRigelPlayerController::PressedYButton()
 	
 }
 
+void ASidheRigelPlayerController::ServerSetTeam_Implementation(E_Team team)
+{
+	myTeam = team;
+}
+
+void ASidheRigelPlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+	
+	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+	UE_LOG(LogTemp,Warning,TEXT("In OnPossess :: controller %s, Instance %s"), *GetName(), *SRGameInstance->GetName())
+
+	auto SRCharacter = Cast<ASidheRigelCharacter>(aPawn);
+	if (SRCharacter)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("In OnPossess :: myCharacter %s"), *SRCharacter->GetName());
+
+		//Set Controller
+		SRCharacter->sidheRigelController = this;
+		SRCharacter->team = myTeam;
+
+		
+	}
+}
+
 void ASidheRigelPlayerController::SetSRCameraInClient_Implementation(APawn* aPawn, ASidheRigelPlayerController* controller)
 {
 	if (aPawn)
@@ -280,18 +303,24 @@ void ASidheRigelPlayerController::DeterminePawnClass_Implementation()
 		
 		if (SRGameInstance)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("DPS :: Instance : %s, player : %s"), *SRGameInstance->GetName(), *GetName());
+			ServerSetTeam(SRGameInstance->myTeam);
+
 			if (SRGameInstance->CharacterNum == E_Character::Cold)
 			{
+				UE_LOG(LogTemp,Warning,TEXT("Cold Pawn SELECTED"))
 				ServerSetPawn(ColdPawn);
 				return;
 			}
 			else if (SRGameInstance->CharacterNum == E_Character::FairyWing)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Fairy Pawn SELECTED"))
 				ServerSetPawn(FairyWingPawn);
 				return;
 			}
 			else if (SRGameInstance->CharacterNum == E_Character::Kerun)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Kerun Pawn SELECTED"))
 				ServerSetPawn(KerunPawn);
 				return;
 			}
@@ -309,12 +338,6 @@ void ASidheRigelPlayerController::DeterminePawnClass_Implementation()
 void ASidheRigelPlayerController::ServerSetPawn_Implementation(TSubclassOf<APawn> InPawnClass)
 {
 	MyPawnClass = InPawnClass;
-
-	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
-	if (SRGameInstance)
-	{
-		myTeam = SRGameInstance->myTeam;
-	}
 
 	GetWorld()->GetAuthGameMode()->RestartPlayer(this);
 }
@@ -340,4 +363,13 @@ void ASidheRigelPlayerController::SpawnSRCamera_Implementation(APawn* aPawn, cla
 	}
 }
 
-
+void ASidheRigelPlayerController::ClientInitMachine_Implementation(APawn* aPawn)
+{
+	auto SRCharacter = Cast<ASidheRigelCharacter>(aPawn);
+	if (SRCharacter)
+	{
+		SRCharacter->sidheRigelController = this;
+		//Set CustomTick
+		SRCharacter->SetCustomTick();
+	}
+}

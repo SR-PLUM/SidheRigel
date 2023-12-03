@@ -33,10 +33,10 @@ public:
 		void OpenCharacterSelectMenu();
 	UFUNCTION(Server, Reliable)
 		void Ready();
-	UFUNCTION()
-		void Client_Ready();
+	UFUNCTION(Client, Reliable)
+		void SetGameInstanceTeam(E_Team setGITeam);
 	UFUNCTION(server, reliable)
-		void TEST(E_Team setTeam);
+		void SetPlayerControllerTeam(E_Team setTeam);
 
 protected:
 	virtual void BeginPlay() override;
