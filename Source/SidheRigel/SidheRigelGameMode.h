@@ -20,6 +20,13 @@ public:
 
 	TMap<FString, TSubclassOf<APawn>> CharacterPath;
 
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
+	UPROPERTY()
+		TArray<AActor*> nonePlayerStarts;
+
+protected:
+	virtual void BeginPlay() override;
 };
 
 

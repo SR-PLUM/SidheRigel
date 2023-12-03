@@ -19,6 +19,7 @@
 #include "Components/VerticalBoxSlot.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "GameFramework/PlayerStart.h"
 
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/InGameMapScriptActor.h"
@@ -35,6 +36,7 @@
 #include "SidheRigel/Character/Common/SlowParticle.h"
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -139,17 +141,23 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//Init Talent Widget Subclass
 	InitTalentWidget();
+
+	bReplicates = true;
 }
 
-//void ASidheRigelCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-//{
-//	//DOREPLIFETIME(ASidheRigelCharacter, sidheRigelController);
-//}
+void ASidheRigelCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASidheRigelCharacter, team);
+	DOREPLIFETIME(ASidheRigelCharacter, sidheRigelController);
+}
 
 void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	sidheRigelController = Cast<ASidheRigelPlayerController>(GetController());
+
+	
 
 	InitProperty();
 
@@ -200,7 +208,6 @@ void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
 	if (movePC)
 	{
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(movePC, Location);
-		Client_MoveToPoint(Location);
 	}
 	else
 	{
@@ -208,8 +215,9 @@ void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
 	}
 }
 
-void ASidheRigelCharacter::Client_MoveToPoint_Implementation(FVector Location)
+void ASidheRigelCharacter::Server_MoveToStartLocation_Implementation(FVector Location)
 {
+	SetActorLocation(Location);
 }
 
 void ASidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

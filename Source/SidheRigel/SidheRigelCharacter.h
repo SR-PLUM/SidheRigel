@@ -64,7 +64,7 @@ public:
 	/** Returns CameraBoom subobject **/
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-	//UPROPERTY(replicated)
+	UPROPERTY(replicated)
 		ASidheRigelPlayerController* sidheRigelController;
 protected:
 	/** Top down camera */
@@ -85,8 +85,9 @@ protected:
 public://SERVER
 	UFUNCTION(Reliable, Server)
 		void Server_MoveToPoint(FVector Location);
-	UFUNCTION(Reliable, Client)
-		void Client_MoveToPoint(FVector Location);
+
+	UFUNCTION(Reliable, server)
+		void Server_MoveToStartLocation(FVector Location);
 
 public:
 	UPROPERTY(VisibleAnywhere)
@@ -139,8 +140,6 @@ public: //UI
 
 	UPROPERTY()
 		class UStatSummary* StatSummary;
-
-
 
 	void InitStatWidget();
 	void InitStatSummary();
@@ -247,8 +246,8 @@ protected:	//Stat
 	UPROPERTY()
 		float barrierAmount =0.f;				//보호막
 
-	//DEBUG RED=MINION, BLUE = PLAYER
-	E_Team team = E_Team::Blue;
+	UPROPERTY(replicated, EditAnyWhere)
+		TEnumAsByte<E_Team> team = E_Team::Team_Null;
 
 private:
 	float barrierDuration = 4.f;

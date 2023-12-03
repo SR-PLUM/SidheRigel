@@ -205,7 +205,8 @@ void ULobbyMenu::SetCharacterKerun()
 
 void ULobbyMenu::StartGame()
 {
-	LobbyPlayerController->Client_Ready();
+	Cast<ALobbyPlayerController>(GetOwningPlayer())->Ready();
+	//LobbyPlayerController->Ready();
 	
 	//World->ServerTravel("/Game/Maps/TwistedDesert?listen");
 	//World->ServerTravel("/Game/TopDown/Maps/TopDownMap?listen");

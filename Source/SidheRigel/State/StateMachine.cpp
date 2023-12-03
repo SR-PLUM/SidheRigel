@@ -129,7 +129,15 @@ void StateMachine::OnRightClick()
 	//SkillCancel
 	bSkillReady = false;
 	currentSkill = E_SkillState::Skill_Null;
-	myCharacter->skillRange->SetVisibility(false);
+	if (myCharacter)
+	{
+		myCharacter->skillRange->SetVisibility(false);
+	}
+	else
+	{
+		myCharacter = Cast<ASidheRigelCharacter>(playerController->GetCharacter());
+		UE_LOG(LogTemp,Warning,TEXT("ERROR CHARACTER NULL IN STATEMACHINE"))
+	}
 
 	currentState->OnRightClick();
 }

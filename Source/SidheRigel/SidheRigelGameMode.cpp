@@ -5,6 +5,8 @@
 #include "SidheRigelCharacter.h"
 #include "SidheRigelGameInstance.h"
 #include "UObject/ConstructorHelpers.h"
+#include "GameFramework/PlayerStart.h"
+#include "Kismet/GameplayStatics.h"
 #include "SidheRigelCamera.h"
 
 ASidheRigelGameMode::ASidheRigelGameMode()
@@ -47,6 +49,22 @@ ASidheRigelGameMode::ASidheRigelGameMode()
 	if (KerunBPClass.Class != nullptr)
 	{
 		CharacterPath.Add("Kerun", KerunBPClass.Class);
+	}
+
+	TArray<AActor*> PlayerStarts;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
+
+	for (auto playerStart : PlayerStarts)
+	{
+		auto playerStartTag = Cast<APlayerStart>(playerStart)->PlayerStartTag;
+		if (playerStartTag.ToString() == "None")
+		{
+			nonePlayerStarts.Add(playerStart);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Else Player STARTS :: %s"), *playerStartTag.ToString())
+		}
 	}
 }
 
@@ -106,5 +124,22 @@ UClass* ASidheRigelGameMode::GetDefaultPawnClassForController_Implementation(ACo
 	}
 
 	return DefaultPawnClass;
+}
+
+AActor* ASidheRigelGameMode::ChoosePlayerStart_Implementation(AController* Player)
+{
+	AActor* SelectedPlayerStart;
+
+	SelectedPlayerStart = nonePlayerStarts[0];
+
+	nonePlayerStarts.RemoveAt(0);
+
+	return SelectedPlayerStart;
+}
+
+void ASidheRigelGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
 }
 

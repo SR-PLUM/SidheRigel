@@ -75,6 +75,13 @@ protected:
 	UFUNCTION(Reliable, Server)
 		void ServerSetPawn(TSubclassOf<APawn> InPawnClass);
 
+	UPROPERTY(replicated, EditAnyWhere)
+		TEnumAsByte<E_Team> myTeam;
+	UFUNCTION(reliable, server)
+		void ServerSetTeam(E_Team team);
+	UFUNCTION(reliable, client)
+		void ClientInitMachine(APawn* aPawn);
+
 private:
 	bool bInputPressed; // Input is bring pressed
 	float FollowTime; // For how long it has been pressed
@@ -100,6 +107,8 @@ protected:
 	// Setter to set camera from another scripts
 	FORCEINLINE void SetCamera(class ASidheRigelCamera* NewCamera) { SRCamera = NewCamera; }
 
+protected:
+	virtual void OnPossess(APawn* aPawn) override;
 };
 
 

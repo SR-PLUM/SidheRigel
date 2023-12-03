@@ -58,12 +58,15 @@ void ASidheRigelPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePro
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASidheRigelPlayerController, MyPawnClass);
 	DOREPLIFETIME(ASidheRigelPlayerController, SRCamera);
+	DOREPLIFETIME(ASidheRigelPlayerController, myTeam);
 }
 
 void ASidheRigelPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay :: GameInstnce: %s, playerController: %s"), *SRGameInstance->GetName(), *GetName());
 	DeterminePawnClass();
 
 	//Set stateMachine
@@ -73,6 +76,8 @@ void ASidheRigelPlayerController::BeginPlay()
 	auto SRCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
 	if (SRCharacter)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("In Begin :: myCharacter %s"), *SRCharacter->GetName());
+
 		//Set Controller
 		SRCharacter->sidheRigelController = this;
 
@@ -220,6 +225,49 @@ void ASidheRigelPlayerController::PressedYButton()
 	
 }
 
+void ASidheRigelPlayerController::ServerSetTeam_Implementation(E_Team team)
+{
+	myTeam = team;
+}
+
+void ASidheRigelPlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+	
+	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+	UE_LOG(LogTemp,Warning,TEXT("In OnPossess :: controller %s, Instance %s"), *GetName(), *SRGameInstance->GetName())
+
+	auto SRCharacter = Cast<ASidheRigelCharacter>(aPawn);
+	if (SRCharacter)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("In OnPossess :: myCharacter %s"), *SRCharacter->GetName());
+
+		//Set Controller
+		SRCharacter->sidheRigelController = this;
+		SRCharacter->team = myTeam;
+
+		//Set Player Start Location
+		TArray<AActor*> PlayerStarts;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
+
+		for (auto playerStart : PlayerStarts)
+		{
+			auto playerStartTag = Cast<APlayerStart>(playerStart)->PlayerStartTag;
+			if (((playerStartTag.ToString() == "Blue") && (SRCharacter->GetTeam() == E_Team::Blue)) ||
+				((playerStartTag.ToString() == "Red") && (SRCharacter->GetTeam() == E_Team::Red)))
+			{
+				SRCharacter->Server_MoveToStartLocation(playerStart->GetActorLocation());
+				UE_LOG(LogTemp, Warning, TEXT("Matched, character : %s"), *GetName())
+					break;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Not Matched, character : %s, playerStart : %s"), *GetName(), *playerStartTag.ToString())
+			}
+		}
+	}
+}
+
 void ASidheRigelPlayerController::SetSRCameraInClient_Implementation(APawn* aPawn, ASidheRigelPlayerController* controller)
 {
 	if (aPawn)
@@ -273,18 +321,24 @@ void ASidheRigelPlayerController::DeterminePawnClass_Implementation()
 		
 		if (SRGameInstance)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("DPS :: Instance : %s, player : %s"), *SRGameInstance->GetName(), *GetName());
+			ServerSetTeam(SRGameInstance->myTeam);
+
 			if (SRGameInstance->CharacterNum == E_Character::Cold)
 			{
+				UE_LOG(LogTemp,Warning,TEXT("Cold Pawn SELECTED"))
 				ServerSetPawn(ColdPawn);
 				return;
 			}
 			else if (SRGameInstance->CharacterNum == E_Character::FairyWing)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Fairy Pawn SELECTED"))
 				ServerSetPawn(FairyWingPawn);
 				return;
 			}
 			else if (SRGameInstance->CharacterNum == E_Character::Kerun)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Kerun Pawn SELECTED"))
 				ServerSetPawn(KerunPawn);
 				return;
 			}
@@ -327,4 +381,13 @@ void ASidheRigelPlayerController::SpawnSRCamera_Implementation(APawn* aPawn, cla
 	}
 }
 
-
+void ASidheRigelPlayerController::ClientInitMachine_Implementation(APawn* aPawn)
+{
+	auto SRCharacter = Cast<ASidheRigelCharacter>(aPawn);
+	if (SRCharacter)
+	{
+		SRCharacter->sidheRigelController = this;
+		//Set CustomTick
+		SRCharacter->SetCustomTick();
+	}
+}

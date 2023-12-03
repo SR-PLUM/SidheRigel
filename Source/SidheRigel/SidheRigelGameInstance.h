@@ -7,6 +7,7 @@
 #include "MainMenu/MenuInterface.h"
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Enum/E_Character.h"
+#include "Enum/E_Team.h"
 #include "SidheRigelGameInstance.generated.h"
 
 /**
@@ -66,4 +67,7 @@ public:
 	E_Character CharacterNum = E_Character::Character_Null;
 
 	void SetInputUI(TSharedPtr<SWidget> InWidgetToFocus);
+
+	UPROPERTY()
+		TEnumAsByte<E_Team> myTeam;
 };
