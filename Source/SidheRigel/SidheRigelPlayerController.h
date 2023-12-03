@@ -92,20 +92,13 @@ public: //Camera
 
 protected:
 	// Reference to our camera
-	UPROPERTY(VisibleAnyWhere, Replicated)
+	UPROPERTY(Replicated)
 	class ASidheRigelCamera* SRCamera;
-	
-	
 	
 	
  public:
 	// Setter to set camera from another scripts
 	FORCEINLINE void SetCamera(class ASidheRigelCamera* NewCamera) { SRCamera = NewCamera; }
-
-//protected:
-//	// Declare an override for the OnPossess method. This method will be called when the controller possesses will possess our player at the start of the game
-//	virtual void OnPossess(APawn* aPawn) override;
-//	
 
 };
 

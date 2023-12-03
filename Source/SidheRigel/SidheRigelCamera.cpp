@@ -57,8 +57,6 @@ void ASidheRigelCamera::Tick(float DeltaTime)
 		FVector Location = FVector(TargetLocation.X - 600.f, TargetLocation.Y, TargetLocation.Z + 720.f);
 		// Set camera location to be equal to the location of the target (this will make sure our camera actor is always at the position of the target)
 		SetActorLocation(Location);
-
-		UE_LOG(LogTemp, Error, TEXT("CameraFixed / %s"), *GetName());
 	}
 }
 
@@ -66,8 +64,6 @@ void ASidheRigelCamera::SwitchIsCameraFixed()
 {
 	if (IsCameraFixed) IsCameraFixed = false;
 	else IsCameraFixed = true;
-
-	UE_LOG(LogTemp, Error, TEXT("SwitchIsCameraFixed :: %d"), IsCameraFixed);
 }
 
 bool ASidheRigelCamera::GetIsCameraFixed()
@@ -99,8 +95,6 @@ void ASidheRigelCamera::MoveCameraX_Implementation(float Axis)
 
 
 	SetActorLocation(Location);
-
-	UE_LOG(LogTemp, Error, TEXT("MoveCamera X"));
 }
 
 void ASidheRigelCamera::MoveCameraY_Implementation(float Axis)
@@ -108,8 +102,6 @@ void ASidheRigelCamera::MoveCameraY_Implementation(float Axis)
 	FVector Location = GetActorLocation();
 
 	Location.Y += Axis * 5.f;
-
-	UE_LOG(LogTemp, Error, TEXT("MoveCamera Y"));
 
 	SetActorLocation(Location);
 }

@@ -35,7 +35,7 @@ public:
 
 protected:
 	// Player controller
-	UPROPERTY(VisibleAnyWhere)
+	UPROPERTY()
 	class APlayerController* PlayerController;
 
 public:
@@ -44,14 +44,14 @@ public:
 
 protected:
 	// An actor the camera will follow
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	class AActor* TargetToFollow;
 
 public:
 	FORCEINLINE void SetTargetToFollow(AActor* NewTargetToFollow) { TargetToFollow = NewTargetToFollow; UE_LOG(LogTemp, Warning, TEXT("Target :: %s"), *TargetToFollow->GetName()) }
 
 protected:
-	UPROPERTY(VisibleAnyWhere)
+	UPROPERTY()
 	bool IsCameraFixed = true;
 
 	float ScreenX;
