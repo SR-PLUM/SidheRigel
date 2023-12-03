@@ -246,7 +246,25 @@ void ASidheRigelPlayerController::OnPossess(APawn* aPawn)
 		SRCharacter->sidheRigelController = this;
 		SRCharacter->team = myTeam;
 
-		
+		//Set Player Start Location
+		TArray<AActor*> PlayerStarts;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
+
+		for (auto playerStart : PlayerStarts)
+		{
+			auto playerStartTag = Cast<APlayerStart>(playerStart)->PlayerStartTag;
+			if (((playerStartTag.ToString() == "Blue") && (SRCharacter->GetTeam() == E_Team::Blue)) ||
+				((playerStartTag.ToString() == "Red") && (SRCharacter->GetTeam() == E_Team::Red)))
+			{
+				SRCharacter->Server_MoveToStartLocation(playerStart->GetActorLocation());
+				UE_LOG(LogTemp, Warning, TEXT("Matched, character : %s"), *GetName())
+					break;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Not Matched, character : %s, playerStart : %s"), *GetName(), *playerStartTag.ToString())
+			}
+		}
 	}
 }
 

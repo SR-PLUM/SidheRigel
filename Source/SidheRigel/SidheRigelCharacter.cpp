@@ -19,6 +19,7 @@
 #include "Components/VerticalBoxSlot.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "GameFramework/PlayerStart.h"
 
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/InGameMapScriptActor.h"
@@ -156,6 +157,8 @@ void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+
 	InitProperty();
 
 	AInGameMapScriptActor* LevelScriptActor = Cast<AInGameMapScriptActor>(GetWorld()->GetLevelScriptActor());
@@ -210,6 +213,11 @@ void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SERVER_MoveToPoint :: PlayerController is Null"));
 	}
+}
+
+void ASidheRigelCharacter::Server_MoveToStartLocation_Implementation(FVector Location)
+{
+	SetActorLocation(Location);
 }
 
 void ASidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

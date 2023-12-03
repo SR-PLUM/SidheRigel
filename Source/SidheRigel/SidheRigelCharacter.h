@@ -86,6 +86,9 @@ public://SERVER
 	UFUNCTION(Reliable, Server)
 		void Server_MoveToPoint(FVector Location);
 
+	UFUNCTION(Reliable, server)
+		void Server_MoveToStartLocation(FVector Location);
+
 public:
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* skillRange;
@@ -137,8 +140,6 @@ public: //UI
 
 	UPROPERTY()
 		class UStatSummary* StatSummary;
-
-
 
 	void InitStatWidget();
 	void InitStatSummary();
