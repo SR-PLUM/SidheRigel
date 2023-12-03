@@ -33,22 +33,25 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
 
-private:
+protected:
 	// Player controller
+	UPROPERTY(VisibleAnyWhere)
 	class APlayerController* PlayerController;
 
 public:
 	// Setter for the player controller
 	FORCEINLINE void SetPlayerController(class APlayerController* NewPlayerController) { PlayerController = NewPlayerController; }
 
-private:
+protected:
 	// An actor the camera will follow
+	UPROPERTY(VisibleAnywhere)
 	class AActor* TargetToFollow;
 
 public:
 	FORCEINLINE void SetTargetToFollow(AActor* NewTargetToFollow) { TargetToFollow = NewTargetToFollow; UE_LOG(LogTemp, Warning, TEXT("Target :: %s"), *TargetToFollow->GetName()) }
 
-private:
+protected:
+	UPROPERTY(VisibleAnyWhere)
 	bool IsCameraFixed = true;
 
 	float ScreenX;
@@ -61,8 +64,10 @@ public:
 	float GetScreenX();
 	float GetScreenY();
 
-
+	UFUNCTION(Reliable , Client)
 	void MoveCameraX(float Axis);
+
+	UFUNCTION(Reliable, Client)
 	void MoveCameraY(float Axis);
 
 };

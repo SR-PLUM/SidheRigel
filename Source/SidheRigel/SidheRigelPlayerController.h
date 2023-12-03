@@ -81,12 +81,18 @@ private:
 
 public: //Camera
 	
-	UFUNCTION()
-		void SetSRCamera(APawn* aPawn);
+	UFUNCTION(Reliable, Server)
+		void SetSRCamera(APawn* aPawn, class ASidheRigelPlayerController* controller);
+
+	UFUNCTION(Reliable, Client)
+		void SetSRCameraInClient(APawn* aPawn, class ASidheRigelPlayerController* controller);
+
+	UFUNCTION(Reliable, Client)
+		void SpawnSRCamera(APawn* aPawn, class ASidheRigelPlayerController* controller);
 
 protected:
 	// Reference to our camera
-	UPROPERTY()
+	UPROPERTY(VisibleAnyWhere, Replicated)
 	class ASidheRigelCamera* SRCamera;
 	
 	
@@ -96,10 +102,10 @@ protected:
 	// Setter to set camera from another scripts
 	FORCEINLINE void SetCamera(class ASidheRigelCamera* NewCamera) { SRCamera = NewCamera; }
 
-protected:
-	// Declare an override for the OnPossess method. This method will be called when the controller possesses will possess our player at the start of the game
-	virtual void OnPossess(APawn* aPawn) override;
-	
+//protected:
+//	// Declare an override for the OnPossess method. This method will be called when the controller possesses will possess our player at the start of the game
+//	virtual void OnPossess(APawn* aPawn) override;
+//	
 
 };
 

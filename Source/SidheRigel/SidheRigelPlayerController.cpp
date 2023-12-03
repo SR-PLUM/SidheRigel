@@ -19,6 +19,7 @@
 
 #include "SidheRigelCamera.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 ASidheRigelPlayerController::ASidheRigelPlayerController()
 {
@@ -47,11 +48,15 @@ ASidheRigelPlayerController::ASidheRigelPlayerController()
 	stateMachine = new StateMachine(this);
 
 	bReplicates = true;
+
+	//bAutoManageActiveCameraTarget = false;
 }
 
 void ASidheRigelPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASidheRigelPlayerController, MyPawnClass);
+	DOREPLIFETIME(ASidheRigelPlayerController, SRCamera);
 }
 
 void ASidheRigelPlayerController::BeginPlay()
@@ -102,7 +107,7 @@ void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 		{
 			FVector2D Location = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 
-			UE_LOG(LogTemp, Error, TEXT("MouseLocation :: %f / %f"), Location.X, Location.Y);
+			UE_LOG(LogTemp, Error, TEXT("MouseLocation :: %f / %f  , ViewportSize :: %f / %f"), Location.X, Location.Y, SRCamera->GetScreenX(), SRCamera->GetScreenY());
 
 			if (Location.X <= 1.f)
 			{
@@ -124,12 +129,40 @@ void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 				SRCamera->MoveCameraX(-1.f);
 			}
 		}
+
+		
+		if (IsLocalController())
+		{
+			if (SRCamera->GetOwner())
+			{
+				UE_LOG(LogTemp, Error, TEXT("Owner Name :: %s"), *SRCamera->GetOwner()->GetName());
+				UE_LOG(LogTemp, Error, TEXT("Owner Character Name :: %s"), *GetCharacter()->GetName());
+				UE_LOG(LogTemp, Error, TEXT("Camera Name :: %s"), *SRCamera->GetName());
+			}
+			else
+			{
+				SRCamera->SetOwner(this);
+
+				UE_LOG(LogTemp, Error, TEXT("Owner is null, Character Name :: %s"), *GetCharacter()->GetName());
+			}
+		}
+		
 	}
 	else
 	{
-		SetSRCamera(GetCharacter());
+		if (GetCharacter() != nullptr)
+		{
+			ASidheRigelPlayerController* TargetController = Cast<ASidheRigelPlayerController>(GetCharacter()->GetController());
+			if (IsLocalController())
+			{
+				SpawnSRCamera(GetCharacter(), this);
+			}
+			
+			UE_LOG(LogTemp, Error, TEXT("Tick :: Pawn Name  :: %s"), *GetCharacter()->GetName());
+		}
+				
 	}
-	
+		
 }
 
 void ASidheRigelPlayerController::SetupInputComponent()
@@ -198,6 +231,60 @@ void ASidheRigelPlayerController::PressedYButton()
 	
 }
 
+void ASidheRigelPlayerController::SetSRCameraInClient_Implementation(APawn* aPawn, ASidheRigelPlayerController* controller)
+{
+	if (aPawn)
+	{
+		if (!SRCamera)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("IN SET_CAMERA :: IN FUNCTION"))
+				UWorld* world = GetWorld();
+			if (!world) return;
+			UE_LOG(LogTemp, Warning, TEXT("IN SET_CAMERA :: World Is Not Null"))
+				// Instantiate our camera actor (actor of type AMyCamera in this case) at position (0, 0, 0) with rotation (0, 0, 0)
+				AActor* CameraActor = world->SpawnActor(ASidheRigelCamera::StaticClass(), &FVector::ZeroVector, &FRotator::ZeroRotator);
+			// We have just spawned AMyCamera and assigned it to the variable CameraActor. Since we know it is of type AMyCamera, we can safelty cast CameraActor variable to the AMyCamera class to be able to use its methods
+			ASidheRigelCamera* MyCamera = CastChecked<ASidheRigelCamera>(CameraActor);
+
+			MyCamera->SetOwner(this);
+			ASidheRigelPlayerController* TargetController = Cast<ASidheRigelPlayerController>(aPawn->GetController());
+
+			UE_LOG(LogTemp, Error, TEXT("Pawn Name  :: %s"), *aPawn->GetName());
+			UE_LOG(LogTemp, Error, TEXT("Controller Index :: %d"), aPawn->GetController()->GetUniqueID());
+
+			if (this)
+			{
+				// Pass the instantiated player controller to the camera so that it can read the rotation from one
+				MyCamera->SetPlayerController(this);
+				// Pass instantiated camera to the player controller so that it can be bound to the player the controller possesses
+				this->SetCamera(MyCamera);
+
+
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("TargetController is Null"));
+			}
+
+		}
+
+		// Set the target of our camera to be equal to the pawn this controller possesses(thus when the controller will possess the player when the game starts, the camera's target will be set to reference that player)
+		SRCamera->SetTargetToFollow(aPawn);
+		// Make sure our camera is the one used to present player with view (make sure that our camera will be used as player camera)
+		SetViewTarget(SRCamera);
+
+		const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+
+		UE_LOG(LogTemp, Error, TEXT("Pawn is Not Null"));
+
+		SRCamera->SetScreenSize(ViewportSize.X * 2.f, ViewportSize.Y * 2.f);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Pawn is Null"));
+	}
+}
+
 
 
 void ASidheRigelPlayerController::DeterminePawnClass_Implementation()
@@ -242,71 +329,53 @@ void ASidheRigelPlayerController::ServerSetPawn_Implementation(TSubclassOf<APawn
 }
 
 
-void ASidheRigelPlayerController::SetSRCamera(APawn* aPawn)
+void ASidheRigelPlayerController::SetSRCamera_Implementation(APawn* aPawn, class ASidheRigelPlayerController* controller)
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("IN SET_CAMERA :: IN FUNCTION"))
-	UWorld* world = GetWorld();
-	if (!world) return;
-	UE_LOG(LogTemp, Warning, TEXT("IN SET_CAMERA :: World Is Not Null"))
-	// Instantiate our camera actor (actor of type AMyCamera in this case) at position (0, 0, 0) with rotation (0, 0, 0)
-	AActor* CameraActor = world->SpawnActor(ASidheRigelCamera::StaticClass(), &FVector::ZeroVector, &FRotator::ZeroRotator);
-	// We have just spawned AMyCamera and assigned it to the variable CameraActor. Since we know it is of type AMyCamera, we can safelty cast CameraActor variable to the AMyCamera class to be able to use its methods
-	ASidheRigelCamera* MyCamera = CastChecked<ASidheRigelCamera>(CameraActor);
-	// Pass the instantiated player controller to the camera so that it can read the rotation from one
-	MyCamera->SetPlayerController(this);
-	// Pass instantiated camera to the player controller so that it can be bound to the player the controller possesses
-	this->SetCamera(MyCamera);
-
 	
-	if (aPawn)
-	{
-		// Set the target of our camera to be equal to the pawn this controller possesses(thus when the controller will possess the player when the game starts, the camera's target will be set to reference that player)
-		SRCamera->SetTargetToFollow(aPawn);
-		// Make sure our camera is the one used to present player with view (make sure that our camera will be used as player camera)
-		SetViewTarget(SRCamera);
-
-		const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
-
-		SRCamera->SetScreenSize(ViewportSize.X * 2.f, ViewportSize.Y * 2.f);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Pawn is Null"));
-	}
-
+	SetSRCameraInClient(aPawn, controller);
 
 }
 
 
 
- void ASidheRigelPlayerController::OnPossess(APawn* aPawn)
+void ASidheRigelPlayerController::SpawnSRCamera_Implementation(APawn* aPawn, class ASidheRigelPlayerController* controller)
 {
-	// It is important to call the super OnPossess method to make sure the default logic also gets executed
-	Super::OnPossess(aPawn);
-
-	if (!SRCamera)
+	if (IsLocalPlayerController())
 	{
-		AActor* CameraActor = GetWorld()->SpawnActor(ASidheRigelCamera::StaticClass(), &FVector::ZeroVector, &FRotator::ZeroRotator);
-		// We have just spawned AMyCamera and assigned it to the variable CameraActor. Since we know it is of type AMyCamera, we can safelty cast CameraActor variable to the AMyCamera class to be able to use its methods
-		ASidheRigelCamera* MyCamera = CastChecked<ASidheRigelCamera>(CameraActor);
-		// Pass the instantiated player controller to the camera so that it can read the rotation from one
-		MyCamera->SetPlayerController(this);
-		// Pass instantiated camera to the player controller so that it can be bound to the player the controller possesses
-		this->SetCamera(MyCamera);
+		if (!SRCamera)
+		{
+			SetSRCamera(aPawn,this);
+		}
 	}
-	// Set the target of our camera to be equal to the pawn this controller possesses (thus when the controller will possess the player when the game starts, the camera's target will be set to reference that player)
-	SRCamera->SetTargetToFollow(aPawn);
-	// Make sure our camera is the one used to present player with view (make sure that our camera will be used as player camera)
-	SetViewTarget(SRCamera);
-
-	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
-
-	SRCamera->SetScreenSize(ViewportSize.X*2.f, ViewportSize.Y*2.f);
-
-	UE_LOG(LogTemp, Error, TEXT("OnPossess :: Pawn name is %s"), *aPawn->GetName());
-	if(SRCamera)
-		UE_LOG(LogTemp, Error, TEXT("OnPossess :: SRCamera is Not null"));
 }
+
+//void ASidheRigelPlayerController::OnPossess(APawn* aPawn)
+//{
+//	// It is important to call the super OnPossess method to make sure the default logic also gets executed
+//	Super::OnPossess(aPawn);
+//
+//	if (!SRCamera)
+//	{
+//		AActor* CameraActor = GetWorld()->SpawnActor(ASidheRigelCamera::StaticClass(), &FVector::ZeroVector, &FRotator::ZeroRotator);
+//		// We have just spawned AMyCamera and assigned it to the variable CameraActor. Since we know it is of type AMyCamera, we can safelty cast CameraActor variable to the AMyCamera class to be able to use its methods
+//		ASidheRigelCamera* MyCamera = CastChecked<ASidheRigelCamera>(CameraActor);
+//		// Pass the instantiated player controller to the camera so that it can read the rotation from one
+//		MyCamera->SetPlayerController(this);
+//		// Pass instantiated camera to the player controller so that it can be bound to the player the controller possesses
+//		this->SetCamera(MyCamera);
+//	}
+//	// Set the target of our camera to be equal to the pawn this controller possesses (thus when the controller will possess the player when the game starts, the camera's target will be set to reference that player)
+//	SRCamera->SetTargetToFollow(aPawn);
+//	// Make sure our camera is the one used to present player with view (make sure that our camera will be used as player camera)
+//	SetViewTarget(SRCamera);
+//
+//	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+//
+//	SRCamera->SetScreenSize(ViewportSize.X*2.f, ViewportSize.Y*2.f);
+//
+//	UE_LOG(LogTemp, Error, TEXT("OnPossess :: Pawn name is %s"), *aPawn->GetName());
+//	if(SRCamera)
+//		UE_LOG(LogTemp, Error, TEXT("OnPossess :: SRCamera is Not null"));
+//}
 
 

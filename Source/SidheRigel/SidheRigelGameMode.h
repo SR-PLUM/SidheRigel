@@ -19,10 +19,12 @@ public:
 	UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
 
 	TMap<FString, TSubclassOf<APawn>> CharacterPath;
+//
+//public:
+//	// Override this method to change what happens when a player controller is spawned
+//	virtual class APlayerController* SpawnPlayerController(ENetRole InRemoteRole, const FString& Options) override;
 
-public:
-	// Override this method to change what happens when a player controller is spawned
-	virtual class APlayerController* SpawnPlayerController(ENetRole InRemoteRole, const FString& Options) override;
+
 };
 
 
