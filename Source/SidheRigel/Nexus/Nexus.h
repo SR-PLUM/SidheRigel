@@ -44,14 +44,14 @@ protected:
 	float HP;
 	float MaxHP = 3000;
 
-//protected:		UI
-//	UPROPERTY()
-//		class UWidgetComponent* TowerWidget;
-//	UPROPERTY()
-//		class UHPUI* TowerUIRef;
-//
-//	void InitTowerWidget();
-//	void InitTowerUI();
+protected:
+	UPROPERTY()
+		class UWidgetComponent* NexusWidget;
+	UPROPERTY()
+		class UHPUI* NexusUIRef;
+
+	void InitNexusWidget();
+	void InitNexusUI();
 
 public:	
 	// Called every frame
