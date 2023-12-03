@@ -6,17 +6,17 @@
 #include "GameFramework/GameModeBase.h"
 #include "LobbyGameMode.generated.h"
 
-/*USTRUCT()
+USTRUCT()
 struct FPlayerInfo
 {
 	GENERATED_USTRUCT_BODY()
 
 public:
-	APlayerController* playerController;
-	FText playerName;
-	bool bReady;
-	APlayerState* playerState;
-};*/
+	UPROPERTY()
+		class ALobbyPlayerController* playerController;
+	UPROPERTY()
+		TEnumAsByte<E_Team> team;
+};
 
 
 UCLASS()
@@ -31,10 +31,12 @@ public:
 	ALobbyGameMode();
 
 	UFUNCTION()
-		void Ready(int32 readyCount);
+		void Ready();
 
 	UPROPERTY(replicated)
-		TArray<class ALobbyPlayerController*> players;
+		TArray<FPlayerInfo> players;
+	UPROPERTY()
+		int32 readyCount = 0;
 
 private:
 	uint32 NumberOfPlayers = 0;

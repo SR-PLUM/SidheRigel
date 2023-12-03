@@ -51,13 +51,20 @@ ASidheRigelPlayerController::ASidheRigelPlayerController()
 
 void ASidheRigelPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 	DOREPLIFETIME(ASidheRigelPlayerController, MyPawnClass);
+	DOREPLIFETIME(ASidheRigelPlayerController, myTeam);
 }
 
 void ASidheRigelPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Error, TEXT("BeginPlay :: Authority Controller is %s"), *GetName())
+	}
 	DeterminePawnClass();
 
 	//Set stateMachine
@@ -67,8 +74,10 @@ void ASidheRigelPlayerController::BeginPlay()
 	auto SRCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
 	if (SRCharacter)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("BeginPlay :: Has SRCHaracter"))
 		//Set Controller
 		SRCharacter->sidheRigelController = this;
+		SRCharacter->team = myTeam;
 
 		//Set CustomTick
 		SRCharacter->SetCustomTick();
@@ -223,6 +232,12 @@ void ASidheRigelPlayerController::DeterminePawnClass_Implementation()
 void ASidheRigelPlayerController::ServerSetPawn_Implementation(TSubclassOf<APawn> InPawnClass)
 {
 	MyPawnClass = InPawnClass;
+
+	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+	if (SRGameInstance)
+	{
+		myTeam = SRGameInstance->myTeam;
+	}
 
 	GetWorld()->GetAuthGameMode()->RestartPlayer(this);
 }

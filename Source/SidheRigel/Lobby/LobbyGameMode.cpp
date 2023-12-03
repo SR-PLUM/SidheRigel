@@ -6,6 +6,7 @@
 #include "ThirdParty/Steamworks/Steamv151/sdk/public/steam/steam_api.h"
 #include "Net/UnrealNetwork.h"
 
+#include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Lobby/LobbyMenu.h"
 #include "LobbyPlayerController.h"
 
@@ -27,9 +28,30 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 	auto lobbyPC = Cast<ALobbyPlayerController>(NewPlayer);
 	if (lobbyPC)
 	{
-		players.Add(lobbyPC);
+		FPlayerInfo tempPlayerInfo;
+		if (NumberOfPlayers % 2 == 1)
+		{
+			tempPlayerInfo.team = E_Team::Blue;
+		}
+		else
+		{
+			tempPlayerInfo.team = E_Team::Red;
+		}
 
-		lobbyPC->Server_RefreshPlayerList(players);
+		tempPlayerInfo.playerController = lobbyPC;
+
+		players.Add(tempPlayerInfo);
+
+		TArray<ALobbyPlayerController*> controllers;
+		for (auto player : players)
+		{
+			controllers.Add(player.playerController);
+		}
+
+		lobbyPC->TEST(tempPlayerInfo.team);
+
+		lobbyPC->Server_RefreshPlayerList(controllers);
+		
 	}
 }
 
@@ -37,13 +59,22 @@ void ALobbyGameMode::Logout(AController* Exiting)
 {
 	--NumberOfPlayers;
 	auto exitPlayer = Cast<ALobbyPlayerController>(Exiting);
-	int32 idx = players.Find(exitPlayer);
-	players.Remove(exitPlayer);
+	
+	for (int32 i = 0; i < players.Num(); i++)
+	{
+		if (players[i].playerController == exitPlayer)
+		{
+			players.RemoveAt(i);
+			break;
+		}
+	}
 }
 
 
-void ALobbyGameMode::Ready(int32 readyCount)
+void ALobbyGameMode::Ready()
 {
+	readyCount++;
+
 	if (readyCount >= players.Num())
 	{
 		UWorld* World = GetWorld();

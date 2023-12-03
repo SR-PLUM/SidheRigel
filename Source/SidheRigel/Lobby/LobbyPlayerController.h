@@ -19,10 +19,10 @@ public:
 
 	UPROPERTY()
 		class ULobbyMenu* LobbyUI;
-	UPROPERTY()
+	UPROPERTY(replicated)
 		bool isReady = false;
-	UPROPERTY()
-		int32 readyCount = 0;
+	UPROPERTY(replicated, EditAnyWhere)
+		TEnumAsByte<E_Team> myTeam;
 
 public:
 	UFUNCTION(Client, Reliable)
@@ -35,6 +35,8 @@ public:
 		void Ready();
 	UFUNCTION()
 		void Client_Ready();
+	UFUNCTION(server, reliable)
+		void TEST(E_Team setTeam);
 
 protected:
 	virtual void BeginPlay() override;

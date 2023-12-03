@@ -75,6 +75,9 @@ protected:
 	UFUNCTION(Reliable, Server)
 		void ServerSetPawn(TSubclassOf<APawn> InPawnClass);
 
+	UPROPERTY(Replicated, EditAnyWhere)
+		TEnumAsByte<E_Team> myTeam;
+
 private:
 	bool bInputPressed; // Input is bring pressed
 	float FollowTime; // For how long it has been pressed

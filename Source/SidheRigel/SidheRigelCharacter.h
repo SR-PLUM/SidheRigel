@@ -245,8 +245,8 @@ protected:	//Stat
 	UPROPERTY()
 		float barrierAmount =0.f;				//보호막
 
-	//DEBUG RED=MINION, BLUE = PLAYER
-	E_Team team = E_Team::Blue;
+	UPROPERTY(replicated, EditAnyWhere)
+		TEnumAsByte<E_Team> team = E_Team::Team_Null;
 
 private:
 	float barrierDuration = 4.f;

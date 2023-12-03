@@ -35,6 +35,7 @@
 #include "SidheRigel/Character/Common/SlowParticle.h"
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -139,17 +140,20 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//Init Talent Widget Subclass
 	InitTalentWidget();
+
+	bReplicates = true;
 }
 
-//void ASidheRigelCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-//{
-//	//DOREPLIFETIME(ASidheRigelCharacter, sidheRigelController);
-//}
+void ASidheRigelCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASidheRigelCharacter, team);
+}
 
 void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	sidheRigelController = Cast<ASidheRigelPlayerController>(GetController());
 
 	InitProperty();
 
@@ -174,6 +178,33 @@ void ASidheRigelCharacter::BeginPlay()
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+	/*if (sidheRigelController && team == E_Team::Team_Null)
+	{
+		if (GetController())
+		{
+			if (auto gameInstance = GetController()->GetGameInstance())
+			{
+				team = Cast<USidheRigelGameInstance>(gameInstance)->myTeam;
+				FString teamName;
+				if (team == E_Team::Blue)
+					teamName = "Blue";
+				else if (team == E_Team::Red)
+					teamName = "Red";
+				else
+				{
+					teamName = "ERROR";
+					team = E_Team::Blue;
+				}
+					
+				UE_LOG(LogTemp, Warning, TEXT("Character : %s, Team : %s"), *GetName(), *teamName);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cant Access Controller, Character : %s"), *GetName());
+		}
+	}*/
 
 	//치유감소
 	if (reduceHealDuration > 0)

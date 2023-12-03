@@ -7,6 +7,8 @@
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 
+#include "SidheRigel/Enum/E_Team.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Lobby/LobbyMenu.h"
 #include "LobbyGameMode.h"
 
@@ -23,6 +25,16 @@ ALobbyPlayerController::ALobbyPlayerController()
 			LobbyUI->LobbyPlayerController = this;
 		}
 	}
+
+	bReplicates = true;
+}
+
+void ALobbyPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ALobbyPlayerController, myTeam);
+	DOREPLIFETIME(ALobbyPlayerController, isReady);
 }
 
 void ALobbyPlayerController::RefreshPlayerList_Implementation(const TArray<FText>& nameList)
@@ -44,12 +56,30 @@ void ALobbyPlayerController::Server_RefreshPlayerList_Implementation(const TArra
 
 void ALobbyPlayerController::Ready_Implementation()
 {
-	readyCount++;
-	
-	auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (currentGM)
+	if (!isReady)
 	{
-		currentGM->Ready(readyCount);
+		isReady = true;
+
+		FString teamName;
+		if (myTeam == E_Team::Blue)
+			teamName = "Blue";
+		else if (myTeam == E_Team::Red)
+			teamName = "Red";
+		else
+			teamName = "ERROR";
+
+		UE_LOG(LogTemp, Warning, TEXT("READY :: CUrrentPlayer : %s, current Team : %s"), *GetName(), *teamName);
+
+		if (auto GI = Cast<USidheRigelGameInstance>(GetGameInstance()))
+		{
+			GI->myTeam = myTeam;
+		}
+
+		auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (currentGM)
+		{
+			currentGM->Ready();
+		}
 	}
 }
 
@@ -63,8 +93,18 @@ void ALobbyPlayerController::Client_Ready()
 	if (!isReady)
 	{
 		isReady = true;
+
+		UE_LOG(LogTemp,Warning,TEXT("READY :: CUrrentPlayer : %s"), *GetName())
+
 		Ready();
 	}
+}
+
+void ALobbyPlayerController::TEST_Implementation(E_Team setTeam)
+{
+	UE_LOG(LogTemp, Error, TEXT("TEST :: This Controller is %s"), *GetName());
+
+	myTeam = setTeam;
 }
 
 void ALobbyPlayerController::BeginPlay()
