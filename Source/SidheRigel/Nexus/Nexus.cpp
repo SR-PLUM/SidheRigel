@@ -92,7 +92,7 @@ void ANexus::InitNexusWidget()
 	NexusWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("NexusWIDGET"));
 	NexusWidget->SetupAttachment(mesh);
 
-	NexusWidget->SetRelativeLocation(FVector(0, 0, 240));
+	NexusWidget->SetRelativeLocation(FVector(0, 0, 20));
 	NexusWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_HPUI"));
 	if (StatUI.Succeeded())
@@ -109,7 +109,6 @@ void ANexus::InitNexusUI()
 	{
 		NexusUIRef = TmpWidget;
 		NexusUIRef->InitHPBar();
-		NexusUIRef->SetUIVisibility(true);
 	}
 }
 
