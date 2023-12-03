@@ -218,6 +218,8 @@ void ATower::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Other
 
 void ATower::TakeDamage(float _damage, AActor* damageCauser)
 {
+	if (HP <= 0)	return;
+
 	HP -= _damage;
 
 	TowerUIRef->SetHPBar(HP/ MaxHP);

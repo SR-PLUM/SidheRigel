@@ -70,6 +70,8 @@ ANexus::ANexus()
 	}
 
 	HP = MaxHP;
+
+	InitNexusWidget();
 }
 
 void ANexus::BeginPlay()
@@ -78,10 +80,37 @@ void ANexus::BeginPlay()
 
 	rangeArea->OnComponentBeginOverlap.AddDynamic(this, &ANexus::OnEnterEnemy);
 	rangeArea->OnComponentEndOverlap.AddDynamic(this, &ANexus::OnExitEnemy);
+
+	InitNexusUI();
 }
 
 // Called when the game starts or when spawned
 
+
+void ANexus::InitNexusWidget()
+{
+	NexusWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("NexusWIDGET"));
+	NexusWidget->SetupAttachment(mesh);
+
+	NexusWidget->SetRelativeLocation(FVector(0, 0, 20));
+	NexusWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	static ConstructorHelpers::FClassFinder<UUserWidget> StatUI(TEXT("/Game/UIBlueprints/InGameUI/WBP_HPUI"));
+	if (StatUI.Succeeded())
+	{
+		NexusWidget->SetWidgetClass(StatUI.Class);
+		NexusWidget->SetDrawSize(FVector2D(180, 30));
+	}
+}
+
+void ANexus::InitNexusUI()
+{
+	auto TmpWidget = Cast<UHPUI>(NexusWidget->GetUserWidgetObject());
+	if (nullptr != TmpWidget)
+	{
+		NexusUIRef = TmpWidget;
+		NexusUIRef->InitHPBar();
+	}
+}
 
 // Called every frame
 void ANexus::Tick(float DeltaTime)
@@ -192,7 +221,11 @@ void ANexus::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Other
 
 void ANexus::TakeDamage(float _damage, AActor* damageCauser)
 {
+	if (HP <= 0)	return;
+
 	HP -= _damage;
+
+	NexusUIRef->SetHPBar(HP / MaxHP);
 
 	if (HP <= 0)
 	{		FActorSpawnParameters SpawnParams;
