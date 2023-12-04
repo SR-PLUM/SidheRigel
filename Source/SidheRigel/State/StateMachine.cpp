@@ -136,7 +136,7 @@ void StateMachine::OnRightClick()
 	else
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(playerController->GetCharacter());
-		UE_LOG(LogTemp,Warning,TEXT("ERROR CHARACTER NULL IN STATEMACHINE"))
+		UE_LOG(LogTemp,Error,TEXT("ERROR CHARACTER NULL IN STATEMACHINE"))
 	}
 
 	currentState->OnRightClick();
