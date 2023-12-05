@@ -21,7 +21,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		class AColdCharacter* ColdCharacter;
 
-	class StateMachine* ColdStateMachine;
+	class UStateMachine* ColdStateMachine;
 
 	UPROPERTY(BlueprintReadOnly)
 		class UCharacterMovementComponent* ColdCharacterMovement;

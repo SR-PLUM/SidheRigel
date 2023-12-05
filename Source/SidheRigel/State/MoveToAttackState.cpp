@@ -8,15 +8,15 @@
 
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
-MoveToAttackState::MoveToAttackState(StateMachine* StateMachine) : State(StateMachine)
+UMoveToAttackState::UMoveToAttackState()
 {
 }
 
-MoveToAttackState::~MoveToAttackState()
+UMoveToAttackState::~UMoveToAttackState()
 {
 }
 
-void MoveToAttackState::OnBegin()
+void UMoveToAttackState::OnBegin()
 {
 	if (stateMachine->playerController)
 	{
@@ -24,7 +24,7 @@ void MoveToAttackState::OnBegin()
 	}
 }
 
-void MoveToAttackState::Update(float DeltaTime)
+void UMoveToAttackState::Update(float DeltaTime)
 {
 	if (myCharacter)
 	{
@@ -46,16 +46,16 @@ void MoveToAttackState::Update(float DeltaTime)
 	}
 }
 
-void MoveToAttackState::OnRightClick()
+void UMoveToAttackState::OnRightClick()
 {
 	stateMachine->HasAttackEnemy();
 }
 
-void MoveToAttackState::OnRightRelease()
+void UMoveToAttackState::OnRightRelease()
 {
 }
 
-void MoveToAttackState::OnLeftClick()
+void UMoveToAttackState::OnLeftClick()
 {
 	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
 	{
@@ -63,11 +63,11 @@ void MoveToAttackState::OnLeftClick()
 	}
 }
 
-void MoveToAttackState::OnKeyboard(E_SkillState SkillState)
+void UMoveToAttackState::OnKeyboard(E_SkillState SkillState)
 {
 	stateMachine->ChangeCurrentSkill(SkillState);
 }
 
-void MoveToAttackState::OnEnd()
+void UMoveToAttackState::OnEnd()
 {
 }

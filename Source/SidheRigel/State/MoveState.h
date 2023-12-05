@@ -6,14 +6,18 @@
 
 #include "State.h"
 
+#include "MoveState.generated.h"
+
 /**
  * 
  */
-class SIDHERIGEL_API MoveState : public State
+UCLASS()
+class SIDHERIGEL_API UMoveState : public UState
 {
+	GENERATED_BODY()
 public:
-	MoveState(StateMachine* StateMachine);
-	~MoveState();
+	UMoveState();
+	~UMoveState();
 
 private:
 	class ASidheRigelCharacter* myCharacter;
@@ -22,11 +26,11 @@ private:
 	bool bInputPressed = false;
 
 public:
-	void OnBegin() override;
-	void Update(float DeltaTime) override;
-	void OnRightClick() override;
-	void OnRightRelease() override;
-	void OnLeftClick() override;
-	void OnKeyboard(E_SkillState SkillState) override;
-	void OnEnd() override;
+	virtual void OnBegin() override;
+	virtual void Update(float DeltaTime) override;
+	virtual void OnRightClick() override;
+	virtual void OnRightRelease() override;
+	virtual void OnLeftClick() override;
+	virtual void OnKeyboard(E_SkillState SkillState) override;
+	virtual void OnEnd() override;
 };

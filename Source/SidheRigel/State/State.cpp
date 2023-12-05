@@ -6,11 +6,43 @@
 #include "StateMachine.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
-State::State(StateMachine* StateMachine)
+UState::UState()
+{
+}
+
+void UState::InitStateMachine(UStateMachine* StateMachine)
 {
 	stateMachine = StateMachine;
 }
 
-State::~State()
+UState::~UState()
+{
+}
+
+void UState::OnBegin()
+{
+}
+
+void UState::Update(float DeltaTime)
+{
+}
+
+void UState::OnRightClick()
+{
+}
+
+void UState::OnRightRelease()
+{
+}
+
+void UState::OnLeftClick()
+{
+}
+
+void UState::OnKeyboard(E_SkillState SkillState)
+{
+}
+
+void UState::OnEnd()
 {
 }

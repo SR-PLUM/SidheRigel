@@ -4,24 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "StateMachine.h"
+
+#include "State.generated.h"
 /**
  * 
  */
-class SIDHERIGEL_API State
+UCLASS()
+class SIDHERIGEL_API UState : public UObject
 {
+	GENERATED_BODY()
 public:
-	State(StateMachine* StateMachine);
-	virtual ~State();
-
-protected:
-	class StateMachine* stateMachine;
+	UState();
+	void InitStateMachine(UStateMachine* _stateMachine);
+	~UState();
 
 public:
-	virtual void OnBegin() = 0;
-	virtual void Update(float DeltaTime) = 0;
-	virtual void OnRightClick() = 0;
-	virtual void OnRightRelease() = 0;
-	virtual void OnLeftClick() = 0;
-	virtual void OnKeyboard(E_SkillState SkillState) = 0;
-	virtual void OnEnd() = 0;
+	class UStateMachine* stateMachine;
+
+public:
+	virtual void OnBegin();
+	virtual void Update(float DeltaTime);
+	virtual void OnRightClick();
+	virtual void OnRightRelease();
+	virtual void OnLeftClick();
+	virtual void OnKeyboard(E_SkillState SkillState);
+	virtual void OnEnd();
 };

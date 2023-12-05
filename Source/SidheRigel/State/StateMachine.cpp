@@ -18,38 +18,60 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 
-StateMachine::StateMachine(ASidheRigelPlayerController* PlayerController)
+UStateMachine::UStateMachine()
 {
-	Idle = new IdleState(this);
-	MoveToAttack = new MoveToAttackState(this);
-	Move = new MoveState(this);
-	AttackWait = new AttackWaitState(this);
-	Attack = new AttackState(this);
-	UseSkill = new UseSkillState(this);
+	
+}
 
-	Stun = new StunState(this);
-	Die = new DieState(this);
+UStateMachine::~UStateMachine()
+{
+}
+
+void UStateMachine::InitializeController(ASidheRigelPlayerController* Controller)
+{
+	Idle = NewObject<UIdleState>();
+	Idle->InitStateMachine(this);
+	MoveToAttack = NewObject<UMoveToAttackState>();
+	MoveToAttack->InitStateMachine(this);
+	Move = NewObject<UMoveState>();
+	Move->InitStateMachine(this);
+	AttackWait = NewObject<UAttackWaitState>();
+	AttackWait->InitStateMachine(this);
+	Attack = NewObject<UAttackState>();
+	Attack->InitStateMachine(this);
+	UseSkill = NewObject<UUseSkillState>();
+	UseSkill->InitStateMachine(this);
+
+	Stun = NewObject<UStunState>();
+	Stun->InitStateMachine(this);
+	Die = NewObject<UDieState>();
+	Die->InitStateMachine(this);
 
 	currentState = Idle;
 
-	playerController = PlayerController;
+	playerController = Controller;
 
-	myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
+	//myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
+
+	bIsinitialized = true;
 }
 
-StateMachine::~StateMachine()
-{
-}
-
-void StateMachine::ChangeState(State* NextState)
+void UStateMachine::ChangeState(UState* NextState)
 {
 	previousState = currentState;
 	currentState->OnEnd();
-	NextState->OnBegin();
-	currentState = NextState;
+	if (NextState)
+	{
+		NextState->OnBegin();
+		currentState = NextState;
+	}
+	else
+	{
+		UE_LOG(LogTemp,Error,TEXT("NextState Is Null"))
+	}
 }
 
-void StateMachine::ChangePreviousState()
+void UStateMachine::ChangePreviousState()
 {
 	currentState->OnEnd();
 	previousState->OnBegin();
@@ -62,70 +84,85 @@ void StateMachine::ChangePreviousState()
 	currentState = previousState;
 }
 
-State* StateMachine::GetCurrentState()
+UState* UStateMachine::GetCurrentState()
 {
 	return currentState;
 }
 
 //Timer
-void StateMachine::Update()
+void UStateMachine::Update()
 {
-	float DeltaTime = 0.05f;
-	if (attackDelay > 0)
+	if (!bIsinitialized)
+		return;
+	if (myCharacter)
 	{
-		attackDelay -= DeltaTime;
-	}
-	if (frontDelay > 0)
-	{
-		frontDelay -= DeltaTime;
-	}
-	if (skillDelay > 0)
-	{
-		skillDelay -= DeltaTime;
-	}
-	if (stunTime > 0)
-	{
-		stunTime -= DeltaTime;
-	}
-	if (stopTime > 0)
-	{
-		stopTime -= DeltaTime;
-		ChangeCharacterSpeed(0);
-		if (stopTime <= 0)
+		float DeltaTime = 0.05f;
+		if (attackDelay > 0)
 		{
-			myCharacter->RemoveStopParticle();
+			attackDelay -= DeltaTime;
+		}
+		if (frontDelay > 0)
+		{
+			frontDelay -= DeltaTime;
+		}
+		if (skillDelay > 0)
+		{
+			skillDelay -= DeltaTime;
+		}
+		if (stunTime > 0)
+		{
+			stunTime -= DeltaTime;
+		}
+		if (stopTime > 0)
+		{
+			stopTime -= DeltaTime;
+			ChangeCharacterSpeed(0);
+			if (stopTime <= 0)
+			{
+				myCharacter->RemoveStopParticle();
+			}
+		}
+		else
+		{
+			if (myCharacter)
+			{
+				ChangeCharacterSpeed(myCharacter->GetSpeed());
+			}
+			else
+			{
+				myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
+			}
+		}
+		if (silenceTime > 0)
+		{
+			silenceTime -= DeltaTime;
+			if (silenceTime <= 0)
+			{
+				myCharacter->RemoveSilenceParticle();
+			}
+		}
+		if (DieTime > 0)
+		{
+			DieTime -= DeltaTime;
+		}
+
+		if (currentState)
+		{
+			currentState->Update(DeltaTime);
 		}
 	}
 	else
 	{
-		if (myCharacter)
-		{
-			ChangeCharacterSpeed(myCharacter->GetSpeed());
-		}
-		else
-		{
-			myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
-		}
+		myCharacter = Cast<ASidheRigelCharacter>(playerController->GetPawn());
 	}
-	if (silenceTime > 0)
-	{
-		silenceTime -= DeltaTime;
-		if (silenceTime <= 0)
-		{
-			myCharacter->RemoveSilenceParticle();
-		}
-	}
-	if (DieTime > 0)
-	{
-		DieTime -= DeltaTime;
-	}
-
-	currentState->Update(DeltaTime);
 }
 
 //Move Or Attack Or SkillCancel
-void StateMachine::OnRightClick()
+void UStateMachine::OnRightClick()
 {
+	if (!bIsinitialized)
+		return;
+	//UE_LOG(LogTemp, Error, TEXT("OnRightClick"))
 	//SkillCancel
 	bSkillReady = false;
 	currentSkill = E_SkillState::Skill_Null;
@@ -136,27 +173,33 @@ void StateMachine::OnRightClick()
 	else
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(playerController->GetCharacter());
-		UE_LOG(LogTemp,Warning,TEXT("ERROR CHARACTER NULL IN STATEMACHINE"))
+		UE_LOG(LogTemp,Error,TEXT("ERROR CHARACTER NULL IN STATEMACHINE"))
 	}
 
 	currentState->OnRightClick();
 }
 
 //Move
-void StateMachine::OnRightRelease()
+void UStateMachine::OnRightRelease()
 {
+	if (!bIsinitialized)
+		return;
 	currentState->OnRightRelease();
 }
 
 //SkillUse
-void StateMachine::OnLeftClick()
+void UStateMachine::OnLeftClick()
 {
+	if (!bIsinitialized)
+		return;
 	currentState->OnLeftClick();
 }
 
 //SkillReady
-void StateMachine::OnKeyboard(E_SkillState SkillState)
+void UStateMachine::OnKeyboard(E_SkillState SkillState)
 {
+	if (!bIsinitialized)
+		return;
 	if (silenceTime > 0)
 	{
 		return;
@@ -178,27 +221,27 @@ void StateMachine::OnKeyboard(E_SkillState SkillState)
 	currentState->OnKeyboard(SkillState);
 }
 
-void StateMachine::OnStun(float _stunTime)
+void UStateMachine::OnStun(float _stunTime)
 {
 	stunTime = _stunTime;
 	ChangeState(Stun);
 }
 
-void StateMachine::OnStop(float _stopTime)
+void UStateMachine::OnStop(float _stopTime)
 {
 	if(myCharacter)
 		myCharacter->SpawnStopParticle();
 	stopTime = _stopTime;
 }
 
-void StateMachine::OnSilence(float _silenceTime)
+void UStateMachine::OnSilence(float _silenceTime)
 {
 	if (myCharacter)
 		myCharacter->SpawnSilenceParticle();
 	silenceTime = _silenceTime;
 }
 
-void StateMachine::HasAttackEnemy()
+void UStateMachine::HasAttackEnemy()
 {
 	//Move & Attack
 	if (playerController)
@@ -225,7 +268,7 @@ void StateMachine::HasAttackEnemy()
 	}
 }
 
-void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
+void UStateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 {
 	currentSkill = SkillState;
 	if (!myCharacter->skills.Contains(currentSkill))
@@ -258,7 +301,7 @@ void StateMachine::ChangeCurrentSkill(E_SkillState SkillState)
 	}
 }
 
-void StateMachine::ChangeCharacterSpeed(float speed)
+void UStateMachine::ChangeCharacterSpeed(float speed)
 {
 	myCharacter->GetCharacterMovement()->MaxWalkSpeed = speed;
 }
