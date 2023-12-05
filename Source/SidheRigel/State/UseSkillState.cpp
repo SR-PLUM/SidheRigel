@@ -7,15 +7,15 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Skill.h"
 
-UseSkillState::UseSkillState(StateMachine* StateMachine) : State(StateMachine)
+UUseSkillState::UUseSkillState()
 {
 }
 
-UseSkillState::~UseSkillState()
+UUseSkillState::~UUseSkillState()
 {
 }
 
-void UseSkillState::OnBegin()
+void UUseSkillState::OnBegin()
 {
 	//Stop To Use Skill
 	if (stateMachine->playerController)
@@ -62,7 +62,7 @@ void UseSkillState::OnBegin()
 	}
 }
 
-void UseSkillState::Update(float DeltaTime)
+void UUseSkillState::Update(float DeltaTime)
 {
 	if (stateMachine->skillDelay > 0)
 	{
@@ -78,22 +78,22 @@ void UseSkillState::Update(float DeltaTime)
 	}
 }
 
-void UseSkillState::OnRightClick()
+void UUseSkillState::OnRightClick()
 {
 }
 
-void UseSkillState::OnRightRelease()
+void UUseSkillState::OnRightRelease()
 {
 }
 
-void UseSkillState::OnLeftClick()
+void UUseSkillState::OnLeftClick()
 {
 }
 
-void UseSkillState::OnKeyboard(E_SkillState SkillState)
+void UUseSkillState::OnKeyboard(E_SkillState SkillState)
 {
 }
 
-void UseSkillState::OnEnd()
+void UUseSkillState::OnEnd()
 {
 }

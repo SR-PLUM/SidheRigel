@@ -95,7 +95,6 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	InitAttackProjectile();
-	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 
 	//StunParticle
 	static ConstructorHelpers::FObjectFinder<UBlueprint> StunParticle(TEXT("/Game/Heros/Common/BP_StunParticle"));
@@ -180,12 +179,6 @@ void ASidheRigelCharacter::BeginPlay()
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
-
-	
-
-	GetWorldTimerManager().SetTimer(stateMachineTimer, this, &ASidheRigelCharacter::CustomTick, 0.05f, true);
-	
-	UE_LOG(LogTemp, Error, TEXT("BeginPlay / Character :: %s"), *GetName());
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -203,10 +196,38 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 	}
 }
 
+void ASidheRigelCharacter::PossessedBy(AController* NewController)
+{
+	UE_LOG(LogTemp, Warning, TEXT("POSSESSED_BY In %s"), *GetName());
+
+	sidheRigelController = Cast<ASidheRigelPlayerController>(NewController);
+
+	/*if (sidheRigelController)
+	{
+		sidheRigelController->stateMachine = NewObject<UStateMachine>();
+		sidheRigelController->stateMachine->InitializeController(sidheRigelController);
+
+		SetClientStateMachine();
+	}*/
+}
+
 void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
 
+}
+
+void ASidheRigelCharacter::SetClientStateMachine_Implementation()
+{
+	/*UE_LOG(LogTemp, Warning, TEXT("SetClientSM In %s"), *GetName());
+	if (sidheRigelController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SetClientSMController In %s"), *GetName());
+		sidheRigelController->stateMachine = NewObject<UStateMachine>();
+		sidheRigelController->stateMachine->InitializeController(sidheRigelController);
+
+		SetCustomTick();
+	}*/
 }
 
 void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
@@ -1054,7 +1075,7 @@ void ASidheRigelCharacter::InitAttackProjectile()
 	}
 }
 
-void ASidheRigelCharacter::Attack(AActor* target)
+void ASidheRigelCharacter::Attack_Implementation(AActor* target)
 {
 	if (baseProjectileClass)
 	{

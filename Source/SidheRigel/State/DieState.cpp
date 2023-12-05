@@ -7,15 +7,15 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
-DieState::DieState(StateMachine* StateMachine) : State(StateMachine)
+UDieState::UDieState()
 {
 }
 
-DieState::~DieState()
+UDieState::~UDieState()
 {
 }
 
-void DieState::OnBegin()
+void UDieState::OnBegin()
 {
 	if (!myCharacter)
 	{
@@ -23,7 +23,7 @@ void DieState::OnBegin()
 	}
 }
 
-void DieState::Update(float DeltaTime)
+void UDieState::Update(float DeltaTime)
 {
 	if (stateMachine->DieTime <= 0)
 	{
@@ -32,22 +32,22 @@ void DieState::Update(float DeltaTime)
 	}
 }
 
-void DieState::OnRightClick()
+void UDieState::OnRightClick()
 {
 }
 
-void DieState::OnRightRelease()
+void UDieState::OnRightRelease()
 {
 }
 
-void DieState::OnLeftClick()
+void UDieState::OnLeftClick()
 {
 }
 
-void DieState::OnKeyboard(E_SkillState SkillState)
+void UDieState::OnKeyboard(E_SkillState SkillState)
 {
 }
 
-void DieState::OnEnd()
+void UDieState::OnEnd()
 {
 }

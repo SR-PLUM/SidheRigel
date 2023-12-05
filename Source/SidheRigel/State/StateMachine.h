@@ -6,31 +6,39 @@
 
 #include "../Enum/E_SkillState.h"
 
+#include "StateMachine.generated.h"
+
 
 /**
  * 
  */
-class SIDHERIGEL_API StateMachine
+UCLASS()
+class SIDHERIGEL_API UStateMachine : public UObject
 {
+	GENERATED_BODY()
+
 public:
-	StateMachine(class ASidheRigelPlayerController* PlayerController);
-	~StateMachine();
+	UStateMachine();
+	~UStateMachine();
+	void InitializeController(class ASidheRigelPlayerController* Controller);
 
 private:
-	class State* currentState;
-	class State* previousState;
+	class UState* currentState;
+	class UState* previousState;
 
 public:
-	class State* Idle;
-	class State* MoveToAttack;
-	class State* Move;
-	class State* AttackWait;
-	class State* Attack;
-	class State* UseSkill;
+	class UState* Idle;
+	class UState* MoveToAttack;
+	class UState* Move;
+	class UState* AttackWait;
+	class UState* Attack;
+	class UState* UseSkill;
 
 	//Special State
-	class State* Stun;
-	class State* Die;
+	class UState* Stun;
+	class UState* Die;
+
+	bool bIsinitialized = false;
 
 public:
 	class ASidheRigelPlayerController* playerController;
@@ -44,28 +52,36 @@ public:
 
 public:	//Timer
 	//Delay between attack to attack
-	float attackDelay = 0;
+	UPROPERTY()
+		float attackDelay = 0;
 
 	//Delay between cast to attack
-	float frontDelay = 0;
+	UPROPERTY()
+		float frontDelay = 0;
 
 	//Delay During use Skill
-	float skillDelay = 0;
+	UPROPERTY()
+		float skillDelay = 0;
 
 	//During Stun
-	float stunTime = 0;
+	UPROPERTY()
+		float stunTime = 0;
 
 	//During Stop
-	float stopTime = 0;
+	UPROPERTY()
+		float stopTime = 0;
 
 	//During Silence
-	float silenceTime = 0;
+	UPROPERTY()
+		float silenceTime = 0;
 
-	float DieTime = 0;
+	UPROPERTY()
+		float DieTime = 0;
 
-	void ChangeState(State* NextState);
+	void ChangeState(class UState* NextState);
+
 	void ChangePreviousState();
-	State* GetCurrentState();
+	UState* GetCurrentState();
 
 public:
 	void Update();
@@ -74,12 +90,12 @@ public:
 	void OnLeftClick();
 	void OnKeyboard(E_SkillState SkillState);
 
-	void OnStun(float stunTime);
-	void OnStop(float stopTime);
-	void OnSilence(float silenceTime);
+	void OnStun(float _stunTime);
+	void OnStop(float _stopTime);
+	void OnSilence(float _silenceTime);
 
 	void HasAttackEnemy();
 	void ChangeCurrentSkill(E_SkillState SkillState);
 
-	void ChangeCharacterSpeed(float speed);
+	void ChangeCharacterSpeed(float _speed);
 };

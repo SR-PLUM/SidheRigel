@@ -11,17 +11,17 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 
-MoveState::MoveState(StateMachine* StateMachine) : State(StateMachine)
+UMoveState::UMoveState()
 {
 }
 
-MoveState::~MoveState()
+UMoveState::~UMoveState()
 {
 }
 
-void MoveState::OnBegin()
+void UMoveState::OnBegin()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveState :: Begin"));
+	UE_LOG(LogTemp, Warning, TEXT("UMoveState :: Begin"));
 	if (stateMachine->playerController)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
@@ -35,7 +35,7 @@ void MoveState::OnBegin()
 	}
 }
 
-void MoveState::Update(float DeltaTime)
+void UMoveState::Update(float DeltaTime)
 {
 	if (stateMachine->playerController && myCharacter)
 	{
@@ -61,12 +61,12 @@ void MoveState::Update(float DeltaTime)
 	}
 }
 
-void MoveState::OnRightClick()
+void UMoveState::OnRightClick()
 {
 	stateMachine->HasAttackEnemy();
 }
 
-void MoveState::OnRightRelease()
+void UMoveState::OnRightRelease()
 {
 	bInputPressed = false;
 
@@ -74,7 +74,7 @@ void MoveState::OnRightRelease()
 	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
 }
 
-void MoveState::OnLeftClick()
+void UMoveState::OnLeftClick()
 {
 	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
 	{
@@ -82,11 +82,11 @@ void MoveState::OnLeftClick()
 	}
 }
 
-void MoveState::OnKeyboard(E_SkillState SkillState)
+void UMoveState::OnKeyboard(E_SkillState SkillState)
 {
 	stateMachine->ChangeCurrentSkill(SkillState);
 }
 
-void MoveState::OnEnd()
+void UMoveState::OnEnd()
 {
 }

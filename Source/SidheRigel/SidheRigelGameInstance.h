@@ -70,4 +70,6 @@ public:
 
 	UPROPERTY()
 		TEnumAsByte<E_Team> myTeam;
+	UPROPERTY()
+		bool bIsSingleGame = false;
 };

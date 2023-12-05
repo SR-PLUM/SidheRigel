@@ -6,14 +6,17 @@
 
 #include "State.h"
 
+#include "IdleState.generated.h"
 /**
  * 
  */
-class SIDHERIGEL_API IdleState : public State
+UCLASS()
+class SIDHERIGEL_API UIdleState : public UState
 {
+	GENERATED_BODY()
 public:
-	IdleState(StateMachine* StateMachine);
-	~IdleState();
+	UIdleState();
+	~UIdleState();
 
 public:
 	void OnBegin() override;

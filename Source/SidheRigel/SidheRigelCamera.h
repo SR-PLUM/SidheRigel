@@ -57,6 +57,9 @@ protected:
 	float ScreenX;
 	float ScreenY;
 
+	UPROPERTY(EditAnywhere)
+	float CameraMoveAmount = 15.f;
+
 public:
 	void SwitchIsCameraFixed();
 	bool GetIsCameraFixed();

@@ -6,14 +6,18 @@
 
 #include "State.h"
 
+#include "MoveToAttackState.generated.h"
+
 /**
  * 
  */
-class SIDHERIGEL_API MoveToAttackState : public State
+UCLASS()
+class SIDHERIGEL_API UMoveToAttackState : public UState
 {
+	GENERATED_BODY()
 public:
-	MoveToAttackState(StateMachine* StateMachine);
-	~MoveToAttackState();
+	UMoveToAttackState();
+	~UMoveToAttackState();
 
 private:
 	class ASidheRigelCharacter* myCharacter;

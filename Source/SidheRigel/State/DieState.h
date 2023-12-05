@@ -7,14 +7,18 @@
 #include "State.h"
 #include "SidheRigel/enum/E_SkillState.h"
 
+#include "DieState.generated.h"
+
 /**
  * 
  */
-class SIDHERIGEL_API DieState : public State
+UCLASS()
+class SIDHERIGEL_API UDieState : public UState
 {
+	GENERATED_BODY()
 public:
-	DieState(StateMachine* StateMachine);
-	~DieState();
+	UDieState();
+	~UDieState();
 
 private:
 	class ASidheRigelCharacter* myCharacter;

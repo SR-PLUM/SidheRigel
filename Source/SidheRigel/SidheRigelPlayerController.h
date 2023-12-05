@@ -31,7 +31,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UNiagaraSystem* FXCursor;
 
-	StateMachine* stateMachine;
+	UPROPERTY(replicated, EditAnywhere)
+		UStateMachine* stateMachine;
 
 	FHitResult GetHitResult();
 
