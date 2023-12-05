@@ -3,3 +3,7 @@
 
 #include "AISidheRigelCharacter.h"
 
+void AAISidheRigelCharacter::SetTeam(E_Team setTeam)
+{
+	team = setTeam;
+}

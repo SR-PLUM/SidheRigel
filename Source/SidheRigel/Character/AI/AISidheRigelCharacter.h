@@ -14,4 +14,6 @@ class SIDHERIGEL_API AAISidheRigelCharacter : public ASidheRigelCharacter
 {
 	GENERATED_BODY()
 	
+public:
+	void SetTeam(E_Team setTeam);
 };

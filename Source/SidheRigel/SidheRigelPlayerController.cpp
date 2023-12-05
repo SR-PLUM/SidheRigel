@@ -15,6 +15,7 @@
 #include "SidheRigel/Character/Cold/ColdCharacter.h"
 #include "SidheRigel/Character/FairyWing/FairyWingCharacter.h"
 #include "SidheRigel/Character/Kerun/KerunCharacter.h"
+#include "SidheRigel/Character/AI/AISidheRigelCharacter.h"
 
 #include "SidheRigel/State/IdleState.h"
 #include "SidheRigel/State/MoveToAttackState.h"
@@ -47,6 +48,12 @@ ASidheRigelPlayerController::ASidheRigelPlayerController()
 		KerunPawn = KerunBPClass.Class;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UBlueprint> BPAI(TEXT("/Game/Heros/AI/BP_AISidheRigelCharacter"));
+	if (BPAI.Object)
+	{
+		AIClass = (UClass*)BPAI.Object->GeneratedClass;
+	}
+
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
 
@@ -75,10 +82,6 @@ void ASidheRigelPlayerController::BeginPlay()
 
 	if (IsLocalController())
 	{
-		//Set stateMachine
-		//stateMachine = NewObject<UStateMachine>(this);
-		//stateMachine->InitializeController(this);
-
 		InitializeState();
 
 		auto SRCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
@@ -111,15 +114,43 @@ void ASidheRigelPlayerController::OnPossess(APawn* aPawn)	//InServerFunction
 		TArray<AActor*> PlayerStarts;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
 
+		AActor* RedStart = nullptr;
+
 		for (auto playerStart : PlayerStarts)
 		{
 			auto playerStartTag = Cast<APlayerStart>(playerStart)->PlayerStartTag;
+
+			if (playerStartTag.ToString() == "Red")
+				RedStart = playerStart;
+
 			if (((playerStartTag.ToString() == "Blue") && (SRCharacter->GetTeam() == E_Team::Blue)) ||
 				((playerStartTag.ToString() == "Red") && (SRCharacter->GetTeam() == E_Team::Red)))
 			{
 				SRCharacter->spawnLocation = playerStart->GetActorLocation();
 				SRCharacter->Server_MoveToStartLocation(playerStart->GetActorLocation());
+
 				break;
+			}
+		}
+
+		if (Cast<USidheRigelGameInstance>(GetGameInstance())->bIsSingleGame)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("This Game Is Single GAme"));
+
+			UWorld* World = GetWorld();
+			if (World)
+			{
+				FTransform SpawnTransform;
+				SpawnTransform.SetLocation(RedStart->GetActorLocation());
+				SpawnTransform.SetRotation(RedStart->GetActorRotation().Quaternion());
+
+				AAISidheRigelCharacter* AI = World->SpawnActorDeferred<AAISidheRigelCharacter>(AIClass, SpawnTransform);
+				if (AI)
+				{
+					AI->SetTeam(E_Team::Red);
+					AI->spawnLocation = RedStart->GetActorLocation();
+				}
+				AI->FinishSpawning(SpawnTransform);
 			}
 		}
 	}
