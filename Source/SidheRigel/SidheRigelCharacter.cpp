@@ -95,7 +95,6 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	InitAttackProjectile();
-	//GEngine->AddOnScreenDebugMessage(-1, 2, FColor::Red, FString::Printf(TEXT("DEBUG")));
 
 	//StunParticle
 	static ConstructorHelpers::FObjectFinder<UBlueprint> StunParticle(TEXT("/Game/Heros/Common/BP_StunParticle"));
@@ -202,9 +201,9 @@ void ASidheRigelCharacter::PossessedBy(AController* NewController)
 	{
 		sidheRigelController->stateMachine = NewObject<UStateMachine>();
 		sidheRigelController->stateMachine->InitializeController(sidheRigelController);
-	}
 
-	SetClientStateMachine();*/
+		SetClientStateMachine();
+	}*/
 }
 
 void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

@@ -70,19 +70,19 @@ void ASidheRigelPlayerController::BeginPlay()
 
 	if (IsLocalController())
 	{
-		////Set stateMachine
-		//stateMachine = NewObject<UStateMachine>(this);
-		//stateMachine->InitializeController(this);
+		//Set stateMachine
+		stateMachine = NewObject<UStateMachine>(this);
+		stateMachine->InitializeController(this);
 
-		//auto SRCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
-		//if (SRCharacter)
-		//{
-		//	//Set Controller
-		//	SRCharacter->sidheRigelController = this;
+		auto SRCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
+		if (SRCharacter)
+		{
+			//Set Controller
+			SRCharacter->sidheRigelController = this;
 
-		//	//Set CustomTick
-		//	SRCharacter->SetCustomTick();
-		//}
+			//Set CustomTick
+			SRCharacter->SetCustomTick();
+		}
 	}
 
 	FInputModeGameAndUI InputModeData;
