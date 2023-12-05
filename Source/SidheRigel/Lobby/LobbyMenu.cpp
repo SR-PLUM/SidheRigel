@@ -22,21 +22,21 @@ bool ULobbyMenu::Initialize()
 
 	if (ACMButton)
 	{
-		ACMButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterACM);
+		//ACMButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterACM);
 
 		ACMButton->WidgetStyle.Normal.SetImageSize(FVector2D(200, 200));
-		ACMButton->WidgetStyle.Hovered.SetImageSize(FVector2D(210, 210));
-		ACMButton->WidgetStyle.Pressed.SetImageSize(FVector2D(190, 190));
+		ACMButton->WidgetStyle.Hovered.SetImageSize(FVector2D(200, 200));
+		ACMButton->WidgetStyle.Pressed.SetImageSize(FVector2D(200, 200));
 	}
 	
 
 	if (BlackWizardButton)
 	{
-		BlackWizardButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterBlackWizard);
+		//BlackWizardButton->OnClicked.AddDynamic(this, &ULobbyMenu::SetCharacterBlackWizard);
 
 		BlackWizardButton->WidgetStyle.Normal.SetImageSize(FVector2D(200, 200));
-		BlackWizardButton->WidgetStyle.Hovered.SetImageSize(FVector2D(210, 210));
-		BlackWizardButton->WidgetStyle.Pressed.SetImageSize(FVector2D(190, 190));
+		BlackWizardButton->WidgetStyle.Hovered.SetImageSize(FVector2D(200, 200));
+		BlackWizardButton->WidgetStyle.Pressed.SetImageSize(FVector2D(200, 200));
 	}
 	
 
