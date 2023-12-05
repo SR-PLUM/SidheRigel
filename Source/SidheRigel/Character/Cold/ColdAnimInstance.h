@@ -21,7 +21,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		class AColdCharacter* ColdCharacter;
 
-	class UStateMachine* ColdStateMachine;
+	class ASidheRigelPlayerController* SRController;
 
 	UPROPERTY(BlueprintReadOnly)
 		class UCharacterMovementComponent* ColdCharacterMovement;

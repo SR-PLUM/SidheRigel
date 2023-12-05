@@ -3,7 +3,6 @@
 
 #include "AttackState.h"
 
-#include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
@@ -18,20 +17,30 @@ UAttackState::~UAttackState()
 void UAttackState::OnBegin()
 {
 	UE_LOG(LogTemp,Warning,TEXT("AttackState :: Begin"))
-	if (stateMachine->playerController)
+	if (controller)
 	{
-		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
+
+		if (controller->target != nullptr)
+		{
+			if (Cast<IDamagable>(controller->target)->GetHP() <= 0)
+			{
+				controller->target = nullptr;
+				controller->ChangeState(controller->Idle);
+				return;
+			}
+		}
 
 		///Set Attack FrontDelay///
 		if (myCharacter)
 		{
-			stateMachine->frontDelay = myCharacter->frontDelay;
+			controller->frontDelay = myCharacter->frontDelay;
 		}
 
 		//Turn to Target
-		if (stateMachine->target)
+		if (controller->target)
 		{
-			FVector ForwardDirection = ((stateMachine->target->GetActorLocation() - myCharacter->GetActorLocation()) * FVector(1, 1, 0)).GetSafeNormal();
+			FVector ForwardDirection = ((controller->target->GetActorLocation() - myCharacter->GetActorLocation()) * FVector(1, 1, 0)).GetSafeNormal();
 			myCharacter->SetActorRotation(ForwardDirection.Rotation());
 		}
 	}
@@ -39,30 +48,29 @@ void UAttackState::OnBegin()
 
 void UAttackState::Update(float DeltaTime)
 {
-	if (stateMachine->frontDelay <= 0 && myCharacter)
+	if (controller->frontDelay <= 0 && myCharacter)
 	{
 		//Attack
-		myCharacter->Attack(stateMachine->target);
+		myCharacter->Attack(controller->target);
 
-		stateMachine->attackDelay = 1 / myCharacter->GetAttackSpeed();
+		controller->attackDelay = 1 / myCharacter->GetAttackSpeed();
 
-		if (stateMachine->target != nullptr)
+		controller->ChangeState(controller->MoveToAttack);
+	}
+	if (controller->target != nullptr)
+	{
+		if (Cast<IDamagable>(controller->target)->GetHP() <= 0)
 		{
-			if (Cast<IDamagable>(stateMachine->target)->GetHP() <= 0)
-			{
-				stateMachine->target = nullptr;
-				stateMachine->ChangeState(stateMachine->Idle);
-				return;
-			}
+			controller->target = nullptr;
+			controller->ChangeState(controller->Idle);
+			return;
 		}
-
-		stateMachine->ChangeState(stateMachine->MoveToAttack);
 	}
 }
 
 void UAttackState::OnRightClick()
 {
-	stateMachine->HasAttackEnemy();
+	controller->HasAttackEnemy();
 }
 
 void UAttackState::OnRightRelease()
@@ -71,15 +79,24 @@ void UAttackState::OnRightRelease()
 
 void UAttackState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
+	//스킬 준비 상태
+	if (controller->bSkillReady)
 	{
-		stateMachine->ChangeState(stateMachine->UseSkill);
+		//지정된 스킬이 있는 상태
+		if (controller->currentSkill != E_SkillState::Skill_Null)
+		{
+			//스킬이 사용가능 한 상태 (사거리, 타겟팅 대상 등)
+			if (myCharacter->skills[controller->currentSkill]->CanUse())
+			{
+				controller->ChangeState(controller->UseSkill);
+			}
+		}
 	}
 }
 
 void UAttackState::OnKeyboard(E_SkillState SkillState)
 {
-	stateMachine->ChangeCurrentSkill(SkillState);
+	controller->ChangeCurrentSkill(SkillState);
 }
 
 void UAttackState::OnEnd()

@@ -17,10 +17,7 @@ void UColdAnimInstance::NativeInitializeAnimation()
 	{
 		ColdCharacterMovement = ColdCharacter->GetCharacterMovement();
 
-		if (auto SRController = Cast<ASidheRigelPlayerController>(ColdCharacter->GetController()))
-		{
-			ColdStateMachine = SRController->stateMachine;
-		}
+		SRController = Cast<ASidheRigelPlayerController>(ColdCharacter->GetController());
 	}
 }
 
@@ -37,10 +34,10 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		}
 
 		
-		if (ColdStateMachine)
+		if (SRController)
 		{
 			//공격
-			if (ColdStateMachine->GetCurrentState() == ColdStateMachine->Attack)
+			if (SRController->GetCurrentState() == SRController->Attack)
 			{
 				isAttack = true;
 			}
@@ -50,13 +47,13 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 			}
 
 			//스킬
-			if (ColdStateMachine->GetCurrentState() == ColdStateMachine->UseSkill)
+			if (SRController->GetCurrentState() == SRController->UseSkill)
 			{
 				//In AnimationTime
-				if (ColdStateMachine->skillDelay > 0)
+				if (SRController->skillDelay > 0)
 				{
 					//Q Skill
-					if (!isQUse && ColdStateMachine->currentSkill == E_SkillState::Q_Ready)
+					if (!isQUse && SRController->currentSkill == E_SkillState::Q_Ready)
 					{
 						isQUse = true;
 						qAnimationDuration = ColdCharacter->skills[E_SkillState::Q_Ready]->GetSkillDelay();
@@ -70,7 +67,7 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 					}
 
 					//W Skill
-					if (!isWUse && ColdStateMachine->currentSkill == E_SkillState::W_Ready)
+					if (!isWUse && SRController->currentSkill == E_SkillState::W_Ready)
 					{
 						isWUse = true;
 						wAnimationDuration = ColdCharacter->skills[E_SkillState::W_Ready]->GetSkillDelay();
@@ -84,7 +81,7 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 					}
 
 					//E Skill
-					if (!isEUse && ColdStateMachine->currentSkill == E_SkillState::E_Ready)
+					if (!isEUse && SRController->currentSkill == E_SkillState::E_Ready)
 					{
 						isEUse = true;
 						eAnimationDuration = ColdCharacter->skills[E_SkillState::E_Ready]->GetSkillDelay();
@@ -98,7 +95,7 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 					}
 
 					//R Skill
-					if (!isRUse && ColdStateMachine->currentSkill == E_SkillState::R_Ready)
+					if (!isRUse && SRController->currentSkill == E_SkillState::R_Ready)
 					{
 						isRUse = true;
 						rAnimationDuration = ColdCharacter->skills[E_SkillState::R_Ready]->GetSkillDelay();
@@ -115,10 +112,7 @@ void UColdAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		}
 		else
 		{
-			if (auto SRController = Cast<ASidheRigelPlayerController>(ColdCharacter->GetController()))
-			{
-				ColdStateMachine = SRController->stateMachine;
-			}
+			SRController = Cast<ASidheRigelPlayerController>(ColdCharacter->GetController());
 		}
 	}
 }

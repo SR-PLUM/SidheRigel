@@ -5,8 +5,7 @@
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
-
-#include "State/StateMachine.h"
+#include "Enum/E_SkillState.h"
 
 #include "SidheRigelPlayerController.generated.h"
 
@@ -18,29 +17,13 @@ class ASidheRigelPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+	//Basic Task
 public:
 	ASidheRigelPlayerController();
-
 	virtual void BeginPlay() override;
-
-	/** Time Threshold to know if it was a short press */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	float ShortPressThreshold;
-
-	/** FX Class that we will spawn when clicking */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UNiagaraSystem* FXCursor;
-
-	UPROPERTY(replicated, EditAnywhere)
-		UStateMachine* stateMachine;
-
-	FHitResult GetHitResult();
-
 protected:
-	/** True if the controlled character should navigate to the mouse cursor. */
-	uint32 bMoveToMouseCursor : 1;
-
 	// Begin PlayerController interface
+	virtual void OnPossess(APawn* aPawn) override;
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 	// End PlayerController interface
@@ -57,6 +40,8 @@ protected:
 	void PressedRButton();
 	
 	void PressedYButton();
+
+	//Set Pawn
 public:
 	FORCEINLINE UClass* GetPlayerPawnClass() { return MyPawnClass; }
 
@@ -72,44 +57,74 @@ protected:
 
 	UFUNCTION(Reliable, Client)
 		void DeterminePawnClass();
-
 	UFUNCTION(Reliable, Server)
 		void ServerSetPawn(TSubclassOf<APawn> InPawnClass);
 
+	//StateMachine
+public:
+	/*UPROPERTY(replicated, EditAnywhere)
+		UStateMachine* stateMachine;*/
+	void InitializeState();
+protected:
+	class UState* currentState;
+	class UState* previousState;
+public:
+	class UState* Idle;
+	class UState* MoveToAttack;
+	class UState* Move;
+	class UState* AttackWait;
+	class UState* Attack;
+	class UState* UseSkill;
+//Special State
+	class UState* Stun;
+	class UState* Die;
+public:
+	class ASidheRigelCharacter* myCharacter;
+	AActor* target;
+	FVector location;
+
+	bool bSkillReady = false;
+
+	TEnumAsByte<E_SkillState> currentSkill = E_SkillState::Skill_Null;
+
+public:	//Timer
+	UPROPERTY() //Delay between attack to attack
+		float attackDelay = 0;
+	UPROPERTY() //Delay between cast to attack
+		float frontDelay = 0;
+	UPROPERTY() //Delay During use Skill
+		float skillDelay = 0;
+
+	void ChangeState(class UState* NextState);
+	void ChangePreviousState();
+	UState* GetCurrentState();
+
+	void OnKeyboard(E_SkillState SkillState);
+	void HasAttackEnemy();
+	void ChangeCurrentSkill(E_SkillState SkillState);
+
+	FHitResult GetHitResult();
+
+	//SetTeam
+protected:
 	UPROPERTY(replicated, EditAnyWhere)
 		TEnumAsByte<E_Team> myTeam;
 	UFUNCTION(reliable, server)
 		void ServerSetTeam(E_Team team);
-	UFUNCTION(reliable, client)
-		void ClientInitMachine(APawn* aPawn);
-
-private:
-	bool bInputPressed; // Input is bring pressed
-	float FollowTime; // For how long it has been pressed
 
 public: //Camera
-	
 	UFUNCTION(Reliable, Server)
 		void SetSRCamera(APawn* aPawn, class ASidheRigelPlayerController* controller);
-
 	UFUNCTION(Reliable, Client)
 		void SetSRCameraInClient(APawn* aPawn, class ASidheRigelPlayerController* controller);
-
 	UFUNCTION(Reliable, Client)
 		void SpawnSRCamera(APawn* aPawn, class ASidheRigelPlayerController* controller);
-
+	// Setter to set camera from another scripts
+	FORCEINLINE void SetCamera(class ASidheRigelCamera* NewCamera) { SRCamera = NewCamera; }
 protected:
 	// Reference to our camera
 	UPROPERTY(Replicated)
 	class ASidheRigelCamera* SRCamera;
-	
-	
- public:
-	// Setter to set camera from another scripts
-	FORCEINLINE void SetCamera(class ASidheRigelCamera* NewCamera) { SRCamera = NewCamera; }
-
-protected:
-	virtual void OnPossess(APawn* aPawn) override;
 };
 
 

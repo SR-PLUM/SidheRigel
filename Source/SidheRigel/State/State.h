@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "StateMachine.h"
+#include "SidheRigel/Enum/E_SkillState.h"
 
 #include "State.generated.h"
 /**
@@ -15,11 +15,9 @@ class SIDHERIGEL_API UState : public UObject
 	GENERATED_BODY()
 public:
 	UState();
-	void InitStateMachine(UStateMachine* _stateMachine);
 	~UState();
 
-public:
-	class UStateMachine* stateMachine;
+	class ASidheRigelPlayerController* controller;
 
 public:
 	virtual void OnBegin();

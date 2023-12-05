@@ -3,7 +3,6 @@
 
 #include "MoveState.h"
 
-#include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
@@ -22,39 +21,38 @@ UMoveState::~UMoveState()
 void UMoveState::OnBegin()
 {
 	UE_LOG(LogTemp, Warning, TEXT("UMoveState :: Begin"));
-	if (stateMachine->playerController)
+	if (controller)
 	{
-		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
 
 		//input is being pressed
 		bInputPressed = true;
 		//previous move will stop
-		stateMachine->playerController->StopMovement();
+		controller->StopMovement();
 
-		stateMachine->target = nullptr;
+		controller->target = nullptr;
 	}
 }
 
 void UMoveState::Update(float DeltaTime)
 {
-	if (stateMachine->playerController && myCharacter)
+	if (controller && myCharacter)
 	{
-		if (((myCharacter->GetActorLocation() == stateMachine->location) || myCharacter->GetVelocity().Size() < 0.4f) && bInputPressed == false)
+		//(도착 && 마우스 우클릭을 풀었는가)
+		if (((myCharacter->GetActorLocation() == controller->location) || myCharacter->GetVelocity().Size() < 0.4f) && bInputPressed == false)
 		{
-			stateMachine->ChangeState(stateMachine->Idle);
+			controller->ChangeState(controller->Idle);
 		}
 		else
 		{
 			if (bInputPressed)	//LongClick
 			{
 				// Refresh the Location
-				FHitResult Hit;
-				stateMachine->playerController->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
-				stateMachine->location = Hit.Location;
+				controller->location = controller->GetHitResult().Location;
 
-				FVector WorldDirection = (stateMachine->location - myCharacter->GetActorLocation()).GetSafeNormal();
+				FVector WorldDirection = (controller->location - myCharacter->GetActorLocation()).GetSafeNormal();
 				
-				myCharacter->Server_MoveToPoint(stateMachine->location);
+				myCharacter->Server_MoveToPoint(controller->location);
 				//UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
 			}
 		}
@@ -63,28 +61,34 @@ void UMoveState::Update(float DeltaTime)
 
 void UMoveState::OnRightClick()
 {
-	stateMachine->HasAttackEnemy();
+	controller->HasAttackEnemy();
 }
 
 void UMoveState::OnRightRelease()
 {
 	bInputPressed = false;
 
-	myCharacter->Server_MoveToPoint(stateMachine->location);
+	myCharacter->Server_MoveToPoint(controller->location);
 	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
 }
 
 void UMoveState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
+	if (controller->bSkillReady)
 	{
-		stateMachine->ChangeState(stateMachine->UseSkill);
+		if (controller->currentSkill != E_SkillState::Skill_Null)
+		{
+			if(myCharacter->skills[controller->currentSkill]->CanUse())
+			{
+				controller->ChangeState(controller->UseSkill);
+			}
+		}
 	}
 }
 
 void UMoveState::OnKeyboard(E_SkillState SkillState)
 {
-	stateMachine->ChangeCurrentSkill(SkillState);
+	controller->ChangeCurrentSkill(SkillState);
 }
 
 void UMoveState::OnEnd()

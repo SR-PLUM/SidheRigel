@@ -3,7 +3,6 @@
 
 #include "DieState.h"
 
-#include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
@@ -19,16 +18,18 @@ void UDieState::OnBegin()
 {
 	if (!myCharacter)
 	{
-		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
 	}
 }
 
 void UDieState::Update(float DeltaTime)
 {
-	if (stateMachine->DieTime <= 0)
+	if (myCharacter->DieTime <= 0)
 	{
 		myCharacter->isDie = false;
-		stateMachine->ChangeState(stateMachine->Idle);
+		myCharacter->SetActorLocation(myCharacter->spawnLocation);
+
+		controller->ChangeState(controller->Idle);
 	}
 }
 

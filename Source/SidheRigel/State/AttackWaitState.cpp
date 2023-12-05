@@ -3,7 +3,6 @@
 
 #include "AttackWaitState.h"
 
-#include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 
 UAttackWaitState::UAttackWaitState()
@@ -16,33 +15,33 @@ UAttackWaitState::~UAttackWaitState()
 
 void UAttackWaitState::OnBegin()
 {
-	if (stateMachine->playerController)
+	if (controller)
 	{
-		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
 	}
 }
 
 void UAttackWaitState::Update(float DeltaTime)
 {
 	//Can Attack
-	if (stateMachine->attackDelay <= 0)
+	if (controller->attackDelay <= 0)
 	{
-		stateMachine->ChangeState(stateMachine->Attack);
+		controller->ChangeState(controller->Attack);
 	}
 
 	//Have to Move
 	if (myCharacter)
 	{
-		if (myCharacter->GetRange() < myCharacter->GetDistanceTo(stateMachine->target))
+		if (myCharacter->GetRange() < myCharacter->GetDistanceTo(controller->target))
 		{
-			stateMachine->ChangeState(stateMachine->MoveToAttack);
+			controller->ChangeState(controller->MoveToAttack);
 		}
 	}
 }
 
 void UAttackWaitState::OnRightClick()
 {
-	stateMachine->HasAttackEnemy();
+	controller->HasAttackEnemy();
 }
 
 void UAttackWaitState::OnRightRelease()
@@ -51,15 +50,21 @@ void UAttackWaitState::OnRightRelease()
 
 void UAttackWaitState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
+	if (controller->bSkillReady)
 	{
-		stateMachine->ChangeState(stateMachine->UseSkill);
+		if (controller->currentSkill != E_SkillState::Skill_Null)
+		{
+			if (myCharacter->skills[controller->currentSkill]->CanUse())
+			{
+				controller->ChangeState(controller->UseSkill);
+			}
+		}
 	}
 }
 
 void UAttackWaitState::OnKeyboard(E_SkillState SkillState)
 {
-	stateMachine->ChangeCurrentSkill(SkillState);
+	controller->ChangeCurrentSkill(SkillState);
 }
 
 void UAttackWaitState::OnEnd()

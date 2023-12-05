@@ -81,7 +81,7 @@ void AKerunCharacter::Tick(float DeltaTime)
 
 	if (IsSelectedTalent[4][2])
 	{
-		if (sidheRigelController->stateMachine->target)
+		if (sidheRigelController->target)
 		{
 			if (!(speed.Contains("KerunTalent42")))
 			{

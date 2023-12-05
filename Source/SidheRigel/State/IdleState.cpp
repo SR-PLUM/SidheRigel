@@ -3,7 +3,6 @@
 
 #include "IdleState.h"
 
-#include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/Interface/Damagable.h"
@@ -18,11 +17,11 @@ UIdleState::~UIdleState()
 
 void UIdleState::OnBegin()
 {
-	if (stateMachine->playerController)
+	if (controller)
 	{
-		stateMachine->playerController->StopMovement();
+		controller->StopMovement();
 
-		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
 	}
 }
 
@@ -32,7 +31,7 @@ void UIdleState::Update(float DeltaTime)
 
 void UIdleState::OnRightClick()
 {
-	stateMachine->HasAttackEnemy();
+	controller->HasAttackEnemy();
 }
 
 void UIdleState::OnRightRelease()
@@ -41,15 +40,21 @@ void UIdleState::OnRightRelease()
 
 void UIdleState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
+	if (controller->bSkillReady)
 	{
-		stateMachine->ChangeState(stateMachine->UseSkill);
+		if (controller->currentSkill != E_SkillState::Skill_Null)
+		{
+			if (myCharacter->skills[controller->currentSkill]->CanUse())
+			{
+				controller->ChangeState(controller->UseSkill);
+			}
+		}
 	}
 }
 
 void UIdleState::OnKeyboard(E_SkillState SkillState)
 {
-	stateMachine->ChangeCurrentSkill(SkillState);
+	controller->ChangeCurrentSkill(SkillState);
 }
 
 void UIdleState::OnEnd()

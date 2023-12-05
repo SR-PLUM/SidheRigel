@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 
-#include "../State/StateMachine.h"
-
 #include "MinionAIController.generated.h"
 
 /**
