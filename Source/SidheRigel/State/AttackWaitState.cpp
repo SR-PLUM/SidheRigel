@@ -4,6 +4,7 @@
 #include "AttackWaitState.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
 
 UAttackWaitState::UAttackWaitState()
 {
@@ -24,7 +25,7 @@ void UAttackWaitState::OnBegin()
 void UAttackWaitState::Update(float DeltaTime)
 {
 	//Can Attack
-	if (controller->attackDelay <= 0)
+	if (controller->attackDelay <= 0 && myCharacter->stunTime <= 0)
 	{
 		controller->ChangeState(controller->Attack);
 	}

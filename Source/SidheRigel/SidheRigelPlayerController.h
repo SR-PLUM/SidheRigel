@@ -6,6 +6,7 @@
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
 #include "Enum/E_SkillState.h"
+#include "Enum/E_Team.h"
 
 #include "SidheRigelPlayerController.generated.h"
 
