@@ -132,8 +132,14 @@ public: //Talent
 	void DisplayTalentList(int32 Index);
 
 public: //UI
+
+	TSubclassOf<UUserWidget> InGameUIWidget;
+
 	UPROPERTY()
 		class UInGameUI* InGameUI;
+
+	void InitInGameUIWidget();
+	void InitInGameUI();
 
 	UPROPERTY()
 		class UWidgetComponent* StatWidget;
