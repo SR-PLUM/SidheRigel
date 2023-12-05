@@ -237,7 +237,8 @@ void AKerunCharacter::TakeDamage(float damage, AActor* damageCauser)
 		currentHP = 0;
 	}
 
-	InGameUI->CharacterStatus->UpdateHP();
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateHP();
 	StatSummary->SetHPBar(currentHP / GetMaxHP());
 }
 
