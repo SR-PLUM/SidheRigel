@@ -488,6 +488,12 @@ void ASidheRigelCharacter::InitInGameUI()
 	}
 }
 
+void ASidheRigelCharacter::DeathEnd()
+{
+	StopAnimMontage();
+	UE_LOG(LogTemp, Warning, TEXT("DeathEnd"));
+}
+
 void ASidheRigelCharacter::SpawnStunParticle()
 {
 	if (stunParticle)
@@ -1261,12 +1267,14 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 		//흡혈
 		causerCharacter->LifeSteal(damage);
 	}
-	if (currentHP <= 0)
+	if (currentHP <= 0 && !isDie)
 	{
 		currentHP = 0;
 		isDie = true;
 		DieTime = 10.f;
 		sidheRigelController->ChangeState(sidheRigelController->Die);
+
+		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
 	}
 
 	if (InGameUI != nullptr)

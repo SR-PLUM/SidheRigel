@@ -175,7 +175,7 @@ void AKerunCharacter::Attack(AActor* target)
 		}
 	}
 
-	PlayAttackMontage();
+	PlayAttackMontage(); 
 
 	/*
 	if (AnimInstance)
@@ -232,9 +232,14 @@ void AKerunCharacter::TakeDamage(float damage, AActor* damageCauser)
 		causerCharacter->LifeSteal(damage);
 	}
 
-	if (currentHP <= 0)
+	if (currentHP <= 0 && !isDie)
 	{
 		currentHP = 0;
+		isDie = true;
+		DieTime = 10.f;
+		sidheRigelController->ChangeState(sidheRigelController->Die);
+
+		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
 	}
 
 	if (InGameUI != nullptr)

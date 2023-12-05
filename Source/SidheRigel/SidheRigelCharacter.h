@@ -158,6 +158,16 @@ public: //UI
 	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
 	void ClearUISkillCoolDown(E_SkillState SkillState);
 
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+		class UAnimMontage* DeathMontage;
+	
+	UFUNCTION(BlueprintCallable)
+		void DeathEnd();
+
+
+
 public:	//CC Particle
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AStunParticle> stunParticleClass;
@@ -314,7 +324,7 @@ public:		//Getter, Setter
 
 	virtual void InitProperty();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 		bool isDie = false;
 	UPROPERTY() //During Die
 		float DieTime = 0;
