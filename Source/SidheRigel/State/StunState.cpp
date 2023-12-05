@@ -4,7 +4,7 @@
 #include "StunState.h"
 
 #include "SidheRigel/Enum/E_SkillState.h"
-#include "SidheRigel/State/StateMachine.h"
+
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
@@ -18,22 +18,17 @@ UStunState::~UStunState()
 
 void UStunState::OnBegin()
 {
-	if (stateMachine->playerController)
+	if (controller)
 	{
-		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
-
-		if (myCharacter)
-		{
-			myCharacter->SpawnStunParticle();
-		}
+		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
 	}
 }
 
 void UStunState::Update(float DeltaTime)
 {
-	if (stateMachine->stunTime <= 0)
+	//if (controller->stunTime <= 0)
 	{
-		stateMachine->ChangePreviousState();
+	//	stateMachine->ChangePreviousState();
 	}
 }
 

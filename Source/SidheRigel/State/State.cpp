@@ -3,16 +3,10 @@
 
 #include "State.h"
 
-#include "StateMachine.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
 UState::UState()
 {
-}
-
-void UState::InitStateMachine(UStateMachine* StateMachine)
-{
-	stateMachine = StateMachine;
 }
 
 UState::~UState()

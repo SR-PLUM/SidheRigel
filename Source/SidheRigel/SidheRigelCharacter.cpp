@@ -194,6 +194,41 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 			reduceMyHeal = 0;
 		}
 	}
+
+	//State
+	if (stopTime > 0)
+	{
+		stopTime -= DeltaSeconds;
+		GetCharacterMovement()->MaxWalkSpeed = 0;
+		if (stopTime <= 0)
+		{
+			RemoveStopParticle();
+		}
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = GetSpeed();
+	}
+	if (silenceTime > 0)
+	{
+		silenceTime -= DeltaSeconds;
+		if (silenceTime <= 0)
+		{
+			RemoveSilenceParticle();
+		}
+	}
+	if (stunTime > 0)
+	{
+		stunTime -= DeltaSeconds;
+		if (stunTime <= 0)
+		{
+			RemoveStunParticle();
+		}
+	}
+	if (DieTime > 0)
+	{
+		DieTime -= DeltaSeconds;
+	}
 }
 
 void ASidheRigelCharacter::PossessedBy(AController* NewController)
@@ -1010,10 +1045,8 @@ float ASidheRigelCharacter::GetRemainDieCooldown()
 {
 	float res = 0;
 
-	if (sidheRigelController)
-	{
-		res = sidheRigelController->stateMachine->DieTime;
-	}
+	res = DieTime;
+
 	return res;
 }
 
@@ -1142,39 +1175,21 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 	RestoreHP(damage * _lifeSteal);
 }
 
-void ASidheRigelCharacter::SetCustomTick()
-{
-	GetWorldTimerManager().SetTimer(stateMachineTimer, this, &ASidheRigelCharacter::CustomTick, 0.05f, true);
-}
-
-void ASidheRigelCharacter::CustomTick()
-{
-	if (sidheRigelController && sidheRigelController->stateMachine)
-	{
-		sidheRigelController->stateMachine->Update();
-	}
-	else
-	{
-		GetWorldTimerManager().ClearTimer(stateMachineTimer);
-	}
-}
-
 void ASidheRigelCharacter::Stun(float time)
 {
-	if (sidheRigelController && sidheRigelController->stateMachine)
-	{
-		float totalTime = time * (1 - (GetEndurance() / 100.f));
-		sidheRigelController->stateMachine->OnStun(totalTime);
-	}
+	float totalTime = time * (1 - (GetEndurance() / 100.f));
+		
+	SpawnStunParticle();
+	stunTime = totalTime;
+	//sidheRigelController->stateMachine->OnStun(totalTime);
 }
 
 void ASidheRigelCharacter::Stop(float time)
 {
-	if (sidheRigelController && sidheRigelController->stateMachine)
-	{
-		float totalTime = time * (1 - (GetEndurance() / 100.f));
-		sidheRigelController->stateMachine->OnStop(totalTime);
-	}
+	float totalTime = time * (1 - (GetEndurance() / 100.f));
+	
+	SpawnStopParticle();
+	stopTime = totalTime;
 }
 
 void ASidheRigelCharacter::Slow(float time, float value, FString key)
@@ -1221,10 +1236,12 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 
 void ASidheRigelCharacter::Silence(float time)
 {
-	if (sidheRigelController && sidheRigelController->stateMachine)
+	if (sidheRigelController)
 	{
 		float totalTime = time * (1 - (GetEndurance() / 100.f));
-		sidheRigelController->stateMachine->OnSilence(totalTime);
+
+		SpawnSilenceParticle();
+		silenceTime = totalTime;
 	}
 }
 

@@ -316,6 +316,10 @@ public:		//Getter, Setter
 
 	UPROPERTY()
 		bool isDie = false;
+	UPROPERTY() //During Die
+		float DieTime = 0;
+	UPROPERTY()
+		FVector spawnLocation;
 
 	UPROPERTY()
 		float frontDelay = 0.1f;
@@ -335,10 +339,6 @@ public:	//Attack
 protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
 	FTimerHandle BarrierTimer;
-	FTimerHandle stateMachineTimer;
-	UFUNCTION()
-		void SetCustomTick();
-	void CustomTick();
  
 public:		//Interface Implement
 	UFUNCTION()
@@ -349,6 +349,12 @@ public:		//Interface Implement
 		virtual void Slow(float time, float value, FString key) override;
 	UFUNCTION()
 		virtual void Silence(float time) override;
+	UPROPERTY() //During Stun
+		float stunTime = 0;
+	UPROPERTY() //During Stop
+		float stopTime = 0;
+	UPROPERTY() //During Silence
+		float silenceTime = 0;
 
 	UFUNCTION()
 		virtual void TakeDamage(float damage, AActor* damageCauser) override;

@@ -16,7 +16,14 @@
 #include "SidheRigel/Character/FairyWing/FairyWingCharacter.h"
 #include "SidheRigel/Character/Kerun/KerunCharacter.h"
 
+#include "SidheRigel/State/IdleState.h"
+#include "SidheRigel/State/MoveToAttackState.h"
 #include "SidheRigel/State/MoveState.h"
+#include "SidheRigel/State/AttackWaitState.h"
+#include "SidheRigel/State/AttackState.h"
+#include "SidheRigel/State/UseSkillState.h"
+#include "SidheRigel/State/StunState.h"
+#include "SidheRigel/State/DieState.h"
 
 #include "SidheRigelCamera.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
@@ -57,34 +64,32 @@ void ASidheRigelPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePro
 	DOREPLIFETIME(ASidheRigelPlayerController, MyPawnClass);
 	DOREPLIFETIME(ASidheRigelPlayerController, SRCamera);
 	DOREPLIFETIME(ASidheRigelPlayerController, myTeam);
-	DOREPLIFETIME(ASidheRigelPlayerController, stateMachine);
+	//DOREPLIFETIME(ASidheRigelPlayerController, stateMachine);
 }
 
 void ASidheRigelPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay :: GameInstnce: %s, playerController: %s"), *SRGameInstance->GetName(), *GetName());
 	DeterminePawnClass();
 
 	if (IsLocalController())
 	{
 		//Set stateMachine
-		stateMachine = NewObject<UStateMachine>(this);
-		stateMachine->InitializeController(this);
+		//stateMachine = NewObject<UStateMachine>(this);
+		//stateMachine->InitializeController(this);
+
+		InitializeState();
 
 		auto SRCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
 		if (SRCharacter)
 		{
 			//Set Controller
 			SRCharacter->sidheRigelController = this;
-
-			//Set CustomTick
-			SRCharacter->SetCustomTick();
 		}
 	}
 
+	//SetInputMode
 	FInputModeGameAndUI InputModeData;
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
 	InputModeData.SetHideCursorDuringCapture(false);
@@ -92,19 +97,39 @@ void ASidheRigelPlayerController::BeginPlay()
 	SetInputMode(InputModeData);
 }
 
-FHitResult ASidheRigelPlayerController::GetHitResult()
+void ASidheRigelPlayerController::OnPossess(APawn* aPawn)	//InServerFunction
 {
-	FHitResult HitResult;
+	Super::OnPossess(aPawn);
 
-	GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
+	ASidheRigelCharacter* SRCharacter = Cast<ASidheRigelCharacter>(aPawn);
+	if (SRCharacter)
+	{
+		//Set Controller
+		SRCharacter->team = myTeam;
 
-	return HitResult;
+		//Set Player Start Location
+		TArray<AActor*> PlayerStarts;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
+
+		for (auto playerStart : PlayerStarts)
+		{
+			auto playerStartTag = Cast<APlayerStart>(playerStart)->PlayerStartTag;
+			if (((playerStartTag.ToString() == "Blue") && (SRCharacter->GetTeam() == E_Team::Blue)) ||
+				((playerStartTag.ToString() == "Red") && (SRCharacter->GetTeam() == E_Team::Red)))
+			{
+				SRCharacter->spawnLocation = playerStart->GetActorLocation();
+				SRCharacter->Server_MoveToStartLocation(playerStart->GetActorLocation());
+				break;
+			}
+		}
+	}
 }
 
 void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
+	//Camera Input
 	if (SRCamera)
 	{
 		if (!(SRCamera->GetIsCameraFixed()))
@@ -152,10 +177,31 @@ void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 			{
 				SpawnSRCamera(GetCharacter(), this);
 			}
-		}
-				
+		}	
 	}
-		
+
+	//State
+	if (myCharacter)
+	{
+		if (attackDelay > 0)
+		{
+			attackDelay -= DeltaTime;
+		}
+		if (frontDelay > 0)
+		{
+			frontDelay -= DeltaTime;
+		}
+		if (skillDelay > 0)
+		{
+			skillDelay -= DeltaTime;
+		}
+
+		currentState->Update(DeltaTime);
+	}
+	else
+	{
+		myCharacter = Cast<ASidheRigelCharacter>(GetPawn());
+	}
 }
 
 void ASidheRigelPlayerController::SetupInputComponent()
@@ -177,37 +223,51 @@ void ASidheRigelPlayerController::SetupInputComponent()
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
 {
-	stateMachine->OnRightRelease();
+	currentState->OnRightRelease();
 }
 
 void ASidheRigelPlayerController::ClickedRightMouseButton()
 {
-	stateMachine->OnRightClick();
+	//UE_LOG(LogTemp, Error, TEXT("OnRightClick"))
+	//SkillCancel
+	bSkillReady = false;
+	currentSkill = E_SkillState::Skill_Null;
+	if (myCharacter)
+	{
+		myCharacter->skillRange->SetVisibility(false);
+	}
+	else
+	{
+		myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
+		UE_LOG(LogTemp, Error, TEXT("ERROR CHARACTER NULL IN STATEMACHINE"))
+	}
+
+	currentState->OnRightClick();
 }
 
 void ASidheRigelPlayerController::ClickedLeftMouseButton()
 {
-	stateMachine->OnLeftClick();
+	currentState->OnLeftClick();
 }
 
 void ASidheRigelPlayerController::PressedQButton()
 {
-	stateMachine->OnKeyboard(E_SkillState::Q_Ready);
+	OnKeyboard(E_SkillState::Q_Ready);
 }
 
 void ASidheRigelPlayerController::PressedWButton()
 {
-	stateMachine->OnKeyboard(E_SkillState::W_Ready);
+	OnKeyboard(E_SkillState::W_Ready);
 }
 
 void ASidheRigelPlayerController::PressedEButton()
 {
-	stateMachine->OnKeyboard(E_SkillState::E_Ready);
+	OnKeyboard(E_SkillState::E_Ready);
 }
 
 void ASidheRigelPlayerController::PressedRButton()
 {
-	stateMachine->OnKeyboard(E_SkillState::R_Ready);
+	OnKeyboard(E_SkillState::R_Ready);
 }
 
 void ASidheRigelPlayerController::PressedYButton()
@@ -216,7 +276,205 @@ void ASidheRigelPlayerController::PressedYButton()
 	{
 		SRCamera->SwitchIsCameraFixed();
 	}
-	
+}
+
+void ASidheRigelPlayerController::InitializeState()
+{
+	Idle = NewObject<UIdleState>();
+	Idle->controller = this;
+	MoveToAttack = NewObject<UMoveToAttackState>();
+	MoveToAttack->controller = this;
+	Move = NewObject<UMoveState>();
+	Move->controller = this;
+	AttackWait = NewObject<UAttackWaitState>();
+	AttackWait->controller = this;
+	Attack = NewObject<UAttackState>();
+	Attack->controller = this;
+	UseSkill = NewObject<UUseSkillState>();
+	UseSkill->controller = this;
+
+	Stun = NewObject<UStunState>();
+	Stun->controller = this;
+	Die = NewObject<UDieState>();
+	Die->controller = this;
+
+	currentState = Idle;
+}
+
+FHitResult ASidheRigelPlayerController::GetHitResult()
+{
+	FHitResult HitResult;
+
+	GetHitResultUnderCursor(ECC_Visibility, true, HitResult);
+
+	return HitResult;
+}
+
+void ASidheRigelPlayerController::ChangeState(UState* NextState)
+{
+	previousState = currentState;
+	currentState->OnEnd();
+	if (NextState)
+	{
+		NextState->OnBegin();
+		currentState = NextState;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("NextState Is Null"))
+	}
+}
+
+void ASidheRigelPlayerController::ChangePreviousState()
+{
+	currentState->OnEnd();
+	previousState->OnBegin();
+
+	if (previousState == UseSkill)
+	{
+		previousState = Idle;
+	}
+
+	currentState = previousState;
+}
+
+UState* ASidheRigelPlayerController::GetCurrentState()
+{
+	return currentState;
+}
+
+void ASidheRigelPlayerController::OnKeyboard(E_SkillState SkillState)
+{
+	currentSkill = SkillState;
+	if (!myCharacter)
+	{
+		myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
+	}
+	if (myCharacter->silenceTime > 0)
+	{
+		return;
+	}
+
+	if (!myCharacter->skills.Contains(currentSkill))
+	{
+		currentSkill = E_SkillState::Skill_Null;
+		return;
+	}
+
+	bSkillReady = true;
+	float currentSkillRange = myCharacter->skills[currentSkill]->GetRange();
+	myCharacter->skillRange->SetRelativeScale3D(FVector(currentSkillRange / 100, currentSkillRange / 100, 1));
+
+	myCharacter->skillRange->SetVisibility(true);
+
+	currentState->OnKeyboard(SkillState);
+}
+
+void ASidheRigelPlayerController::HasAttackEnemy()
+{
+	//Move & Attack
+	AActor* HitActor = GetHitResult().GetActor();
+	if (HitActor)
+	{
+		IDamagable* DamagableActor = Cast<IDamagable>(HitActor);
+		if (DamagableActor)
+		{
+			ITeam* TeamActor = Cast<ITeam>(HitActor);
+			if (!myCharacter)
+			{
+				myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
+			}
+			if (TeamActor && TeamActor->GetTeam() != myCharacter->GetTeam())
+			{
+				target = HitActor;
+				ChangeState(MoveToAttack);
+			}
+		}
+		else
+		{
+			location = GetHitResult().Location;
+			ChangeState(Move);
+		}
+	}
+}
+
+void ASidheRigelPlayerController::ChangeCurrentSkill(E_SkillState SkillState)
+{
+	currentSkill = SkillState;
+
+	//스킬이 없으면 (케룬 E 등) return
+	if (!myCharacter)
+	{
+		myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
+	}
+	if (!myCharacter->skills.Contains(currentSkill))
+	{
+		currentSkill = E_SkillState::Skill_Null;
+		return;
+	}
+
+	//예외처리
+	auto skill = myCharacter->skills[SkillState];
+	if (skill == nullptr)
+	{
+		currentSkill = E_SkillState::Skill_Null;
+		return;
+	}
+
+	//Check Cooldown, Mana
+	if (skill->GetCooldown() <= 0 && skill->hasEnoughMana())
+	{
+		currentSkill = SkillState;
+		bSkillReady = true;
+
+		//Check Instant cast
+		if (skill->IsInstantCast() && skill->CanUse())
+		{
+			ChangeState(UseSkill);
+		}
+	}
+	else //현재 사용 불가능 (마나 부족 || 쿨타임)
+	{
+		currentSkill = E_SkillState::Skill_Null;
+		bSkillReady = false;
+		myCharacter->skillRange->SetVisibility(false);
+	}
+}
+
+void ASidheRigelPlayerController::DeterminePawnClass_Implementation()
+{
+	if (IsLocalController())
+	{
+		auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+
+		if (SRGameInstance)
+		{
+			ServerSetTeam(SRGameInstance->myTeam);
+
+			if (SRGameInstance->CharacterNum == E_Character::Cold)
+			{
+				ServerSetPawn(ColdPawn);
+				return;
+			}
+			else if (SRGameInstance->CharacterNum == E_Character::FairyWing)
+			{
+				ServerSetPawn(FairyWingPawn);
+				return;
+			}
+			else if (SRGameInstance->CharacterNum == E_Character::Kerun)
+			{
+				ServerSetPawn(KerunPawn);
+				return;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("InCorrect Character Selected"));
+
+				ServerSetPawn(ColdPawn);
+				return;
+			}
+		}
+	}
 }
 
 void ASidheRigelPlayerController::ServerSetTeam_Implementation(E_Team team)
@@ -224,36 +482,29 @@ void ASidheRigelPlayerController::ServerSetTeam_Implementation(E_Team team)
 	myTeam = team;
 }
 
-void ASidheRigelPlayerController::OnPossess(APawn* aPawn)	//InServerFunction
+void ASidheRigelPlayerController::ServerSetPawn_Implementation(TSubclassOf<APawn> InPawnClass)
 {
-	Super::OnPossess(aPawn);
-	
-	ASidheRigelCharacter* SRCharacter = Cast<ASidheRigelCharacter>(aPawn);
-	if (SRCharacter)
+	MyPawnClass = InPawnClass;
+
+	GetWorld()->GetAuthGameMode()->RestartPlayer(this);
+}
+
+void ASidheRigelPlayerController::SpawnSRCamera_Implementation(APawn* aPawn, class ASidheRigelPlayerController* controller)
+{
+	if (IsLocalPlayerController())
 	{
-		//Set Controller
-		//SRCharacter->sidheRigelController = this;
-		SRCharacter->team = myTeam;
-
-		//Set Player Start Location
-		TArray<AActor*> PlayerStarts;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
-
-		for (auto playerStart : PlayerStarts)
+		if (!SRCamera)
 		{
-			auto playerStartTag = Cast<APlayerStart>(playerStart)->PlayerStartTag;
-			if (((playerStartTag.ToString() == "Blue") && (SRCharacter->GetTeam() == E_Team::Blue)) ||
-				((playerStartTag.ToString() == "Red") && (SRCharacter->GetTeam() == E_Team::Red)))
-			{
-				SRCharacter->Server_MoveToStartLocation(playerStart->GetActorLocation());
-					break;
-			}
+			SetSRCamera(aPawn, this);
 		}
-
-		//UE_LOG(LogTemp,Warning, TEXT("InServer Set StateMachine :: %s"), *aPawn->GetName())
-		//stateMachine = NewObject<UStateMachine>();
-		//stateMachine->InitializeController(this);
 	}
+}
+
+void ASidheRigelPlayerController::SetSRCamera_Implementation(APawn* aPawn, class ASidheRigelPlayerController* controller)
+{
+
+	SetSRCameraInClient(aPawn, controller);
+
 }
 
 void ASidheRigelPlayerController::SetSRCameraInClient_Implementation(APawn* aPawn, ASidheRigelPlayerController* controller)
@@ -296,87 +547,5 @@ void ASidheRigelPlayerController::SetSRCameraInClient_Implementation(APawn* aPaw
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Pawn is Null"));
-	}
-}
-
-
-
-void ASidheRigelPlayerController::DeterminePawnClass_Implementation()
-{
-	if (IsLocalController())
-	{
-		auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
-		
-		if (SRGameInstance)
-		{
-			ServerSetTeam(SRGameInstance->myTeam);
-
-			if (SRGameInstance->CharacterNum == E_Character::Cold)
-			{
-				ServerSetPawn(ColdPawn);
-				return;
-			}
-			else if (SRGameInstance->CharacterNum == E_Character::FairyWing)
-			{
-				ServerSetPawn(FairyWingPawn);
-				return;
-			}
-			else if (SRGameInstance->CharacterNum == E_Character::Kerun)
-			{
-				ServerSetPawn(KerunPawn);
-				return;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("InCorrect Character Selected"));
-
-				ServerSetPawn(ColdPawn);
-				return;
-			}
-		}
-	}
-}
-
-void ASidheRigelPlayerController::ServerSetPawn_Implementation(TSubclassOf<APawn> InPawnClass)
-{
-	MyPawnClass = InPawnClass;
-
-	GetWorld()->GetAuthGameMode()->RestartPlayer(this);
-}
-
-
-void ASidheRigelPlayerController::SetSRCamera_Implementation(APawn* aPawn, class ASidheRigelPlayerController* controller)
-{
-	
-	SetSRCameraInClient(aPawn, controller);
-
-}
-
-
-
-void ASidheRigelPlayerController::SpawnSRCamera_Implementation(APawn* aPawn, class ASidheRigelPlayerController* controller)
-{
-	if (IsLocalPlayerController())
-	{
-		if (!SRCamera)
-		{
-			SetSRCamera(aPawn,this);
-		}
-	}
-}
-
-void ASidheRigelPlayerController::ClientInitMachine_Implementation(APawn* aPawn)
-{
-	if (IsLocalController())
-	{
-		auto SRCharacter = Cast<ASidheRigelCharacter>(aPawn);
-		if (SRCharacter)
-		{
-			//SRCharacter->sidheRigelController = this;
-		}
-
-		UE_LOG(LogTemp, Warning, TEXT("InServer Set StateMachine :: %s"), *aPawn->GetName());
-		stateMachine = NewObject<UStateMachine>(this);
-		stateMachine->InitializeController(this);
 	}
 }

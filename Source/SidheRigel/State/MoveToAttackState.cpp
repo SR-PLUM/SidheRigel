@@ -18,9 +18,12 @@ UMoveToAttackState::~UMoveToAttackState()
 
 void UMoveToAttackState::OnBegin()
 {
-	if (stateMachine->playerController)
+	if (controller)
 	{
-		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+		if (!myCharacter)
+		{
+			myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
+		}
 	}
 }
 
@@ -29,17 +32,17 @@ void UMoveToAttackState::Update(float DeltaTime)
 	if (myCharacter)
 	{
 		//Can Attack Target
-		if ((myCharacter->GetRange() >= myCharacter->GetDistanceTo(stateMachine->target)))
+		if ((myCharacter->GetRange() >= myCharacter->GetDistanceTo(controller->target)))
 		{
-			stateMachine->playerController->StopMovement();
-			stateMachine->ChangeState(stateMachine->AttackWait);
+			controller->StopMovement();
+			controller->ChangeState(controller->AttackWait);
 		}
 		else
 		{
 			//Move
-			if (stateMachine->target)
+			if (controller->target)
 			{
-				myCharacter->Server_MoveToPoint(stateMachine->target->GetActorLocation());
+				myCharacter->Server_MoveToPoint(controller->target->GetActorLocation());
 				//UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->target->GetActorLocation());
 			}
 		}
@@ -48,7 +51,7 @@ void UMoveToAttackState::Update(float DeltaTime)
 
 void UMoveToAttackState::OnRightClick()
 {
-	stateMachine->HasAttackEnemy();
+	controller->HasAttackEnemy();
 }
 
 void UMoveToAttackState::OnRightRelease()
@@ -57,15 +60,21 @@ void UMoveToAttackState::OnRightRelease()
 
 void UMoveToAttackState::OnLeftClick()
 {
-	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
+	if (controller->bSkillReady)
 	{
-		stateMachine->ChangeState(stateMachine->UseSkill);
+		if (controller->currentSkill != E_SkillState::Skill_Null)
+		{
+			if (myCharacter->skills[controller->currentSkill]->CanUse())
+			{
+				controller->ChangeState(controller->UseSkill);
+			}
+		}
 	}
 }
 
 void UMoveToAttackState::OnKeyboard(E_SkillState SkillState)
 {
-	stateMachine->ChangeCurrentSkill(SkillState);
+	controller->ChangeCurrentSkill(SkillState);
 }
 
 void UMoveToAttackState::OnEnd()

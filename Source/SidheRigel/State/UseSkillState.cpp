@@ -3,9 +3,9 @@
 
 #include "UseSkillState.h"
 
-#include "StateMachine.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Skill.h"
+#include "SidheRigel/SidheRigelPlayerController.h"
 
 UUseSkillState::UUseSkillState()
 {
@@ -18,44 +18,44 @@ UUseSkillState::~UUseSkillState()
 void UUseSkillState::OnBegin()
 {
 	//Stop To Use Skill
-	if (stateMachine->playerController)
+	if (controller)
 	{
-		stateMachine->playerController->StopMovement();
+		controller->StopMovement();
 
 		//USE SKILL
-		myCharacter = Cast<ASidheRigelCharacter>(stateMachine->playerController->GetPawn());
+		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
 		if (myCharacter)
 		{
 			//Get SkillDelay
-			stateMachine->skillDelay = myCharacter->skills[stateMachine->currentSkill]->GetSkillDelay();
+			controller->skillDelay = myCharacter->skills[controller->currentSkill]->GetSkillDelay();
 
 			//Cast Skill
-			FHitResult Hit;
-			stateMachine->playerController->GetHitResultUnderCursor(ECC_Visibility, true, Hit);
+			FHitResult Hit = controller->GetHitResult();
 
 			FVector ForwardDirection = ((Hit.Location - myCharacter->GetActorLocation()) * FVector(1, 1, 0)).GetSafeNormal();
 
-			if (myCharacter->skills.Contains(stateMachine->currentSkill))
+			if (myCharacter->skills.Contains(controller->currentSkill))
 			{
-				if (!(myCharacter->skills[stateMachine->currentSkill]->IsTargeting()))
+				if (!(myCharacter->skills[controller->currentSkill]->IsTargeting()))
 				{
+					//크기 최대거리로 맞추기
 					FVector targetVector = Hit.Location - myCharacter->GetActorLocation();
-					if (myCharacter->skills[stateMachine->currentSkill]->GetRange() < targetVector.Size())
+					if (myCharacter->skills[controller->currentSkill]->GetRange() < targetVector.Size())
 					{
 						targetVector.Normalize();
 
-						targetVector *= myCharacter->skills[stateMachine->currentSkill]->GetRange();
+						targetVector *= myCharacter->skills[controller->currentSkill]->GetRange();
 
 						Hit.Location = myCharacter->GetActorLocation() + targetVector;
 					}
 				}
-				myCharacter->skills[stateMachine->currentSkill]->OnUse(Hit);
+				myCharacter->skills[controller->currentSkill]->OnUse(Hit);
 			}
 			//Set Character Rotation
 			myCharacter->SetActorRotation(ForwardDirection.Rotation());
 
 			//Skill Cooldown
-			myCharacter->skills[stateMachine->currentSkill]->SetCooldown();
+			myCharacter->skills[controller->currentSkill]->SetCooldown();
 
 			myCharacter->skillRange->SetVisibility(false);
 		}
@@ -64,17 +64,18 @@ void UUseSkillState::OnBegin()
 
 void UUseSkillState::Update(float DeltaTime)
 {
-	if (stateMachine->skillDelay > 0)
+	//스킬 애니메이션 시간
+	if (controller->skillDelay > 0)
 	{
-		stateMachine->skillDelay -= DeltaTime;
+		controller->skillDelay -= DeltaTime;
 	}
 	else
 	{
 		//Return Flag
-		stateMachine->bSkillReady = false;
-		stateMachine->currentSkill = E_SkillState::Skill_Null;
+		controller->bSkillReady = false;
+		controller->currentSkill = E_SkillState::Skill_Null;
 
-		stateMachine->ChangePreviousState();
+		controller->ChangePreviousState();
 	}
 }
 
