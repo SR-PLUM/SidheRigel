@@ -121,6 +121,8 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 		silenceParticleClass = (UClass*)SlienceParticle.Object->GeneratedClass;
 	}
 
+	//InGameUIWidget
+	InitInGameUIWidget();
 	//StatWidget
 	InitStatWidget();
 
@@ -156,24 +158,27 @@ void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay_In %s"), *GetName());
-
 	InitProperty();
 
-	AInGameMapScriptActor* LevelScriptActor = Cast<AInGameMapScriptActor>(GetWorld()->GetLevelScriptActor());
+	InitInGameUI();
 
-	InGameUI = LevelScriptActor->InGameUI;
+	/*AController* TargetController = GetController();
+	if (TargetController)
+	{
+		if (TargetController->IsLocalController())
+			
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetController is null"));
+	}*/
 
-	InGameUI->CharacterStatus->InitCharacterStatus(this);
-	
 	InitStatSummary();
 
 	detectRange->OnComponentBeginOverlap.AddDynamic(this, &ASidheRigelCharacter::OnEnterEnemy);
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
-
-	DisplayTalentList(0);
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -365,6 +370,8 @@ void ASidheRigelCharacter::DisplayTalentList(int32 Index)
 		slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 		slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Bottom);
 	}
+
+	UE_LOG(LogTemp, Error, TEXT("DispalyTalent"));
 }
 
 void ASidheRigelCharacter::InitStatWidget()
@@ -400,6 +407,50 @@ void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Per
 void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 {
 	InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
+}
+
+void ASidheRigelCharacter::InitInGameUIWidget()
+{
+	static ConstructorHelpers::FClassFinder<UUserWidget> InGameUIBPClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_InGameUI"));
+	if (InGameUIBPClass.Class == nullptr)
+		return;
+
+	InGameUIWidget = InGameUIBPClass.Class;
+
+	if (InGameUIWidget == nullptr) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("InitInGameUIWidget"))
+}
+
+void ASidheRigelCharacter::InitInGameUI()
+{
+	FSoftClassPath InGameUIWidgetClassRef(TEXT("WidgetBlueprint'/Game/UIBlueprints/InGameUI/WBP_InGameUI.WBP_InGameUI_C'"));
+	if (UClass* InGameUIWidgetClass = InGameUIWidgetClassRef.TryLoadClass<UUserWidget>()) {
+		InGameUI = CreateWidget<UInGameUI>(GetWorld(), InGameUIWidgetClass);
+
+		if (InGameUI != nullptr)
+		{
+			USidheRigelGameInstance* GameInstance = GetWorld()->GetGameInstance<USidheRigelGameInstance>();
+
+			InGameUI->InitCharacterData(GameInstance);
+
+			InGameUI->AddToViewport();
+
+			InGameUI->CharacterStatus->InitCharacterStatus(this);
+
+			DisplayTalentList(0);
+
+			UE_LOG(LogTemp, Warning, TEXT("InGameUI Spawned"))
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("InGameUI is null"))
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Load Failed"))
+	}
 }
 
 void ASidheRigelCharacter::SpawnStunParticle()
@@ -560,7 +611,8 @@ void ASidheRigelCharacter::SetCurrentHP(float _hp)
 		currentHP = var_MaxHP;
 	}
 
-	InGameUI->CharacterStatus->UpdateHP();
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateHP();
 	StatSummary->SetHPBar(currentHP / GetMaxHP());
 
 }
@@ -581,7 +633,8 @@ void ASidheRigelCharacter::UseMana(float UseMP)
 	if (currentMP < 0)
 		currentMP = 0;
 
-	InGameUI->CharacterStatus->UpdateMP();
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateMP();
 }
 
 float ASidheRigelCharacter::GetCurrentMP()
@@ -645,7 +698,8 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 		}
 	}
 
-	InGameUI->CharacterStatus->UpdateLevel();
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateLevel();
 	StatSummary->SetLevel(level);
 	StatSummary->SetExpBar(float(experience) / MaxExperience);
 }
@@ -1195,7 +1249,8 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 		currentHP = 0;
 	}
 
-	InGameUI->CharacterStatus->UpdateHP();
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateHP();
 	StatSummary->SetHPBar(currentHP / GetMaxHP());
 }
 
@@ -1211,8 +1266,10 @@ void ASidheRigelCharacter::RestoreHP(float value)
 		currentHP = var_MaxHP;
 	}
 
-	InGameUI->CharacterStatus->UpdateHP();
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateHP();
 	StatSummary->SetHPBar(currentHP / GetMaxHP());
+	
 }
 
 float ASidheRigelCharacter::GetHP()
