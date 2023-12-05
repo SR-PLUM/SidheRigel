@@ -19,6 +19,7 @@ void UDieState::OnBegin()
 	if (!myCharacter)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
+		controller->StopMovement();
 	}
 }
 
@@ -28,6 +29,7 @@ void UDieState::Update(float DeltaTime)
 	{
 		myCharacter->isDie = false;
 		myCharacter->SetActorLocation(myCharacter->spawnLocation);
+		myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
 
 		controller->ChangeState(controller->Idle);
 	}

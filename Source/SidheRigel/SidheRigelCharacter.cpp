@@ -1264,6 +1264,9 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 	if (currentHP <= 0)
 	{
 		currentHP = 0;
+		isDie = true;
+		DieTime = 10.f;
+		sidheRigelController->ChangeState(sidheRigelController->Die);
 	}
 
 	if (InGameUI != nullptr)
