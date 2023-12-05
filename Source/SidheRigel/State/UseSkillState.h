@@ -6,14 +6,18 @@
 
 #include "State.h"
 
+#include "UseSkillState.generated.h"
+
 /**
  * 
  */
-class SIDHERIGEL_API UseSkillState : public State
+UCLASS()
+class SIDHERIGEL_API UUseSkillState : public UState
 {
+	GENERATED_BODY()
 public:
-	UseSkillState(StateMachine* StateMachine);
-	~UseSkillState();
+	UUseSkillState();
+	~UUseSkillState();
 
 public:
 	void OnBegin() override;

@@ -8,15 +8,15 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
-StunState::StunState(StateMachine* StateMachine) : State(StateMachine)
+UStunState::UStunState()
 {
 }
 
-StunState::~StunState()
+UStunState::~UStunState()
 {
 }
 
-void StunState::OnBegin()
+void UStunState::OnBegin()
 {
 	if (stateMachine->playerController)
 	{
@@ -29,7 +29,7 @@ void StunState::OnBegin()
 	}
 }
 
-void StunState::Update(float DeltaTime)
+void UStunState::Update(float DeltaTime)
 {
 	if (stateMachine->stunTime <= 0)
 	{
@@ -37,23 +37,23 @@ void StunState::Update(float DeltaTime)
 	}
 }
 
-void StunState::OnRightClick()
+void UStunState::OnRightClick()
 {
 }
 
-void StunState::OnRightRelease()
+void UStunState::OnRightRelease()
 {
 }
 
-void StunState::OnLeftClick()
+void UStunState::OnLeftClick()
 {
 }
 
-void StunState::OnKeyboard(E_SkillState SkillState)
+void UStunState::OnKeyboard(E_SkillState SkillState)
 {
 }
 
-void StunState::OnEnd()
+void UStunState::OnEnd()
 {
 	myCharacter->RemoveStunParticle();
 }

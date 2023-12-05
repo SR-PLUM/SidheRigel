@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "SidheRigel/Enum/E_Team.h"
 #include "LobbyPlayerController.generated.h"
 
 /**

@@ -57,6 +57,8 @@ public:
 	virtual void BeginPlay();
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void PossessedBy(AController* NewController) override;
+
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 
 	/** Returns TopDownCameraComponent subobject **/
@@ -64,8 +66,11 @@ public:
 	/** Returns CameraBoom subobject **/
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-	UPROPERTY(replicated)
+	UPROPERTY(replicated, EditAnywhere)
 		ASidheRigelPlayerController* sidheRigelController;
+
+	UFUNCTION(reliable, client)
+		void SetClientStateMachine();
 protected:
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -311,7 +316,9 @@ public:		//Getter, Setter
 
 public:	//Attack
 	virtual void InitAttackProjectile();
-	virtual void Attack(AActor* target) override;
+
+	UFUNCTION(reliable, server)
+		virtual void Attack(AActor* target) override;
 	
 	UFUNCTION()
 		void InitProjectileProperty(ADummyProjectile* projectile);
@@ -323,7 +330,8 @@ protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
 	FTimerHandle BarrierTimer;
 	FTimerHandle stateMachineTimer;
-	void SetCustomTick();
+	UFUNCTION()
+		void SetCustomTick();
 	void CustomTick();
  
 public:		//Interface Implement

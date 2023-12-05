@@ -7,15 +7,15 @@
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
 
-AttackState::AttackState(StateMachine* StateMachine) : State(StateMachine)
+UAttackState::UAttackState()
 {
 }
 
-AttackState::~AttackState()
+UAttackState::~UAttackState()
 {
 }
 
-void AttackState::OnBegin()
+void UAttackState::OnBegin()
 {
 	UE_LOG(LogTemp,Warning,TEXT("AttackState :: Begin"))
 	if (stateMachine->playerController)
@@ -37,7 +37,7 @@ void AttackState::OnBegin()
 	}
 }
 
-void AttackState::Update(float DeltaTime)
+void UAttackState::Update(float DeltaTime)
 {
 	if (stateMachine->frontDelay <= 0 && myCharacter)
 	{
@@ -60,16 +60,16 @@ void AttackState::Update(float DeltaTime)
 	}
 }
 
-void AttackState::OnRightClick()
+void UAttackState::OnRightClick()
 {
 	stateMachine->HasAttackEnemy();
 }
 
-void AttackState::OnRightRelease()
+void UAttackState::OnRightRelease()
 {
 }
 
-void AttackState::OnLeftClick()
+void UAttackState::OnLeftClick()
 {
 	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
 	{
@@ -77,12 +77,12 @@ void AttackState::OnLeftClick()
 	}
 }
 
-void AttackState::OnKeyboard(E_SkillState SkillState)
+void UAttackState::OnKeyboard(E_SkillState SkillState)
 {
 	stateMachine->ChangeCurrentSkill(SkillState);
 }
 
-void AttackState::OnEnd()
+void UAttackState::OnEnd()
 {
 	
 }

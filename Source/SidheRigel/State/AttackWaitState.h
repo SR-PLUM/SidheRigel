@@ -6,14 +6,18 @@
 
 #include "State.h"
 
+#include "AttackWaitState.generated.h"
+
 /**
  * 
  */
-class SIDHERIGEL_API AttackWaitState : public State
+UCLASS()
+class SIDHERIGEL_API UAttackWaitState : public UState
 {
+	GENERATED_BODY()
 public:
-	AttackWaitState(StateMachine* StateMachine);
-	~AttackWaitState();
+	UAttackWaitState();
+	~UAttackWaitState();
 
 private:
 	class ASidheRigelCharacter* myCharacter;

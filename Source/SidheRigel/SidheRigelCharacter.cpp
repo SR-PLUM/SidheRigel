@@ -157,7 +157,7 @@ void ASidheRigelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay_In %s"), *GetName());
 
 	InitProperty();
 
@@ -175,9 +175,6 @@ void ASidheRigelCharacter::BeginPlay()
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 
 	DisplayTalentList(0);
-
-	GetWorldTimerManager().SetTimer(stateMachineTimer, this, &ASidheRigelCharacter::CustomTick, 0.05f, true);
-
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -195,10 +192,38 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 	}
 }
 
+void ASidheRigelCharacter::PossessedBy(AController* NewController)
+{
+	UE_LOG(LogTemp, Warning, TEXT("POSSESSED_BY In %s"), *GetName());
+
+	sidheRigelController = Cast<ASidheRigelPlayerController>(NewController);
+
+	/*if (sidheRigelController)
+	{
+		sidheRigelController->stateMachine = NewObject<UStateMachine>();
+		sidheRigelController->stateMachine->InitializeController(sidheRigelController);
+	}
+
+	SetClientStateMachine();*/
+}
+
 void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
 
+}
+
+void ASidheRigelCharacter::SetClientStateMachine_Implementation()
+{
+	/*UE_LOG(LogTemp, Warning, TEXT("SetClientSM In %s"), *GetName());
+	if (sidheRigelController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SetClientSMController In %s"), *GetName());
+		sidheRigelController->stateMachine = NewObject<UStateMachine>();
+		sidheRigelController->stateMachine->InitializeController(sidheRigelController);
+
+		SetCustomTick();
+	}*/
 }
 
 void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
@@ -997,7 +1022,7 @@ void ASidheRigelCharacter::InitAttackProjectile()
 	}
 }
 
-void ASidheRigelCharacter::Attack(AActor* target)
+void ASidheRigelCharacter::Attack_Implementation(AActor* target)
 {
 	if (baseProjectileClass)
 	{

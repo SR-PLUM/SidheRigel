@@ -77,6 +77,12 @@ void ALobbyGameMode::Ready()
 
 	if (readyCount >= players.Num())
 	{
+		if (readyCount == 1)
+		{
+			auto SRInstance =  Cast<USidheRigelGameInstance>(players[0].playerController->GetGameInstance());
+			SRInstance->bIsSingleGame = true;
+		}
+
 		UWorld* World = GetWorld();
 		if (World == nullptr) return;
 

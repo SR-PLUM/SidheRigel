@@ -8,16 +8,15 @@
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "SidheRigel/Interface/Damagable.h"
 
-IdleState::IdleState(StateMachine* StateMachine) : State(StateMachine)
-{
-	
-}
-
-IdleState::~IdleState()
+UIdleState::UIdleState()
 {
 }
 
-void IdleState::OnBegin()
+UIdleState::~UIdleState()
+{
+}
+
+void UIdleState::OnBegin()
 {
 	if (stateMachine->playerController)
 	{
@@ -27,20 +26,20 @@ void IdleState::OnBegin()
 	}
 }
 
-void IdleState::Update(float DeltaTime)
+void UIdleState::Update(float DeltaTime)
 {
 }
 
-void IdleState::OnRightClick()
+void UIdleState::OnRightClick()
 {
 	stateMachine->HasAttackEnemy();
 }
 
-void IdleState::OnRightRelease()
+void UIdleState::OnRightRelease()
 {
 }
 
-void IdleState::OnLeftClick()
+void UIdleState::OnLeftClick()
 {
 	if (stateMachine->bSkillReady && stateMachine->currentSkill != E_SkillState::Skill_Null && myCharacter->skills[stateMachine->currentSkill]->CanUse())
 	{
@@ -48,11 +47,11 @@ void IdleState::OnLeftClick()
 	}
 }
 
-void IdleState::OnKeyboard(E_SkillState SkillState)
+void UIdleState::OnKeyboard(E_SkillState SkillState)
 {
 	stateMachine->ChangeCurrentSkill(SkillState);
 }
 
-void IdleState::OnEnd()
+void UIdleState::OnEnd()
 {
 }

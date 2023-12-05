@@ -6,14 +6,17 @@
 
 #include "State.h"
 
+#include "AttackState.generated.h"
 /**
  * 
  */
-class SIDHERIGEL_API AttackState : public State
+UCLASS()
+class SIDHERIGEL_API UAttackState : public UState
 {
+	GENERATED_BODY()
 public:
-	AttackState(StateMachine* StateMachine);
-	~AttackState();
+	UAttackState();
+	~UAttackState();
 
 private:
 	class ASidheRigelCharacter* myCharacter;

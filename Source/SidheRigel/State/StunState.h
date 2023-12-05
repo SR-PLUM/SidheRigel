@@ -6,14 +6,18 @@
 
 #include "State.h"
 
+#include "StunState.generated.h"
+
 /**
  * 
  */
-class SIDHERIGEL_API StunState : public State
+UCLASS()
+class SIDHERIGEL_API UStunState : public UState
 {
+	GENERATED_BODY()
 public:
-	StunState(StateMachine* StateMachine);
-	~StunState();
+	UStunState();
+	~UStunState();
 
 public:
 	void OnBegin() override;
