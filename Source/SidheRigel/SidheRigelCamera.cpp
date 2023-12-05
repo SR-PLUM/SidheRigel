@@ -91,8 +91,7 @@ void ASidheRigelCamera::MoveCameraX_Implementation(float Axis)
 {
 	FVector Location = GetActorLocation();
 	
-	Location.X += Axis * 5.f;
-
+	Location.X += Axis * CameraMoveAmount;
 
 	SetActorLocation(Location);
 }
@@ -101,7 +100,7 @@ void ASidheRigelCamera::MoveCameraY_Implementation(float Axis)
 {
 	FVector Location = GetActorLocation();
 
-	Location.Y += Axis * 5.f;
+	Location.Y += Axis * CameraMoveAmount;
 
 	SetActorLocation(Location);
 }
