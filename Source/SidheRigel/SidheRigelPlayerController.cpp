@@ -83,6 +83,7 @@ void ASidheRigelPlayerController::BeginPlay()
 			//Set CustomTick
 			SRCharacter->SetCustomTick();
 		}
+
 	}
 
 	FInputModeGameAndUI InputModeData;
