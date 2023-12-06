@@ -488,12 +488,6 @@ void ASidheRigelCharacter::InitInGameUI()
 	}
 }
 
-void ASidheRigelCharacter::DeathEnd()
-{
-	StopAnimMontage();
-	UE_LOG(LogTemp, Warning, TEXT("DeathEnd"));
-}
-
 void ASidheRigelCharacter::SpawnStunParticle()
 {
 	if (stunParticle)
