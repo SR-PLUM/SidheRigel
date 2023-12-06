@@ -38,6 +38,12 @@ public:
 	UPROPERTY()
 		int32 readyCount = 0;
 
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<UUserWidget> LoadingScreenWidget;
+
+	UPROPERTY()
+		class ULoadingScreen* LoadingScreen;
+
 private:
 	uint32 NumberOfPlayers = 0;
 };

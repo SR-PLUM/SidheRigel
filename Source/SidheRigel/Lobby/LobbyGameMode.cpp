@@ -5,6 +5,8 @@
 #include "GameFramework/PlayerState.h"
 #include "ThirdParty/Steamworks/Steamv151/sdk/public/steam/steam_api.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/WidgetComponent.h"
+#include "LoadingScreen.h"
 
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Lobby/LobbyMenu.h"
@@ -13,6 +15,12 @@
 ALobbyGameMode::ALobbyGameMode()
 {
 	PlayerControllerClass = ALobbyPlayerController::StaticClass();
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> LoadingScreenWBP(TEXT("/Game/UIBlueprints/WBP_LoadingScreen"));
+	if (LoadingScreenWBP.Succeeded())
+	{
+		LoadingScreenWidget = LoadingScreenWBP.Class;
+	}
 }
 
 void ALobbyGameMode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -85,6 +93,25 @@ void ALobbyGameMode::Ready()
 
 		UWorld* World = GetWorld();
 		if (World == nullptr) return;
+
+		if (LoadingScreenWidget)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("LoadingScreenWidget is not nullptr"));
+			LoadingScreen = CreateWidget<ULoadingScreen>(World, LoadingScreenWidget);
+			if (LoadingScreen)
+			{
+				LoadingScreen->AddToViewport();
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+					{
+						LoadingScreen->RemoveFromViewport();
+					}, 3, false);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("LoadingScreenWidget is nullptr"));
+		}
 
 		World->ServerTravel("/Game/Maps/TrainingRoom?listen");
 	}
