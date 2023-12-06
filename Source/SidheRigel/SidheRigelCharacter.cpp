@@ -134,7 +134,6 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 		{
 			item.Add(false);
 		}
-
 		IsSelectedTalent.Add(item);
 	}
 

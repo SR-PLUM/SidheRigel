@@ -3,17 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Character/Kerun/KerunCharacter.h"
 #include "AISidheRigelCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIDHERIGEL_API AAISidheRigelCharacter : public ASidheRigelCharacter
+class SIDHERIGEL_API AAISidheRigelCharacter : public AKerunCharacter
 {
 	GENERATED_BODY()
 	
 public:
+	virtual void BeginPlay();
+
 	void SetTeam(E_Team setTeam);
 };
