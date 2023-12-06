@@ -5,6 +5,7 @@
 
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
+#include "Components/CapsuleComponent.h"
 
 UDieState::UDieState()
 {
@@ -16,10 +17,13 @@ UDieState::~UDieState()
 
 void UDieState::OnBegin()
 {
+	controller->StopMovement();
+	//myCharacter->GetMesh()->SetCollisionProfileName(FName("NoCollision"));
+	//myCharacter->GetCapsuleComponent()->SetCollisionProfileName(FName("NoCollision"));
+
 	if (!myCharacter)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
-		controller->StopMovement();
 	}
 }
 
@@ -32,6 +36,8 @@ void UDieState::Update(float DeltaTime)
 		myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
 
 		controller->ChangeState(controller->Idle);
+		//myCharacter->GetMesh()->SetCollisionProfileName(FName("BlockAll"));
+		//myCharacter->GetCapsuleComponent()->SetCollisionProfileName(FName("BlockAll"));
 	}
 }
 
