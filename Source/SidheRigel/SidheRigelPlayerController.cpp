@@ -89,6 +89,8 @@ void ASidheRigelPlayerController::BeginPlay()
 		}
 	}
 
+	GetWorldTimerManager().SetTimer(stateUpdateTimer, this, &ASidheRigelPlayerController::IE_Update, deltaTime, true);
+
 	//SetInputMode
 	FInputModeGameAndUI InputModeData;
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::LockAlways);
@@ -195,8 +197,6 @@ void ASidheRigelPlayerController::PlayerTick(float DeltaTime)
 		{
 			skillDelay -= DeltaTime;
 		}
-
-		currentState->Update(DeltaTime);
 	}
 	else
 	{
@@ -278,6 +278,14 @@ void ASidheRigelPlayerController::PressedYButton()
 	}
 }
 
+void ASidheRigelPlayerController::IE_Update()
+{
+	if (currentState)
+	{
+		currentState->Update(deltaTime);
+	}
+}
+
 void ASidheRigelPlayerController::InitializeState()
 {
 	Idle = NewObject<UIdleState>();
@@ -293,8 +301,6 @@ void ASidheRigelPlayerController::InitializeState()
 	UseSkill = NewObject<UUseSkillState>();
 	UseSkill->controller = this;
 
-	Stun = NewObject<UStunState>();
-	Stun->controller = this;
 	Die = NewObject<UDieState>();
 	Die->controller = this;
 
