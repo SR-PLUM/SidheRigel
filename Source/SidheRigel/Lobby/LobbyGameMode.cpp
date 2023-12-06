@@ -15,12 +15,6 @@
 ALobbyGameMode::ALobbyGameMode()
 {
 	PlayerControllerClass = ALobbyPlayerController::StaticClass();
-
-	static ConstructorHelpers::FClassFinder<UUserWidget> LoadingScreenWBP(TEXT("/Game/UIBlueprints/WBP_LoadingScreen"));
-	if (LoadingScreenWBP.Succeeded())
-	{
-		LoadingScreenWidget = LoadingScreenWBP.Class;
-	}
 }
 
 void ALobbyGameMode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -94,25 +88,24 @@ void ALobbyGameMode::Ready()
 		UWorld* World = GetWorld();
 		if (World == nullptr) return;
 
-		if (LoadingScreenWidget)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("LoadingScreenWidget is not nullptr"));
-			LoadingScreen = CreateWidget<ULoadingScreen>(World, LoadingScreenWidget);
-			if (LoadingScreen)
-			{
-				LoadingScreen->AddToViewport();
-				FTimerHandle TimerHandle;
-				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-					{
-						LoadingScreen->RemoveFromViewport();
-					}, 3, false);
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("LoadingScreenWidget is nullptr"));
-		}
+		players[0].playerController->LobbyUI->OpenLoadingScreen();
 
-		World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+		FTimerHandle TimerHandler;
+		World->GetTimerManager().SetTimer(TimerHandler, [&]()
+			{
+				ChangeServer();
+			}, 1, false);
+
+		
 	}
+}
+
+void ALobbyGameMode::ChangeServer()
+{
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+	}	
 }

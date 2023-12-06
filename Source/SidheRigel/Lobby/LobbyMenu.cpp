@@ -105,6 +105,13 @@ void ULobbyMenu::OpenCharacterSelectMenu()
 	LobbySwitcher->SetActiveWidget(CharacterSelectMenu);
 }
 
+void ULobbyMenu::OpenLoadingScreen()
+{
+	if (LobbySwitcher == nullptr) return;
+
+	LobbySwitcher->SetActiveWidget(LoadingScreen);
+}
+
 void ULobbyMenu::OnLobbyStartButton()
 {
 	if (LobbyPlayerController->HasAuthority())

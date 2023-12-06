@@ -33,16 +33,13 @@ public:
 	UFUNCTION()
 		void Ready();
 
+	UFUNCTION()
+		void ChangeServer();
+
 	UPROPERTY(replicated)
 		TArray<FPlayerInfo> players;
 	UPROPERTY()
 		int32 readyCount = 0;
-
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<UUserWidget> LoadingScreenWidget;
-
-	UPROPERTY()
-		class ULoadingScreen* LoadingScreen;
 
 private:
 	uint32 NumberOfPlayers = 0;
