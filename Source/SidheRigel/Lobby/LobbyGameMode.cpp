@@ -91,12 +91,7 @@ void ALobbyGameMode::Ready()
 		players[0].playerController->LobbyUI->OpenLoadingScreen();
 
 		FTimerHandle TimerHandler;
-		World->GetTimerManager().SetTimer(TimerHandler, [&]()
-			{
-				ChangeServer();
-			}, 1, false);
-
-		
+		World->GetTimerManager().SetTimer(TimerHandler, this, &ALobbyGameMode::ChangeServer, 1, false);
 	}
 }
 
