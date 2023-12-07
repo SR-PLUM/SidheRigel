@@ -109,13 +109,13 @@ void AMinion::BeginPlay()
 
 	AIController = Cast<AMinionAIController>(GetController());
 
-	if (team == E_Team::Red)
+	if (team == E_Team::Blue)
 	{
-		currentWayPointOrder = 0;
+		currentWayPointOrder = 1;
 	}
 	else
 	{
-		currentWayPointOrder = WayPoints.Num() - 1;
+		currentWayPointOrder = WayPoints.Num() - 2;
 	}
 
 	if (HasAuthority())
@@ -166,7 +166,7 @@ void AMinion::Tick(float DeltaTime)
 			{
 				if (GetDistanceTo(currentWayPoint) <= 100.f)
 				{
-					if (team == E_Team::Red)
+					if (team == E_Team::Blue)
 					{
 						currentWayPointOrder++;
 					}
@@ -222,6 +222,14 @@ void AMinion::MoveToWayPoint_Implementation()
 						if (wayPointItr->wayPointOrder == currentWayPointOrder)
 						{
 							currentWayPoint = wayPointItr;
+							if (GetTeam() == E_Team::Blue)
+							{
+								currentWayPoint->currentBlueMinion++;
+							}
+							else
+							{
+								currentWayPoint->currentRedMinion++;
+							}
 							AIController->MoveToActor(wayPointItr);
 						}
 					}
