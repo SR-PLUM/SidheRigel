@@ -43,5 +43,8 @@ public:
 	float damage;
 
 	class AColdWWall* wall;
-	FTransform wallSpawnTransform;
+	FTransform wallSpawnTransform; 
+public:
+	UPROPERTY(EditAnywhere)
+		class USoundBase* SpawnSound;
 };

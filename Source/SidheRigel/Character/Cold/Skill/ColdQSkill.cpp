@@ -52,6 +52,8 @@ void UColdQSkill::OnUse(FHitResult Hit)
 		{
 			auto ColdCharacter = Cast<AColdCharacter>(character);
 
+			ColdCharacter->PlayQSkillSound();
+
 			if (character->IsSelectedTalent[4][0])
 			{
 				count = talentCount;

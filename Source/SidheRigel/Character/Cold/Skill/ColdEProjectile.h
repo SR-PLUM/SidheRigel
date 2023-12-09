@@ -42,4 +42,8 @@ public:
 		void Launch(FVector startLoc, FVector targetLoc);
 
 	class AColdEDamageField* damageField;
+
+public:
+	UPROPERTY(EditAnywhere)
+		class USoundBase* SpawnSound;
 };
