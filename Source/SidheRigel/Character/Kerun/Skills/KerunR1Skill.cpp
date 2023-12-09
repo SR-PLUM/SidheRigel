@@ -39,6 +39,11 @@ void UKerunR1Skill::OnUse(FHitResult Hit)
 {
 	if (AActor* Actor = Hit.GetActor())
 	{
+		if (AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character))
+		{
+			KerunCharacter->PlayRSkillSound();
+		}
+
 		if (IDamagable* Target = Cast<IDamagable>(Actor))
 		{
 			Target->TakeDamage(15.0f, character);
