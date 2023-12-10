@@ -12,6 +12,7 @@
 #include "SidheRigel/UI/HPUI.h"
 #include "SidheRigel/Tower/TowerAttackProjectile.h"
 #include "TowerDestroyParticle.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
 
 // Sets default values
 ATower::ATower()
@@ -106,6 +107,12 @@ void ATower::InitTowerUI()
 	{
 		TowerUIRef = TmpWidget;
 		TowerUIRef->InitHPBar();
+
+		auto gameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+		if (GetTeam() != gameInstance->myTeam)
+		{
+			TowerUIRef->SetEnemyColor();
+		}
 	}
 }
 
