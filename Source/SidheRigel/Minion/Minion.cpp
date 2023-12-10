@@ -109,18 +109,26 @@ void AMinion::BeginPlay()
 
 	AIController = Cast<AMinionAIController>(GetController());
 
-	if (team == E_Team::Red)
+	if (team == E_Team::Blue)
 	{
-		currentWayPointOrder = 0;
+		currentWayPointOrder = 1;
 	}
 	else
 	{
-		currentWayPointOrder = WayPoints.Num() - 1;
+		currentWayPointOrder = WayPoints.Num() - 2;
 	}
 
 	if (HasAuthority())
 	{
 		MoveToWayPoint();
+		if (GetTeam() == E_Team::Blue)
+		{
+			currentWayPoint->currentBlueMinion++;
+		}
+		else
+		{
+			currentWayPoint->currentRedMinion++;
+		}
 	}
 
 	InitMinionUI();
@@ -141,21 +149,6 @@ void AMinion::BeginPlay()
 void AMinion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (IsMoveVectorTrue)
-	{
-		FVector Location = GetActorLocation();
-		Location += moveDirection * (moveForce / 10) * DeltaTime;
-		SetActorLocation(Location);
-		moveCnt++;
-		if (moveCnt <= 10)
-		{
-			moveDirection = FVector::ZeroVector;
-			moveForce = 0;
-			moveCnt = 0;
-
-			IsMoveVectorTrue = false;
-		}
-	}
 
 	if (HasAuthority())
 	{
@@ -166,16 +159,26 @@ void AMinion::Tick(float DeltaTime)
 			{
 				if (GetDistanceTo(currentWayPoint) <= 100.f)
 				{
-					if (team == E_Team::Red)
+					if (team == E_Team::Blue)
 					{
 						currentWayPointOrder++;
+						currentWayPoint->currentBlueMinion--;
 					}
 					else
 					{
 						currentWayPointOrder--;
+						currentWayPoint->currentRedMinion--;
 					}
 					WayPoints.Remove(currentWayPoint);
 					MoveToWayPoint();
+					if (team == E_Team::Blue)
+					{
+						currentWayPoint->currentBlueMinion++;
+					}
+					else
+					{
+						currentWayPoint->currentRedMinion++;
+					}
 				}
 			}
 		}
@@ -213,19 +216,19 @@ void AMinion::MoveToWayPoint_Implementation()
 	{
 		if (AIController)
 		{
-				for (auto wayPoint : WayPoints)
-				{
-					AWayPoint* wayPointItr = Cast<AWayPoint>(wayPoint);
+			for (auto wayPoint : WayPoints)
+			{
+				AWayPoint* wayPointItr = Cast<AWayPoint>(wayPoint);
 
-					if (wayPointItr)
+				if (wayPointItr)
+				{
+					if (wayPointItr->wayPointOrder == currentWayPointOrder)
 					{
-						if (wayPointItr->wayPointOrder == currentWayPointOrder)
-						{
-							currentWayPoint = wayPointItr;
-							AIController->MoveToActor(wayPointItr);
-						}
+						currentWayPoint = wayPointItr;
+						AIController->MoveToActor(wayPointItr);
 					}
 				}
+			}
 		}
 		else
 		{

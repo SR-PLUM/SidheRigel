@@ -56,6 +56,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		TSubclassOf<class AKerunCharacter> KerunPawn;
 
+	TSubclassOf<class AAISidheRigelCharacter> AIClass;
+
 	UFUNCTION(Reliable, Client)
 		void DeterminePawnClass();
 	UFUNCTION(Reliable, Server)

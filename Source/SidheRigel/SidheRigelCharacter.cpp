@@ -38,6 +38,7 @@
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
+#include "SidheRigel/Character/AI/CharacterAIController.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -56,18 +57,18 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
 	
-	// Create a camera boom...
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
-	CameraBoom->TargetArmLength = 800.f;
-	CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
-	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+	//// Create a camera boom...
+	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	//CameraBoom->SetupAttachment(RootComponent);
+	//CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
+	//CameraBoom->TargetArmLength = 800.f;
+	//CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	//CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
-	// Create a camera...
-	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
-	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	//// Create a camera...
+	//TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
+	//TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	//TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	
 
 	// Make sure camera won't respond to collision with the player character
@@ -135,7 +136,6 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 		{
 			item.Add(false);
 		}
-
 		IsSelectedTalent.Add(item);
 	}
 
@@ -162,8 +162,6 @@ void ASidheRigelCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	InitProperty();
-
-	InitInGameUI();
 
 	/*AController* TargetController = GetController();
 	if (TargetController)
@@ -239,17 +237,12 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 
 void ASidheRigelCharacter::PossessedBy(AController* NewController)
 {
-	UE_LOG(LogTemp, Warning, TEXT("POSSESSED_BY In %s"), *GetName());
-
 	sidheRigelController = Cast<ASidheRigelPlayerController>(NewController);
 
-	/*if (sidheRigelController)
+	if (sidheRigelController)
 	{
-		sidheRigelController->stateMachine = NewObject<UStateMachine>();
-		sidheRigelController->stateMachine->InitializeController(sidheRigelController);
-
-		SetClientStateMachine();
-	}*/
+		InitInGameUI();
+	}
 }
 
 void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -281,7 +274,7 @@ void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SERVER_MoveToPoint :: PlayerController is Null"));
+		UE_LOG(LogTemp, Error, TEXT("SERVER_MoveToPoint :: PlayerController is Null"));
 	}
 }
 
@@ -440,12 +433,14 @@ void ASidheRigelCharacter::InitStatSummary()
 
 void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown)
 {
-	InGameUI->CharacterStatus->SkillButtons[SkillState]->SetCoolDownProgress(Percentage, CurrentCoolDown);
+	if(InGameUI)
+		InGameUI->CharacterStatus->SkillButtons[SkillState]->SetCoolDownProgress(Percentage, CurrentCoolDown);
 }
 
 void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 {
-	InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
+	if(InGameUI)
+		InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
 }
 
 void ASidheRigelCharacter::InitDeathUIWidget()
@@ -770,7 +765,7 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 
 		if (idx != 0)
 		{
-			DisplayTalentList(idx);
+			//DisplayTalentList(idx);
 		}
 	}
 
@@ -847,7 +842,7 @@ float ASidheRigelCharacter::GetAttackSpeed()
 {
 	float res = 0;
 
-	for (auto& value : attackSpeed)
+	for (auto value : attackSpeed)
 	{
 		res += value.Value;
 	}
