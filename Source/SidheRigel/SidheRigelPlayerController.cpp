@@ -137,23 +137,23 @@ void ASidheRigelPlayerController::OnPossess(APawn* aPawn)	//InServerFunction
 
 		if (Cast<USidheRigelGameInstance>(GetGameInstance())->bIsSingleGame)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("This Game Is Single GAme"));
+			//UE_LOG(LogTemp, Warning, TEXT("This Game Is Single GAme"));
 
-			UWorld* World = GetWorld();
-			if (World)
-			{
-				FTransform SpawnTransform;
-				SpawnTransform.SetLocation(RedStart->GetActorLocation());
-				SpawnTransform.SetRotation(RedStart->GetActorRotation().Quaternion());
+			//UWorld* World = GetWorld();
+			//if (World)
+			//{
+			//	FTransform SpawnTransform;
+			//	SpawnTransform.SetLocation(RedStart->GetActorLocation());
+			//	SpawnTransform.SetRotation(RedStart->GetActorRotation().Quaternion());
 
-				AAISidheRigelCharacter* AI = World->SpawnActorDeferred<AAISidheRigelCharacter>(AIClass, SpawnTransform);
-				if (AI)
-				{
-					AI->SetTeam(E_Team::Red);
-					AI->spawnLocation = RedStart->GetActorLocation();
-				}
-				AI->FinishSpawning(SpawnTransform);
-			}
+			//	AAISidheRigelCharacter* AI = World->SpawnActorDeferred<AAISidheRigelCharacter>(AIClass, SpawnTransform);
+			//	if (AI)
+			//	{
+			//		AI->SetTeam(E_Team::Red);
+			//		AI->spawnLocation = RedStart->GetActorLocation();
+			//	}
+			//	AI->FinishSpawning(SpawnTransform);
+			//}
 		}
 	}
 }
