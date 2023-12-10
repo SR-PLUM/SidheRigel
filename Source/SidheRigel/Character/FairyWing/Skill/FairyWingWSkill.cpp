@@ -59,6 +59,7 @@ void UFairyWingWSkill::OnUse(FHitResult Hit)
 			if (AFairyWingCharacter* FairyWingCharacter = Cast<AFairyWingCharacter>(character))
 			{
 				FairyWingCharacter->PlayWSkillMontage();
+				FairyWingCharacter->PlayWSkillSound();
 			}
 
 			collider->colliderOwner = character;

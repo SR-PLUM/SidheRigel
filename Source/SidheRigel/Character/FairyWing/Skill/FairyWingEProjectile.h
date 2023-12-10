@@ -49,4 +49,11 @@ private:
 
 public:
 	bool isHerohit;
+
+public:
+	UPROPERTY(EditAnywhere)
+		class USoundBase* SpawnSound;
+
+	UPROPERTY(EditAnywhere)
+		class USoundBase* HitSound;
 };

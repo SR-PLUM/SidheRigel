@@ -34,4 +34,8 @@ public:
 	float elapsedTime = 0;
 	float damageCycle = 0.2f;
 	float duration = 1.5f;
+
+public:
+	UPROPERTY(EditAnywhere)
+		class USoundBase* SpawnSound;
 };

@@ -4,6 +4,7 @@
 #include "ColdWProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "kismet/GameplayStatics.h"
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Movable.h"
 #include "SidheRigel/Interface/Team.h"
@@ -52,6 +53,7 @@ void AColdWProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	ProjectileMesh->OnComponentBeginOverlap.AddDynamic(this, &AColdWProjectile::OnColliderOverlap);
+	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 
 	FTimerHandle WProjectileTimer;
 	GetWorldTimerManager().SetTimer(WProjectileTimer, 

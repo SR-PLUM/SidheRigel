@@ -61,6 +61,7 @@ void UFairyWingQSkill::OnUse(FHitResult Hit)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("UseQSkill2"));
 				FairyWingCharacter->PlayQSkillMontage();
+				FairyWingCharacter->PlayQSkillSound();
 			}
 
 			if (character->IsSelectedTalent[4][2])

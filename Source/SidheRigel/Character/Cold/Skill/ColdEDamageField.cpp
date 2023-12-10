@@ -85,7 +85,6 @@ void AColdEDamageField::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 	if (Cast<ASidheRigelCharacter>(projectileOwner)->IsSelectedTalent[2][0])
 	{
 		SetActorScale3D(FVector(2, 2, 2));

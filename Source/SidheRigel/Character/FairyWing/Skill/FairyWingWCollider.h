@@ -39,5 +39,9 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* ColliderMesh;;
+		class UStaticMeshComponent* ColliderMesh;
+
+public:
+	UPROPERTY(EditAnywhere)
+		class USoundBase* SpawnSound;
 };
