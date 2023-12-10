@@ -50,6 +50,7 @@ void UKerunWSkill::OnTick()
 		{
 			LandingIntoTarget(KerunCharacter);
 			IsLanding = true;
+
 			KerunCharacter->PlayWSkillEndMontage();
 		}
 
@@ -74,6 +75,11 @@ void UKerunWSkill::OnUse(FHitResult Hit)
 	{
 		if (IDamagable* Target = Cast<IDamagable>(Actor))
 		{
+			if (AKerunCharacter* Kerun = Cast<AKerunCharacter>(character))
+			{
+				Kerun->PlayWSkillSound();
+			}
+
 			JumpIntoTarget(Actor);
 
 			KerunCharacter->ImproveEStack(3);
@@ -216,6 +222,11 @@ void UKerunWSkill::AttackTarget(AActor* Actor)
 
 void UKerunWSkill::LandingIntoTarget(AKerunCharacter* Owner)
 {
+	if (AKerunCharacter* Kerun = Cast<AKerunCharacter>(Owner))
+	{
+		Kerun->PlayWSkillLandingSound();
+	}
+
 	//SpawnCollider();
 	Owner->GetCapsuleComponent()->SetCollisionProfileName(FName("IgnoreOnlyPawn"));
 

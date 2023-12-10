@@ -4,6 +4,7 @@
 #include "KerunR1SkillTalentCollider.h"
 
 #include "Components/SphereComponent.h"
+#include "kismet/GameplayStatics.h"
 
 #include "SidheRigel/Interface/Team.h"
 #include "SidheRigel/Interface/Damagable.h"
@@ -34,6 +35,7 @@ AKerunR1SkillTalentCollider::AKerunR1SkillTalentCollider()
 void AKerunR1SkillTalentCollider::BeginPlay()
 {
 	Super::BeginPlay();
+	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 	
 	FTimerHandle R1TalentColliderTimer;
 	GetWorldTimerManager().SetTimer(R1TalentColliderTimer,

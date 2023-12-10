@@ -5,6 +5,8 @@
 #include "GameFramework/PlayerState.h"
 #include "ThirdParty/Steamworks/Steamv151/sdk/public/steam/steam_api.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/WidgetComponent.h"
+#include "LoadingScreen.h"
 
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Lobby/LobbyMenu.h"
@@ -86,6 +88,19 @@ void ALobbyGameMode::Ready()
 		UWorld* World = GetWorld();
 		if (World == nullptr) return;
 
-		World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+		players[0].playerController->LobbyUI->OpenLoadingScreen();
+
+		FTimerHandle TimerHandler;
+		World->GetTimerManager().SetTimer(TimerHandler, this, &ALobbyGameMode::ChangeServer, 1, false);
 	}
+}
+
+void ALobbyGameMode::ChangeServer()
+{
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		World->ServerTravel("/Game/Maps/TrainingRoom?listen");
+	}	
 }

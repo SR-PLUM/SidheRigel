@@ -1,10 +1,11 @@
 #include "FairyWingWCollider.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "kismet/GameplayStatics.h"
+
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/CCable.h"
 #include "SidheRigel/Interface/Team.h"
-
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "../../../Minion/Minion.h"
 
@@ -46,6 +47,7 @@ void AFairyWingWCollider::BeginPlay()
 	Super::BeginPlay();
 	
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingWCollider::OnColliderOverlap);
+	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 
 	FTimerHandle WColliderDestroyTimer;
 	GetWorldTimerManager().SetTimer(WColliderDestroyTimer,

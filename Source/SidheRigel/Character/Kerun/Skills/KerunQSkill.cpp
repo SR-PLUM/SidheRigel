@@ -79,6 +79,12 @@ void UKerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillStat
 
 void UKerunQSkill::OnUse(FHitResult Hit)
 {
+	if (AKerunCharacter* KerunCharacter = Cast<AKerunCharacter>(character))
+	{
+		KerunCharacter->PlayQSkillSound();
+		KerunCharacter->PlayQSkillBuffSound();
+	}
+
 	character->AddAttackSpeed("QSkill", MaxAttackSpeed);
 	IsWorking = true;
 	BuffDuration = MaxDuration;

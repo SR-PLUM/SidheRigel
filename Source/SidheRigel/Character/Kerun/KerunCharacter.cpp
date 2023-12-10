@@ -300,6 +300,46 @@ void AKerunCharacter::PlayWSkillEndMontage()
 	}
 }
 
+void AKerunCharacter::PlayQSkillSound()
+{
+	if (QSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, QSkillSound, this->GetActorLocation());
+	}
+}
+
+void AKerunCharacter::PlayQSkillBuffSound()
+{
+	if (QSkillBuffSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, QSkillBuffSound, this->GetActorLocation());
+	}
+}
+
+void AKerunCharacter::PlayWSkillSound()
+{
+	if (WSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, WSkillSound, this->GetActorLocation());
+	}
+}
+
+void AKerunCharacter::PlayWSkillLandingSound()
+{
+	if (WSkillLandingSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, WSkillLandingSound, this->GetActorLocation());
+	}
+}
+
+void AKerunCharacter::PlayRSkillSound()
+{
+	if (RSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, RSkillSound, this->GetActorLocation());
+	}
+}
+
 void AKerunCharacter::UseParticleSystem(E_SkillState SkillState)
 {
 	UParticleSystem* Particle;

@@ -289,3 +289,35 @@ void AFairyWingCharacter::PlayRSkillMontage()
 		AnimInstance->Montage_Play(RSkillMontage);
 	}
 }
+
+void AFairyWingCharacter::PlayQSkillSound()
+{
+	if (QSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, QSkillSound, this->GetActorLocation());
+	}
+}
+
+void AFairyWingCharacter::PlayWSkillSound()
+{
+	if (WSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, WSkillSound, this->GetActorLocation());
+	}
+}
+
+void AFairyWingCharacter::PlayESkillSound()
+{
+	if (ESkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ESkillSound, this->GetActorLocation());
+	}
+}
+
+void AFairyWingCharacter::PlayRSkillSound()
+{
+	if (RSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, RSkillSound, this->GetActorLocation());
+	}
+}

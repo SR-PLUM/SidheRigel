@@ -4,6 +4,8 @@
 #include "FairyWingEProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "kismet/GameplayStatics.h"
+
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Team.h"
 #include "SidheRigel/SidheRigelCharacter.h"
@@ -59,8 +61,9 @@ AFairyWingEProjectile::AFairyWingEProjectile()
 // Called when the game starts or when spawned
 void AFairyWingEProjectile::BeginPlay()
 {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
+
+	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 }
 
 // Called every frame
@@ -140,7 +143,8 @@ void AFairyWingEProjectile::Tick(float DeltaTime)
 							}							
 						}
 					}
-						
+
+					UGameplayStatics::PlaySoundAtLocation(this, HitSound, this->GetActorLocation());
 					Destroy();
 				}
 			}
