@@ -27,6 +27,7 @@
 #include "SidheRigel/UI/CharacterStatus.h"
 #include "SidheRigel/UI/SkillBtn.h"
 #include "SidheRigel/UI/StatSummary.h"
+#include "SidheRigel/UI/DeathTime.h"
 #include "Components/WidgetComponent.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRigel/Tower/Tower.h"
@@ -143,6 +144,8 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	//Init Talent Widget Subclass
 	InitTalentWidget();
 
+	InitDeathUIWidget();
+
 	bReplicates = true;
 }
 
@@ -179,6 +182,8 @@ void ASidheRigelCharacter::BeginPlay()
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
+
+	SpawnDeathUI();
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -229,6 +234,7 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 	{
 		DieTime -= DeltaSeconds;
 	}
+
 }
 
 void ASidheRigelCharacter::PossessedBy(AController* NewController)
@@ -405,8 +411,6 @@ void ASidheRigelCharacter::DisplayTalentList(int32 Index)
 		slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 		slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Bottom);
 	}
-
-	UE_LOG(LogTemp, Error, TEXT("DispalyTalent"));
 }
 
 void ASidheRigelCharacter::InitStatWidget()
@@ -444,6 +448,47 @@ void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 	InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
 }
 
+void ASidheRigelCharacter::InitDeathUIWidget()
+{
+	ConstructorHelpers::FClassFinder<UUserWidget> DeathTimeClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_DeathTime"));
+	if (DeathTimeClass.Class == nullptr)
+		return;
+
+	DeathUIWidget = DeathTimeClass.Class;
+}
+
+void ASidheRigelCharacter::SpawnDeathUI()
+{
+	DeathUI = CreateWidget<UDeathTime>(InGameUI, DeathUIWidget);
+	InGameUI->DeathTimeOverlay->AddChild(DeathUI);
+	if (DeathUI)
+	{
+		DeathUI->bIsEnabled = false;
+	}
+}
+
+void ASidheRigelCharacter::SetDeathUI(float CurrentCoolDown)
+{
+	if (DeathUI)
+	{
+		DeathUI->bIsEnabled = true;
+		DeathUI->SetDeathCoolDown(CurrentCoolDown);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("DeathUI is Null"));
+	
+}
+
+void ASidheRigelCharacter::ClearDeathUI()
+{
+	if (DeathUI)
+	{
+		DeathUI->ClearDeathCoolDown();
+		DeathUI->bIsEnabled = false;
+	}
+	
+}
+
 void ASidheRigelCharacter::InitInGameUIWidget()
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> InGameUIBPClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_InGameUI"));
@@ -453,8 +498,6 @@ void ASidheRigelCharacter::InitInGameUIWidget()
 	InGameUIWidget = InGameUIBPClass.Class;
 
 	if (InGameUIWidget == nullptr) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("InitInGameUIWidget"))
 }
 
 void ASidheRigelCharacter::InitInGameUI()
@@ -474,8 +517,6 @@ void ASidheRigelCharacter::InitInGameUI()
 			InGameUI->CharacterStatus->InitCharacterStatus(this);
 
 			DisplayTalentList(0);
-
-			UE_LOG(LogTemp, Warning, TEXT("InGameUI Spawned"))
 		}
 		else
 		{

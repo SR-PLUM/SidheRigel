@@ -140,7 +140,7 @@ public: //UI
 
 	TSubclassOf<UUserWidget> InGameUIWidget;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "InGameUI")
 		class UInGameUI* InGameUI;
 
 	void InitInGameUIWidget();
@@ -152,11 +152,22 @@ public: //UI
 	UPROPERTY()
 		class UStatSummary* StatSummary;
 
+	UPROPERTY()
+		TSubclassOf<class UUserWidget> DeathUIWidget;
+
+	UPROPERTY()
+		class UDeathTime* DeathUI;
+
 	void InitStatWidget();
 	void InitStatSummary();
 
 	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
 	void ClearUISkillCoolDown(E_SkillState SkillState);
+
+	void InitDeathUIWidget();
+	void SpawnDeathUI();
+	void SetDeathUI(float CurrentCoolDown);
+	void ClearDeathUI();
 
 public:	//CC Particle
 	UPROPERTY(EditDefaultsOnly)

@@ -18,13 +18,17 @@ UDieState::~UDieState()
 void UDieState::OnBegin()
 {
 	controller->StopMovement();
-	//myCharacter->GetMesh()->SetCollisionProfileName(FName("NoCollision"));
-	//myCharacter->GetCapsuleComponent()->SetCollisionProfileName(FName("NoCollision"));
+	
 
 	if (!myCharacter)
 	{
 		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
 	}
+
+	myCharacter->SetDeathUI(myCharacter->DieTime);
+
+	/*myCharacter->GetMesh()->SetCollisionProfileName(FName("NoCollision"));
+	myCharacter->GetCapsuleComponent()->SetCollisionProfileName(FName("NoCollision"));*/
 }
 
 void UDieState::Update(float DeltaTime)
@@ -34,10 +38,15 @@ void UDieState::Update(float DeltaTime)
 		myCharacter->isDie = false;
 		myCharacter->SetActorLocation(myCharacter->spawnLocation);
 		myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
+		myCharacter->ClearDeathUI();
 
 		controller->ChangeState(controller->Idle);
-		//myCharacter->GetMesh()->SetCollisionProfileName(FName("BlockAll"));
-		//myCharacter->GetCapsuleComponent()->SetCollisionProfileName(FName("BlockAll"));
+		/*myCharacter->GetMesh()->SetCollisionProfileName(FName("BlockAll"));
+		myCharacter->GetCapsuleComponent()->SetCollisionProfileName(FName("BlockAll"));*/
+	}
+	else
+	{
+		myCharacter->SetDeathUI(myCharacter->DieTime);
 	}
 }
 
