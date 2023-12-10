@@ -6,6 +6,7 @@
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
 #include "Enum/E_SkillState.h"
+#include "Enum/E_Team.h"
 
 #include "SidheRigelPlayerController.generated.h"
 
@@ -64,19 +65,31 @@ protected:
 public:
 	/*UPROPERTY(replicated, EditAnywhere)
 		UStateMachine* stateMachine;*/
+	FTimerHandle stateUpdateTimer;
+	void IE_Update();
+	float deltaTime = 0.1;
+
 	void InitializeState();
-protected:
-	class UState* currentState;
-	class UState* previousState;
 public:
+	UPROPERTY()
+		class UState* currentState;
+	UPROPERTY()
+		class UState* previousState;
+public:
+	UPROPERTY()
 	class UState* Idle;
+	UPROPERTY()
 	class UState* MoveToAttack;
+	UPROPERTY()
 	class UState* Move;
+	UPROPERTY()
 	class UState* AttackWait;
+	UPROPERTY()
 	class UState* Attack;
+	UPROPERTY()
 	class UState* UseSkill;
 //Special State
-	class UState* Stun;
+	UPROPERTY()
 	class UState* Die;
 public:
 	class ASidheRigelCharacter* myCharacter;

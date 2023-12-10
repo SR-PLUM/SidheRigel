@@ -33,6 +33,9 @@ public:
 	UFUNCTION()
 		void Ready();
 
+	UFUNCTION()
+		void ChangeServer();
+
 	UPROPERTY(replicated)
 		TArray<FPlayerInfo> players;
 	UPROPERTY()

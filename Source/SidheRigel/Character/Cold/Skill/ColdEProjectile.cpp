@@ -49,7 +49,8 @@ AColdEProjectile::AColdEProjectile()
 void AColdEProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 }
 
 // Called every frame

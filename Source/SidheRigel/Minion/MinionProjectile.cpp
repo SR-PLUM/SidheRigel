@@ -28,7 +28,7 @@ void AMinionProjectile::SetProjectileMesh()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Dummy/MaterialSphere"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Minion/SM_MinionProjectile"));
 	if (Mesh.Succeeded())
 	{
 		ProjectileMesh->SetStaticMesh(Mesh.Object);

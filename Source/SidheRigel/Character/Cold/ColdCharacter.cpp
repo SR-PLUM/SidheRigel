@@ -191,3 +191,35 @@ void AColdCharacter::InitColdTalent()
 	talentListArray[6].talentItems[2].imgPath = "/Game/Heros/Cold/TalentIcons/Cold_7_3";
 }
 
+void AColdCharacter::PlayQSkillSound()
+{
+	if (QSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, QSkillSound, this->GetActorLocation());
+	}
+}
+
+void AColdCharacter::PlayWSkillSound()
+{
+	if (WSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, WSkillSound, this->GetActorLocation());
+	}
+}
+
+void AColdCharacter::PlayESkillSound()
+{
+	if (ESkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ESkillSound, this->GetActorLocation());
+	}
+}
+
+void AColdCharacter::PlayRSkillSound()
+{
+	if (RSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, RSkillSound, this->GetActorLocation());
+	}
+}
+

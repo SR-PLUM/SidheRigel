@@ -4,6 +4,7 @@
 #include "ColdEGroundFireEffect.h"
 
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "SidheRigel/Interface/Team.h"
 #include "SidheRigel/Interface/Damagable.h"
@@ -29,6 +30,8 @@ AColdEGroundFireEffect::AColdEGroundFireEffect()
 void AColdEGroundFireEffect::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 	
 	FTimerHandle EEffectTimer;
 	GetWorldTimerManager().SetTimer(EEffectTimer,

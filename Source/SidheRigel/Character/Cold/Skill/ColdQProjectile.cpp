@@ -4,6 +4,7 @@
 #include "ColdQProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "kismet/GameplayStatics.h"
 #include "SidheRigel/Interface/Damagable.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
@@ -60,7 +61,8 @@ AColdQProjectile::AColdQProjectile()
 void AColdQProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());	
 }
 
 // Called every frame

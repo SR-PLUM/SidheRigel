@@ -45,5 +45,8 @@ private:
 		class UStaticMeshComponent* ProjectileMesh;
 
 	TSubclassOf<class AColdQParticle> particleClass;
-	TSubclassOf<class AColdQSplash> splashClass;
+	TSubclassOf<class AColdQSplash> splashClass; 
+public:
+	UPROPERTY(EditAnywhere)
+		class USoundBase* SpawnSound;
 };

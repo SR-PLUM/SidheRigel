@@ -1219,9 +1219,20 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 void ASidheRigelCharacter::Stun(float time)
 {
 	float totalTime = time * (1 - (GetEndurance() / 100.f));
-		
-	SpawnStunParticle();
-	stunTime = totalTime;
+	
+	if (totalTime > stunTime)
+	{
+		SpawnStunParticle();
+		stunTime = totalTime;
+		if (totalTime > silenceTime)
+		{
+			silenceTime = totalTime;
+		}
+		if (totalTime > stopTime)
+		{
+			stopTime = totalTime;
+		}
+	}
 	//sidheRigelController->stateMachine->OnStun(totalTime);
 }
 
@@ -1229,8 +1240,11 @@ void ASidheRigelCharacter::Stop(float time)
 {
 	float totalTime = time * (1 - (GetEndurance() / 100.f));
 	
-	SpawnStopParticle();
-	stopTime = totalTime;
+	if (totalTime > stopTime)
+	{
+		SpawnStopParticle();
+		stopTime = totalTime;
+	}
 }
 
 void ASidheRigelCharacter::Slow(float time, float value, FString key)
@@ -1277,10 +1291,10 @@ void ASidheRigelCharacter::Slow(float time, float value, FString key)
 
 void ASidheRigelCharacter::Silence(float time)
 {
-	if (sidheRigelController)
-	{
-		float totalTime = time * (1 - (GetEndurance() / 100.f));
+	float totalTime = time * (1 - (GetEndurance() / 100.f));
 
+	if (totalTime > silenceTime)
+	{
 		SpawnSilenceParticle();
 		silenceTime = totalTime;
 	}

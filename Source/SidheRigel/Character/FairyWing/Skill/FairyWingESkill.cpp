@@ -45,6 +45,7 @@ void UFairyWingESkill::OnUse(FHitResult Hit)
 		if (AFairyWingCharacter* FairyWingCharacter = Cast<AFairyWingCharacter>(character))
 		{
 			FairyWingCharacter->PlayESkillMontage();
+			FairyWingCharacter->PlayESkillSound();
 		}
 
 		if (projectileClass)

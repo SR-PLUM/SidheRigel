@@ -3,6 +3,7 @@
 
 #include "ColdR2Skill.h"
 
+#include "SidheRigel/Character/Cold/ColdCharacter.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdR2Projectile.h"
 
@@ -56,6 +57,12 @@ void UColdR2Skill::OnUse(FHitResult Hit)
 		AColdR2Projectile* projectile = World->SpawnActorDeferred<AColdR2Projectile>(projectileClass, SpawnTransform);
 		if (projectile)
 		{
+
+			if (AColdCharacter* ColdCharacter = Cast<AColdCharacter>(character))
+			{
+				ColdCharacter->PlayRSkillSound();
+			}
+
 			projectile->projectileOwner = character;
 			projectile->damage = colliderDamage;
 			projectile->duration = colliderDuration;

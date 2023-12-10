@@ -21,6 +21,9 @@ public:
 		void OpenCharacterSelectMenu();
 
 	UFUNCTION()
+		void OpenLoadingScreen();
+
+	UFUNCTION()
 		void OnLobbyStartButton();
 
 	UFUNCTION()
@@ -71,6 +74,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* StartGameButton;
+
+	UPROPERTY(meta = (BindWidget))
+		class UWidget* LoadingScreen;
 
 	class USidheRigelGameInstance* SidheRigelInstance;
 

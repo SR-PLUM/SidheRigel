@@ -4,6 +4,7 @@
 #include "ColdWSkill.h"
 
 #include "SidheRigel/SidheRigelPlayerController.h"
+#include "SidheRigel/Character/Cold/ColdCharacter.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdWParticle.h"
@@ -72,6 +73,11 @@ void UColdWSkill::OnUse(FHitResult Hit)
 		AColdWProjectile* projectile = World->SpawnActorDeferred<AColdWProjectile>(projectileClass, SpawnTransform);
 		if (projectile)
 		{
+			if (AColdCharacter* ColdCharacter = Cast<AColdCharacter>(character))
+			{
+				ColdCharacter->PlayWSkillSound();
+			}
+
 			projectile->projectileOwner = character;
 			projectile->duration = colliderDuration;
 			projectile->force = colliderForce;
