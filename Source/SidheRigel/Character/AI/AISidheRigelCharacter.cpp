@@ -9,6 +9,8 @@
 
 #include "CharacterAIController.h"
 #include "SidheRigel/Minion/WayPoint.h"
+#include "SidheRigel/Minion/Minion.h"
+#include "SidheRIgel/Tower/Tower.h"
 
 AAISidheRigelCharacter::AAISidheRigelCharacter()
 {
@@ -22,9 +24,13 @@ void AAISidheRigelCharacter::BeginPlay()
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AWayPoint::StaticClass(), WayPoints);
 
-	currentWayPointOrder = WayPoints.Num() - 2;
+	currentWayPointOrder = 5;
 
-	MoveToWayPoint(currentWayPointOrder);
+	if (AIController)
+	{
+		currentWayPoint = GetWayPoint(currentWayPointOrder);
+		AIController->MoveToActor(currentWayPoint);
+	}
 }
 
 void AAISidheRigelCharacter::Tick(float DeltaSeconds)
@@ -38,98 +44,112 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	if (currentWayPoint)
+	//Attack
+	if (currentTarget)
 	{
-		if (WayPoints.Num() > 0)
+		//진행중인 방향의 미니언이 없고 현재 위치에도 적은수의 미니언이 남았다면
+		if (GetWayPoint(currentWayPointOrder - 1)->currentRedMinion == 0 &&
+			GetWayPoint(currentWayPointOrder)->currentRedMinion < 2)
 		{
-			if (GetDistanceTo(currentWayPoint) <= 150.f)
+			//후진
+			currentWayPointOrder = currentWayPointOrder + 1;
+			currentWayPoint = GetWayPoint(currentWayPointOrder);
+		}
+		else
+		{
+			//상대가 멀다면 상대 방향으로 이동
+			if (GetDistanceTo(currentTarget) > GetRange())
 			{
-				currentWayPointOrder--;
-
-				MoveToWayPoint(currentWayPointOrder);
+				if (AIController)
+				{
+					AIController->MoveToActor(currentTarget);
+				}
 			}
 			else
 			{
-				MoveToWayPoint(currentWayPointOrder);
+				if (AIController)
+				{
+					AIController->StopMovement();
+				}
+				//공격 할 수 있으면 공격
+				if (currentAttackDelay <= 0)
+				{
+					//currentTarget이 적 영웅이면 Q스킬 사용
+					if (auto SREnemy = Cast<ASidheRigelCharacter>(currentTarget))
+					{
+						//Q스킬 사용전 마나 및 쿨타임 확인
+						if (skills[E_SkillState::Q_Ready]->GetCooldown() <= 0)
+						{
+							if (skills[E_SkillState::Q_Ready]->CanUse())
+							{
+								FHitResult Hit;
+								skills[E_SkillState::Q_Ready]->OnUse(Hit);
+								skills[E_SkillState::Q_Ready]->SetCooldown();
+							}
+						}
+					}
+
+					Attack(currentTarget);
+					//공격속도 적용
+					currentAttackDelay = 1 / GetAttackSpeed();
+
+					if (auto damagableActor = Cast<IDamagable>(currentTarget))
+					{
+						//적이 죽었으면 대상변경
+						if (damagableActor->GetHP() <= 0)
+						{
+							if (!InRangeActors.IsEmpty())
+							{
+								//가장 가까운 적 대상
+								float maxDistance = 0;
+								for (auto enemy : InRangeActors)
+								{
+									auto enemyDist = GetDistanceTo(enemy);
+
+									if (maxDistance < enemyDist)
+									{
+										maxDistance = enemyDist;
+										currentTarget = enemy;
+									}
+								}
+
+							}
+							else//더이상 적이 없으면 currentTarget == nullprt
+							{
+								currentTarget = nullptr;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
 	else
 	{
-		MoveToWayPoint(currentWayPointOrder);
-	}
-
-	//Move
-	//공격 대상이 있다면
-	if (currentTarget)
-	{
-		//상대가 멀다면 상대 방향으로 이동
-		if (GetDistanceTo(currentTarget) > GetRange())
+		//Move
+		if (currentWayPoint)
 		{
-			if (AIController)
+			UE_LOG(LogTemp,Warning,TEXT("Move"))
+			//도착
+			if (GetDistanceTo(currentWayPoint) <= 150.f)
 			{
-				//UE_LOG(LogTemp, Warning, TEXT("MoveToActor"));
-				AIController->MoveToActor(currentTarget);
-				//UAIBlueprintHelperLibrary::SimpleMoveToLocation(AIController, currentTarget->GetActorLocation());
+				//진행중인 방향의 미니언이 4마리 이상이라면
+				if (GetWayPoint(currentWayPointOrder - 1)->currentRedMinion > 3)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Move Next WayPoint"))
+					//전진
+					currentWayPointOrder = currentWayPointOrder - 1;
+					currentWayPoint = GetWayPoint(currentWayPointOrder);
+				}
+			}
+			else
+			{
+				AIController->MoveToActor(GetWayPoint(currentWayPointOrder));
 			}
 		}
 		else
 		{
-			if (AIController)
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("StopMovement"));
-				AIController->StopMovement();
-			}
-			//공격 할 수 있으면 공격
-			if (currentAttackDelay <= 0)
-			{
-				//currentTarget이 적 영웅이면 Q스킬 사용
-				if (auto SREnemy = Cast<ASidheRigelCharacter>(currentTarget))
-				{
-					//Q스킬 사용전 마나 및 쿨타임 확인
-					if (skills[E_SkillState::Q_Ready]->GetCooldown() <= 0)
-					{
-						if (skills[E_SkillState::Q_Ready]->CanUse())
-						{
-							FHitResult Hit;
-							skills[E_SkillState::Q_Ready]->OnUse(Hit);
-							skills[E_SkillState::Q_Ready]->SetCooldown();
-						}
-					}
-				}
-
-				Attack(currentTarget);
-				//공격속도 적용
-				currentAttackDelay = 1 / GetAttackSpeed();
-
-				if (auto damagableActor = Cast<IDamagable>(currentTarget))
-				{
-					//적이 죽었으면 대상변경
-					if (damagableActor->GetHP() <= 0)
-					{
-						if (!InRangeActors.IsEmpty())
-						{
-							//가장 가까운 적 대상
-							float maxDistance = 0;
-							for (auto enemy : InRangeActors)
-							{
-								auto enemyDist = GetDistanceTo(enemy);
-
-								if (maxDistance < enemyDist)
-								{
-									maxDistance = enemyDist;
-									currentTarget = enemy;
-								}
-							}
-
-						}
-						else//더이상 적이 없으면 currentTarget == nullprt
-						{
-							currentTarget = nullptr;
-						}
-					}
-				}
-			}
+			currentWayPoint = GetWayPoint(currentWayPointOrder);
 		}
 	}
 
@@ -146,22 +166,25 @@ void AAISidheRigelCharacter::SetTeam(E_Team setTeam)
 
 void AAISidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::OnEnterEnemy(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-
-	//UE_LOG(LogTemp, Warning, TEXT("Enter Enemy"))
-
 	if (ITeam* TeamEnemy = Cast<ITeam>(OtherActor))
 	{
 		if (TeamEnemy->GetTeam() != GetTeam())
 		{
-			if (ASidheRigelCharacter* SRCharacter = Cast<ASidheRigelCharacter>(OtherActor))
+			if (AMinion* MinionEnemy = Cast<AMinion>(OtherActor))
 			{
 				InRangeActors.Add(OtherActor);
-				
-				if (currentTarget == nullptr)
-				{
-					currentTarget = OtherActor;
-				}
+			}
+			else if (ATower* TowerEnemy = Cast<ATower>(OtherActor))
+			{
+				InRangeActors.Add(OtherActor);
+			}
+			else if (ASidheRigelCharacter* SRCharacter = Cast<ASidheRigelCharacter>(OtherActor))
+			{
+				InRangeActors.Add(OtherActor);
+			}
+			if (currentTarget == nullptr)
+			{
+				currentTarget = OtherActor;
 			}
 		}
 	}
@@ -195,24 +218,23 @@ void AAISidheRigelCharacter::OnExitEnemy(UPrimitiveComponent* OverlappedComponen
 	}
 }
 
-void AAISidheRigelCharacter::MoveToWayPoint(int wayPointIndex)
+AWayPoint* AAISidheRigelCharacter::GetWayPoint(int idx)
 {
-	if (AIController)
-	{
-		for (auto wayPoint : WayPoints)
-		{
-			AWayPoint* wayPointItr = Cast<AWayPoint>(wayPoint);
+	AWayPoint* getWayPoint = nullptr;
 
-			if (wayPointItr)
+	for (auto wayPoint : WayPoints)
+	{
+		AWayPoint* wayPointItr = Cast<AWayPoint>(wayPoint);
+
+		if (wayPointItr)
+		{
+			if (wayPointItr->wayPointOrder == idx)
 			{
-				if (wayPointItr->wayPointOrder == wayPointIndex)
-				{
-					currentWayPoint = wayPointItr;
-					AIController->MoveToActor(wayPointItr);
-				}
+				getWayPoint = wayPointItr;
 			}
 		}
 	}
+	return getWayPoint;
 }
 
 
