@@ -44,15 +44,12 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 		{
 			if (GetDistanceTo(currentWayPoint) <= 150.f)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Distance is Enough %f"), GetDistanceTo(currentWayPoint));
 				currentWayPointOrder--;
 
 				MoveToWayPoint(currentWayPointOrder);
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Too Far %f"), GetDistanceTo(currentWayPoint));
-
 				MoveToWayPoint(currentWayPointOrder);
 			}
 		}
@@ -161,11 +158,8 @@ void AAISidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedCompone
 			{
 				InRangeActors.Add(OtherActor);
 				
-				//UE_LOG(LogTemp, Warning, TEXT("Add RangeActor"))
-
 				if (currentTarget == nullptr)
 				{
-					//UE_LOG(LogTemp,Warning,TEXT("In Set Currnet Target"))
 					currentTarget = OtherActor;
 				}
 			}
