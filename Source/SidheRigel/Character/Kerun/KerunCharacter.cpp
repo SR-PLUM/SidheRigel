@@ -29,7 +29,7 @@ AKerunCharacter::AKerunCharacter()
 {
 	InitAttackProjectile();
 
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+	//ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 
 	InitKerunTalent();
 }

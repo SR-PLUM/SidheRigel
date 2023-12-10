@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
+#include "SidheRigel/Enum/E_Team.h"
 #include "LobbyGameMode.generated.h"
 
 USTRUCT()
