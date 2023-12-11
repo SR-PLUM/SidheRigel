@@ -60,16 +60,6 @@ void ALobbyPlayerController::Ready_Implementation()
 	{
 		isReady = true;
 
-		FString teamName;
-		if (myTeam == E_Team::Blue)
-			teamName = "Blue";
-		else if (myTeam == E_Team::Red)
-			teamName = "Red";
-		else
-			teamName = "ERROR";
-
-		UE_LOG(LogTemp, Warning, TEXT("READY :: CUrrentPlayer : %s, current Team : %s"), *GetName(), *teamName);
-
 		SetGameInstanceTeam(myTeam);
 
 		auto currentGM = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -99,6 +89,17 @@ void ALobbyPlayerController::SetGameInstanceTeam_Implementation(E_Team setGITeam
 	{
 		SRGameInstance->myTeam = setGITeam;
 	}
+}
+
+void ALobbyPlayerController::IsCharacterSelected_Implementation()
+{
+	auto SRGameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+	if (SRGameInstance)
+	{
+		if (SRGameInstance->CharacterNum != E_Character::Character_Null)
+			Ready();
+	}
+	//return false;
 }
 
 void ALobbyPlayerController::BeginPlay()

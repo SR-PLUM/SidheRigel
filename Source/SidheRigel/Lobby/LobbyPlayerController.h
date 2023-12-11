@@ -36,6 +36,8 @@ public:
 		void Ready();
 	UFUNCTION(Client, Reliable)
 		void SetGameInstanceTeam(E_Team setGITeam);
+	UFUNCTION(Client, Reliable)
+		void IsCharacterSelected();
 	UFUNCTION(server, reliable)
 		void SetPlayerControllerTeam(E_Team setTeam);
 
