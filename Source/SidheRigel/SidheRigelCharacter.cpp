@@ -146,6 +146,8 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitDeathUIWidget();
 
+	InitDeathActorClass();
+
 	bReplicates = true;
 }
 
@@ -181,7 +183,7 @@ void ASidheRigelCharacter::BeginPlay()
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
 
-	SpawnDeathUI();
+
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -242,6 +244,8 @@ void ASidheRigelCharacter::PossessedBy(AController* NewController)
 	if (sidheRigelController)
 	{
 		InitInGameUI();
+
+		SpawnDeathUI();
 	}
 }
 
@@ -431,6 +435,18 @@ void ASidheRigelCharacter::InitStatSummary()
 	}
 }
 
+void ASidheRigelCharacter::TurnOffStatUI()
+{
+	if (StatSummary)
+		StatSummary->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void ASidheRigelCharacter::TurnOnStatUI()
+{
+	if (StatSummary)
+		StatSummary->SetVisibility(ESlateVisibility::Visible);
+}
+
 void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown)
 {
 	if(InGameUI)
@@ -482,6 +498,58 @@ void ASidheRigelCharacter::ClearDeathUI()
 		DeathUI->bIsEnabled = false;
 	}
 	
+}
+
+void ASidheRigelCharacter::InitDeathActorClass()
+{
+	if (!GetWorld()) return;
+
+	USidheRigelGameInstance * GameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+
+	if (GameInstance)
+	{
+		if (GameInstance->CharacterNum == Kerun)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/Kerun/BP_KerunDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+		else if (GameInstance->CharacterNum == FairyWing)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/FairyWIng/BP_FairyWingDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+		else if (GameInstance->CharacterNum == Cold)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/Cold/BP_ColdDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+	}
+	
+}
+
+void ASidheRigelCharacter::SpawnDeathActor()
+{
+	FVector MuzzleLocation = GetActorLocation();
+	FRotator MuzzleRotation = GetActorRotation();
+
+	FActorSpawnParameters SpawnParams;
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(MuzzleLocation);
+	SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+	SpawnParams.Owner = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// Spawn the projectile at the muzzle.
+	GetWorld()->SpawnActor<AActor>(deathActorClass, SpawnTransform, SpawnParams);
 }
 
 void ASidheRigelCharacter::InitInGameUIWidget()
@@ -1317,6 +1385,7 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 		isDie = true;
 		DieTime = 10.f;
 		sidheRigelController->ChangeState(sidheRigelController->Die);
+		SpawnDeathActor();
 
 		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
 	}

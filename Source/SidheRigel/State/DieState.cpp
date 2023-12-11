@@ -25,6 +25,9 @@ void UDieState::OnBegin()
 		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
 	}
 
+	myCharacter->GetMesh()->SetVisibility(false);
+	myCharacter->TurnOffStatUI();
+	
 	myCharacter->SetDeathUI(myCharacter->DieTime);
 
 	/*myCharacter->GetMesh()->SetCollisionProfileName(FName("NoCollision"));
@@ -36,8 +39,11 @@ void UDieState::Update(float DeltaTime)
 	if (myCharacter->DieTime <= 0)
 	{
 		myCharacter->isDie = false;
+		
+		myCharacter->GetMesh()->SetVisibility(true);
 		myCharacter->SetActorLocation(myCharacter->spawnLocation);
 		myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
+		myCharacter->TurnOnStatUI();
 		myCharacter->ClearDeathUI();
 
 		controller->ChangeState(controller->Idle);

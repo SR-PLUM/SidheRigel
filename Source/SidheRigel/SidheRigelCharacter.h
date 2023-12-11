@@ -160,6 +160,8 @@ public: //UI
 
 	void InitStatWidget();
 	void InitStatSummary();
+	void TurnOffStatUI();
+	void TurnOnStatUI();
 
 	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
 	void ClearUISkillCoolDown(E_SkillState SkillState);
@@ -168,6 +170,12 @@ public: //UI
 	void SpawnDeathUI();
 	void SetDeathUI(float CurrentCoolDown);
 	void ClearDeathUI();
+
+public:
+	TSubclassOf<AActor> deathActorClass;
+
+	void InitDeathActorClass();
+	void SpawnDeathActor();
 
 public:	//CC Particle
 	UPROPERTY(EditDefaultsOnly)

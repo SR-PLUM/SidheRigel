@@ -237,7 +237,9 @@ void AKerunCharacter::TakeDamage(float damage, AActor* damageCauser)
 		currentHP = 0;
 		isDie = true;
 		DieTime = 10.f;
-		sidheRigelController->ChangeState(sidheRigelController->Die);
+		if(sidheRigelController)
+			sidheRigelController->ChangeState(sidheRigelController->Die);
+		SpawnDeathActor();
 
 		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
 	}

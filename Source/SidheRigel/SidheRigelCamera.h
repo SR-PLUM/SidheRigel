@@ -62,6 +62,7 @@ protected:
 
 public:
 	void SwitchIsCameraFixed();
+	void SetCameraInActorLocation();
 	bool GetIsCameraFixed();
 	void SetScreenSize(float X, float Y);
 	float GetScreenX();
