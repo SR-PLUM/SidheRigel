@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "kismet/GameplayStatics.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Enum/E_SkillState.h"
@@ -68,6 +69,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 		class UAnimMontage* RSkillMontage;
 
+public:
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* QSkillSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* WSkillSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* ESkillSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* RSkillSound;
+
 protected:
 	void PlayAttackMontage();
 
@@ -76,4 +90,10 @@ public:
 	void PlayWSkillMontage();
 	void PlayESkillMontage();
 	void PlayRSkillMontage();
+	
+public:
+	void PlayQSkillSound();
+	void PlayWSkillSound();
+	void PlayESkillSound();
+	void PlayRSkillSound();
 };

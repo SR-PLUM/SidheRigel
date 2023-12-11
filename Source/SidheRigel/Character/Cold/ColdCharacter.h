@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "kismet/GameplayStatics.h"
 
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Enum/E_SkillState.h"
@@ -46,4 +47,23 @@ protected:	//Talent
 
 private:	//Skill Variable
 	int32 QCount = 10;
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* QSkillSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* WSkillSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* ESkillSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* RSkillSound;
+
+public:
+	void PlayQSkillSound();
+	void PlayWSkillSound();
+	void PlayESkillSound();
+	void PlayRSkillSound();
 };

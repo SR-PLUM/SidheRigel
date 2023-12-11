@@ -66,6 +66,18 @@ void ASidheRigelCamera::SwitchIsCameraFixed()
 	else IsCameraFixed = true;
 }
 
+void ASidheRigelCamera::SetCameraInActorLocation()
+{
+	if (TargetToFollow)
+	{
+		FVector TargetLocation = TargetToFollow->GetActorLocation();
+
+		FVector Location = FVector(TargetLocation.X - 600.f, TargetLocation.Y, TargetLocation.Z + 720.f);
+		// Set camera location to be equal to the location of the target (this will make sure our camera actor is always at the position of the target)
+		SetActorLocation(Location);
+	}
+}
+
 bool ASidheRigelCamera::GetIsCameraFixed()
 {
 	return IsCameraFixed;

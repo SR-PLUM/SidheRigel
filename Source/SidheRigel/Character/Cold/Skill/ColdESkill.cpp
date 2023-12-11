@@ -3,6 +3,7 @@
 
 #include "ColdESkill.h"
 
+#include "SidheRigel/Character/Cold/ColdCharacter.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEProjectile.h"
 #include "SidheRigel/Character/Cold/Skill/ColdEDamageField.h"
@@ -61,6 +62,11 @@ void UColdESkill::OnUse(FHitResult Hit)
 		AColdEProjectile* projectile = World->SpawnActor<AColdEProjectile>(projectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 		if (projectile)
 		{
+			if (AColdCharacter* ColdCharacter = Cast<AColdCharacter>(character))
+			{
+				ColdCharacter->PlayESkillSound();
+			}
+
 			projectile->projectileOwner = character;
 			projectile->Launch(MuzzleLocation, Hit.Location);
 		}

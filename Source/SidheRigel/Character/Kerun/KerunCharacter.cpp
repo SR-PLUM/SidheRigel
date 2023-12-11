@@ -29,7 +29,7 @@ AKerunCharacter::AKerunCharacter()
 {
 	InitAttackProjectile();
 
-	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+	//ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 
 	InitKerunTalent();
 }
@@ -175,7 +175,7 @@ void AKerunCharacter::Attack(AActor* target)
 		}
 	}
 
-	PlayAttackMontage();
+	PlayAttackMontage(); 
 
 	/*
 	if (AnimInstance)
@@ -232,9 +232,16 @@ void AKerunCharacter::TakeDamage(float damage, AActor* damageCauser)
 		causerCharacter->LifeSteal(damage);
 	}
 
-	if (currentHP <= 0)
+	if (currentHP <= 0 && !isDie)
 	{
 		currentHP = 0;
+		isDie = true;
+		DieTime = 10.f;
+		if(sidheRigelController)
+			sidheRigelController->ChangeState(sidheRigelController->Die);
+		SpawnDeathActor();
+
+		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
 	}
 
 	if (InGameUI != nullptr)
@@ -297,6 +304,46 @@ void AKerunCharacter::PlayWSkillEndMontage()
 	if (AnimInstance && WSkillEndMontage)
 	{
 		AnimInstance->Montage_Play(WSkillEndMontage, 1.3f);
+	}
+}
+
+void AKerunCharacter::PlayQSkillSound()
+{
+	if (QSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, QSkillSound, this->GetActorLocation());
+	}
+}
+
+void AKerunCharacter::PlayQSkillBuffSound()
+{
+	if (QSkillBuffSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, QSkillBuffSound, this->GetActorLocation());
+	}
+}
+
+void AKerunCharacter::PlayWSkillSound()
+{
+	if (WSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, WSkillSound, this->GetActorLocation());
+	}
+}
+
+void AKerunCharacter::PlayWSkillLandingSound()
+{
+	if (WSkillLandingSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, WSkillLandingSound, this->GetActorLocation());
+	}
+}
+
+void AKerunCharacter::PlayRSkillSound()
+{
+	if (RSkillSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, RSkillSound, this->GetActorLocation());
 	}
 }
 

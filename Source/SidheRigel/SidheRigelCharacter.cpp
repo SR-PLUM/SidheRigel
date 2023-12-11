@@ -27,6 +27,7 @@
 #include "SidheRigel/UI/CharacterStatus.h"
 #include "SidheRigel/UI/SkillBtn.h"
 #include "SidheRigel/UI/StatSummary.h"
+#include "SidheRigel/UI/DeathTime.h"
 #include "Components/WidgetComponent.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRigel/Tower/Tower.h"
@@ -37,6 +38,7 @@
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
+#include "SidheRigel/Character/AI/CharacterAIController.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -55,18 +57,18 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
 	
-	// Create a camera boom...
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
-	CameraBoom->TargetArmLength = 800.f;
-	CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
-	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+	//// Create a camera boom...
+	//CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	//CameraBoom->SetupAttachment(RootComponent);
+	//CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
+	//CameraBoom->TargetArmLength = 800.f;
+	//CameraBoom->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	//CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
-	// Create a camera...
-	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
-	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	//// Create a camera...
+	//TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
+	//TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	//TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	
 
 	// Make sure camera won't respond to collision with the player character
@@ -134,7 +136,6 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 		{
 			item.Add(false);
 		}
-
 		IsSelectedTalent.Add(item);
 	}
 
@@ -142,6 +143,10 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	//Init Talent Widget Subclass
 	InitTalentWidget();
+
+	InitDeathUIWidget();
+
+	InitDeathActorClass();
 
 	bReplicates = true;
 }
@@ -160,8 +165,6 @@ void ASidheRigelCharacter::BeginPlay()
 
 	InitProperty();
 
-	InitInGameUI();
-
 	/*AController* TargetController = GetController();
 	if (TargetController)
 	{
@@ -179,6 +182,8 @@ void ASidheRigelCharacter::BeginPlay()
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
+
+
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -229,21 +234,19 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 	{
 		DieTime -= DeltaSeconds;
 	}
+
 }
 
 void ASidheRigelCharacter::PossessedBy(AController* NewController)
 {
-	UE_LOG(LogTemp, Warning, TEXT("POSSESSED_BY In %s"), *GetName());
-
 	sidheRigelController = Cast<ASidheRigelPlayerController>(NewController);
 
-	/*if (sidheRigelController)
+	if (sidheRigelController)
 	{
-		sidheRigelController->stateMachine = NewObject<UStateMachine>();
-		sidheRigelController->stateMachine->InitializeController(sidheRigelController);
+		InitInGameUI();
 
-		SetClientStateMachine();
-	}*/
+		SpawnDeathUI();
+	}
 }
 
 void ASidheRigelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -275,7 +278,7 @@ void ASidheRigelCharacter::Server_MoveToPoint_Implementation(FVector Location)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SERVER_MoveToPoint :: PlayerController is Null"));
+		UE_LOG(LogTemp, Error, TEXT("SERVER_MoveToPoint :: PlayerController is Null"));
 	}
 }
 
@@ -405,8 +408,6 @@ void ASidheRigelCharacter::DisplayTalentList(int32 Index)
 		slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 		slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Bottom);
 	}
-
-	UE_LOG(LogTemp, Error, TEXT("DispalyTalent"));
 }
 
 void ASidheRigelCharacter::InitStatWidget()
@@ -434,14 +435,121 @@ void ASidheRigelCharacter::InitStatSummary()
 	}
 }
 
+void ASidheRigelCharacter::TurnOffStatUI()
+{
+	if (StatSummary)
+		StatSummary->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void ASidheRigelCharacter::TurnOnStatUI()
+{
+	if (StatSummary)
+		StatSummary->SetVisibility(ESlateVisibility::Visible);
+}
+
 void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown)
 {
-	InGameUI->CharacterStatus->SkillButtons[SkillState]->SetCoolDownProgress(Percentage, CurrentCoolDown);
+	if(InGameUI)
+		InGameUI->CharacterStatus->SkillButtons[SkillState]->SetCoolDownProgress(Percentage, CurrentCoolDown);
 }
 
 void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 {
-	InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
+	if(InGameUI)
+		InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
+}
+
+void ASidheRigelCharacter::InitDeathUIWidget()
+{
+	ConstructorHelpers::FClassFinder<UUserWidget> DeathTimeClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_DeathTime"));
+	if (DeathTimeClass.Class == nullptr)
+		return;
+
+	DeathUIWidget = DeathTimeClass.Class;
+}
+
+void ASidheRigelCharacter::SpawnDeathUI()
+{
+	DeathUI = CreateWidget<UDeathTime>(InGameUI, DeathUIWidget);
+	InGameUI->DeathTimeOverlay->AddChild(DeathUI);
+	if (DeathUI)
+	{
+		DeathUI->bIsEnabled = false;
+	}
+}
+
+void ASidheRigelCharacter::SetDeathUI(float CurrentCoolDown)
+{
+	if (DeathUI)
+	{
+		DeathUI->bIsEnabled = true;
+		DeathUI->SetDeathCoolDown(CurrentCoolDown);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("DeathUI is Null"));
+	
+}
+
+void ASidheRigelCharacter::ClearDeathUI()
+{
+	if (DeathUI)
+	{
+		DeathUI->ClearDeathCoolDown();
+		DeathUI->bIsEnabled = false;
+	}
+	
+}
+
+void ASidheRigelCharacter::InitDeathActorClass()
+{
+	if (!GetWorld()) return;
+
+	USidheRigelGameInstance * GameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+
+	if (GameInstance)
+	{
+		if (GameInstance->CharacterNum == Kerun)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/Kerun/BP_KerunDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+		else if (GameInstance->CharacterNum == FairyWing)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/FairyWIng/BP_FairyWingDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+		else if (GameInstance->CharacterNum == Cold)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/Cold/BP_ColdDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+	}
+	
+}
+
+void ASidheRigelCharacter::SpawnDeathActor()
+{
+	FVector MuzzleLocation = GetActorLocation();
+	FRotator MuzzleRotation = GetActorRotation();
+
+	FActorSpawnParameters SpawnParams;
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(MuzzleLocation);
+	SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+	SpawnParams.Owner = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// Spawn the projectile at the muzzle.
+	GetWorld()->SpawnActor<AActor>(deathActorClass, SpawnTransform, SpawnParams);
 }
 
 void ASidheRigelCharacter::InitInGameUIWidget()
@@ -453,8 +561,6 @@ void ASidheRigelCharacter::InitInGameUIWidget()
 	InGameUIWidget = InGameUIBPClass.Class;
 
 	if (InGameUIWidget == nullptr) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("InitInGameUIWidget"))
 }
 
 void ASidheRigelCharacter::InitInGameUI()
@@ -474,8 +580,6 @@ void ASidheRigelCharacter::InitInGameUI()
 			InGameUI->CharacterStatus->InitCharacterStatus(this);
 
 			DisplayTalentList(0);
-
-			UE_LOG(LogTemp, Warning, TEXT("InGameUI Spawned"))
 		}
 		else
 		{
@@ -806,7 +910,7 @@ float ASidheRigelCharacter::GetAttackSpeed()
 {
 	float res = 0;
 
-	for (auto& value : attackSpeed)
+	for (auto value : attackSpeed)
 	{
 		res += value.Value;
 	}
@@ -1275,9 +1379,15 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 		//흡혈
 		causerCharacter->LifeSteal(damage);
 	}
-	if (currentHP <= 0)
+	if (currentHP <= 0 && !isDie)
 	{
 		currentHP = 0;
+		isDie = true;
+		DieTime = 10.f;
+		sidheRigelController->ChangeState(sidheRigelController->Die);
+		SpawnDeathActor();
+
+		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
 	}
 
 	if (InGameUI != nullptr)

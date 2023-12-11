@@ -98,12 +98,12 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		class UStaticMeshComponent* skillRange;
 
-protected:	//change target when attack enemy hero
+public:	//change target when attack enemy hero
 	UFUNCTION()
-		void OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		virtual void OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		virtual void OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	TArray<class AActor*> InRangeActors;
 
@@ -140,7 +140,7 @@ public: //UI
 
 	TSubclassOf<UUserWidget> InGameUIWidget;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "InGameUI")
 		class UInGameUI* InGameUI;
 
 	void InitInGameUIWidget();
@@ -152,11 +152,30 @@ public: //UI
 	UPROPERTY()
 		class UStatSummary* StatSummary;
 
+	UPROPERTY()
+		TSubclassOf<class UUserWidget> DeathUIWidget;
+
+	UPROPERTY()
+		class UDeathTime* DeathUI;
+
 	void InitStatWidget();
 	void InitStatSummary();
+	void TurnOffStatUI();
+	void TurnOnStatUI();
 
 	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
 	void ClearUISkillCoolDown(E_SkillState SkillState);
+
+	void InitDeathUIWidget();
+	void SpawnDeathUI();
+	void SetDeathUI(float CurrentCoolDown);
+	void ClearDeathUI();
+
+public:
+	TSubclassOf<AActor> deathActorClass;
+
+	void InitDeathActorClass();
+	void SpawnDeathActor();
 
 public:	//CC Particle
 	UPROPERTY(EditDefaultsOnly)
@@ -274,7 +293,7 @@ public:		//Getter, Setter
 	int32 GetMoney();
 	void GiveMoney(int32 _money);
 	int32 GetExp();
-	void GiveExp(int32 _exp);
+	virtual void GiveExp(int32 _exp);
 	int32 GetMaxExp();
 
 	float GetRange();
@@ -314,7 +333,7 @@ public:		//Getter, Setter
 
 	virtual void InitProperty();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 		bool isDie = false;
 	UPROPERTY() //During Die
 		float DieTime = 0;

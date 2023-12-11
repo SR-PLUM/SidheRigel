@@ -16,4 +16,8 @@ class SIDHERIGEL_API AWayPoint : public AStaticMeshActor
 public:
 	UPROPERTY(EditAnywhere)
 		int32 wayPointOrder;
+	UPROPERTY(EditAnywhere)
+		int32 currentBlueMinion;
+	UPROPERTY(EditAnywhere)
+		int32 currentRedMinion;
 };

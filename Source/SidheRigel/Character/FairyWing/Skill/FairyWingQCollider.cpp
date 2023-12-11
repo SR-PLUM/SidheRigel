@@ -1,10 +1,11 @@
 #include "FairyWingQCollider.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "kismet/GameplayStatics.h"
+
 #include "SidheRigel/Interface/Damagable.h"
 #include "SidheRigel/Interface/Team.h"
 #include "SidheRigel/Interface/CCable.h"
-
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "../../../Minion/Minion.h"
 
@@ -46,6 +47,7 @@ void AFairyWingQCollider::BeginPlay()
 	Super::BeginPlay();
 
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingQCollider::OnColliderOverlap);
+	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 
 	FTimerHandle QColliderDestroyTimer;
 	GetWorldTimerManager().SetTimer(QColliderDestroyTimer,

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "kismet/GameplayStatics.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "../../Enum/E_SkillState.h"
 #include "KerunCharacter.generated.h"
@@ -28,6 +29,8 @@ protected:
 
 public:
 	virtual void InitProperty() override;
+
+	//void GiveExp(int32 _exp) override;
 
 protected:
 	virtual void Attack(AActor* target) override;
@@ -58,6 +61,22 @@ private: //Animation
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	class UAnimMontage* WSkillEndMontage;
 
+public:
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* QSkillSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* QSkillBuffSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* WSkillSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* WSkillLandingSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* RSkillSound;
+
 protected :
 	void PlayAttackMontage();
 
@@ -65,6 +84,13 @@ public:
 	void PlayRSkillMontage();
 	void PlayWSkillStartMontage();
 	void PlayWSkillEndMontage();
+
+public:
+	void PlayQSkillSound();
+	void PlayQSkillBuffSound();
+	void PlayWSkillSound();
+	void PlayWSkillLandingSound();
+	void PlayRSkillSound();
 
 private: //Particle
 	UPROPERTY(EditDefaultsOnly, Category = VisualEffects)
