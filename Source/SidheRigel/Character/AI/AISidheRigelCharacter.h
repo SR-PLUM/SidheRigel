@@ -33,7 +33,17 @@ public:
 	void OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	void OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	
 	UPROPERTY(EditAnywhere)
+	/*
+	* 0 : BlueTeamNexus
+	* 1 : BlueTeamTower
+	* 2 : BlueSideLane
+	* 3 : MiddleOfLane
+	* 4 : RedSideLane
+	* 5 : RedTeamTower
+	* 6 : RedTeamNexus
+	*/
 		int32 currentWayPointOrder;
 	UPROPERTY(EditAnywhere)
 		class AWayPoint* currentWayPoint;
@@ -41,5 +51,10 @@ public:
 		TArray<AActor*> WayPoints;
 
 	UFUNCTION()
-		void MoveToWayPoint(int wayPointIndex);
+		AWayPoint* GetWayPoint(int idx);
+	UFUNCTION()
+		int32 GetTeamActorNum();
+
+	void GiveExp(int32 _exp) override;
+	TArray<AActor*> TeamInRange;
 };
