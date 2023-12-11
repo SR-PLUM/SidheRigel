@@ -52,6 +52,9 @@ public:
 
 	UFUNCTION()
 		AWayPoint* GetWayPoint(int idx);
+	UFUNCTION()
+		int32 GetTeamActorNum();
 
 	void GiveExp(int32 _exp) override;
+	TArray<AActor*> TeamInRange;
 };

@@ -49,14 +49,21 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 	//Attack
 	if (currentTarget)
 	{
-		//진행중인 방향의 미니언이 없고 현재 위치에도 적은수의 미니언이 남았다면
-		//수정필요
-		if (GetWayPoint(currentWayPointOrder - 1)->currentRedMinion == 0 &&
-			GetWayPoint(currentWayPointOrder)->currentRedMinion < 2)
+		//근처 아군의 수가 1이하일때
+		if (GetTeamActorNum() < 2)
 		{
-			//후진
-			currentWayPointOrder = currentWayPointOrder + 1;
-			currentWayPoint = GetWayPoint(currentWayPointOrder);
+			if (GetDistanceTo(currentWayPoint) <= 150)
+			{
+				//후진
+				if (currentWayPointOrder < 6)
+				{
+					currentWayPointOrder = currentWayPointOrder + 1;
+					currentWayPoint = GetWayPoint(currentWayPointOrder);
+				}
+			}
+
+			//되돌아가기
+			AIController->MoveToActor(currentWayPoint);
 		}
 		else
 		{
@@ -99,10 +106,6 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 			}
 			else
 			{
-				if (AIController)
-				{
-					AIController->StopMovement();
-				}
 				//공격 할 수 있으면 공격
 				if (currentAttackDelay <= 0)
 				{
@@ -158,29 +161,48 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 	}
 	else
 	{
-		//Move
-		if (currentWayPoint)
+		//근처 아군의 수가 1이하일때
+		if (GetTeamActorNum() < 2)
 		{
-			//도착
-			if (GetDistanceTo(currentWayPoint) <= 150.f)
+			if (GetDistanceTo(currentWayPoint) <= 150)
 			{
-				//진행중인 방향의 미니언이 4마리 이상이라면
-				if (GetWayPoint(currentWayPointOrder - 1)->currentRedMinion > 3)
+				//후진
+				if (currentWayPointOrder < 6)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Move Next WayPoint"))
-					//전진
-					currentWayPointOrder = currentWayPointOrder - 1;
+					currentWayPointOrder = currentWayPointOrder + 1;
 					currentWayPoint = GetWayPoint(currentWayPointOrder);
+				}
+			}
+
+			//되돌아가기
+			AIController->MoveToActor(currentWayPoint);
+		}
+		else
+		{
+			//Move
+			if (currentWayPoint)
+			{
+				//도착
+				if (GetDistanceTo(currentWayPoint) <= 150.f)
+				{
+					//진행중인 방향의 미니언이 4마리 이상이라면
+					if (GetWayPoint(currentWayPointOrder - 1)->currentRedMinion > 3)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Move Next WayPoint"))
+							//전진
+							currentWayPointOrder = currentWayPointOrder - 1;
+						currentWayPoint = GetWayPoint(currentWayPointOrder);
+					}
+				}
+				else
+				{
+					AIController->MoveToActor(currentWayPoint);
 				}
 			}
 			else
 			{
-				AIController->MoveToActor(GetWayPoint(currentWayPointOrder));
+				currentWayPoint = GetWayPoint(currentWayPointOrder);
 			}
-		}
-		else
-		{
-			currentWayPoint = GetWayPoint(currentWayPointOrder);
 		}
 	}
 
@@ -218,12 +240,18 @@ void AAISidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedCompone
 				currentTarget = OtherActor;
 			}
 		}
+		else
+		{
+			TeamInRange.Add(OtherActor);
+		}
 	}
 }
 
 void AAISidheRigelCharacter::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	Super::OnExitEnemy(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
+
+	TeamInRange.Remove(OtherActor);
 
 	if (currentTarget == OtherActor)
 	{
@@ -266,6 +294,26 @@ AWayPoint* AAISidheRigelCharacter::GetWayPoint(int idx)
 		}
 	}
 	return getWayPoint;
+}
+
+int32 AAISidheRigelCharacter::GetTeamActorNum()
+{
+	int32 res;
+	if (TeamInRange.IsEmpty())
+	{
+		res = 0;
+	}
+	else
+	{
+		for (auto teamActor : TeamInRange)
+		{
+			if (auto minionActor = Cast<AMinion>(teamActor))
+			{
+				res = TeamInRange.Num();
+			}
+		}
+	}
+	return res;
 }
 
 void AAISidheRigelCharacter::GiveExp(int32 _exp)
