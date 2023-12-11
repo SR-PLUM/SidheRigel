@@ -12,6 +12,7 @@
 #include "SidheRigel/Character/Common/SlowParticle.h"
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -325,6 +326,13 @@ void AMinion::InitMinionUI()
 	{
 		MinionUIRef = TmpWidget;
 		MinionUIRef->InitHPBar();
+
+		auto gameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+		if (GetTeam() != gameInstance->myTeam)
+		{
+			MinionUIRef->SetEnemyColor();
+		}
+
 		MinionUIRef->SetUIVisibility(false);
 	}
 }

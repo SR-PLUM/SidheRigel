@@ -12,6 +12,7 @@
 #include "SidheRigel/UI/HPUI.h"
 #include "SidheRigel/Nexus/NexusAttackProjectile.h"
 #include "NexusDestroyParticle.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
 
 // Sets default values
 ANexus::ANexus()
@@ -109,6 +110,12 @@ void ANexus::InitNexusUI()
 	{
 		NexusUIRef = TmpWidget;
 		NexusUIRef->InitHPBar();
+
+		auto gameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+		if (GetTeam() != gameInstance->myTeam)
+		{
+			NexusUIRef->SetEnemyColor();
+		}
 	}
 }
 
