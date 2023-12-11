@@ -52,4 +52,6 @@ public:
 
 	UFUNCTION()
 		AWayPoint* GetWayPoint(int idx);
+
+	void GiveExp(int32 _exp) override;
 };

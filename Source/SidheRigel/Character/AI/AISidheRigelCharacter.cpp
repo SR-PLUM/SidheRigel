@@ -31,6 +31,8 @@ void AAISidheRigelCharacter::BeginPlay()
 		currentWayPoint = GetWayPoint(currentWayPointOrder);
 		AIController->MoveToActor(currentWayPoint);
 	}
+
+	IsSelectedTalent[0].IsSelected[2] = true;
 }
 
 void AAISidheRigelCharacter::Tick(float DeltaSeconds)
@@ -48,6 +50,7 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 	if (currentTarget)
 	{
 		//진행중인 방향의 미니언이 없고 현재 위치에도 적은수의 미니언이 남았다면
+		//수정필요
 		if (GetWayPoint(currentWayPointOrder - 1)->currentRedMinion == 0 &&
 			GetWayPoint(currentWayPointOrder)->currentRedMinion < 2)
 		{
@@ -62,6 +65,35 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 			{
 				if (AIController)
 				{
+					//만약 대상이 적 영웅이고
+					if (auto SREnemy = Cast<ASidheRigelCharacter>(currentTarget))
+					{
+						//대상의 현재 체력이 최대체력의 30% 이하라면
+						if (SREnemy->GetHP() < SREnemy->GetMaxHP() * 0.3)
+						{
+							//W스킬 사용전 마나 및 쿨타임 확인
+							if (skills[E_SkillState::W_Ready]->GetCooldown() <= 0)
+							{
+								if (skills[E_SkillState::W_Ready]->CanUse())
+								{
+									FHitResult Hit = FHitResult(SREnemy, nullptr, FVector(), FVector());
+									skills[E_SkillState::W_Ready]->OnUse(Hit);
+									skills[E_SkillState::W_Ready]->SetCooldown();
+
+									//R스킬 사용전 마나 및 쿨타임 확인
+									if (skills[E_SkillState::R_Ready]->GetCooldown() <= 0)
+									{
+										if (skills[E_SkillState::R_Ready]->CanUse())
+										{
+											skills[E_SkillState::R_Ready]->OnUse(Hit);
+											skills[E_SkillState::R_Ready]->SetCooldown();
+										}
+									}
+								}
+							}
+						}
+					}
+
 					AIController->MoveToActor(currentTarget);
 				}
 			}
@@ -129,7 +161,6 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 		//Move
 		if (currentWayPoint)
 		{
-			UE_LOG(LogTemp,Warning,TEXT("Move"))
 			//도착
 			if (GetDistanceTo(currentWayPoint) <= 150.f)
 			{
@@ -237,4 +268,37 @@ AWayPoint* AAISidheRigelCharacter::GetWayPoint(int idx)
 	return getWayPoint;
 }
 
-
+void AAISidheRigelCharacter::GiveExp(int32 _exp)
+{
+	experience += _exp;
+	if (experience >= MaxExperience)
+	{
+		experience -= MaxExperience;
+		level++;
+		int32 idx = 0;
+		if (level == 4)
+		{
+			IsSelectedTalent[1].IsSelected[2] = true;
+		}
+		if (level == 7)
+		{
+			IsSelectedTalent[2].IsSelected[1] = true;
+		}
+		if (level == 10)
+		{
+			IsSelectedTalent[3].IsSelected[0] = true;
+		}
+		if (level == 13)
+		{
+			IsSelectedTalent[4].IsSelected[0] = true;
+		}
+		if (level == 16)
+		{
+			IsSelectedTalent[5].IsSelected[0] = true;
+		}
+		if (level == 20)
+		{
+			IsSelectedTalent[6].IsSelected[1] = true;
+		}
+	}
+}

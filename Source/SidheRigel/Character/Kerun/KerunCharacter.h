@@ -30,6 +30,8 @@ protected:
 public:
 	virtual void InitProperty() override;
 
+	//void GiveExp(int32 _exp) override;
+
 protected:
 	virtual void Attack(AActor* target) override;
 	virtual void InitAttackProjectile() override;
