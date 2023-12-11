@@ -27,6 +27,7 @@
 #include "SidheRigel/UI/CharacterStatus.h"
 #include "SidheRigel/UI/SkillBtn.h"
 #include "SidheRigel/UI/StatSummary.h"
+#include "SidheRigel/UI/DeathTime.h"
 #include "Components/WidgetComponent.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRigel/Tower/Tower.h"
@@ -143,6 +144,10 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	//Init Talent Widget Subclass
 	InitTalentWidget();
 
+	InitDeathUIWidget();
+
+	InitDeathActorClass();
+
 	bReplicates = true;
 }
 
@@ -177,6 +182,8 @@ void ASidheRigelCharacter::BeginPlay()
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
+
+
 }
 
 void ASidheRigelCharacter::Tick(float DeltaSeconds)
@@ -227,6 +234,7 @@ void ASidheRigelCharacter::Tick(float DeltaSeconds)
 	{
 		DieTime -= DeltaSeconds;
 	}
+
 }
 
 void ASidheRigelCharacter::PossessedBy(AController* NewController)
@@ -236,6 +244,8 @@ void ASidheRigelCharacter::PossessedBy(AController* NewController)
 	if (sidheRigelController)
 	{
 		InitInGameUI();
+
+		SpawnDeathUI();
 	}
 }
 
@@ -398,8 +408,6 @@ void ASidheRigelCharacter::DisplayTalentList(int32 Index)
 		slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 		slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Bottom);
 	}
-
-	UE_LOG(LogTemp, Error, TEXT("DispalyTalent"));
 }
 
 void ASidheRigelCharacter::InitStatWidget()
@@ -427,6 +435,18 @@ void ASidheRigelCharacter::InitStatSummary()
 	}
 }
 
+void ASidheRigelCharacter::TurnOffStatUI()
+{
+	if (StatSummary)
+		StatSummary->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void ASidheRigelCharacter::TurnOnStatUI()
+{
+	if (StatSummary)
+		StatSummary->SetVisibility(ESlateVisibility::Visible);
+}
+
 void ASidheRigelCharacter::SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown)
 {
 	if(InGameUI)
@@ -439,6 +459,99 @@ void ASidheRigelCharacter::ClearUISkillCoolDown(E_SkillState SkillState)
 		InGameUI->CharacterStatus->SkillButtons[SkillState]->ClearCoolDownProgress();
 }
 
+void ASidheRigelCharacter::InitDeathUIWidget()
+{
+	ConstructorHelpers::FClassFinder<UUserWidget> DeathTimeClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_DeathTime"));
+	if (DeathTimeClass.Class == nullptr)
+		return;
+
+	DeathUIWidget = DeathTimeClass.Class;
+}
+
+void ASidheRigelCharacter::SpawnDeathUI()
+{
+	DeathUI = CreateWidget<UDeathTime>(InGameUI, DeathUIWidget);
+	InGameUI->DeathTimeOverlay->AddChild(DeathUI);
+	if (DeathUI)
+	{
+		DeathUI->bIsEnabled = false;
+	}
+}
+
+void ASidheRigelCharacter::SetDeathUI(float CurrentCoolDown)
+{
+	if (DeathUI)
+	{
+		DeathUI->bIsEnabled = true;
+		DeathUI->SetDeathCoolDown(CurrentCoolDown);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("DeathUI is Null"));
+	
+}
+
+void ASidheRigelCharacter::ClearDeathUI()
+{
+	if (DeathUI)
+	{
+		DeathUI->ClearDeathCoolDown();
+		DeathUI->bIsEnabled = false;
+	}
+	
+}
+
+void ASidheRigelCharacter::InitDeathActorClass()
+{
+	if (!GetWorld()) return;
+
+	USidheRigelGameInstance * GameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+
+	if (GameInstance)
+	{
+		if (GameInstance->CharacterNum == Kerun)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/Kerun/BP_KerunDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+		else if (GameInstance->CharacterNum == FairyWing)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/FairyWIng/BP_FairyWingDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+		else if (GameInstance->CharacterNum == Cold)
+		{
+			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/Cold/BP_ColdDeathActor"));
+			if (deathActorRef.Object)
+			{
+				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+			}
+		}
+	}
+	
+}
+
+void ASidheRigelCharacter::SpawnDeathActor()
+{
+	FVector MuzzleLocation = GetActorLocation();
+	FRotator MuzzleRotation = GetActorRotation();
+
+	FActorSpawnParameters SpawnParams;
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(MuzzleLocation);
+	SpawnTransform.SetRotation(MuzzleRotation.Quaternion());
+	SpawnParams.Owner = this;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	// Spawn the projectile at the muzzle.
+	GetWorld()->SpawnActor<AActor>(deathActorClass, SpawnTransform, SpawnParams);
+}
+
 void ASidheRigelCharacter::InitInGameUIWidget()
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> InGameUIBPClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_InGameUI"));
@@ -448,8 +561,6 @@ void ASidheRigelCharacter::InitInGameUIWidget()
 	InGameUIWidget = InGameUIBPClass.Class;
 
 	if (InGameUIWidget == nullptr) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("InitInGameUIWidget"))
 }
 
 void ASidheRigelCharacter::InitInGameUI()
@@ -469,8 +580,6 @@ void ASidheRigelCharacter::InitInGameUI()
 			InGameUI->CharacterStatus->InitCharacterStatus(this);
 
 			DisplayTalentList(0);
-
-			UE_LOG(LogTemp, Warning, TEXT("InGameUI Spawned"))
 		}
 		else
 		{
@@ -1270,9 +1379,15 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 		//흡혈
 		causerCharacter->LifeSteal(damage);
 	}
-	if (currentHP <= 0)
+	if (currentHP <= 0 && !isDie)
 	{
 		currentHP = 0;
+		isDie = true;
+		DieTime = 10.f;
+		sidheRigelController->ChangeState(sidheRigelController->Die);
+		SpawnDeathActor();
+
+		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
 	}
 
 	if (InGameUI != nullptr)

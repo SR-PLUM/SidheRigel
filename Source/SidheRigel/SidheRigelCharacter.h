@@ -140,7 +140,7 @@ public: //UI
 
 	TSubclassOf<UUserWidget> InGameUIWidget;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "InGameUI")
 		class UInGameUI* InGameUI;
 
 	void InitInGameUIWidget();
@@ -152,11 +152,30 @@ public: //UI
 	UPROPERTY()
 		class UStatSummary* StatSummary;
 
+	UPROPERTY()
+		TSubclassOf<class UUserWidget> DeathUIWidget;
+
+	UPROPERTY()
+		class UDeathTime* DeathUI;
+
 	void InitStatWidget();
 	void InitStatSummary();
+	void TurnOffStatUI();
+	void TurnOnStatUI();
 
 	void SetUISkillCoolDown(E_SkillState SkillState, float Percentage, float CurrentCoolDown);
 	void ClearUISkillCoolDown(E_SkillState SkillState);
+
+	void InitDeathUIWidget();
+	void SpawnDeathUI();
+	void SetDeathUI(float CurrentCoolDown);
+	void ClearDeathUI();
+
+public:
+	TSubclassOf<AActor> deathActorClass;
+
+	void InitDeathActorClass();
+	void SpawnDeathActor();
 
 public:	//CC Particle
 	UPROPERTY(EditDefaultsOnly)
@@ -314,7 +333,7 @@ public:		//Getter, Setter
 
 	virtual void InitProperty();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 		bool isDie = false;
 	UPROPERTY() //During Die
 		float DieTime = 0;
