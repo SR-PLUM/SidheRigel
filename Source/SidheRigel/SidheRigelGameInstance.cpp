@@ -49,12 +49,24 @@ void USidheRigelGameInstance::LoadInGameMenu()
 {
 	if (InGameMenuClass == nullptr) return;
 
-	UInGameMenu* menu = CreateWidget<UInGameMenu>(this, InGameMenuClass);
-	if (menu == nullptr) return;
+	if (InGameMenu == nullptr)
+	{
+		UInGameMenu* menu = CreateWidget<UInGameMenu>(this, InGameMenuClass);
+		if (menu == nullptr) return;
 
-	menu->Setup();
+		InGameMenu = menu;
+	}		
 
-	menu->SetMenuInterface(this);
+	if (isSettingUIOpen)
+	{
+		InGameMenu->AddToViewport();
+	}
+	else
+	{
+		InGameMenu->RemoveFromViewport();
+	}
+
+	isSettingUIOpen = !isSettingUIOpen;
 }
 
 void USidheRigelGameInstance::Host(FString ServerName)
