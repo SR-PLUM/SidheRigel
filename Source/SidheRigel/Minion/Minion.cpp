@@ -275,7 +275,18 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 				}
 				else
 				{
-					currentTarget = attackList.Top();
+					//가장 가까운 적 대상
+					float maxDistance = 0;
+					for (auto enemy : attackList)
+					{
+						auto enemyDist = GetDistanceTo(enemy);
+
+						if (maxDistance < enemyDist)
+						{
+							maxDistance = enemyDist;
+							currentTarget = enemy;
+						}
+					}
 				}
 			}
 		}
