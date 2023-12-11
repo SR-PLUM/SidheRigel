@@ -9,6 +9,7 @@ void UStatSummary::InitStat()
 {
 	Level->SetText(FText::FromString(FString::FromInt(1)));
 	HPBar->SetPercent(1.f);
+	MPBar->SetPercent(1.f);
 	ExprienceBar->SetPercent(0.f);
 }
 
@@ -20,6 +21,11 @@ void UStatSummary::SetLevel(int32 CurrentLevel)
 void UStatSummary::SetHPBar(float Percentage)
 {
 	HPBar->SetPercent(Percentage);
+}
+
+void UStatSummary::SetMPBar(float Percentage)
+{
+	MPBar->SetPercent(Percentage);
 }
 
 void UStatSummary::SetExpBar(float Percentage)

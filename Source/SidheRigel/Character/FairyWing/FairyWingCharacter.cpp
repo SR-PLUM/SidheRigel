@@ -136,26 +136,27 @@ void AFairyWingCharacter::Attack(AActor* target)
 void AFairyWingCharacter::InitProperty()
 {
 	level = 1;
-	range.Add("Debug", 500.f);
-	attackDamage.Add("Debug", 5.f);
-	attackSpeed.Add("Debug", 1.f);
-	criticalRate.Add("Debug", 50);
-	criticalDamage.Add("Debug", 50);
+	range.Add("Debug", 575.f);
+	attackDamage.Add("Debug", 53.f);
+	attackSpeed.Add("Debug", 0.681f);
+	criticalRate.Add("Debug", 0);
+	criticalDamage.Add("Debug", 75);
 
-	MaxHP.Add("Debug", 100.f);
-	generateHealthPoint.Add("Debug", 0.2f);
-	MaxMP.Add("Debug", 100.f);
-	lifeSteal.Add("Debug", 5.f);
-	protectPower.Add("Debug", 20);
+	MaxHP.Add("Debug", 574.f);
+	generateHealthPoint.Add("Debug", 1.f);
+	generateManaPoint.Add("Debug", 2.f);
+	MaxMP.Add("Debug", 418.f);
+	lifeSteal.Add("Debug", 0.f);
+	protectPower.Add("Debug", 0);
 
-	defencePoint.Add("Debug", 100);
-
-	speed.Add("Debug", 600.f);
+	defencePoint.Add("Debug", 29);
+	magicResistPoint.Add("Debug", 47);
+	speed.Add("Debug", 340.f);
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
 
-	MaxExperience = 20;
+	SetMaxExp();
 }
 
 void AFairyWingCharacter::InitFairyWingTalent()

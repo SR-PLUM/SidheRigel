@@ -182,7 +182,7 @@ void ASidheRigelCharacter::BeginPlay()
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
-
+	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateMP, 1.f, true);
 
 }
 
@@ -774,11 +774,17 @@ void ASidheRigelCharacter::UseMana(float UseMP)
 
 	if (InGameUI != nullptr)
 		InGameUI->CharacterStatus->UpdateMP();
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
 }
 
 float ASidheRigelCharacter::GetCurrentMP()
 {
 	return currentMP;
+}
+
+void ASidheRigelCharacter::IE_GenerateMP()
+{
+	RestoreMP(GetGenerateManaPoint());
 }
 
 int32 ASidheRigelCharacter::GetMoney()
@@ -805,6 +811,8 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 	{
 		experience -= MaxExperience;
 		level++;
+		SetMaxExp();
+
 		int32 idx = 0;
 		if (level == 4)
 		{
@@ -846,6 +854,11 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 int32 ASidheRigelCharacter::GetMaxExp()
 {
 	return MaxExperience;
+}
+
+void ASidheRigelCharacter::SetMaxExp()
+{
+	MaxExperience = 180 * (100 + GetCurrentLevel());
 }
 
 float ASidheRigelCharacter::GetRange()
@@ -958,6 +971,17 @@ float ASidheRigelCharacter::GetMaxMP()
 {
 	float res = 0;
 	for (auto& value : MaxMP)
+	{
+		res += value.Value;
+	}
+
+	return res;
+}
+
+float ASidheRigelCharacter::GetGenerateManaPoint()
+{
+	float res = 0;
+	for (auto& value : generateManaPoint)
 	{
 		res += value.Value;
 	}
@@ -1409,13 +1433,34 @@ void ASidheRigelCharacter::RestoreHP(float value)
 
 	if (InGameUI != nullptr)
 		InGameUI->CharacterStatus->UpdateHP();
-	StatSummary->SetHPBar(currentHP / GetMaxHP());
-	
+	StatSummary->SetHPBar(currentHP / GetMaxHP());	
+}
+
+void ASidheRigelCharacter::RestoreMP(float value)
+{
+	float restoreMP = value;
+	currentMP += restoreMP;
+
+	float var_MaxMP = GetMaxMP();
+
+	if (currentMP > var_MaxMP)
+	{
+		currentMP = var_MaxMP;
+	}
+
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateMP();
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
 }
 
 float ASidheRigelCharacter::GetHP()
 {
 	return currentHP;
+}
+
+float ASidheRigelCharacter::GetMP()
+{
+	return currentMP;
 }
 
 void ASidheRigelCharacter::MoveVector(FVector Direction, float Force)

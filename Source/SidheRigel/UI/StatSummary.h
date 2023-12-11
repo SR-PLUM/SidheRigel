@@ -24,11 +24,15 @@ public:
 		class UProgressBar* HPBar;
 
 	UPROPERTY(meta = (BindWidget))
+		class UProgressBar* MPBar;
+
+	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* ExprienceBar;
 
 	void InitStat();
 	void SetLevel(int32 level);
 	void SetHPBar(float Percentage);
+	void SetMPBar(float Percentage);
 	void SetExpBar(float Percentage);
 	void SetEnemyColor();
 };
