@@ -833,7 +833,7 @@ void ASidheRigelCharacter::GiveExp(int32 _exp)
 
 		if (idx != 0)
 		{
-			//DisplayTalentList(idx);
+			DisplayTalentList(idx);
 		}
 	}
 

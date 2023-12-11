@@ -12,6 +12,7 @@
 #include "SidheRigel/Character/Common/SlowParticle.h"
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -274,7 +275,18 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 				}
 				else
 				{
-					currentTarget = attackList.Top();
+					//가장 가까운 적 대상
+					float maxDistance = 0;
+					for (auto enemy : attackList)
+					{
+						auto enemyDist = GetDistanceTo(enemy);
+
+						if (maxDistance < enemyDist)
+						{
+							maxDistance = enemyDist;
+							currentTarget = enemy;
+						}
+					}
 				}
 			}
 		}
@@ -325,6 +337,13 @@ void AMinion::InitMinionUI()
 	{
 		MinionUIRef = TmpWidget;
 		MinionUIRef->InitHPBar();
+
+		auto gameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+		if (GetTeam() != gameInstance->myTeam)
+		{
+			MinionUIRef->SetEnemyColor();
+		}
+
 		MinionUIRef->SetUIVisibility(false);
 	}
 }

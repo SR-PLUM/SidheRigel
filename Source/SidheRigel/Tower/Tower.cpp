@@ -12,6 +12,8 @@
 #include "SidheRigel/UI/HPUI.h"
 #include "SidheRigel/Tower/TowerAttackProjectile.h"
 #include "TowerDestroyParticle.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
+#include "SidheRigel/SidheRigelCharacter.h"
 
 // Sets default values
 ATower::ATower()
@@ -106,6 +108,12 @@ void ATower::InitTowerUI()
 	{
 		TowerUIRef = TmpWidget;
 		TowerUIRef->InitHPBar();
+
+		auto gameInstance = Cast<USidheRigelGameInstance>(GetGameInstance());
+		if (GetTeam() != gameInstance->myTeam)
+		{
+			TowerUIRef->SetEnemyColor();
+		}
 	}
 }
 
@@ -210,6 +218,15 @@ void ATower::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Other
 				else
 				{
 					currentTarget = attackList.Top();
+					if (auto characterTarget = Cast<ASidheRigelCharacter>(currentTarget))
+					{
+						if (attackList.Num() != 1)
+						{
+							attackList.Remove(currentTarget);
+							currentTarget = attackList.Top();
+							attackList.Push(characterTarget);
+						}
+					}
 				}
 			}
 		}

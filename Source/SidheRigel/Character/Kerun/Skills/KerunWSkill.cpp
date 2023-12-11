@@ -12,6 +12,7 @@
 #include "SidheRigel/SidheRigelPlayerController.h"
 #include "Engine/EngineTypes.h"
 #include "Components/CapsuleComponent.h"
+#include "SidheRigel/Character/AI/AISidheRigelCharacter.h"
 
 UKerunWSkill::UKerunWSkill()
 {
@@ -109,6 +110,13 @@ bool UKerunWSkill::CanUse()
 		if (teamActor && teamActor->GetTeam() == character->GetTeam() && character->IsSelectedTalent[5][2])
 			return true;
 
+	}
+
+	auto AICharacter = Cast<AAISidheRigelCharacter>(character);
+	if (AICharacter)
+	{
+		if (character->GetDistanceTo(AICharacter->currentTarget) <= range)
+			return true;
 	}
 
 	return false;

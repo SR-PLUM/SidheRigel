@@ -4,6 +4,8 @@
 #include "Skill.h"
 #include "SidheRigel/SidheRigelCharacter.h"
 #include "SidheRigel/SidheRigelPlayerController.h"
+#include "SidheRigel/Character/AI/CharacterAIController.h"
+#include "SidheRigel/Character/AI/AISidheRigelCharacter.h"
 
 USkill::USkill()
 {
@@ -104,6 +106,13 @@ bool USkill::CanUse()
 		{
 			return true;
 		}
+	}
+
+	auto AICharacter = Cast<AAISidheRigelCharacter>(character);
+	if (AICharacter)
+	{
+		if (character->GetDistanceTo(AICharacter->currentTarget) <= range)
+			return true;
 	}
 
 	return false;

@@ -293,7 +293,7 @@ public:		//Getter, Setter
 	int32 GetMoney();
 	void GiveMoney(int32 _money);
 	int32 GetExp();
-	void GiveExp(int32 _exp);
+	virtual void GiveExp(int32 _exp);
 	int32 GetMaxExp();
 
 	float GetRange();
