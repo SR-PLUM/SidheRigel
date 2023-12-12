@@ -106,26 +106,44 @@ void AKerunCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void AKerunCharacter::InitProperty()
 {
 	level = 1;
-	range.Add("Debug", 200.f);
-	attackDamage.Add("Debug", 5.f);
-	attackSpeed.Add("Debug", 1.f);
-	criticalRate.Add("Debug", 50);
-	criticalDamage.Add("Debug", 50);
 
-	MaxHP.Add("Debug", 100.f);
-	generateHealthPoint.Add("Debug", 0.2f);
-	MaxMP.Add("Debug", 100.f);
-	lifeSteal.Add("Debug", 5.f);
-	protectPower.Add("Debug", 20);
+	MaxExperience = 18000;
 
-	defencePoint.Add("Debug", 100);
+	rangeBase = 200.f;
+	attackDamageBase = 5.f;
+	attackSpeedBase = 1.f;
+	criticalRateBase = 50;
+	criticalDamageBase = 50;
 
-	speed.Add("Debug", 600.f);
+	MaxHPBase = 100;
+	generateHealthPointBase = 0.2;
+	MaxMPBase = 100;
+	generateManaPointBase = 0.2;
+
+	lifeStealBase = 5;
+	protectPowerBase = 20;
+	defencePointBase = 100;
+
+	speedBase = 600;
+
+	//range.Add("Debug", 200.f);
+	//attackDamage.Add("Debug", 5.f);
+	//attackSpeed.Add("Debug", 1.f);
+	//criticalRate.Add("Debug", 50);
+	//criticalDamage.Add("Debug", 50);
+
+	//MaxHP.Add("Debug", 100.f);
+	//generateHealthPoint.Add("Debug", 0.2f);
+	//MaxMP.Add("Debug", 100.f);
+	//lifeSteal.Add("Debug", 5.f);
+	//protectPower.Add("Debug", 20);
+
+	//defencePoint.Add("Debug", 100);
+
+	//speed.Add("Debug", 600.f);
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
-
-	MaxExperience = 20;
 }
 
 void AKerunCharacter::Attack(AActor* target)
