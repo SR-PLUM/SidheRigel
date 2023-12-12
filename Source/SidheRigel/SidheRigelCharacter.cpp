@@ -807,11 +807,14 @@ int32 ASidheRigelCharacter::GetExp()
 void ASidheRigelCharacter::GiveExp(int32 _exp)
 {
 	experience += _exp;
+
+	if (GetCurrentLevel() == 20)
+		return;
 	if (experience >= MaxExperience)
 	{
 		experience -= MaxExperience;
-		level++;
-		SetMaxExp();
+
+		LevelUp();
 
 		int32 idx = 0;
 		if (level == 4)
@@ -856,14 +859,25 @@ int32 ASidheRigelCharacter::GetMaxExp()
 	return MaxExperience;
 }
 
-void ASidheRigelCharacter::SetMaxExp()
+void ASidheRigelCharacter::LevelUp()
 {
+	level++;
+
 	MaxExperience = 180 * (100 + GetCurrentLevel());
+	MaxHPBase += 100;
+	currentHP += 100;
+	MaxMPBase += 100;
+	currentMP += 100;
+
+	//증가 스텟
+
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
 }
 
 float ASidheRigelCharacter::GetRange()
 {
-	float res = 0;
+	float res = rangeBase;
 	for (auto& value : range)
 	{
 		res += value.Value;
@@ -874,7 +888,7 @@ float ASidheRigelCharacter::GetRange()
 
 float ASidheRigelCharacter::GetAttackDamage()
 {
-	float res = 0;
+	float res = attackDamageBase;
 	for (auto& value : attackDamage)
 	{
 		res += value.Value;
@@ -895,7 +909,7 @@ void ASidheRigelCharacter::RemoveAttackDamage(FString name)
 
 int32 ASidheRigelCharacter::GetCriticalRate()
 {
-	int32 res = 0;
+	int32 res = criticalRateBase;
 	for (auto& value : criticalRate)
 	{
 		res += value.Value;
@@ -910,7 +924,7 @@ int32 ASidheRigelCharacter::GetCriticalRate()
 
 int32 ASidheRigelCharacter::GetCriticalDamage()
 {
-	int32 res = 0;
+	int32 res = criticalDamageBase;
 	for (auto& value : criticalDamage)
 	{
 		res += value.Value;
@@ -921,7 +935,7 @@ int32 ASidheRigelCharacter::GetCriticalDamage()
 
 float ASidheRigelCharacter::GetAttackSpeed()
 {
-	float res = 0;
+	float res = attackSpeedBase;
 
 	for (auto value : attackSpeed)
 	{
@@ -947,7 +961,7 @@ void ASidheRigelCharacter::RemoveAttackSpeed(FString name)
 
 float ASidheRigelCharacter::GetMaxHP()
 {
-	float res = 0;
+	float res = MaxHPBase;
 	for (auto& value : MaxHP)
 	{
 		res += value.Value;
@@ -958,7 +972,7 @@ float ASidheRigelCharacter::GetMaxHP()
 
 float ASidheRigelCharacter::GetGenerateHealthPoint()
 {
-	float res = 0;
+	float res = generateHealthPointBase;
 	for (auto& value : generateHealthPoint)
 	{
 		res += value.Value;
@@ -969,7 +983,7 @@ float ASidheRigelCharacter::GetGenerateHealthPoint()
 
 float ASidheRigelCharacter::GetMaxMP()
 {
-	float res = 0;
+	float res = MaxMPBase;
 	for (auto& value : MaxMP)
 	{
 		res += value.Value;
@@ -980,7 +994,7 @@ float ASidheRigelCharacter::GetMaxMP()
 
 float ASidheRigelCharacter::GetGenerateManaPoint()
 {
-	float res = 0;
+	float res = generateManaPointBase;
 	for (auto& value : generateManaPoint)
 	{
 		res += value.Value;
@@ -991,7 +1005,7 @@ float ASidheRigelCharacter::GetGenerateManaPoint()
 
 int32 ASidheRigelCharacter::GetLifeSteal()
 {
-	int32 res = 0;
+	int32 res = lifeStealBase;
 	for (auto& value : lifeSteal)
 	{
 		res += value.Value;
@@ -1007,7 +1021,7 @@ int32 ASidheRigelCharacter::GetLifeSteal()
 
 int32 ASidheRigelCharacter::GetProtectPower()
 {
-	int32 res = 0;
+	int32 res = protectPowerBase;
 	for (auto& value : protectPower)
 	{
 		res += value.Value;
@@ -1055,7 +1069,7 @@ void ASidheRigelCharacter::AddDefencePoint(FString name, float value, float time
 
 float ASidheRigelCharacter::GetDefencePoint()
 {
-	float res = 0.f;
+	float res = defencePointBase;
 	for (auto& value : defencePoint)
 	{
 		res += value.Value;
@@ -1089,7 +1103,7 @@ void ASidheRigelCharacter::AddSpeed(FString name, float value, float time)
 
 float ASidheRigelCharacter::GetSpeed()
 {
-	float res = 0.f;
+	float res = speedBase;
 	for (auto& value : speed)
 	{
 		res += value.Value;
@@ -1205,26 +1219,43 @@ void ASidheRigelCharacter::DecreaseBarrierAmount(float value)
 void ASidheRigelCharacter::InitProperty()
 {
 	level = 1;
-	range.Add("Debug", 500.f);
-	attackDamage.Add("Debug", 5.f);
-	attackSpeed.Add("Debug", 1.f);
-	criticalRate.Add("Debug", 50);
-	criticalDamage.Add("Debug", 50);
+	//range.Add("Debug", 500.f);
+	//attackDamage.Add("Debug", 5.f);
+	//attackSpeed.Add("Debug", 1.f);
+	//criticalRate.Add("Debug", 50);
+	//criticalDamage.Add("Debug", 50);
 
-	MaxHP.Add("Debug", 100.f);
-	generateHealthPoint.Add("Debug", 0.2f);
-	MaxMP.Add("Debug", 100.f);
-	lifeSteal.Add("Debug", 5.f);
-	protectPower.Add("Debug", 20);
+	//MaxHP.Add("Debug", 100.f);
+	//generateHealthPoint.Add("Debug", 0.2f);
+	//MaxMP.Add("Debug", 100.f);
+	//lifeSteal.Add("Debug", 5.f);
+	//protectPower.Add("Debug", 20);
 
-	defencePoint.Add("Debug", 100);
+	//defencePoint.Add("Debug", 100);
 
-	speed.Add("Debug", 600.f);
+	//speed.Add("Debug", 600.f);
+	
+	MaxExperience = 18000;
+
+	rangeBase = 500;
+	attackDamageBase = 5;
+	attackSpeedBase = 1;
+	criticalRateBase = 50;
+	criticalDamageBase = 50;
+
+	MaxHPBase = 100;
+	generateHealthPointBase = 0.2;
+	MaxMPBase = 100;
+	generateManaPointBase = 0.2;
+
+	lifeStealBase = 5;
+	protectPowerBase = 20;
+	defencePointBase = 100;
+
+	speedBase = 600;
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
-
-	MaxExperience = 20;
 }
 
 void ASidheRigelCharacter::InitAttackProjectile()

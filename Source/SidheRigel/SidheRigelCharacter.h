@@ -230,29 +230,51 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, float> range;				//레벨업을 제외한 다른 요인들에 의해 증가되는 사거리 딕셔너리
 	UPROPERTY()
+		float rangeBase;						//기본적으로 가지는 사거리
+	UPROPERTY()
 		TMap<FString, float> speed;				//레벨업을 제외한 다른 요인들에 의해 증가되는 이동속도 딕셔너리
+	UPROPERTY()
+		float speedBase;
 	UPROPERTY()
 		TMap<FString, float> speedRate;			//이동속도의 비율 증감
 	UPROPERTY()
 		TMap<FString, float> attackDamage;		//레벨업을 제외한 다른 요인들에 의해 증가되는 공격력 딕셔너리
 	UPROPERTY()
+		float attackDamageBase;
+	UPROPERTY()
 		TMap<FString, float> abiltyPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 주문력 딕셔너리
 	UPROPERTY()
 		TMap<FString, int32> criticalRate;		//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 확률 딕셔너리
 	UPROPERTY()
+		int32 criticalRateBase;
+	UPROPERTY()
 		TMap<FString, int32> criticalDamage;	//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 피해 딕셔너리
 	UPROPERTY()
+		int32 criticalDamageBase;
+	UPROPERTY()
 		TMap<FString, float> attackSpeed;		//레벨업을 제외한 다른 요인들에 의해 증가되는 치명타 피해 딕셔너리
+	UPROPERTY()
+		float attackSpeedBase;
 	UPROPERTY(VisibleAnyWhere)
 		TMap<FString, float> MaxHP;				//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 딕셔너리
 	UPROPERTY()
+		float MaxHPBase;
+	UPROPERTY()
 		TMap<FString, float> generateHealthPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 재생량 딕셔너리
+	UPROPERTY()
+		float generateHealthPointBase;
 	UPROPERTY()
 		TMap<FString, float> generateManaPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 재생량 딕셔너리
 	UPROPERTY()
+		float generateManaPointBase;
+	UPROPERTY()
 		TMap<FString, float> MaxMP;			//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 딕셔너리
 	UPROPERTY()
+		float MaxMPBase;
+	UPROPERTY()
 		TMap<FString, float> defencePoint;		//레벨업을 제외한 다른 요인들에 의해 증가되는 방어력 딕셔너리
+	UPROPERTY()
+		float defencePointBase;
 	UPROPERTY()
 		TMap<FString, float> magicResistPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 마법저항력 딕셔너리
 	UPROPERTY()
@@ -264,7 +286,11 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, int32> lifeSteal;			//레벨업을 제외한 다른 요인들에 의해 증가되는 흡혈 딕셔너리
 	UPROPERTY()
+		int32 lifeStealBase;
+	UPROPERTY()
 		TMap<FString, int32> protectPower;		//레벨업을 제외한 다른 요인들에 의해 증가되는 회복 및 보호막 효과 딕셔너리
+	UPROPERTY()
+		int32 protectPowerBase;
 	UPROPERTY()
 		TMap<FString, int32> endurance;			//레벨업을 제외한 다른 요인들에 의해 증가되는 인내심 딕셔너리
 	UPROPERTY()
@@ -298,7 +324,7 @@ public:		//Getter, Setter
 	int32 GetExp();
 	virtual void GiveExp(int32 _exp);
 	int32 GetMaxExp();
-	void SetMaxExp();
+	void LevelUp();
 
 	float GetRange();
 	float GetAttackDamage();
