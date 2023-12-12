@@ -250,6 +250,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("EPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedEButton);
 	InputComponent->BindAction("RPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedRButton);
 	InputComponent->BindAction("YPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedYButton);
+	InputComponent->BindAction("SpacePress", IE_Pressed, this, &ASidheRigelPlayerController::PressedSpaceButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
@@ -306,6 +307,14 @@ void ASidheRigelPlayerController::PressedYButton()
 	if (SRCamera)
 	{
 		SRCamera->SwitchIsCameraFixed();
+	}
+}
+
+void ASidheRigelPlayerController::PressedSpaceButton()
+{
+	if (SRCamera)
+	{
+		SRCamera->SetCameraInActorLocation();
 	}
 }
 
