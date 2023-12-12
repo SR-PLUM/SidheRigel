@@ -248,6 +248,8 @@ protected:	//Stat
 	UPROPERTY()
 		TMap<FString, float> generateHealthPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 체력 재생량 딕셔너리
 	UPROPERTY()
+		TMap<FString, float> generateManaPoint;	//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 재생량 딕셔너리
+	UPROPERTY()
 		TMap<FString, float> MaxMP;			//레벨업을 제외한 다른 요인들에 의해 증가되는 마나 딕셔너리
 	UPROPERTY()
 		TMap<FString, float> defencePoint;		//레벨업을 제외한 다른 요인들에 의해 증가되는 방어력 딕셔너리
@@ -290,11 +292,13 @@ public:		//Getter, Setter
 	void IE_GenerateHP();
 	void UseMana(float UseMP);
 	float GetCurrentMP();
+	void IE_GenerateMP();
 	int32 GetMoney();
 	void GiveMoney(int32 _money);
 	int32 GetExp();
 	virtual void GiveExp(int32 _exp);
 	int32 GetMaxExp();
+	void SetMaxExp();
 
 	float GetRange();
 	float GetAttackDamage();
@@ -309,6 +313,7 @@ public:		//Getter, Setter
 	float GetMaxHP();
 	float GetGenerateHealthPoint();
 	float GetMaxMP();
+	float GetGenerateManaPoint();
 	int32 GetLifeSteal();
 	int32 GetProtectPower();
 	int32 GetEndurance();
@@ -380,7 +385,11 @@ public:		//Interface Implement
 	UFUNCTION()
 		virtual void RestoreHP(float value) override;
 	UFUNCTION()
+		virtual void RestoreMP(float value);
+	UFUNCTION()
 		virtual float GetHP();
+	UFUNCTION()
+		virtual float GetMP();
 
 	UFUNCTION()
 		virtual void MoveVector(FVector Direction, float Force) override;

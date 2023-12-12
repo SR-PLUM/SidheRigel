@@ -27,7 +27,7 @@ void UFairyWingESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_Skill
 	skillCooldown = 0;
 	skillMaxCooldown = 5.f;
 	range = 500.f;
-	requireMana = 10.f;
+	requireMana = 40.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;
@@ -40,6 +40,8 @@ void UFairyWingESkill::SetSkillProperty(ASidheRigelCharacter* Character, E_Skill
 
 void UFairyWingESkill::OnUse(FHitResult Hit)
 {
+	USkill::OnUse(Hit);
+
 	if (AActor* _target = Hit.GetActor())
 	{
 		if (AFairyWingCharacter* FairyWingCharacter = Cast<AFairyWingCharacter>(character))

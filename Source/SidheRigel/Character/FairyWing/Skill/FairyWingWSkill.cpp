@@ -24,9 +24,9 @@ void UFairyWingWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_Skill
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
-	skillMaxCooldown = 1.f;
-	range = 500.f;
-	requireMana = 10.f;
+	skillMaxCooldown = 12.f;
+	range = 700.f;
+	requireMana = 70.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = false;
@@ -39,6 +39,8 @@ void UFairyWingWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_Skill
 
 void UFairyWingWSkill::OnUse(FHitResult Hit)
 {
+	USkill::OnUse(Hit);
+
 	FVector PawnToTarget = (Hit.Location - character->GetActorLocation()).GetSafeNormal();
 	FRotator MuzzleRotation = PawnToTarget.Rotation();
 
