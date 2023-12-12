@@ -84,4 +84,8 @@ void ADummyProjectile::Tick(float DeltaTime)
 			Destroy();
 		}
 	}
+	else
+	{
+		Destroy();
+	}
 }
