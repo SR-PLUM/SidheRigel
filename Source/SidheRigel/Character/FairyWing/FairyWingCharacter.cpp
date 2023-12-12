@@ -136,27 +136,45 @@ void AFairyWingCharacter::Attack(AActor* target)
 void AFairyWingCharacter::InitProperty()
 {
 	level = 1;
-	range.Add("Debug", 575.f);
-	attackDamage.Add("Debug", 53.f);
-	attackSpeed.Add("Debug", 0.681f);
-	criticalRate.Add("Debug", 0);
-	criticalDamage.Add("Debug", 75);
 
-	MaxHP.Add("Debug", 574.f);
-	generateHealthPoint.Add("Debug", 1.f);
-	generateManaPoint.Add("Debug", 2.f);
-	MaxMP.Add("Debug", 418.f);
-	lifeSteal.Add("Debug", 0.f);
-	protectPower.Add("Debug", 0);
+	MaxExperience = 18000;
 
-	defencePoint.Add("Debug", 29);
-	magicResistPoint.Add("Debug", 47);
-	speed.Add("Debug", 340.f);
+	rangeBase = 575.f;
+	attackDamageBase = 53.f;
+	attackSpeedBase = 0.681f;
+	criticalRateBase = 0;
+	criticalDamageBase = 75;
+
+	MaxHPBase = 574.f;
+	generateHealthPointBase = 1.f;
+	MaxMPBase = 418.f;
+	generateManaPointBase = 2.f;
+
+	lifeStealBase = 0.f;
+	protectPowerBase = 0;
+	defencePointBase = 29;
+
+	speedBase = 340.f;
+
+	//range.Add("Debug", 575.f);
+	//attackDamage.Add("Debug", 53.f);
+	//attackSpeed.Add("Debug", 0.681f);
+	//criticalRate.Add("Debug", 0);
+	//criticalDamage.Add("Debug", 75);
+
+	//MaxHP.Add("Debug", 574.f);
+	//generateHealthPoint.Add("Debug", 1.f);
+	//generateManaPoint.Add("Debug", 2.f);
+	//MaxMP.Add("Debug", 418.f);
+	//lifeSteal.Add("Debug", 0.f);
+	//protectPower.Add("Debug", 0);
+
+	//defencePoint.Add("Debug", 29);
+	//magicResistPoint.Add("Debug", 47);
+	//speed.Add("Debug", 340.f);
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
-
-	SetMaxExp();
 }
 
 void AFairyWingCharacter::InitFairyWingTalent()
