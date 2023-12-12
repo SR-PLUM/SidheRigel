@@ -50,7 +50,7 @@ public:
 		void Server_SpawnRangeMinion();
 
 	UPROPERTY()
-		float DebugTimer = 0;
+		float DebugTimer = 30;
 
 	UFUNCTION()
 		virtual E_Team GetTeam() override;

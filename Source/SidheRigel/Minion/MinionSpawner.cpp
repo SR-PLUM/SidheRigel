@@ -60,11 +60,6 @@ void AMinionSpawner::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 void AMinionSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (HasAuthority())
-	{
-		Server_SpawnMinionWave();
-	}
 }
 
 // Called every frame
