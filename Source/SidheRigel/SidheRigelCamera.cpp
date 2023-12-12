@@ -68,7 +68,7 @@ void ASidheRigelCamera::SwitchIsCameraFixed()
 
 void ASidheRigelCamera::SetCameraInActorLocation()
 {
-	if (TargetToFollow)
+	if (!IsCameraFixed && TargetToFollow)
 	{
 		FVector TargetLocation = TargetToFollow->GetActorLocation();
 

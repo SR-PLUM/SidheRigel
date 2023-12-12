@@ -41,6 +41,7 @@ protected:
 	void PressedRButton();
 	
 	void PressedYButton();
+	void PressedSpaceButton();
 
 	//Set Pawn
 public:
