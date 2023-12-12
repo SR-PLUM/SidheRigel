@@ -86,7 +86,7 @@ void AFairyWingRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 				{
 					if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(colliderOwner))
 					{
-						if(owner->IsSelectedTalent[7][1])
+						if(owner->IsSelectedTalent[6][1])
 							target->MoveVector(this->GetActorLocation(), this->GetDistanceTo(target));
 					}						
 				}
