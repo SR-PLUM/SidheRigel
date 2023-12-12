@@ -45,6 +45,7 @@ private:
 	TSubclassOf<class UUserWidget> InGameMenuClass;
 
 	class UMainMenu* Menu;
+	class UInGameMenu* InGameMenu;
 
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
@@ -72,4 +73,6 @@ public:
 		TEnumAsByte<E_Team> myTeam;
 	UPROPERTY()
 		bool bIsSingleGame = false;
+
+	bool isSettingUIOpen = false;
 };
