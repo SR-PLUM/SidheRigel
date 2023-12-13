@@ -22,6 +22,12 @@ void UIdleState::OnBegin()
 		controller->StopMovement();
 
 		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
+
+		controller->target = nullptr;
+		controller->bSkillReady = false;
+		controller->bAttackReady = false;
+		controller->location = FVector::Zero();
+		myCharacter->skillRange->SetVisibility(false);
 	}
 }
 

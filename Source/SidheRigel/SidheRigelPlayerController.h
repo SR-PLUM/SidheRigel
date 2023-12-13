@@ -43,6 +43,7 @@ protected:
 	void PressedYButton();
 	void PressedSpaceButton();
 	void PressedAButton();
+	void PressedSButton();
 
 	//Set Pawn
 public:

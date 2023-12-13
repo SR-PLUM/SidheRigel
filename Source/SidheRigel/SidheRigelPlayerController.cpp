@@ -252,6 +252,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("YPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedYButton);
 	InputComponent->BindAction("SpacePress", IE_Pressed, this, &ASidheRigelPlayerController::PressedSpaceButton);
 	InputComponent->BindAction("APress", IE_Pressed, this, &ASidheRigelPlayerController::PressedAButton);
+	InputComponent->BindAction("SPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedSButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
@@ -339,6 +340,15 @@ void ASidheRigelPlayerController::PressedAButton()
 	myCharacter->skillRange->SetRelativeScale3D(FVector(currentRange / 100, currentRange / 100, 1));
 
 	myCharacter->skillRange->SetVisibility(true);
+}
+
+void ASidheRigelPlayerController::PressedSButton()
+{
+	if (currentState == Die || currentState == UseSkill)
+		return;
+
+	ChangeState(Idle);
+	StopMovement();
 }
 
 void ASidheRigelPlayerController::IE_Update()
