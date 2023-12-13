@@ -24,7 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	class USphereComponent* rangeArea;
+	UPROPERTY(EditAnywhere)
+		class USphereComponent* rangeArea;
 
 	UPROPERTY(EditAnywhere)
 		class UParticleSystemComponent* destroyParticle;
@@ -77,7 +78,7 @@ public:
 	UPROPERTY()
 		float attackDelay = 0.f;
 	UPROPERTY()
-		float maxAttackDelay = 0.83f;
+		float maxAttackDelay = 1.2f;
 
 	UPROPERTY()
 		float damage = 170;

@@ -46,6 +46,9 @@ void UIdleState::OnRightRelease()
 
 void UIdleState::OnLeftClick()
 {
+	if (!myCharacter)
+		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
+
 	if (controller->bSkillReady)
 	{
 		if (controller->currentSkill != E_SkillState::Skill_Null)

@@ -132,7 +132,7 @@ void AColdEDamageField::Explosion()
 		if (groundFire)
 		{
 			groundFire->damageArea = 100.f;
-			groundFire->damage = 15.f;
+			groundFire->damage = fieldDamage;
 			groundFire->damageCycle = 0.2f;
 			groundFire->duration = 1.5f;
 			groundFire->projectileOwner = projectileOwner;

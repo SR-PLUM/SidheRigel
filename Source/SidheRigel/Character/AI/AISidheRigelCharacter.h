@@ -52,11 +52,23 @@ public:
 
 	UFUNCTION()
 		AWayPoint* GetWayPoint(int idx);
-	UFUNCTION()
-		int32 GetTeamActorNum();
 
 	void GiveExp(int32 _exp) override;
 	TArray<AActor*> TeamInRange;
 
 	virtual void TakeDamage(float damage, AActor* damageCauser) override;
+
+	class ATower* nearbyTower;
+	bool IsNearByTower();
+	bool HasTarget();
+	bool HasNearByTeam();
+	void MoveBackward();
+	bool IsEnoughCloseToTarget();
+	bool IsTargetHero();
+	void ApproachToAttackUsingSkill();
+	void UsingQSkill();
+	void AIAttack();
+	void ChangeTargetIfTargetDead();
+	AActor* GetClosestEnemy();
+	void MoveForward();
 };

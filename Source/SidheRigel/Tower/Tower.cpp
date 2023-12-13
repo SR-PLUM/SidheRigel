@@ -43,7 +43,7 @@ ATower::ATower()
 	if (!rangeArea)
 	{
 		rangeArea = CreateDefaultSubobject<USphereComponent>(TEXT("rangeArea"));
-		rangeArea->InitSphereRadius(500.0f);
+		rangeArea->InitSphereRadius(300.0f);
 		rangeArea->SetupAttachment(mesh);
 	}
 

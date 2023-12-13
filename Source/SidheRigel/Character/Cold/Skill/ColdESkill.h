@@ -29,10 +29,12 @@ private:
 	TSubclassOf<class AColdEProjectile> projectileClass;
 	TSubclassOf<class AColdEDamageField> damageFieldClass;
 
-	float colliderFieldArea = 105.f;
-	float colliderDamage = 10.f;
+	float colliderFieldArea = 10.f;
+	float colliderDamage = 50.f;
+	float colliderFieldDamage = 10.f;
 
-	float talentDamage = 500.f;
+	float talentDamage = 70.f;
+	float talentFieldDamage = 20.f;
 	float talentMana = 70.f;
 	float talentDelay = 0.5f;
 	float talentRange = 1400.f;
