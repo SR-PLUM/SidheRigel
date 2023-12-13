@@ -257,98 +257,128 @@ void ASidheRigelPlayerController::SetupInputComponent()
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
 {
-	currentState->OnRightRelease();
+	if(!isGameOvered)
+		currentState->OnRightRelease();
 }
 
 void ASidheRigelPlayerController::ClickedRightMouseButton()
 {
-	//UE_LOG(LogTemp, Error, TEXT("OnRightClick"))
-	//SkillCancel
-	bAttackReady = false;
-	bSkillReady = false;
-	currentSkill = E_SkillState::Skill_Null;
-	if (myCharacter)
+	if (!isGameOvered)
 	{
-		myCharacter->skillRange->SetVisibility(false);
-	}
-	else
-	{
-		myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
-		UE_LOG(LogTemp, Error, TEXT("ERROR CHARACTER NULL IN STATEMACHINE"))
-	}
+		//UE_LOG(LogTemp, Error, TEXT("OnRightClick"))
+		//SkillCancel
+		bAttackReady = false;
+		bSkillReady = false;
+		currentSkill = E_SkillState::Skill_Null;
+		if (myCharacter)
+		{
+			myCharacter->skillRange->SetVisibility(false);
+		}
+		else
+		{
+			myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
+			UE_LOG(LogTemp, Error, TEXT("ERROR CHARACTER NULL IN STATEMACHINE"))
+		}
 
-	currentState->OnRightClick();
+		currentState->OnRightClick();
+	}
+	
 }
 
 void ASidheRigelPlayerController::ClickedLeftMouseButton()
 {
-	currentState->OnLeftClick();
+	if(!isGameOvered)
+		currentState->OnLeftClick();
 }
 
 void ASidheRigelPlayerController::PressedQButton()
 {
-	OnKeyboard(E_SkillState::Q_Ready);
+	if (!isGameOvered)
+	{
+		OnKeyboard(E_SkillState::Q_Ready);
+	}
+	
 }
 
 void ASidheRigelPlayerController::PressedWButton()
 {
-	OnKeyboard(E_SkillState::W_Ready);
+	if (!isGameOvered)
+		OnKeyboard(E_SkillState::W_Ready);
 }
 
 void ASidheRigelPlayerController::PressedEButton()
 {
-	OnKeyboard(E_SkillState::E_Ready);
+	if (!isGameOvered)
+		OnKeyboard(E_SkillState::E_Ready);
 }
 
 void ASidheRigelPlayerController::PressedRButton()
 {
-	OnKeyboard(E_SkillState::R_Ready);
+	if (!isGameOvered)
+		OnKeyboard(E_SkillState::R_Ready);
 }
 
 void ASidheRigelPlayerController::PressedYButton()
 {
-	if (SRCamera)
+	if (!isGameOvered)
 	{
-		SRCamera->SwitchIsCameraFixed();
+		if (SRCamera)
+		{
+			SRCamera->SwitchIsCameraFixed();
+		}
 	}
+	
 }
 
 void ASidheRigelPlayerController::PressedSpaceButton()
 {
-	if (SRCamera)
+	if (!isGameOvered)
 	{
-		SRCamera->SetCameraInActorLocation();
+		if (SRCamera)
+		{
+			SRCamera->SetCameraInActorLocation();
+		}
 	}
+	
 }
 
 void ASidheRigelPlayerController::PressedAButton()
 {
-	bSkillReady = false;
-	currentSkill = E_SkillState::Skill_Null;
-
-	if (!myCharacter)
+	if (!isGameOvered)
 	{
-		myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
-	}
-	if (myCharacter->stunTime > 0)
-	{
-		return;
-	}
+		bSkillReady = false;
+		currentSkill = E_SkillState::Skill_Null;
 
-	bAttackReady = true;
-	float currentRange = myCharacter->GetRange();
-	myCharacter->skillRange->SetRelativeScale3D(FVector(currentRange / 100, currentRange / 100, 1));
+		if (!myCharacter)
+		{
+			myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
+		}
+		if (myCharacter->stunTime > 0)
+		{
+			return;
+		}
 
-	myCharacter->skillRange->SetVisibility(true);
+		bAttackReady = true;
+		float currentRange = myCharacter->GetRange();
+		myCharacter->skillRange->SetRelativeScale3D(FVector(currentRange / 100, currentRange / 100, 1));
+
+		myCharacter->skillRange->SetVisibility(true);
+
+	}
+	
 }
 
 void ASidheRigelPlayerController::PressedSButton()
 {
-	if (currentState == Die || currentState == UseSkill)
-		return;
+	if (!isGameOvered)
+	{
+		if (currentState == Die || currentState == UseSkill)
+			return;
 
-	ChangeState(Idle);
-	StopMovement();
+		ChangeState(Idle);
+		StopMovement();
+	}
+	
 }
 
 void ASidheRigelPlayerController::IE_Update()
@@ -411,6 +441,12 @@ AActor* ASidheRigelPlayerController::GetCloseActorToMouse()
 	}
 	return res;
 }
+
+void ASidheRigelPlayerController::SetIsGameOvered(bool flag)
+{
+	isGameOvered = flag;
+}
+
 
 void ASidheRigelPlayerController::ChangeState(UState* NextState)
 {
