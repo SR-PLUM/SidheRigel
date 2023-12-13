@@ -145,6 +145,12 @@ protected:
 	// Reference to our camera
 	UPROPERTY(Replicated)
 	class ASidheRigelCamera* SRCamera;
+
+private:
+	bool isGameOvered = false;
+
+public :
+	void SetIsGameOvered(bool flag);
 };
 
 

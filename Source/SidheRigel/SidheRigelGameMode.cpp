@@ -137,9 +137,40 @@ AActor* ASidheRigelGameMode::ChoosePlayerStart_Implementation(AController* Playe
 	return SelectedPlayerStart;
 }
 
+void ASidheRigelGameMode::GameOver(E_Team team)
+{
+
+	ASidheRigelPlayerController* Controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	Controller->SetIsGameOvered(true);
+
+	Controller->myCharacter->GameOverEffect(team);
+
+	Controller->StopMovement();
+
+	FTimerHandle GameOverTimer;
+
+	GetWorld()->GetTimerManager().SetTimer(
+		GameOverTimer,
+		FTimerDelegate::CreateLambda([=]() {
+
+			Controller->ClientTravel("/Game/Maps/Mainmenu", ETravelType::TRAVEL_Absolute);
+			}),
+			5.f,
+				false
+				);
+
+	
+
+	//Move to Lobby
+	//GetWorld()->GetTimerManager()->SetTimer
+
+	
+
+}
+
 void ASidheRigelGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 

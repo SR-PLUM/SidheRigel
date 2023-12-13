@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 
 #include "State.h"
-
 #include "UseSkillState.generated.h"
 
 /**
@@ -29,5 +28,5 @@ public:
 	void OnEnd() override;
 
 private:
-	ASidheRigelCharacter* myCharacter;
+	class ASidheRigelCharacter* myCharacter;
 };

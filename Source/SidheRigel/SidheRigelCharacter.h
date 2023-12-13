@@ -177,6 +177,18 @@ public:
 	void InitDeathActorClass();
 	void SpawnDeathActor();
 
+
+public : //GameOver
+	UPROPERTY()
+		TSubclassOf<class UUserWidget> GameOverUIWidget;
+
+	UPROPERTY()
+		class UGameOverUI* GameOverUI;
+
+	void InitGameOverUI();
+	void SpawnGameOverUI();
+	void GameOverEffect(E_Team gameOverTeam);
+
 public:	//CC Particle
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class AStunParticle> stunParticleClass;
