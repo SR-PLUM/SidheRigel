@@ -152,7 +152,7 @@ void ASidheRigelGameMode::GameOver(E_Team team)
 
 	GetWorld()->GetTimerManager().SetTimer(
 		GameOverTimer,
-		FTimerDelegate::CreateLambda([&]() {
+		FTimerDelegate::CreateLambda([=]() {
 
 			Controller->ClientTravel("/Game/Maps/Mainmenu", ETravelType::TRAVEL_Absolute);
 			}),
