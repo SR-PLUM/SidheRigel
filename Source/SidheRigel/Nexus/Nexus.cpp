@@ -13,6 +13,7 @@
 #include "SidheRigel/Nexus/NexusAttackProjectile.h"
 #include "NexusDestroyParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
+#include "SidheRigel/SidheRigelGameMode.h"
 
 // Sets default values
 ANexus::ANexus()
@@ -235,7 +236,14 @@ void ANexus::TakeDamage(float _damage, AActor* damageCauser)
 	NexusUIRef->SetHPBar(HP / MaxHP);
 
 	if (HP <= 0)
-	{		FActorSpawnParameters SpawnParams;
+	{	
+		ASidheRigelGameMode* GameMode = Cast<ASidheRigelGameMode>(GetWorld()->GetAuthGameMode());
+
+		GameMode->GameOver(GetTeam());
+
+		UE_LOG(LogTemp, Error, TEXT("Nexus Destroyed"));
+
+		FActorSpawnParameters SpawnParams;
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(GetActorLocation());
 		SpawnTransform.SetRotation(GetActorRotation().Quaternion());

@@ -28,6 +28,7 @@
 #include "SidheRigel/UI/SkillBtn.h"
 #include "SidheRigel/UI/StatSummary.h"
 #include "SidheRigel/UI/DeathTime.h"
+#include "SidheRigel/UI/GameOverUI.h"
 #include "Components/WidgetComponent.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRigel/Tower/Tower.h"
@@ -39,6 +40,7 @@
 #include "SidheRigel/Character/Common/SilenceParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Character/AI/CharacterAIController.h"
+#include "SidheRigel/SidheRigelGameMode.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
 {
@@ -148,6 +150,8 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitDeathActorClass();
 
+	InitGameOverUI();
+
 	bReplicates = true;
 }
 
@@ -246,6 +250,8 @@ void ASidheRigelCharacter::PossessedBy(AController* NewController)
 		InitInGameUI();
 
 		SpawnDeathUI();
+
+		SpawnGameOverUI();
 	}
 }
 
@@ -550,6 +556,52 @@ void ASidheRigelCharacter::SpawnDeathActor()
 
 	// Spawn the projectile at the muzzle.
 	GetWorld()->SpawnActor<AActor>(deathActorClass, SpawnTransform, SpawnParams);
+}
+
+void ASidheRigelCharacter::InitGameOverUI()
+{
+	ConstructorHelpers::FClassFinder<UUserWidget> GameOverUIClass(TEXT("/Game/UIBlueprints/InGameUI/WBP_GameOverUI"));
+	if (GameOverUIClass.Class == nullptr)
+		return;
+
+	GameOverUIWidget = GameOverUIClass.Class;
+}
+
+void ASidheRigelCharacter::SpawnGameOverUI()
+{
+	GameOverUI = CreateWidget<UGameOverUI>(InGameUI, GameOverUIWidget);
+	InGameUI->GameOverUIOverlay->AddChild(GameOverUI);
+	if (GameOverUI)
+	{
+		GameOverUI->bIsEnabled = false;
+	}
+}
+
+void ASidheRigelCharacter::GameOverEffect(int32 gameOverTeam)
+{
+	//UnPossessed();  //character Movement setting
+
+	int currentTeam;
+	if (E_Team::Blue == GetTeam()) currentTeam = 1;
+	else if (E_Team::Red == GetTeam()) currentTeam = 2;
+
+	if (GameOverUI)
+	{
+		GameOverUI->bIsEnabled = true;
+
+		if (currentTeam == gameOverTeam)
+		{
+			//lose UI
+			GameOverUI->SetGameOverImage(true);
+		}
+		else
+		{
+			//win UI
+			GameOverUI->SetGameOverImage(true);
+		}
+	}
+
+	
 }
 
 void ASidheRigelCharacter::InitInGameUIWidget()

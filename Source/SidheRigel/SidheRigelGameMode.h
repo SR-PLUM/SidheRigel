@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Enum/E_Team.h"
 #include "SidheRigelGameMode.generated.h"
+
 
 UCLASS(minimalapi)
 class ASidheRigelGameMode : public AGameModeBase
@@ -24,6 +26,8 @@ public:
 
 	UPROPERTY()
 		TArray<AActor*> nonePlayerStarts;
+
+	void GameOver(E_Team team);
 
 protected:
 	virtual void BeginPlay() override;

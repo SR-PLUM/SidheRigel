@@ -137,9 +137,23 @@ AActor* ASidheRigelGameMode::ChoosePlayerStart_Implementation(AController* Playe
 	return SelectedPlayerStart;
 }
 
+void ASidheRigelGameMode::GameOver(E_Team team)
+{
+
+	ASidheRigelPlayerController* Controller = Cast<ASidheRigelPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	Controller->myCharacter->GameOverEffect(team);
+
+	UE_LOG(LogTemp, Error, TEXT("Game Over"));
+
+	//Move to Lobby
+	//GetWorld()->GetTimerManager()->SetTimer
+
+
+}
+
 void ASidheRigelGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 

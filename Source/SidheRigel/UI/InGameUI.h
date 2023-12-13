@@ -31,6 +31,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UOverlay* DeathTimeOverlay;
 
+	UPROPERTY(meta = (BindWidget))
+		class UOverlay* GameOverUIOverlay;
+
 	UPROPERTY()
 		class USidheRigelGameInstance* GameInstanceRef;
 
