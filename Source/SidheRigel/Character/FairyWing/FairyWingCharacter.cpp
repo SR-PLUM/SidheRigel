@@ -14,6 +14,7 @@
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingEProjectile.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingESkill.h"
 #include "SidheRigel/Character/FairyWing/FairyWingAttackProjectile.h"
+#include "SidheRigel/UI/StatSummary.h"
 #include "SidheRigel/InGameMapScriptActor.h"
 #include "Animation/AnimMontage.h"
 
@@ -137,7 +138,7 @@ void AFairyWingCharacter::InitProperty()
 {
 	level = 1;
 
-	MaxExperience = 18000;
+	MaxExperience = 280;
 
 	rangeBase = 575.f;
 	attackDamageBase = 53.f;
@@ -156,25 +157,26 @@ void AFairyWingCharacter::InitProperty()
 
 	speedBase = 340.f;
 
-	//range.Add("Debug", 575.f);
-	//attackDamage.Add("Debug", 53.f);
-	//attackSpeed.Add("Debug", 0.681f);
-	//criticalRate.Add("Debug", 0);
-	//criticalDamage.Add("Debug", 75);
-
-	//MaxHP.Add("Debug", 574.f);
-	//generateHealthPoint.Add("Debug", 1.f);
-	//generateManaPoint.Add("Debug", 2.f);
-	//MaxMP.Add("Debug", 418.f);
-	//lifeSteal.Add("Debug", 0.f);
-	//protectPower.Add("Debug", 0);
-
-	//defencePoint.Add("Debug", 29);
-	//magicResistPoint.Add("Debug", 47);
-	//speed.Add("Debug", 340.f);
-
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
+}
+
+void AFairyWingCharacter::LevelUp()
+{
+	Super::LevelUp();
+
+	MaxHPBase += 93;
+	currentHP += 93;
+	generateHealthPointBase += 0.5;
+	MaxMPBase += 25;
+	currentMP += 25;
+	generateManaPointBase += 0.4;
+	attackDamageBase += 3.2;
+	attackSpeedBase += 0.0124;
+	defencePointBase += 4.2;
+
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
 }
 
 void AFairyWingCharacter::InitFairyWingTalent()

@@ -42,7 +42,7 @@ protected:
 		TEnumAsByte<E_Team> team = E_Team::Team_Null;
 
 	float HP;
-	float MaxHP = 5000;
+	float MaxHP = 3300;
 
 protected:
 	UPROPERTY()
@@ -77,10 +77,10 @@ public:
 	UPROPERTY()
 		float attackDelay = 0.f;
 	UPROPERTY()
-		float maxAttackDelay = 1.5f;
+		float maxAttackDelay = 0.83f;
 
 	UPROPERTY()
-		float damage = 180.f;
+		float damage = 170;
 public:
 	UFUNCTION()
 		virtual void TakeDamage(float _damage, AActor* damageCauser);

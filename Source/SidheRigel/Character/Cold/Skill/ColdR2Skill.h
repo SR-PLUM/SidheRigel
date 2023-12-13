@@ -22,7 +22,7 @@ public:
 	virtual void OnUse(FHitResult Hit) override;
 
 private:
-	float colliderDamage = 5000.f;
+	float colliderDamage = 250.f;
 	float colliderDuration = 1.f;
 
 	TSubclassOf<class AColdR2Projectile> projectileClass;

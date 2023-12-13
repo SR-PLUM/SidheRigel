@@ -24,9 +24,9 @@ void UColdQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
-	skillMaxCooldown = 9.5f;
-	range = 300.f;
-	requireMana = 20.f;
+	skillMaxCooldown = 10.f;
+	range = 500.f;
+	requireMana = 55.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;
@@ -86,7 +86,7 @@ void UColdQSkill::OnUse(FHitResult Hit)
 								projectile->projectileOwner = character;
 								if (i != 0 && !(character->IsSelectedTalent[4][1]))
 								{
-									colliderDamage *= 0.6;
+									colliderDamage *= 0.3;
 								}
 								projectile->damage = colliderDamage;
 								projectile->speed = colliderSpeed;
