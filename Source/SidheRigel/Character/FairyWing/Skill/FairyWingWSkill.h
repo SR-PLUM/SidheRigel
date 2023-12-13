@@ -25,7 +25,7 @@ private:
 	float colliderDuration = 2.f;
 	float colliderSlow = 0.5f;
 
-	float upgradeColliderDamage = 240.f;
+	float upgradeColliderDamage = 100.f;
 	float addColliderDamage = 50.f;
 	float addColliderSlow = 0.7f;
 

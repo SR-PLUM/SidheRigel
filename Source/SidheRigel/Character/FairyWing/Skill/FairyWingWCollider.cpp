@@ -83,7 +83,7 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 					{
 						if (owner->IsSelectedTalent[2][0])
 						{
-							owner->RestoreHP(100.f);
+							owner->RestoreHP(80.f);
 						}
 
 						if (owner->IsSelectedTalent[2][1])
@@ -108,7 +108,7 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 
 						if (owner->IsSelectedTalent[4][0])
 						{
-							markTarget->AddAttackDamage("FariyWing_W", 20.f);
+							markTarget->AddAttackDamage("FariyWing_W", -20.f);
 
 							FTimerHandle sightRestoreTimer;
 							GetWorldTimerManager().SetTimer(sightRestoreTimer,

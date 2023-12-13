@@ -104,7 +104,7 @@ void UFairyWingESkill::OnUse(FHitResult Hit)
 void UFairyWingESkill::SetCooldown()
 {
 	if (isProjectileHeroHit == true && character->IsSelectedTalent[6][2])
-		skillCooldown = 2.f;
+		skillCooldown = 3.f;
 	else
 		skillCooldown = skillMaxCooldown;
 }
