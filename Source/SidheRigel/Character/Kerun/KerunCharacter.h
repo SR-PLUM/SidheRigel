@@ -29,6 +29,7 @@ protected:
 
 public:
 	virtual void InitProperty() override;
+	virtual void LevelUp() override;
 
 	//void GiveExp(int32 _exp) override;
 

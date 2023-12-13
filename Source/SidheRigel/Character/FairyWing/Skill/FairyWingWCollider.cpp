@@ -86,7 +86,7 @@ void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 							owner->RestoreHP(100.f);
 						}
 
-						if (1)
+						if (owner->IsSelectedTalent[2][1])
 						{
 							markTarget->isWSkillAlreadyHit = true;
 							FTimerHandle markDestroyTimer;

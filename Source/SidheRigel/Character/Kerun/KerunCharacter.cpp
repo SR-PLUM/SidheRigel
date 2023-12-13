@@ -107,24 +107,24 @@ void AKerunCharacter::InitProperty()
 {
 	level = 1;
 
-	MaxExperience = 18000;
+	MaxExperience = 280;
 
-	rangeBase = 200.f;
-	attackDamageBase = 5.f;
-	attackSpeedBase = 1.f;
-	criticalRateBase = 50;
-	criticalDamageBase = 50;
+	rangeBase = 125;
+	attackDamageBase = 68;
+	attackSpeedBase = 0.694;
+	criticalRateBase = 0;
+	criticalDamageBase = 75;
 
-	MaxHPBase = 100;
-	generateHealthPointBase = 0.2;
-	MaxMPBase = 100;
-	generateManaPointBase = 0.2;
+	MaxHPBase = 645;
+	generateHealthPointBase = 6.5;
+	MaxMPBase = 316;
+	generateManaPointBase = 7.5;
 
-	lifeStealBase = 5;
-	protectPowerBase = 20;
-	defencePointBase = 100;
+	lifeStealBase = 0;
+	protectPowerBase = 0;
+	defencePointBase = 35;
 
-	speedBase = 600;
+	speedBase = 350;
 
 	//range.Add("Debug", 200.f);
 	//attackDamage.Add("Debug", 5.f);
@@ -144,6 +144,24 @@ void AKerunCharacter::InitProperty()
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
+}
+
+void AKerunCharacter::LevelUp()
+{
+	Super::LevelUp();
+
+	MaxHPBase += 119;
+	currentHP += 119;
+	generateHealthPointBase += 0.6;
+	MaxMPBase += 50;
+	currentMP += 50;
+	generateManaPointBase += 0.6;
+	attackDamageBase += 4.7;
+	attackSpeedBase += 0.018;
+	defencePointBase += 4.2;
+
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
 }
 
 void AKerunCharacter::Attack(AActor* target)

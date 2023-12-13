@@ -39,6 +39,9 @@ protected:	//Attack
 	virtual void InitAttackProjectile() override;
 	virtual void Attack(AActor* target) override;
 
+	virtual void InitProperty() override;
+	virtual void LevelUp() override;
+
 private:	//State
 	E_UltType ultType;
 

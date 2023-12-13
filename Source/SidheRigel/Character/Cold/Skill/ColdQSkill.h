@@ -25,10 +25,10 @@ public:
 private:	//Property
 	float colliderSpeed = 1000.f;
 	float colliderDelay = 0.1f;
-	float colliderDamage = 20.f;
+	float colliderDamage = 40.f;
 	int32 count = 5;
 
-	float talentRange = 400.f;
+	float talentRange = 700.f;
 	int32 talentCount = 10;
 	float talentSlow = 0.5f;
 	float talentSlowTime = 2;

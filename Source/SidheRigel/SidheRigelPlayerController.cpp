@@ -16,6 +16,7 @@
 #include "SidheRigel/Character/FairyWing/FairyWingCharacter.h"
 #include "SidheRigel/Character/Kerun/KerunCharacter.h"
 #include "SidheRigel/Character/AI/AISidheRigelCharacter.h"
+#include "SidheRigel/Nexus/Nexus.h"
 
 #include "SidheRigel/State/IdleState.h"
 #include "SidheRigel/State/MoveToAttackState.h"
@@ -526,8 +527,25 @@ void ASidheRigelPlayerController::HasAttackEnemy()
 			}
 			if (TeamActor && TeamActor->GetTeam() != myCharacter->GetTeam())
 			{
-				target = HitActor;
-				ChangeState(MoveToAttack);
+				if (auto nexusActor = Cast<ANexus>(HitActor))
+				{
+					if (nexusActor->bIsTowerDestroyed)
+					{
+						target = HitActor;
+						ChangeState(MoveToAttack);
+					}
+					else
+					{
+						location = GetHitResult().Location;
+						ChangeState(Move);
+					}
+				}
+				else
+				{
+					target = HitActor;
+					ChangeState(MoveToAttack);
+				}
+				
 			}
 		}
 		else

@@ -16,6 +16,7 @@
 #include "SidheRigel/Character/Cold/Skill/ColdR2Projectile.h"
 #include "SidheRigel/Character/Cold/ColdAttackProjectile.h"
 #include "SidheRigel/InGameMapScriptActor.h"
+#include "SidheRigel/UI/StatSummary.h"
 
 // Sets default values
 AColdCharacter::AColdCharacter()
@@ -103,6 +104,51 @@ void AColdCharacter::Attack(AActor* target)
 			}
 		}
 	}
+}
+
+void AColdCharacter::InitProperty()
+{
+	level = 1;
+
+	MaxExperience = 280;
+
+	rangeBase = 600;
+	attackDamageBase = 60;
+	attackSpeedBase = 0.568;
+	criticalRateBase = 0;
+	criticalDamageBase = 75;
+
+	MaxHPBase = 580;
+	generateHealthPointBase = 3.5;
+	MaxMPBase = 315;
+	generateManaPointBase = 7.4;
+
+	lifeStealBase = 0;
+	protectPowerBase = 0;
+	defencePointBase = 27;
+
+	speedBase = 325;
+
+	currentHP = GetMaxHP();
+	currentMP = GetMaxMP();
+}
+
+void AColdCharacter::LevelUp()
+{
+	Super::LevelUp();
+
+	MaxHPBase += 107;
+	currentHP += 107;
+	generateHealthPointBase += 0.55;
+	MaxMPBase += 40;
+	currentMP += 40;
+	generateManaPointBase += 0.7;
+	attackDamageBase += 3.4;
+	attackSpeedBase += 0.028;
+	defencePointBase += 4.7;
+
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
 }
 
 void AColdCharacter::InitColdTalent()

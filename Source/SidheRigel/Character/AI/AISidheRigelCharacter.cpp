@@ -11,6 +11,7 @@
 #include "SidheRigel/Minion/WayPoint.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRIgel/Tower/Tower.h"
+#include "SidheRigel/UI/StatSummary.h"
 
 AAISidheRigelCharacter::AAISidheRigelCharacter()
 {
@@ -376,6 +377,9 @@ void AAISidheRigelCharacter::GiveExp(int32 _exp)
 			IsSelectedTalent[6].IsSelected[1] = true;
 		}
 	}
+
+	StatSummary->SetLevel(level);
+	StatSummary->SetExpBar(float(experience) / MaxExperience);
 }
 
 void AAISidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)

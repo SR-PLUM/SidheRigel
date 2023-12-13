@@ -917,16 +917,11 @@ void ASidheRigelCharacter::LevelUp()
 {
 	level++;
 
-	MaxExperience = 180 * (100 + GetCurrentLevel());
-	MaxHPBase += 100;
-	currentHP += 100;
-	MaxMPBase += 100;
-	currentMP += 100;
+	MaxExperience = 180 + (100 * GetCurrentLevel());
+
 
 	//증가 스텟
 
-	StatSummary->SetHPBar(currentHP / GetMaxHP());
-	StatSummary->SetMPBar(currentMP / GetMaxMP());
 }
 
 float ASidheRigelCharacter::GetRange()
@@ -1289,7 +1284,7 @@ void ASidheRigelCharacter::InitProperty()
 
 	//speed.Add("Debug", 600.f);
 	
-	MaxExperience = 18000;
+	MaxExperience = 280;
 
 	rangeBase = 500;
 	attackDamageBase = 5;

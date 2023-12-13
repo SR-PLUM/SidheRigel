@@ -38,11 +38,11 @@ void UColdWSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState
 {
 	skillDelay = 1.f;
 	skillCooldown = 0;
-	skillMaxCooldown = 10.f;
+	skillMaxCooldown = 12.f;
 	range = 100.f;
-	requireMana = 40.f;
+	requireMana = 80.f;
 
-	bIsInstantCast = false;
+	bIsInstantCast = true;
 	bIsTargeting = false;
 
 	character = Character;

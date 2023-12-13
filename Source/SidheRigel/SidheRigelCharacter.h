@@ -336,7 +336,7 @@ public:		//Getter, Setter
 	int32 GetExp();
 	virtual void GiveExp(int32 _exp);
 	int32 GetMaxExp();
-	void LevelUp();
+	virtual void LevelUp();
 
 	float GetRange();
 	float GetAttackDamage();

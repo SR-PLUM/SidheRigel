@@ -33,7 +33,7 @@ private:
 	//Speed
 	int32 Speed = 5;
 
-	double damage = 10.0f;
+	double damage = 65.0f;
 
 	class AKerunCharacter* KerunCharacter;
 

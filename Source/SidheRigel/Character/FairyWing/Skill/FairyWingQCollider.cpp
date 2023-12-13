@@ -92,7 +92,7 @@ void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 					{
 						if (ICCable* CCtarget = Cast<ICCable>(OtherActor))
 						{
-							CCtarget->Stun(3.f);
+							CCtarget->Stun(1.f);
 						}
 					}
 				}

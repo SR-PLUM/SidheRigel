@@ -33,11 +33,11 @@ void ARangeMinion::BeginPlay()
 
 void ARangeMinion::InitProperty()
 {
-	maxHp = 100;
+	maxHp = 296;
 	hp = maxHp;
-	projectileDamage = 5;
-	attackDelay = 1.5;
-	range = 500;
+	projectileDamage = 24;
+	attackDelay = 0.667;
+	range = 550;
 	gold = 20;
-	exp = 60;
+	exp = 30;
 }
