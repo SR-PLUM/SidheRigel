@@ -21,12 +21,14 @@ void UGameOverUI::SetGameOverImage(bool flag)
 	if (flag) ImagePath = WinImage;
 	else ImagePath = LoseImage;
 
-	GameOverImage->SetBrushFromTexture(CastPathToTexture2D(ImagePath));
-
-	GameOverImage->SetVisibility(ESlateVisibility::Visible);
 	FLinearColor tmp = GameOverImage->Brush.TintColor.GetSpecifiedColor();
 	tmp.R = 1.f;
 	GameOverImage->SetBrushTintColor(tmp);
+
+	GameOverImage->SetVisibility(ESlateVisibility::Visible);
+	GameOverImage->SetBrushFromTexture(CastPathToTexture2D(ImagePath));
+	
+	UE_LOG(LogTemp, Error, TEXT("GameOverImage :: %d") , flag);
 }
 
 UTexture2D* UGameOverUI::CastPathToTexture2D(FString Path)

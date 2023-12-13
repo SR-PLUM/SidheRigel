@@ -25,8 +25,8 @@ public:
 
 private:
 
-	FString WinImage = TEXT("/Game/Heros/ACM/Icons/Icon_ACMWSkill");
-	FString LoseImage = TEXT("/Game/Heros/ACM/Icons/Icon_ACMWSkill");
+	FString WinImage = TEXT("/Game/UIBlueprints/InGameUI/victoryImage");
+	FString LoseImage = TEXT("/Game/UIBlueprints/InGameUI/defeatImage");
 
 	UFUNCTION()
 		UTexture2D* CastPathToTexture2D(FString Path);

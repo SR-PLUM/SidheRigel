@@ -144,8 +144,6 @@ void ASidheRigelGameMode::GameOver(E_Team team)
 
 	Controller->myCharacter->GameOverEffect(team);
 
-	UE_LOG(LogTemp, Error, TEXT("Game Over"));
-
 	//Move to Lobby
 	//GetWorld()->GetTimerManager()->SetTimer
 

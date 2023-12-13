@@ -241,8 +241,6 @@ void ANexus::TakeDamage(float _damage, AActor* damageCauser)
 
 		GameMode->GameOver(GetTeam());
 
-		UE_LOG(LogTemp, Error, TEXT("Nexus Destroyed"));
-
 		FActorSpawnParameters SpawnParams;
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(GetActorLocation());

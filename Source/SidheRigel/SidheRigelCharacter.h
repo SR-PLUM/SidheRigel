@@ -187,7 +187,7 @@ public : //GameOver
 
 	void InitGameOverUI();
 	void SpawnGameOverUI();
-	void GameOverEffect(int32 gameOverTeam);
+	void GameOverEffect(E_Team gameOverTeam);
 
 public:	//CC Particle
 	UPROPERTY(EditDefaultsOnly)

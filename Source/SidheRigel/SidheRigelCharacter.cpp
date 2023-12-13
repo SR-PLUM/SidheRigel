@@ -577,26 +577,24 @@ void ASidheRigelCharacter::SpawnGameOverUI()
 	InGameUI->GameOverUIOverlay->AddChild(GameOverUI);
 	if (GameOverUI)
 	{
-		GameOverUI->bIsEnabled = false;
+		//GameOverUI->bIsEnabled = false;
 	}
 }
 
-void ASidheRigelCharacter::GameOverEffect(int32 gameOverTeam)
+void ASidheRigelCharacter::GameOverEffect(E_Team gameOverTeam)
 {
 	//UnPossessed();  //character Movement setting
 
-	int currentTeam;
-	if (E_Team::Blue == GetTeam()) currentTeam = 1;
-	else if (E_Team::Red == GetTeam()) currentTeam = 2;
+	int currentTeam = GetTeam();
 
 	if (GameOverUI)
 	{
-		GameOverUI->bIsEnabled = true;
+		//GameOverUI->bIsEnabled = true;
 
 		if (currentTeam == gameOverTeam)
 		{
 			//lose UI
-			GameOverUI->SetGameOverImage(true);
+			GameOverUI->SetGameOverImage(false);
 		}
 		else
 		{
