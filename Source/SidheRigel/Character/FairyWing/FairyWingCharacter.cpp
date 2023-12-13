@@ -14,6 +14,7 @@
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingEProjectile.h"
 #include "SidheRigel/Character/FairyWing/Skill/FairyWingESkill.h"
 #include "SidheRigel/Character/FairyWing/FairyWingAttackProjectile.h"
+#include "SidheRigel/UI/StatSummary.h"
 #include "SidheRigel/InGameMapScriptActor.h"
 #include "Animation/AnimMontage.h"
 
@@ -137,7 +138,7 @@ void AFairyWingCharacter::InitProperty()
 {
 	level = 1;
 
-	MaxExperience = 18000;
+	MaxExperience = 280;
 
 	rangeBase = 575.f;
 	attackDamageBase = 53.f;
@@ -175,6 +176,14 @@ void AFairyWingCharacter::InitProperty()
 
 	currentHP = GetMaxHP();
 	currentMP = GetMaxMP();
+}
+
+void AFairyWingCharacter::LevelUp()
+{
+	Super::LevelUp();
+
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
 }
 
 void AFairyWingCharacter::InitFairyWingTalent()

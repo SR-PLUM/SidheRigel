@@ -107,7 +107,7 @@ void AKerunCharacter::InitProperty()
 {
 	level = 1;
 
-	MaxExperience = 18000;
+	MaxExperience = 280;
 
 	rangeBase = 200.f;
 	attackDamageBase = 5.f;

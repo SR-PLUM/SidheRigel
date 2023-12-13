@@ -33,6 +33,8 @@ protected:	//Attack
 public:
 	virtual void InitProperty() override;
 
+	virtual void LevelUp() override;
+
 private:	//State
 	UPROPERTY()
 		FTimerHandle destroyTimer;
