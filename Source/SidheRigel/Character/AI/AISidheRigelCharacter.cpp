@@ -60,7 +60,6 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 		UE_LOG(LogTemp, Warning, TEXT("RERIVE"));
 
 		GetMesh()->SetVisibility(true);
-		SetActorLocation(spawnLocation);
 		SetCurrentHP(GetMaxHP());
 		TurnOnStatUI();
 
@@ -71,172 +70,89 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 		return;
 	}
 
-	//Attack
-	if (currentTarget)
-	{
-		//근처 아군의 수가 1이하일때
-		if (GetTeamActorNum() < 2)
-		{
-			if (GetDistanceTo(currentWayPoint) <= 150)
-			{
-				//후진
-				if (currentWayPointOrder < 6)
-				{
-					currentWayPointOrder = currentWayPointOrder + 1;
-					currentWayPoint = GetWayPoint(currentWayPointOrder);
-				}
-			}
-
-			//되돌아가기
-			AIController->MoveToActor(currentWayPoint);
-		}
-		else
-		{
-			//상대가 멀다면 상대 방향으로 이동
-			if (GetDistanceTo(currentTarget) > GetRange())
-			{
-				if (AIController)
-				{
-					//만약 대상이 적 영웅이고
-					if (auto SREnemy = Cast<ASidheRigelCharacter>(currentTarget))
-					{
-						//대상의 현재 체력이 최대체력의 30% 이하라면
-						if (SREnemy->GetHP() < SREnemy->GetMaxHP() * 0.3)
-						{
-							//W스킬 사용전 마나 및 쿨타임 확인
-							if (skills[E_SkillState::W_Ready]->GetCooldown() <= 0)
-							{
-								if (skills[E_SkillState::W_Ready]->CanUse())
-								{
-									FHitResult Hit = FHitResult(SREnemy, nullptr, FVector(), FVector());
-									skills[E_SkillState::W_Ready]->OnUse(Hit);
-									skills[E_SkillState::W_Ready]->SetCooldown();
-
-									//R스킬 사용전 마나 및 쿨타임 확인
-									if (skills[E_SkillState::R_Ready]->GetCooldown() <= 0)
-									{
-										if (skills[E_SkillState::R_Ready]->CanUse())
-										{
-											skills[E_SkillState::R_Ready]->OnUse(Hit);
-											skills[E_SkillState::R_Ready]->SetCooldown();
-										}
-									}
-								}
-							}
-						}
-					}
-
-					AIController->MoveToActor(currentTarget);
-				}
-			}
-			else
-			{
-
-				//공격 할 수 있으면 공격
-				if (currentAttackDelay <= 0)
-				{
-					//currentTarget이 적 영웅이면 Q스킬 사용
-					if (auto SREnemy = Cast<ASidheRigelCharacter>(currentTarget))
-					{
-						//Q스킬 사용전 마나 및 쿨타임 확인
-						if (skills[E_SkillState::Q_Ready]->GetCooldown() <= 0)
-						{
-							if (skills[E_SkillState::Q_Ready]->CanUse())
-							{
-								FHitResult Hit;
-								skills[E_SkillState::Q_Ready]->OnUse(Hit);
-								skills[E_SkillState::Q_Ready]->SetCooldown();
-							}
-						}
-					}
-
-					Attack(currentTarget);
-					//공격속도 적용
-					currentAttackDelay = 1 / GetAttackSpeed();
-
-					if (auto damagableActor = Cast<IDamagable>(currentTarget))
-					{
-						//적이 죽었으면 대상변경
-						if (damagableActor->GetHP() <= 0)
-						{
-							InRangeActors.Remove(currentTarget);
-
-							if (!InRangeActors.IsEmpty())
-							{
-								//가장 가까운 적 대상
-								float maxDistance = 0;
-								for (auto enemy : InRangeActors)
-								{
-									auto enemyDist = GetDistanceTo(enemy);
-
-									if (maxDistance < enemyDist)
-									{
-										maxDistance = enemyDist;
-										currentTarget = enemy;
-									}
-								}
-
-							}
-							else//더이상 적이 없으면 currentTarget == nullprt
-							{
-								currentTarget = nullptr;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		//근처 아군의 수가 1이하일때
-		if (GetTeamActorNum() < 2)
-		{
-			if (GetDistanceTo(currentWayPoint) <= 150)
-			{
-				//후진
-				if (currentWayPointOrder < 6)
-				{
-					currentWayPointOrder = currentWayPointOrder + 1;
-					currentWayPoint = GetWayPoint(currentWayPointOrder);
-				}
-			}
-
-			//되돌아가기
-			AIController->MoveToActor(currentWayPoint);
-		}
-		else
-		{
-			//Move
-			if (currentWayPoint)
-			{
-				//도착
-				if (GetDistanceTo(currentWayPoint) <= 150.f)
-				{
-					//진행중인 방향의 미니언이 4마리 이상이라면
-					if (GetWayPoint(currentWayPointOrder - 1)->currentRedMinion > 3)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("Move Next WayPoint"))
-							//전진
-							currentWayPointOrder = currentWayPointOrder - 1;
-						currentWayPoint = GetWayPoint(currentWayPointOrder);
-					}
-				}
-				else
-				{
-					AIController->MoveToActor(currentWayPoint);
-				}
-			}
-			else
-			{
-				currentWayPoint = GetWayPoint(currentWayPointOrder);
-			}
-		}
-	}
-
 	if (currentAttackDelay > 0)
 	{
 		currentAttackDelay -= DeltaSeconds;
+	}
+
+	//근처에 타워가 있으면
+	if (IsNearByTower())
+	{
+		AActor* towerTarget = nearbyTower->currentTarget;
+		if (towerTarget != nullptr)
+		{
+			if (towerTarget == this)
+			{
+				MoveBackward();
+				return;
+			}
+			else if (IsTargetHero())
+			{
+				currentTarget = GetClosestEnemy();
+				if (IsTargetHero())
+				{
+					currentTarget = nullptr;
+					MoveBackward();
+				}
+			}
+		}
+		else
+		{
+			MoveBackward();
+			return;
+		}
+	}
+
+	//근처 아군의 수가 1이하일때 후퇴
+	if (!HasNearByTeam())
+	{
+		MoveBackward();
+		return;
+	}
+
+	//공격 시도
+	if (HasTarget())
+	{
+		ChangeTargetIfTargetDead();
+
+		if (!IsEnoughCloseToTarget())
+		{
+			if (IsTargetHero())
+			{
+				ApproachToAttackUsingSkill();
+			}
+
+			if (AIController)
+			{
+				AIController->MoveToActor(currentTarget);
+			}
+
+			return;
+		}
+		
+		//공격 할 수 있으면 공격
+		if (currentAttackDelay <= 0)
+		{
+			//currentTarget이 적 영웅이면 Q스킬 사용
+			if (IsTargetHero())
+			{
+				UsingQSkill();
+			}
+
+			AIAttack();
+
+			return;
+		}
+	}
+	
+	//Move
+	if (currentWayPoint)
+	{
+		MoveForward();
+	}
+	else
+	{
+		currentWayPoint = GetWayPoint(currentWayPointOrder);
 	}
 }
 
@@ -324,26 +240,6 @@ AWayPoint* AAISidheRigelCharacter::GetWayPoint(int idx)
 	return getWayPoint;
 }
 
-int32 AAISidheRigelCharacter::GetTeamActorNum()
-{
-	int32 res;
-	if (TeamInRange.IsEmpty())
-	{
-		res = 0;
-	}
-	else
-	{
-		for (auto teamActor : TeamInRange)
-		{
-			if (auto minionActor = Cast<AMinion>(teamActor))
-			{
-				res = TeamInRange.Num();
-			}
-		}
-	}
-	return res;
-}
-
 void AAISidheRigelCharacter::GiveExp(int32 _exp)
 {
 	experience += _exp;
@@ -389,6 +285,211 @@ void AAISidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 	if (isDie)
 	{
 		GetMesh()->SetVisibility(false);
+		SetActorLocation(spawnLocation);
 		TurnOffStatUI();
 	}
 }
+
+bool AAISidheRigelCharacter::IsNearByTower()
+{
+	nearbyTower = nullptr;
+	for (auto actor : InRangeActors)
+	{
+		if (auto teamActor = Cast<ITeam>(actor))
+		{
+			if (teamActor->GetTeam() != GetTeam())
+			{
+				if (auto towerActor = Cast<ATower>(actor))
+				{
+					nearbyTower = towerActor;
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool AAISidheRigelCharacter::HasTarget()
+{
+	if (currentTarget)
+		return true;
+	else
+		return false;
+}
+
+bool AAISidheRigelCharacter::HasNearByTeam()
+{
+	int32 teamCount = 0;
+
+	if (TeamInRange.IsEmpty())
+	{
+		teamCount = 0;
+	}
+	else
+	{
+		for (auto teamActor : TeamInRange)
+		{
+			if (auto minionActor = Cast<AMinion>(teamActor))
+			{
+				teamCount = TeamInRange.Num();
+			}
+		}
+	}
+	
+	if (teamCount < 2)
+		return false;
+	else
+		return true;
+}
+
+void AAISidheRigelCharacter::MoveBackward()
+{
+	if (GetDistanceTo(GetWayPoint(currentWayPointOrder + 1)) <= 150)
+	{
+		if (currentWayPointOrder < 5)
+		{
+			currentWayPointOrder += 1;
+			currentWayPoint = GetWayPoint(currentWayPointOrder);
+		}
+	}
+	
+	if (AIController)
+	{
+		AIController->MoveToActor(GetWayPoint(currentWayPointOrder + 1));
+	}
+}
+
+bool AAISidheRigelCharacter::IsEnoughCloseToTarget()
+{
+	if (GetDistanceTo(currentTarget) > GetRange())
+	{
+		return false;
+	}
+	return true;
+}
+
+bool AAISidheRigelCharacter::IsTargetHero()
+{
+	if (auto SREnemy = Cast<ASidheRigelCharacter>(currentTarget))
+	{
+		return true;
+	}
+	return false;
+}
+
+void AAISidheRigelCharacter::ApproachToAttackUsingSkill()
+{
+	auto SREnemy = Cast<ASidheRigelCharacter>(currentTarget);
+
+	//대상의 현재 체력이 최대체력의 30% 이하라면
+	if (SREnemy->GetHP() < SREnemy->GetMaxHP() * 0.3)
+	{
+		//W스킬 사용전 마나 및 쿨타임 확인
+		if (skills[E_SkillState::W_Ready]->GetCooldown() <= 0)
+		{
+			if (skills[E_SkillState::W_Ready]->CanUse())
+			{
+				FHitResult Hit = FHitResult(SREnemy, nullptr, FVector(), FVector());
+				skills[E_SkillState::W_Ready]->OnUse(Hit);
+				skills[E_SkillState::W_Ready]->SetCooldown();
+			}
+		}
+
+		//R스킬 사용전 마나 및 쿨타임 확인
+		if (skills[E_SkillState::R_Ready]->GetCooldown() <= 0)
+		{
+			if (skills[E_SkillState::R_Ready]->CanUse())
+			{
+				FHitResult Hit = FHitResult(SREnemy, nullptr, FVector(), FVector());
+				skills[E_SkillState::R_Ready]->OnUse(Hit);
+				skills[E_SkillState::R_Ready]->SetCooldown();
+			}
+		}
+	}
+}
+
+void AAISidheRigelCharacter::UsingQSkill()
+{
+	//Q스킬 사용전 마나 및 쿨타임 확인
+	if (skills[E_SkillState::Q_Ready]->GetCooldown() <= 0)
+	{
+		if (skills[E_SkillState::Q_Ready]->CanUse())
+		{
+			FHitResult Hit;
+			skills[E_SkillState::Q_Ready]->OnUse(Hit);
+			skills[E_SkillState::Q_Ready]->SetCooldown();
+		}
+	}
+}
+
+void AAISidheRigelCharacter::AIAttack()
+{
+	Attack(currentTarget);
+	//공격속도 적용
+	currentAttackDelay = 1 / GetAttackSpeed();
+}
+
+void AAISidheRigelCharacter::ChangeTargetIfTargetDead()
+{
+	if (auto damagableActor = Cast<IDamagable>(currentTarget))
+	{
+		//적이 죽었으면 대상변경
+		if (damagableActor->GetHP() <= 0)
+		{
+			InRangeActors.Remove(currentTarget);
+
+			currentTarget = GetClosestEnemy();
+		}
+	}
+}
+
+AActor* AAISidheRigelCharacter::GetClosestEnemy()
+{
+	AActor* ClosestEnemy = nullptr;
+	if (!InRangeActors.IsEmpty())
+	{
+		//가장 가까운 적 대상
+		float maxDistance = 0;
+		for (auto enemy : InRangeActors)
+		{
+			if (auto teamEnemy = Cast<ITeam>(enemy))
+			{
+				if (teamEnemy->GetTeam() != GetTeam())
+				{
+					auto enemyDist = GetDistanceTo(enemy);
+
+					if (maxDistance < enemyDist)
+					{
+						maxDistance = enemyDist;
+						ClosestEnemy = enemy;
+					}
+				}
+			}
+		}
+	}
+	else //더이상 적이 없으면 currentTarget == nullprt
+	{
+		ClosestEnemy = nullptr;
+	}
+
+	return ClosestEnemy;
+}
+
+void AAISidheRigelCharacter::MoveForward()
+{
+	if (GetDistanceTo(currentWayPoint) <= 150.f)
+	{
+		if (GetWayPoint(currentWayPointOrder - 1)->currentRedMinion > 2)
+		{
+			currentWayPointOrder -= 1;
+			currentWayPoint = GetWayPoint(currentWayPointOrder);
+		}
+	}
+	
+	if (AIController)
+	{
+		AIController->MoveToActor(currentWayPoint);
+	}
+}
+

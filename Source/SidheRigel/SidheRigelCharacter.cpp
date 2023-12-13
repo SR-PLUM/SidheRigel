@@ -79,7 +79,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	// Create Can Detect Range
 	detectRange = CreateDefaultSubobject<USphereComponent>(TEXT("DetectRange"));
-	detectRange->InitSphereRadius(500.0f);
+	detectRange->InitSphereRadius(700.f);
 	detectRange->SetupAttachment(RootComponent);
 
 	// Create Skill Range
@@ -324,14 +324,21 @@ void ASidheRigelCharacter::ChangeTarget()
 {
 	for (auto Enemy : InRangeActors)
 	{
-		if (AMinion* MinionEnemy = Cast<AMinion>(Enemy))
+		if (auto teamEnemy = Cast<ITeam>(Enemy))
 		{
-			MinionEnemy->currentTarget = this;
+			if (teamEnemy->GetTeam() != GetTeam())
+			{
+				if (AMinion* MinionEnemy = Cast<AMinion>(Enemy))
+				{
+					MinionEnemy->currentTarget = this;
+				}
+				else if (ATower* TowerEnemy = Cast<ATower>(Enemy))
+				{
+					TowerEnemy->currentTarget = this;
+				}
+			}
 		}
-		else if (ATower* TowerEnemy = Cast<ATower>(Enemy))
-		{
-			TowerEnemy->currentTarget = this;
-		}
+		
 	}
 }
 
@@ -548,7 +555,7 @@ void ASidheRigelCharacter::InitDeathActorClass()
 
 void ASidheRigelCharacter::SpawnDeathActor()
 {
-	FVector MuzzleLocation = GetActorLocation();
+	FVector MuzzleLocation = GetActorLocation() * FVector(1, 1, 0);
 	FRotator MuzzleRotation = GetActorRotation();
 
 	FActorSpawnParameters SpawnParams;
@@ -1336,11 +1343,11 @@ void ASidheRigelCharacter::Attack_Implementation(AActor* target)
 			{
 				Projectile->Target = target;
 				InitProjectileProperty(Projectile);
+			}
 
-				if (ASidheRigelCharacter* characterTarget = Cast<ASidheRigelCharacter>(target))
-				{
-					ChangeTarget();
-				}
+			if (ASidheRigelCharacter* characterTarget = Cast<ASidheRigelCharacter>(target))
+			{
+				ChangeTarget();
 			}
 		}
 	}

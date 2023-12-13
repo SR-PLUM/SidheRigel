@@ -42,6 +42,8 @@ public:
 	float fieldArea;
 	float damage;
 
+	float fieldDamage;
+
 	void Explosion();
 
 	bool canEnter = true;
