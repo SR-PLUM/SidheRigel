@@ -33,6 +33,8 @@ void AAISidheRigelCharacter::BeginPlay()
 	}
 
 	IsSelectedTalent[0].IsSelected[2] = true;
+
+	spawnLocation = GetActorLocation();
 }
 
 void AAISidheRigelCharacter::Tick(float DeltaSeconds)
@@ -44,6 +46,22 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 		{
 			SpawnDefaultController();
 		}
+	}
+
+	if (DieTime <= 0 && isDie)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("RERIVE"));
+
+		GetMesh()->SetVisibility(true);
+		SetActorLocation(spawnLocation);
+		SetCurrentHP(GetMaxHP());
+		TurnOnStatUI();
+
+		isDie = false;
+	}
+	else if (DieTime > 0)
+	{
+		return;
 	}
 
 	//Attack
@@ -106,6 +124,7 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 			}
 			else
 			{
+
 				//공격 할 수 있으면 공격
 				if (currentAttackDelay <= 0)
 				{
@@ -133,6 +152,8 @@ void AAISidheRigelCharacter::Tick(float DeltaSeconds)
 						//적이 죽었으면 대상변경
 						if (damagableActor->GetHP() <= 0)
 						{
+							InRangeActors.Remove(currentTarget);
+
 							if (!InRangeActors.IsEmpty())
 							{
 								//가장 가까운 적 대상
@@ -348,5 +369,16 @@ void AAISidheRigelCharacter::GiveExp(int32 _exp)
 		{
 			IsSelectedTalent[6].IsSelected[1] = true;
 		}
+	}
+}
+
+void AAISidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
+{
+	Super::TakeDamage(damage, damageCauser);
+
+	if (isDie)
+	{
+		GetMesh()->SetVisibility(false);
+		TurnOffStatUI();
 	}
 }

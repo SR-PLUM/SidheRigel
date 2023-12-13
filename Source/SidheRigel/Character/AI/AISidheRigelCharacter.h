@@ -57,4 +57,6 @@ public:
 
 	void GiveExp(int32 _exp) override;
 	TArray<AActor*> TeamInRange;
+
+	virtual void TakeDamage(float damage, AActor* damageCauser) override;
 };
