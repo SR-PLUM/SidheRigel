@@ -583,7 +583,7 @@ void ASidheRigelCharacter::SpawnGameOverUI()
 
 void ASidheRigelCharacter::GameOverEffect(E_Team gameOverTeam)
 {
-	//UnPossessed();  //character Movement setting
+	UnPossessed();  //character Movement setting
 
 	int currentTeam = GetTeam();
 
