@@ -296,11 +296,11 @@ void AMinion::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 void AMinion::InitProperty()
 {
 	//DEBUG BALNACE
-	maxHp = 100;
+	maxHp = 477;
 	hp = maxHp;
-	projectileDamage = 5;
-	attackDelay = 1.5;
-	range = 200;
+	projectileDamage = 12;
+	attackDelay = 1.25;
+	range = 110;
 	gold = 20;
 	exp = 60;
 }

@@ -32,8 +32,8 @@ private:
 	float colliderFieldArea = 105.f;
 	float colliderDamage = 10.f;
 
-	float talentDamage = 30.f;
-	float talentMana = 30.f;
+	float talentDamage = 500.f;
+	float talentMana = 70.f;
 	float talentDelay = 0.5f;
-	float talentRange = 800.f;
+	float talentRange = 1400.f;
 };

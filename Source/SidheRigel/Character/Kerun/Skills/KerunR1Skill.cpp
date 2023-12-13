@@ -23,8 +23,9 @@ void UKerunR1Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillSta
 {
 	skillDelay = 2.5f;
 	skillCooldown = 0.f;
-	skillMaxCooldown = 20.f;
-	range = 300.f;
+	skillMaxCooldown = 120.f;
+	range = 500.f;
+	requireMana = 100.f;
 
 	bIsInstantCast = false;
 	bIsTargeting = true;

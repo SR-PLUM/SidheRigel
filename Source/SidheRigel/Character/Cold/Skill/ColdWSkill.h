@@ -22,11 +22,11 @@ public:
 
 	float GetSkillDelay() override;
 
-	float colliderDamage = 120.f;
+	float colliderDamage = 141.f;
 	float colliderDuration = 0.1f;
-	float colliderForce = 2000.f;
+	float colliderForce = 4000.f;
 
-	float talentDamage = 200.f;
+	float talentDamage = 300.f;
 	float talentDelay = 0.5f;
 	
 	float particleDuration = 2.f;

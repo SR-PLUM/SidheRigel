@@ -66,7 +66,8 @@ void UKerunQSkill::SetMaxAttackCount(int32 Value)
 void UKerunQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
 	skillCooldown = 0;
-	skillMaxCooldown = 10.f;
+	skillMaxCooldown = 4.f;
+	requireMana = 50.f;
 
 	bIsInstantCast = true;
 	bIsTargeting = false;
