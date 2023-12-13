@@ -88,6 +88,14 @@ bool USkill::IsTargeting()
 
 bool USkill::CanUse()
 {
+	if (skillstate == E_SkillState::R_Ready)
+	{
+		if (!character->IsSelectedTalent[3][0])
+		{
+			return false;
+		}
+	}
+
 	if (!bIsTargeting)
 	{
 		return true;
