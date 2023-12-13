@@ -42,6 +42,8 @@ protected:
 	
 	void PressedYButton();
 	void PressedSpaceButton();
+	void PressedAButton();
+	void PressedSButton();
 
 	//Set Pawn
 public:
@@ -99,6 +101,7 @@ public:
 	AActor* target;
 	FVector location;
 
+	bool bAttackReady = false;
 	bool bSkillReady = false;
 
 	TEnumAsByte<E_SkillState> currentSkill = E_SkillState::Skill_Null;
@@ -120,6 +123,7 @@ public:	//Timer
 	void ChangeCurrentSkill(E_SkillState SkillState);
 
 	FHitResult GetHitResult();
+	AActor* GetCloseActorToMouse();
 
 	//SetTeam
 protected:

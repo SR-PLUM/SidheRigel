@@ -92,6 +92,25 @@ void UAttackState::OnLeftClick()
 			}
 		}
 	}
+	else if (controller->bAttackReady)
+	{
+		auto tempTarget = controller->GetCloseActorToMouse();
+
+		myCharacter->skillRange->SetVisibility(false);
+
+		if (tempTarget != controller->target)
+		{
+			controller->bAttackReady = false;
+
+			controller->target = tempTarget;
+			controller->ChangeState(controller->MoveToAttack);
+		}
+		else if (tempTarget == nullptr)
+		{
+			controller->location = controller->GetHitResult().Location;
+			controller->ChangeState(controller->Move);
+		}
+	}
 }
 
 void UAttackState::OnKeyboard(E_SkillState SkillState)

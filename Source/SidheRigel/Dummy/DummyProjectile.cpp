@@ -27,7 +27,8 @@ ADummyProjectile::ADummyProjectile()
 void ADummyProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	PlayStartAttackSound();	
 }
 
 void ADummyProjectile::SetProjectileMesh()
@@ -56,6 +57,22 @@ void ADummyProjectile::SetProjectileMovementComponent()
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 }
 
+void ADummyProjectile::PlayStartAttackSound()
+{
+	if (AttackSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, AttackSound, this->GetActorLocation());
+	}
+}
+
+void ADummyProjectile::PlayHitSound()
+{
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, this->GetActorLocation());
+	}
+}
+
 // Called every frame
 void ADummyProjectile::Tick(float DeltaTime)
 {
@@ -81,6 +98,7 @@ void ADummyProjectile::Tick(float DeltaTime)
 
 			Target = nullptr;
 
+			PlayHitSound();
 			Destroy();
 		}
 	}

@@ -22,6 +22,12 @@ void UIdleState::OnBegin()
 		controller->StopMovement();
 
 		myCharacter = Cast<ASidheRigelCharacter>(controller->GetPawn());
+
+		controller->target = nullptr;
+		controller->bSkillReady = false;
+		controller->bAttackReady = false;
+		controller->location = FVector::Zero();
+		myCharacter->skillRange->SetVisibility(false);
 	}
 }
 
@@ -48,6 +54,25 @@ void UIdleState::OnLeftClick()
 			{
 				controller->ChangeState(controller->UseSkill);
 			}
+		}
+	}
+	else if (controller->bAttackReady)
+	{
+		auto tempTarget = controller->GetCloseActorToMouse();
+
+		myCharacter->skillRange->SetVisibility(false);
+
+		if (tempTarget != nullptr)
+		{
+			controller->bAttackReady = false;
+
+			controller->target = tempTarget;
+			controller->ChangeState(controller->MoveToAttack);
+		}
+		else if (tempTarget == nullptr)
+		{
+			controller->location = controller->GetHitResult().Location;
+			controller->ChangeState(controller->Move);
 		}
 	}
 }
