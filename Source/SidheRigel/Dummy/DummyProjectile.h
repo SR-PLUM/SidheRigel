@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "kismet/GameplayStatics.h"
 #include "DummyProjectile.generated.h"
 
 UCLASS()
@@ -35,6 +36,12 @@ public:
 	UPROPERTY()
 		float speed = 2000.f;
 
+public:
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* AttackSound;
+	UPROPERTY(EditDefaultsOnly, Category = Sounds)
+		class USoundBase* HitSound;
+
 protected:
 	UPROPERTY(VisibleAnywhere)
 		class UProjectileMovementComponent* ProjectileMovementComponent;
@@ -44,4 +51,8 @@ protected:
 protected:	//InitFunction
 	virtual void SetProjectileMesh();
 	virtual void SetProjectileMovementComponent();
+
+public:
+	void PlayStartAttackSound();
+	void PlayHitSound();
 };
