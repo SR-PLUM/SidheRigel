@@ -112,6 +112,7 @@ void AKerunAttackProjectile::Tick(float DeltaTime)
 
 			Target = nullptr;
 
+			PlayHitSound();
 			Destroy();
 		}
 	}

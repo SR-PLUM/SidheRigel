@@ -301,6 +301,10 @@ void ASidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent
 			{
 				InRangeActors.Add(OtherActor);
 			}
+			else if (ASidheRigelCharacter* SREnemy = Cast<ASidheRigelCharacter>(OtherActor))
+			{
+				InRangeActors.Add(OtherActor);
+			}
 		}
 	}
 }
