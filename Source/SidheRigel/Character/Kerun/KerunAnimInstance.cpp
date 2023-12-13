@@ -39,6 +39,5 @@ void UKerunAnimInstance::InitAttackAnimation()
 	if (AttackAnimMontage.Succeeded())
 	{
 		AttackAnim = AttackAnimMontage.Object;
-		UE_LOG(LogTemp, Warning, TEXT("AttackAnim is Not Null"));
 	}
 }
