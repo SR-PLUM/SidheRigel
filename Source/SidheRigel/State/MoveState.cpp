@@ -31,6 +31,12 @@ void UMoveState::OnBegin()
 		controller->StopMovement();
 
 		controller->target = nullptr;
+
+		if (controller->bAttackReady)
+		{
+			controller->bAttackReady = false;
+			bInputPressed = false;
+		}
 	}
 }
 
@@ -39,7 +45,7 @@ void UMoveState::Update(float DeltaTime)
 	if (controller && myCharacter)
 	{
 		//(도착 && 마우스 우클릭을 풀었는가)
-		if (((myCharacter->GetActorLocation() == controller->location) || myCharacter->GetVelocity().Size() < 0.4f) && bInputPressed == false)
+		if (((myCharacter->GetActorLocation() - controller->location).Length() <= 50) && bInputPressed == false)
 		{
 			controller->ChangeState(controller->Idle);
 		}
@@ -52,9 +58,10 @@ void UMoveState::Update(float DeltaTime)
 
 				FVector WorldDirection = (controller->location - myCharacter->GetActorLocation()).GetSafeNormal();
 				
-				myCharacter->Server_MoveToPoint(controller->location);
 				//UAIBlueprintHelperLibrary::SimpleMoveToLocation(stateMachine->playerController, stateMachine->location);
 			}
+
+			myCharacter->Server_MoveToPoint(controller->location);
 		}
 	}
 }
@@ -82,6 +89,25 @@ void UMoveState::OnLeftClick()
 			{
 				controller->ChangeState(controller->UseSkill);
 			}
+		}
+	}
+	else if (controller->bAttackReady)
+	{
+		auto tempTarget = controller->GetCloseActorToMouse();
+
+		myCharacter->skillRange->SetVisibility(false);
+
+		if (tempTarget != nullptr)
+		{
+			controller->bAttackReady = false;
+
+			controller->target = tempTarget;
+			controller->ChangeState(controller->MoveToAttack);
+		}
+		else if (tempTarget == nullptr)
+		{
+			controller->location = controller->GetHitResult().Location;
+			controller->ChangeState(controller->Move);
 		}
 	}
 }
