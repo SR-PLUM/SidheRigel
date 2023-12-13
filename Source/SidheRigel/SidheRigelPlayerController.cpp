@@ -436,6 +436,10 @@ void ASidheRigelPlayerController::ChangePreviousState()
 	{
 		previousState = Idle;
 	}
+	if (previousState == Move)
+	{
+		previousState = Idle;
+	}
 
 	currentState = previousState;
 }
