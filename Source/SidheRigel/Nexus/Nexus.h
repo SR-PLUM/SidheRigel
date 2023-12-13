@@ -81,6 +81,9 @@ public:
 
 	UPROPERTY()
 		float damage = 150.f;
+
+	UPROPERTY()
+		bool bIsTowerDestroyed = false;
 public:
 	UFUNCTION()
 		virtual void TakeDamage(float _damage, AActor* damageCauser);

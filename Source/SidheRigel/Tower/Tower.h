@@ -81,6 +81,9 @@ public:
 
 	UPROPERTY()
 		float damage = 170;
+
+	UPROPERTY(EditAnywhere)
+		class ANexus* nexus;
 public:
 	UFUNCTION()
 		virtual void TakeDamage(float _damage, AActor* damageCauser);

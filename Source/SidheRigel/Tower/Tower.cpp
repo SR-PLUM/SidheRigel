@@ -14,6 +14,7 @@
 #include "TowerDestroyParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "SidheRigel/Nexus/Nexus.h"
 
 // Sets default values
 ATower::ATower()
@@ -249,6 +250,8 @@ void ATower::TakeDamage(float _damage, AActor* damageCauser)
 		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
 		SpawnParams.Owner = this;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		nexus->bIsTowerDestroyed = true;
 
 		//Destroy Animation
 		UGameplayStatics::PlaySoundAtLocation(this, destroySound, this->GetActorLocation());
