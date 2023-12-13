@@ -46,28 +46,12 @@ void AFairyWingRCollider::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingRCollider::OnColliderOverlap);
 	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 
-	FTimerHandle RColliderDestroyTimer;
-	GetWorldTimerManager().SetTimer(RColliderDestroyTimer,
-		FTimerDelegate::CreateLambda([=]()
-			{
-				Destroy();
-			}
-	), duration, false);
-}
+	TSet<AActor*> overlapActors;
+	CollisionComponent->GetOverlappingActors(overlapActors);
 
-// Called every frame
-void AFairyWingRCollider::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void AFairyWingRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor)
+	for (auto& OtherActor : overlapActors)
 	{
 		if (ITeam* team = Cast<ITeam>(OtherActor))
 		{
@@ -86,11 +70,26 @@ void AFairyWingRCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedCompo
 				{
 					if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(colliderOwner))
 					{
-						if(owner->IsSelectedTalent[6][1])
+						if (owner->IsSelectedTalent[6][1])
 							target->MoveVector(this->GetActorLocation(), this->GetDistanceTo(target));
-					}						
+					}
 				}
 			}
-		}		
+		}
 	}
+
+	FTimerHandle RColliderDestroyTimer;
+	GetWorldTimerManager().SetTimer(RColliderDestroyTimer,
+		FTimerDelegate::CreateLambda([=]()
+			{
+				Destroy();
+			}
+	), duration, false);
+}
+
+// Called every frame
+void AFairyWingRCollider::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 }

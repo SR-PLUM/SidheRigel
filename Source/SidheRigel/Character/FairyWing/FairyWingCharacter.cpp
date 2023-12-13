@@ -200,7 +200,7 @@ void AFairyWingCharacter::InitFairyWingTalent()
 	talentListArray[1].talentItems[0].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_2_1";
 
 	talentListArray[1].talentItems[1].talentName = "FairyWing_2_2";
-	talentListArray[1].talentItems[1].talentDescription = "Q 적에게 디버프(실명)";
+	talentListArray[1].talentItems[1].talentDescription = "Q 속박";
 	talentListArray[1].talentItems[1].imgPath = "/Game/Heros/FairyWIng/TalentIcons/FairyWing_2_2";
 
 	talentListArray[1].talentItems[2].talentName = "FairyWing_2_3";

@@ -46,13 +46,27 @@ void AFairyWingWCollider::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingWCollider::OnColliderOverlap);
 	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
 
 	FTimerHandle WColliderDestroyTimer;
 	GetWorldTimerManager().SetTimer(WColliderDestroyTimer,
 		FTimerDelegate::CreateLambda([=]()
 			{
+				TSet<AActor*> overlapActors;
+				CollisionComponent->GetOverlappingActors(overlapActors);
+
+				for (auto& OtherActor : overlapActors)
+				{
+					if (ITeam* team = Cast<ITeam>(OtherActor))
+					{
+						if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
+						{
+							IDamagable* target = Cast<IDamagable>(OtherActor);
+							if (target)
+								target->TakeDamage(damage, colliderOwner);
+						}
+					}
+				}
 				Destroy();
 			}
 	), duration, false);
@@ -63,68 +77,71 @@ void AFairyWingWCollider::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
+	elapsedTime += DeltaTime;
 
-void AFairyWingWCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor)
+	if (elapsedTime > 0.1f)
 	{
-		if (ITeam* team = Cast<ITeam>(OtherActor))
+		TSet<AActor*> overlapActors;
+		CollisionComponent->GetOverlappingActors(overlapActors);
+
+		for (auto& OtherActor : overlapActors)
 		{
-			if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
+			if (ITeam* team = Cast<ITeam>(OtherActor))
 			{
-				IDamagable* target = Cast<IDamagable>(OtherActor);
-				if (target)
-					target->TakeDamage(damage, colliderOwner);
-
-				if (ASidheRigelCharacter* markTarget = Cast<ASidheRigelCharacter>(OtherActor))
+				if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
 				{
-					if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(colliderOwner))
+					if (ASidheRigelCharacter* markTarget = Cast<ASidheRigelCharacter>(OtherActor))
 					{
-						if (owner->IsSelectedTalent[2][0])
+						if (ASidheRigelCharacter* owner = Cast<ASidheRigelCharacter>(colliderOwner))
 						{
-							owner->RestoreHP(100.f);
-						}
-
-						if (owner->IsSelectedTalent[2][1])
-						{
-							markTarget->isWSkillAlreadyHit = true;
-							FTimerHandle markDestroyTimer;
-							GetWorldTimerManager().SetTimer(markDestroyTimer,
-								FTimerDelegate::CreateLambda([=]()
-									{
-										markTarget->isWSkillAlreadyHit = false;
-									}
-							), 5.f, false);
-						}
-
-						if (markTarget->isBombMarkAlreadyHit)
-						{
-							if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
+							if (owner->IsSelectedTalent[2][0])
 							{
-								enemy->TakeDamage(damage, colliderOwner);
+								owner->RestoreHP(10.f);
+							}
+
+							if (owner->IsSelectedTalent[2][1])
+							{
+								markTarget->isWSkillAlreadyHit = true;
+								FTimerHandle markDestroyTimer;
+								GetWorldTimerManager().SetTimer(markDestroyTimer,
+									FTimerDelegate::CreateLambda([=]()
+										{
+											markTarget->isWSkillAlreadyHit = false;
+										}
+								), 5.f, false);
+							}
+
+							if (markTarget->isBombMarkAlreadyHit)
+							{
+								if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
+								{
+									enemy->TakeDamage(damage, colliderOwner);
+									markTarget->isBombMarkAlreadyHit = false;
+								}
+							}
+
+							if (owner->IsSelectedTalent[4][0])
+							{
+								markTarget->AddAttackDamage("FariyWing_W", -20.f);
+
+								FTimerHandle ReduceDamageRestoreTimer;
+								GetWorldTimerManager().SetTimer(ReduceDamageRestoreTimer,
+									FTimerDelegate::CreateLambda([=]()
+										{
+											markTarget->RemoveAttackDamage("FariyWing_W");
+										}
+								), 2.f, false);
 							}
 						}
-
-						if (owner->IsSelectedTalent[4][0])
-						{
-							markTarget->AddAttackDamage("FariyWing_W", 20.f);
-
-							FTimerHandle sightRestoreTimer;
-							GetWorldTimerManager().SetTimer(sightRestoreTimer,
-								FTimerDelegate::CreateLambda([=]()
-									{
-										markTarget->RemoveAttackDamage("FariyWing_W");
-									}
-							), 2.f, false);
-						}
 					}
-				}
 
-				ICCable* CC = Cast<ICCable>(OtherActor);
-				if (CC)
-					CC->Slow(1.0f, slowValue, "FairyWing_W");
-			}			
-		}		
+					ICCable* CC = Cast<ICCable>(OtherActor);
+					if (CC)
+						CC->Slow(1.0f, slowValue, "FairyWing_W");
+				}
+			}
+		}
+
+		elapsedTime = 0;
 	}
 }

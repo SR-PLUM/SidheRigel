@@ -33,9 +33,7 @@ public:
 	float slowValue;
 	float damage;
 
-protected:
-	UFUNCTION()
-		void OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	float elapsedTime = 0;
 
 private:
 	UPROPERTY(EditAnywhere)

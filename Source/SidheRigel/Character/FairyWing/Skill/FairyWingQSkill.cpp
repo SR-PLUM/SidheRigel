@@ -23,7 +23,7 @@ UFairyWingQSkill::~UFairyWingQSkill()
 
 void UFairyWingQSkill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillState SkillState)
 {
-	skillDelay = 1.f;
+	skillDelay = 0.2f;
 	skillCooldown = 0;
 	skillMaxCooldown = 7.f;
 	range = 700.f;
