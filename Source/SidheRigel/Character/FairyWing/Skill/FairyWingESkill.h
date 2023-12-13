@@ -28,7 +28,7 @@ private:	//Property
 	float colliderDelay = 0.1f;
 	float colliderDamage = 20.f;
 
-	float addAttackDamage = 100.f;
+	float addAttackDamage = 50.f;
 
 	float collideSlowValue = 0.2f;
 	float collideSlowTime = 1.f;
