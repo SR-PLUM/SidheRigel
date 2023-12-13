@@ -16,6 +16,12 @@ AAISidheRigelCharacter::AAISidheRigelCharacter()
 {
 	AIControllerClass = ACharacterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
+	static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/AI/BP_KerunAIDeathActor"));
+	if (deathActorRef.Object)
+	{
+		deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+	}
 }
 
 void AAISidheRigelCharacter::BeginPlay()
