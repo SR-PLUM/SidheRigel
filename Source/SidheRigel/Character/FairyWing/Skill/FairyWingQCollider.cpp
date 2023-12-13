@@ -7,6 +7,7 @@
 #include "SidheRigel/Interface/Team.h"
 #include "SidheRigel/Interface/CCable.h"
 #include "SidheRigel/SidheRigelCharacter.h"
+#include "../FairyWingCharacter.h"
 #include "../../../Minion/Minion.h"
 
 // Sets default values
@@ -46,8 +47,29 @@ void AFairyWingQCollider::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AFairyWingQCollider::OnColliderOverlap);
 	UGameplayStatics::PlaySoundAtLocation(this, SpawnSound, this->GetActorLocation());
+
+	TSet<AActor*> overlapActors;
+	CollisionComponent->GetOverlappingActors(overlapActors);
+	for (auto& OtherActor : overlapActors)
+	{
+		if (AFairyWingCharacter* ColliderOwner = Cast<AFairyWingCharacter>(colliderOwner))
+		{
+			if (ColliderOwner->IsSelectedTalent[1][1])
+			{
+				if (ITeam* team = Cast<ITeam>(OtherActor))
+				{
+					if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
+					{
+						if (ICCable* target = Cast<ICCable>(OtherActor))
+						{
+							target->Stop(0.5f);
+						}
+					}
+				}
+			}			
+		}		
+	}	
 
 	FTimerHandle QColliderDestroyTimer;
 	GetWorldTimerManager().SetTimer(QColliderDestroyTimer,
@@ -63,58 +85,61 @@ void AFairyWingQCollider::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
+	elapsedTime += DeltaTime;
 
-void AFairyWingQCollider::OnColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor)
+	if (elapsedTime > 0.2f)
 	{
-		if (ITeam* team = Cast<ITeam>(OtherActor))
+		TSet<AActor*> overlapActors;
+		CollisionComponent->GetOverlappingActors(overlapActors);
+
+		for (auto& OtherActor : overlapActors)
 		{
-			if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
+			if (ITeam* team = Cast<ITeam>(OtherActor))
 			{
-				if (IDamagable* target = Cast<IDamagable>(OtherActor))
+				if (team->GetTeam() != Cast<ITeam>(colliderOwner)->GetTeam())
 				{
-					target->TakeDamage(damage, colliderOwner);
-				}
-
-				if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
-				{
-					if (target->isBombMarkAlreadyHit)
+					if (IDamagable* target = Cast<IDamagable>(OtherActor))
 					{
-						if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
-						{
-							enemy->TakeDamage(damage, colliderOwner);
-						}
+						target->TakeDamage(damage, colliderOwner);
 					}
 
-					if (target->isWSkillAlreadyHit)
+					if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
 					{
-						if (ICCable* CCtarget = Cast<ICCable>(OtherActor))
+						if (target->isBombMarkAlreadyHit)
 						{
-							CCtarget->Stun(1.f);
+							if (IDamagable* enemy = Cast<IDamagable>(OtherActor))
+							{
+								enemy->TakeDamage(damage, colliderOwner);
+								target->isBombMarkAlreadyHit = false;
+							}
+						}
+
+						if (target->isWSkillAlreadyHit)
+						{
+							if (ICCable* CCtarget = Cast<ICCable>(OtherActor))
+							{
+								CCtarget->Stun(1.f);
+								target->isWSkillAlreadyHit = false;
+							}
 						}
 					}
 				}
+				else if (team->GetTeam() == Cast<ITeam>(colliderOwner)->GetTeam())
+				{
+					if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
+					{
+						target->AddSpeed(FString(TEXT("FairyWing_Q_SpeedBuf")), increaseSpeed, increaseSpeedTime);
+						target->AddAttackSpeed(FString(TEXT("FairyWing_Q_AttackSpeedBuf")), increaseAttackSpeed);
+					}
 
-				if (ICCable* target = Cast<ICCable>(OtherActor))
-				{
-					//target->Blind(blindTime);
-				}
-			}
-			else if(team->GetTeam() == Cast<ITeam>(colliderOwner)->GetTeam())
-			{
-				if (ASidheRigelCharacter* target = Cast<ASidheRigelCharacter>(OtherActor))
-				{
-					target->AddSpeed(FString(TEXT("FairyWing_Q_SpeedBuf")), increaseSpeed, increaseSpeedTime);
-					target->AddAttackSpeed(FString(TEXT("FairyWing_Q_AttackSpeedBuf")), increaseAttackSpeed);
-				}
-
-				if (IDamagable* target = Cast<IDamagable>(OtherActor))
-				{
-					target->RestoreHP(restoreHPValue);
+					if (IDamagable* target = Cast<IDamagable>(OtherActor))
+					{
+						target->RestoreHP(restoreHPValue);
+					}
 				}
 			}
 		}
+
+		elapsedTime = 0;
 	}
 }

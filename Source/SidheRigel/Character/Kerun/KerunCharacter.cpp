@@ -187,15 +187,6 @@ void AKerunCharacter::Attack(AActor* target)
 			//Kerun QSkill
 			UKerunQSkill* QSkillRef = Cast<UKerunQSkill>(skills[E_SkillState::Q_Ready]);
 
-			/*
-			if (QSkillRef->IsWorking)
-			{
-				QSkillRef->AttackCount += 1;
-
-				UE_LOG(LogTemp, Warning, TEXT("Add Attackcount :: %d"), QSkillRef->AttackCount);
-			}
-			*/
-			
 
 			if (IsSelectedTalent[0][2])
 			{
@@ -205,21 +196,12 @@ void AKerunCharacter::Attack(AActor* target)
 			}
 
 			ImproveEStack(EAddAmount);
-
-			//QSkillRef->ApplyTalentWhenFullComboHits(target);
 			
 		}
 	}
 
 	PlayAttackMontage(); 
 
-	/*
-	if (AnimInstance)
-	{
-		AnimInstance->PlayAttackMontage();
-		UE_LOG(LogTemp, Warning, TEXT("AnimInstance is Not Null"));
-	}
-	*/
 }
 
 void AKerunCharacter::InitAttackProjectile()
@@ -438,7 +420,6 @@ void AKerunCharacter::UseQParticle(AActor* Target)
 			SpawnTransform
 		);
 
-		UE_LOG(LogTemp, Warning , TEXT("QParticle Spawn"))
 	}
 }
 
@@ -592,7 +573,6 @@ void AKerunCharacter::StartETimer()
 		FTimerDelegate::CreateLambda([&]() {
 			QuitETimer();
 			ECurrentStack = 0;
-			UE_LOG(LogTemp, Warning, TEXT("ECurrentStack Initialized"));
 			}),
 		GetEDuration(),
 		false
