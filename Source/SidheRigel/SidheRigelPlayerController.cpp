@@ -251,6 +251,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("RPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedRButton);
 	InputComponent->BindAction("YPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedYButton);
 	InputComponent->BindAction("SpacePress", IE_Pressed, this, &ASidheRigelPlayerController::PressedSpaceButton);
+	InputComponent->BindAction("APress", IE_Pressed, this, &ASidheRigelPlayerController::PressedAButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
@@ -262,6 +263,7 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 {
 	//UE_LOG(LogTemp, Error, TEXT("OnRightClick"))
 	//SkillCancel
+	bAttackReady = false;
 	bSkillReady = false;
 	currentSkill = E_SkillState::Skill_Null;
 	if (myCharacter)
@@ -318,6 +320,27 @@ void ASidheRigelPlayerController::PressedSpaceButton()
 	}
 }
 
+void ASidheRigelPlayerController::PressedAButton()
+{
+	bSkillReady = false;
+	currentSkill = E_SkillState::Skill_Null;
+
+	if (!myCharacter)
+	{
+		myCharacter = Cast<ASidheRigelCharacter>(GetCharacter());
+	}
+	if (myCharacter->stunTime > 0)
+	{
+		return;
+	}
+
+	bAttackReady = true;
+	float currentRange = myCharacter->GetRange();
+	myCharacter->skillRange->SetRelativeScale3D(FVector(currentRange / 100, currentRange / 100, 1));
+
+	myCharacter->skillRange->SetVisibility(true);
+}
+
 void ASidheRigelPlayerController::IE_Update()
 {
 	if (currentState)
@@ -356,6 +379,29 @@ FHitResult ASidheRigelPlayerController::GetHitResult()
 	return HitResult;
 }
 
+AActor* ASidheRigelPlayerController::GetCloseActorToMouse()
+{
+	AActor* res = nullptr;
+
+	FHitResult Hit = GetHitResult();
+
+	if (myCharacter)
+	{
+		float dist = 50000;	//temp MAX
+		for (auto actor : myCharacter->InRangeActors)
+		{
+			float tempDist = (Hit.Location - actor->GetActorLocation()).Length();
+			if (dist > tempDist)
+			{
+				dist = tempDist;
+				res = actor;
+			}
+
+		}
+	}
+	return res;
+}
+
 void ASidheRigelPlayerController::ChangeState(UState* NextState)
 {
 	previousState = currentState;
@@ -391,6 +437,8 @@ UState* ASidheRigelPlayerController::GetCurrentState()
 
 void ASidheRigelPlayerController::OnKeyboard(E_SkillState SkillState)
 {
+	bAttackReady = false;
+
 	currentSkill = SkillState;
 	if (!myCharacter)
 	{
