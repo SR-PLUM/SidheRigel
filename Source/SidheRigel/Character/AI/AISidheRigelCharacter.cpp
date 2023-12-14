@@ -359,16 +359,22 @@ bool AAISidheRigelCharacter::HasNearByTeam()
 		}
 	}
 	
-	if (teamCount < 2)
+	if (teamCount < 3)
+	{
+		currentTarget = nullptr;
 		return false;
+	}
 	else
 		return true;
 }
 
 void AAISidheRigelCharacter::MoveBackward()
 {
-	if (GetDistanceTo(GetWayPoint(currentWayPointOrder + 1)) <= 150)
+	if (GetDistanceTo(GetWayPoint(currentWayPointOrder + 1)) <= 200)
 	{
+		if (!InRangeActors.IsEmpty())
+			currentTarget = GetClosestEnemy();
+
 		if (currentWayPointOrder < 5)
 		{
 			currentWayPointOrder += 1;
