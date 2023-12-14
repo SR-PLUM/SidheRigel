@@ -45,6 +45,8 @@ protected:
 	float HP;
 	float MaxHP = 3300;
 
+	float range = 500;
+
 protected:
 	UPROPERTY()
 		class UWidgetComponent* TowerWidget;
@@ -63,6 +65,7 @@ public:
 	UFUNCTION()
 		void OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	AActor* GetCloseEnemy();
 public:
 	TSubclassOf<class ATowerAttackProjectile> projectileClass;
 
