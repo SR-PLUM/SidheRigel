@@ -187,7 +187,7 @@ void ASidheRigelCharacter::BeginPlay()
 	detectRange->OnComponentEndOverlap.AddDynamic(this, &ASidheRigelCharacter::OnExitEnemy);
 
 	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateHP, 1.f, true);
-	GetWorldTimerManager().SetTimer(GenerateHPTimer, this, &ASidheRigelCharacter::IE_GenerateMP, 1.f, true);
+	GetWorldTimerManager().SetTimer(GenerateMPTimer, this, &ASidheRigelCharacter::IE_GenerateMP, 1.f, true);
 
 }
 
@@ -1520,7 +1520,7 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 
 void ASidheRigelCharacter::RestoreHP(float value)
 {
-	float restoreHP = value * (1 - reduceMyHeal / 100);
+	float restoreHP = value * (1.f - (reduceMyHeal / 100.f));
 	currentHP += restoreHP;
 	
 	float var_MaxHP = GetMaxHP();

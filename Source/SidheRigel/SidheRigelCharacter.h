@@ -400,6 +400,7 @@ public:	//Attack
 
 protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
+	FTimerHandle GenerateMPTimer;
 	FTimerHandle BarrierTimer;
  
 public:		//Interface Implement

@@ -224,7 +224,8 @@ void ATower::OnExitEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Other
 						if (attackList.Num() != 1)
 						{
 							attackList.Remove(currentTarget);
-							currentTarget = attackList.Top();
+							if(!attackList.IsEmpty())
+								currentTarget = attackList.Top();
 							attackList.Push(characterTarget);
 						}
 					}
