@@ -43,7 +43,7 @@ ATower::ATower()
 	if (!rangeArea)
 	{
 		rangeArea = CreateDefaultSubobject<USphereComponent>(TEXT("rangeArea"));
-		rangeArea->InitSphereRadius(300.0f);
+		rangeArea->InitSphereRadius(range);
 		rangeArea->SetupAttachment(mesh);
 	}
 
@@ -150,6 +150,25 @@ void ATower::Tick(float DeltaTime)
 			}
 			else if (attackDelay <= 0)
 			{
+				if (GetDistanceTo(currentTarget) > range)
+				{
+					auto closeActor = GetCloseEnemy();
+					if (closeActor)
+					{
+						if (GetDistanceTo(closeActor) > range)
+						{
+							return;
+						}
+						else
+						{
+							currentTarget = closeActor;
+						}
+					}
+					else
+					{
+						return;
+					}
+				}
 				FVector MuzzleLocation = muzzleLocation->GetComponentLocation();
 				FRotator MuzzleRotation = GetActorRotation();
 
@@ -195,6 +214,9 @@ void ATower::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 				{
 					currentTarget = OtherActor;
 				}
+
+				UE_LOG(LogTemp, Warning, TEXT("%s :: %f"), *OtherActor->GetName(), GetDistanceTo(OtherActor));
+				UE_LOG(LogTemp, Warning, TEXT("%s"), *OtherComp->GetName())
 
 				attackList.Add(OtherActor);
 			}
@@ -279,5 +301,22 @@ float ATower::GetHP()
 E_Team ATower::GetTeam()
 {
 	return team;
+}
+
+AActor* ATower::GetCloseEnemy()
+{
+	float dist = 30000;
+	AActor* retActor = nullptr;
+	for (auto actor : attackList)
+	{
+		auto tempDist = GetDistanceTo(actor);
+		if (tempDist < dist)
+		{
+			dist = tempDist;
+			retActor = actor;
+		}
+	}
+
+	return retActor;
 }
 
