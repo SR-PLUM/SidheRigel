@@ -117,8 +117,8 @@ protected: //Passive E
 	int EAddAmount = 1;
 	const float EDuration = 3.5f;
 	const float UpgradeEDuration = 5.0f;
-	const float EHealthRate = 1.0f;
-	const float UpgradeEHealthRate = 3.0f;
+	const float EHealthRate = 2.0f;
+	const float UpgradeEHealthRate = 4.0f;
 
 	UPROPERTY()
 	int ECurrentStack = 0;

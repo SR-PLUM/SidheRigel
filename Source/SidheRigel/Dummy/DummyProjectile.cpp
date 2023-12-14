@@ -78,6 +78,14 @@ void ADummyProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (auto DamagableTarget = Cast<IDamagable>(Target))
+	{
+		if (DamagableTarget->GetHP() <= 0)
+		{
+			Destroy();
+		}
+	}
+
 	if (Target)
 	{
 		FVector Forward = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();

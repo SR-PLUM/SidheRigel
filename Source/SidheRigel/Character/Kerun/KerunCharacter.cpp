@@ -109,7 +109,7 @@ void AKerunCharacter::InitProperty()
 
 	MaxExperience = 280;
 
-	rangeBase = 125;
+	rangeBase = 175;
 	attackDamageBase = 68;
 	attackSpeedBase = 0.694;
 	criticalRateBase = 0;
