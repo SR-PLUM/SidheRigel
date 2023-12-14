@@ -21,17 +21,17 @@ ASidheRigelGameMode::ASidheRigelGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<APawn> ACMBPClass(TEXT("/Game/Heros/ACM/BP_ACMCharacter"));
-	if (ACMBPClass.Class != nullptr)
-	{
-		CharacterPath.Add("ACM", ACMBPClass.Class);
-	}
+	//static ConstructorHelpers::FClassFinder<APawn> ACMBPClass(TEXT("/Game/Heros/ACM/BP_ACMCharacter"));
+	//if (ACMBPClass.Class != nullptr)
+	//{
+	//	CharacterPath.Add("ACM", ACMBPClass.Class);
+	//}
 
-	static ConstructorHelpers::FClassFinder<APawn> BlackWizardBPClass(TEXT("/Game/Heros/BlackWizard/BP_BlackWizardCharacter"));
-	if (BlackWizardBPClass.Class != nullptr)
-	{
-		CharacterPath.Add("BlackWizard", BlackWizardBPClass.Class);
-	}
+	//static ConstructorHelpers::FClassFinder<APawn> BlackWizardBPClass(TEXT("/Game/Heros/BlackWizard/BP_BlackWizardCharacter"));
+	//if (BlackWizardBPClass.Class != nullptr)
+	//{
+	//	CharacterPath.Add("BlackWizard", BlackWizardBPClass.Class);
+	//}
 
 	static ConstructorHelpers::FClassFinder<APawn> ColdBPClass(TEXT("/Game/Heros/Cold/BP_ColdCharacter"));
 	if (ColdBPClass.Class != nullptr)
@@ -79,18 +79,18 @@ void ASidheRigelGameMode::InitGameState()
 	{
 		switch (InGameInstance->CharacterNum)
 		{
-		case 1:
-			if (CharacterPath.Contains("ACM"))
-			{
-				DefaultPawnClass = CharacterPath["ACM"];
-			}
-			break;
-		case 2:
-			if (CharacterPath.Contains("BlackWizard"))
-			{
-				DefaultPawnClass = CharacterPath["BlackWizard"];
-			}
-			break;
+		//case 1:
+		//	if (CharacterPath.Contains("ACM"))
+		//	{
+		//		DefaultPawnClass = CharacterPath["ACM"];
+		//	}
+		//	break;
+		//case 2:
+		//	if (CharacterPath.Contains("BlackWizard"))
+		//	{
+		//		DefaultPawnClass = CharacterPath["BlackWizard"];
+		//	}
+		//	break;
 		case 3:
 			if (CharacterPath.Contains("Cold"))
 			{
