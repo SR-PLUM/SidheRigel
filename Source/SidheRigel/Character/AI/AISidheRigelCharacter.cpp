@@ -38,6 +38,7 @@ void AAISidheRigelCharacter::BeginPlay()
 	{
 		currentWayPoint = GetWayPoint(currentWayPointOrder);
 		AIController->MoveToActor(currentWayPoint);
+		StatSummary->SetEnemyColor();
 	}
 
 	IsSelectedTalent[0].IsSelected[2] = true;

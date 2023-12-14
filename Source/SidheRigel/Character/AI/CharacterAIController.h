@@ -15,7 +15,7 @@ class SIDHERIGEL_API ACharacterAIController : public AAIController
 	GENERATED_BODY()
 	
 public:
-	AAISidheRigelCharacter* AIPlayer;
+	class AAISidheRigelCharacter* AIPlayer;
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
