@@ -10,10 +10,10 @@
 
 UFairyWingQSkill::UFairyWingQSkill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> colliderRef(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingQCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> colliderRef(TEXT("Blueprint'/Game/Heros/FairyWIng/Skill/BP_FairyWingQCollider.BP_FairyWingQCollider_C'"));
 	if (colliderRef.Object)
 	{
-		colliderClass = (UClass*)colliderRef.Object->GeneratedClass;
+		colliderClass = (UClass*)colliderRef.Object;
 	}
 }
 

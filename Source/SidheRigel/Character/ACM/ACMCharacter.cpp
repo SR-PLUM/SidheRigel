@@ -93,16 +93,16 @@ void AACMCharacter::InitProperty()
 
 void AACMCharacter::InitColliderPath()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> QCollider(TEXT("/Game/Heros/ACM/Skills/BP_ACMQCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> QCollider(TEXT("Blueprint'/Game/Heros/ACM/Skills/BP_ACMQCollider.BP_ACMQCollider_C'"));
 	if (QCollider.Object)
 	{
-		ACMQCollider = (UClass*)QCollider.Object->GeneratedClass;
+		ACMQCollider = (UClass*)QCollider.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> ECollider(TEXT("/Game/Heros/ACM/Skills/BP_ACMECollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> ECollider(TEXT("Blueprint'/Game/Heros/ACM/Skills/BP_ACMECollider.BP_ACMECollider_C'"));
 	if (ECollider.Object)
 	{
-		ACMECollider = (UClass*)ECollider.Object->GeneratedClass;
+		ACMECollider = (UClass*)ECollider.Object;
 	}
 }
 
@@ -133,10 +133,10 @@ void AACMCharacter::Attack(AActor* target)
 
 void AACMCharacter::InitAttackProjectile()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/ACM/BP_ACMAttackProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> Projectile(TEXT("Blueprint'/Game/Heros/ACM/BP_ACMAttackProjectile.BP_ACMAttackProjectile_C'"));
 	if (Projectile.Object)
 	{
-		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+		ProjectileClass = (UClass*)Projectile.Object;
 	}
 }
 
@@ -175,7 +175,6 @@ void AACMCharacter::QImplement(FHitResult HitResult)
 			// Spawn the projectile at the muzzle.
 			AACMQCollider* Collider = World->SpawnActorDeferred<AACMQCollider>(ACMQCollider, SpawnTransform);
 
-			UE_LOG(LogTemp, Warning, TEXT("ACM QSkill Collider :: %s"), *(Collider->GetActorLabel()));
 			if (Collider)
 			{
 				AddSkillCount();
@@ -243,7 +242,6 @@ void AACMCharacter::EImplement(FHitResult HitResult)
 			// Spawn the projectile at the muzzle.
 			AACMECollider* Collider = World->SpawnActorDeferred<AACMECollider>(ACMECollider, SpawnTransform);
 
-			UE_LOG(LogTemp, Warning, TEXT("ACM ESkill Collider :: %s"), *(Collider->GetActorLabel()));
 			if (Collider)
 			{
 				AddSkillCount();
@@ -353,16 +351,16 @@ void AACMCharacter::AddSkillCount()
 
 	if (SkillCount == 1)
 	{
-		GetWorld()->GetTimerManager().SetTimer(
-			UpgradingPassiveTimer,
-			FTimerDelegate::CreateLambda([&]() {
+		//GetWorld()->GetTimerManager().SetTimer(
+		//	UpgradingPassiveTimer,
+		//	FTimerDelegate::CreateLambda([&]() {
 
-				InitializeSkillCount();
-				UE_LOG(LogTemp, Warning, TEXT("SkillCount Initialized"));
-				}),
-			CountDuration,
-			false
-			);
+		//		InitializeSkillCount();
+		//		UE_LOG(LogTemp, Warning, TEXT("SkillCount Initialized"));
+		//		}),
+		//	CountDuration,
+		//	false
+		//	);
 	}
 	else if (SkillCount >=3)
 	{

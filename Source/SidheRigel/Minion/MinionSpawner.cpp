@@ -13,16 +13,16 @@ AMinionSpawner::AMinionSpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> BPMinion(TEXT("/Game/Minion/BP_Minion"));
+	static ConstructorHelpers::FObjectFinder<UClass> BPMinion(TEXT("Blueprint'/Game/Minion/BP_Minion.BP_Minion_C'"));
 	if (BPMinion.Object)
 	{
-		minionClass = (UClass*)BPMinion.Object->GeneratedClass;
+		minionClass = (UClass*)BPMinion.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> BPRangeMinion(TEXT("/Game/Minion/BP_RangeMinion"));
+	static ConstructorHelpers::FObjectFinder<UClass> BPRangeMinion(TEXT("Blueprint'/Game/Minion/BP_RangeMinion.BP_RangeMinion_C'"));
 	if (BPRangeMinion.Object)
 	{
-		rangeMinionClass = (UClass*)BPRangeMinion.Object->GeneratedClass;
+		rangeMinionClass = (UClass*)BPRangeMinion.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> WMMesh(TEXT("/Game/Minion/Minion_Lane_Melee_Dawn"));

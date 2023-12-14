@@ -54,16 +54,16 @@ ATower::ATower()
 		destroyParticle->SetAutoActivate(false);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Tower/BP_TowerAttackProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> projectileRef(TEXT("Blueprint'/Game/Tower/BP_TowerAttackProjectile.BP_TowerAttackProjectile_C'"));
 	if (projectileRef.Object)
 	{
-		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+		projectileClass = (UClass*)projectileRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint>particleRef(TEXT("/Game/Tower/BP_DestroyTowerParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass>particleRef(TEXT("Blueprint'/Game/Tower/BP_DestroyTowerParticle.BP_DestroyTowerParticle_C'"));
 	if (particleRef.Object)
 	{
-		particleClass = (UClass*)particleRef.Object->GeneratedClass;
+		particleClass = (UClass*)particleRef.Object;
 	}
 
 	if (!muzzleLocation)

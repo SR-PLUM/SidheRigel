@@ -10,16 +10,16 @@
 
 UColdESkill::UColdESkill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdEProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> projectileRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdEProjectile.BP_ColdEProjectile_C'"));
 	if (projectileRef.Object)
 	{
-		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+		projectileClass = (UClass*)projectileRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> damageFieldRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdEDamageField"));
+	static ConstructorHelpers::FObjectFinder<UClass> damageFieldRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdEDamageField.BP_ColdEDamageField_C'"));
 	if (damageFieldRef.Object)
 	{
-		damageFieldClass = (UClass*)damageFieldRef.Object->GeneratedClass;
+		damageFieldClass = (UClass*)damageFieldRef.Object;
 	}
 }
 

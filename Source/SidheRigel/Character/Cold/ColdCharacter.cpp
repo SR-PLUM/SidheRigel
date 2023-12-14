@@ -57,6 +57,11 @@ void AColdCharacter::BeginPlay()
 	{
 		skills[E_SkillState::R_Ready]->SetSkillProperty(this, E_SkillState::R_Ready);
 	}
+
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
+	StatSummary->SetLevel(level);
+	StatSummary->SetExpBar(float(experience) / MaxExperience);
 }
 
 // Called every frame
@@ -74,10 +79,10 @@ void AColdCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AColdCharacter::InitAttackProjectile()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/Cold/BP_ColdAttackProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> Projectile(TEXT("Blueprint'/Game/Heros/Cold/BP_ColdAttackProjectile.BP_ColdAttackProjectile_C'"));
 	if (Projectile.Object)
 	{
-		attackProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+		attackProjectileClass = (UClass*)Projectile.Object;
 	}
 }
 
@@ -108,7 +113,7 @@ void AColdCharacter::Attack(AActor* target)
 
 void AColdCharacter::InitProperty()
 {
-	level = 1;
+	level = 9;
 
 	MaxExperience = 280;
 

@@ -12,10 +12,10 @@
 
 UKerunR1Skill::UKerunR1Skill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint>colliderRef(TEXT("/Game/Heros/Kerun/Skills/BP_R1SkillTalentCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass>colliderRef(TEXT("Blueprint'/Game/Heros/Kerun/Skills/BP_R1SkillTalentCollider.BP_R1SkillTalentCollider_C'"));
 	if (colliderRef.Object)
 	{
-		colliderClass = (UClass*)colliderRef.Object->GeneratedClass;
+		colliderClass = (UClass*)colliderRef.Object;
 	}
 }
 

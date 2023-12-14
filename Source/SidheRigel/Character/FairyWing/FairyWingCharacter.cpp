@@ -21,28 +21,28 @@
 // Sets default values
 AFairyWingCharacter::AFairyWingCharacter()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> EProjectile(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingEProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> EProjectile(TEXT("Blueprint'/Game/Heros/FairyWIng/Skill/BP_FairyWingEProjectile.BP_FairyWingEProjectile_C'"));
 	if (EProjectile.Object)
 	{
-		EProjectileClass = (UClass*)EProjectile.Object->GeneratedClass;
+		EProjectileClass = (UClass*)EProjectile.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> QCollider(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingQCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> QCollider(TEXT("Blueprint'/Game/Heros/FairyWIng/Skill/BP_FairyWingQCollider.BP_FairyWingQCollider_C'"));
 	if (QCollider.Object)
 	{
-		QColliderClass = (UClass*)QCollider.Object->GeneratedClass;
+		QColliderClass = (UClass*)QCollider.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> WCollider(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingWCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> WCollider(TEXT("Blueprint'/Game/Heros/FairyWIng/Skill/BP_FairyWingRCollider.BP_FairyWingRCollider_C'"));
 	if (WCollider.Object)
 	{
-		WColliderClass = (UClass*)WCollider.Object->GeneratedClass;
+		WColliderClass = (UClass*)WCollider.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> RCollider(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingRCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> RCollider(TEXT("Blueprint'/Game/Heros/FairyWIng/Skill/BP_FairyWingWCollider.BP_FairyWingWCollider_C'"));
 	if (RCollider.Object)
 	{
-		RColliderClass = (UClass*)RCollider.Object->GeneratedClass;
+		RColliderClass = (UClass*)RCollider.Object;
 	}
 
 	InitAttackProjectile();
@@ -93,10 +93,10 @@ void AFairyWingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AFairyWingCharacter::InitAttackProjectile()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/FairyWing/BP_FairyWingAttackProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> Projectile(TEXT("Blueprint'/Game/Heros/FairyWIng/BP_FairyWingAttackProjectile.BP_FairyWingAttackProjectile_C'"));
 	if (Projectile.Object)
 	{
-		attackProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+		attackProjectileClass = (UClass*)Projectile.Object;
 	}
 }
 

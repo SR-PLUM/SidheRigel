@@ -10,10 +10,10 @@
 
 UFairyWingESkill::UFairyWingESkill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/FairyWing/Skill/BP_FairyWingEProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> projectileRef(TEXT("Blueprint'/Game/Heros/FairyWIng/Skill/BP_FairyWingEProjectile.BP_FairyWingEProjectile_C'"));
 	if (projectileRef.Object)
 	{
-		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+		projectileClass = (UClass*)projectileRef.Object;
 	}
 }
 

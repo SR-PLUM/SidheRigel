@@ -132,6 +132,7 @@ protected: //Passive E
 	float GetEDuration();
 	float GetEHealthRate();
 	void StartETimer();
+	void ETimeOut();
 	void QuitETimer();
 
 public:

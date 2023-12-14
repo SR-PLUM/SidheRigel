@@ -102,28 +102,28 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	InitAttackProjectile();
 
 	//StunParticle
-	static ConstructorHelpers::FObjectFinder<UBlueprint> StunParticle(TEXT("/Game/Heros/Common/BP_StunParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> StunParticle(TEXT("Blueprint'/Game/Heros/Common/BP_StunParticle.BP_StunParticle_C'"));
 	if (StunParticle.Object)
 	{
-		stunParticleClass = (UClass*)StunParticle.Object->GeneratedClass;
+		stunParticleClass = (UClass*)StunParticle.Object;
 	}
 	//SlowParticle
-	static ConstructorHelpers::FObjectFinder<UBlueprint> SlowParticle(TEXT("/Game/Heros/Common/BP_SlowParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> SlowParticle(TEXT("Blueprint'/Game/Heros/Common/BP_SlowParticle.BP_SlowParticle_C'"));
 	if (SlowParticle.Object)
 	{
-		slowParticleClass = (UClass*)SlowParticle.Object->GeneratedClass;
+		slowParticleClass = (UClass*)SlowParticle.Object;
 	}
 	//StopParticle
-	static ConstructorHelpers::FObjectFinder<UBlueprint> StopParticle(TEXT("/Game/Heros/Common/BP_StopParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> StopParticle(TEXT("Blueprint'/Game/Heros/Common/BP_StopParticle.BP_StopParticle_C'"));
 	if (StopParticle.Object)
 	{
-		stopParticleClass = (UClass*)StopParticle.Object->GeneratedClass;
+		stopParticleClass = (UClass*)StopParticle.Object;
 	}
 	//SilenceParticle
-	static ConstructorHelpers::FObjectFinder<UBlueprint> SlienceParticle(TEXT("/Game/Heros/Common/BP_SilenceParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> SlienceParticle(TEXT("Blueprint'/Game/Heros/Common/BP_SilenceParticle.BP_SilenceParticle_C'"));
 	if (SlienceParticle.Object)
 	{
-		silenceParticleClass = (UClass*)SlienceParticle.Object->GeneratedClass;
+		silenceParticleClass = (UClass*)SlienceParticle.Object;
 	}
 
 	//InGameUIWidget
@@ -528,26 +528,26 @@ void ASidheRigelCharacter::InitDeathActorClass()
 	{
 		if (GameInstance->CharacterNum == Kerun)
 		{
-			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/Kerun/BP_KerunDeathActor"));
+			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("/Game/Heros/Kerun/BP_KerunDeathActor"));
 			if (deathActorRef.Object)
 			{
-				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+				deathActorClass = (UClass*)deathActorRef.Object;
 			}
 		}
 		else if (GameInstance->CharacterNum == FairyWing)
 		{
-			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/FairyWIng/BP_FairyWingDeathActor"));
+			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("/Game/Heros/FairyWIng/BP_FairyWingDeathActor"));
 			if (deathActorRef.Object)
 			{
-				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+				deathActorClass = (UClass*)deathActorRef.Object;
 			}
 		}
 		else if (GameInstance->CharacterNum == Cold)
 		{
-			static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/Cold/BP_ColdDeathActor"));
+			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("/Game/Heros/Cold/BP_ColdDeathActor"));
 			if (deathActorRef.Object)
 			{
-				deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+				deathActorClass = (UClass*)deathActorRef.Object;
 			}
 		}
 	}
@@ -1343,10 +1343,10 @@ void ASidheRigelCharacter::InitProperty()
 
 void ASidheRigelCharacter::InitAttackProjectile()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Dummy/BP_DummyProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> Projectile(TEXT("Blueprint'/Game/Dummy/BP_DummyProjectile.BP_DummyProjectile_C'"));
 	if (Projectile.Object)
 	{
-		baseProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+		baseProjectileClass = (UClass*)Projectile.Object;
 	}
 }
 

@@ -53,16 +53,16 @@ ANexus::ANexus()
 		destroyParticle->SetAutoActivate(false);
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Nexus/BP_NexusAttackProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> projectileRef(TEXT("Blueprint'/Game/Nexus/BP_NexusAttackProjectile.BP_NexusAttackProjectile_C'"));
 	if (projectileRef.Object)
 	{
-		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+		projectileClass = (UClass*)projectileRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint>particleRef(TEXT("/Game/Nexus/BP_DestroyNexusParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass>particleRef(TEXT("Blueprint'/Game/Nexus/BP_DestroyNexusParticle.BP_DestroyNexusParticle_C'"));
 	if (particleRef.Object)
 	{
-		particleClass = (UClass*)particleRef.Object->GeneratedClass;
+		particleClass = (UClass*)particleRef.Object;
 	}
 
 	if (!muzzleLocation)
@@ -132,12 +132,12 @@ void ANexus::Tick(float DeltaTime)
 
 	if (currentTarget)
 	{
-		if (GetDistanceTo(currentTarget) > range)
+		if (GetDistanceTo(currentTarget) > 500)
 		{
 			auto closeActor = GetCloseEnemy();
 			if (closeActor)
 			{
-				if (GetDistanceTo(closeActor) > range)
+				if (GetDistanceTo(closeActor) > 500)
 				{
 					return;
 				}

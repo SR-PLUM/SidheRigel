@@ -42,10 +42,10 @@ AColdEDamageField::AColdEDamageField()
 		}
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> groundFireRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdEGroundFireEffect"));
+	static ConstructorHelpers::FObjectFinder<UClass> groundFireRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdEGroundFireEffect.BP_ColdEGroundFireEffect_C'"));
 	if (groundFireRef.Object)
 	{
-		groundFireClass = (UClass*)groundFireRef.Object->GeneratedClass;
+		groundFireClass = (UClass*)groundFireRef.Object;
 	}
 }
 

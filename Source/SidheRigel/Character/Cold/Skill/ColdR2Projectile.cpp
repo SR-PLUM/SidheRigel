@@ -25,10 +25,10 @@ AColdR2Projectile::AColdR2Projectile()
 		RootComponent = splineComponent;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint>laserRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdR2Laser"));
+	static ConstructorHelpers::FObjectFinder<UClass>laserRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdR2Laser.BP_ColdR2Laser_C'"));
 	if (laserRef.Object)
 	{
-		laserClass = (UClass*)laserRef.Object->GeneratedClass;
+		laserClass = (UClass*)laserRef.Object;
 	}
 }
 

@@ -8,10 +8,10 @@
 
 UBlackWizardQSkill::UBlackWizardQSkill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> colliderRef(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardQCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> colliderRef(TEXT("Blueprint'/Game/Heros/BlackWizard/Skill/BP_BlackWizardQCollider.BP_BlackWizardQCollider_C'"));
 	if (colliderRef.Object)
 	{
-		colliderClass = (UClass*)colliderRef.Object->GeneratedClass;
+		colliderClass = (UClass*)colliderRef.Object;
 	}
 }
 

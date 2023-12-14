@@ -15,22 +15,22 @@ ABlackWizardCharacter::ABlackWizardCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	//PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> RCollider(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardRCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> RCollider(TEXT("Blueprint'/Game/Heros/BlackWizard/Skill/BP_BlackWizardRCollider.BP_BlackWizardRCollider_C'"));
 	if (RCollider.Object)
 	{
-		RColliderClass = (UClass*)RCollider.Object->GeneratedClass;
+		RColliderClass = (UClass*)RCollider.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> QCollider(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardQCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> QCollider(TEXT("Blueprint'/Game/Heros/BlackWizard/Skill/BP_BlackWizardQCollider.BP_BlackWizardQCollider_C'"));
 	if (QCollider.Object)
 	{
-		QColliderClass = (UClass*)QCollider.Object->GeneratedClass;
+		QColliderClass = (UClass*)QCollider.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> ECollider(TEXT("/Game/Heros/BlackWizard/Skill/BP_BlackWizardECollider"));
+	static ConstructorHelpers::FObjectFinder<UClass> ECollider(TEXT("Blueprint'/Game/Heros/BlackWizard/Skill/BP_BlackWizardECollider.BP_BlackWizardECollider_C'"));
 	if (ECollider.Object)
 	{
-		EColliderClass = (UClass*)ECollider.Object->GeneratedClass;
+		EColliderClass = (UClass*)ECollider.Object;
 	}
 
 	InitAttackProjectile();
@@ -82,10 +82,10 @@ void ABlackWizardCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 void ABlackWizardCharacter::InitAttackProjectile()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/BlackWizard/BP_BlackWizardAttackProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> Projectile(TEXT("Blueprint'/Game/Heros/BlackWizard/BP_BlackWizardAttackProjectile.BP_BlackWizardAttackProjectile_C'"));
 	if (Projectile.Object)
 	{
-		attackProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+		attackProjectileClass = (UClass*)Projectile.Object;
 	}
 }
 

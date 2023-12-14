@@ -206,10 +206,10 @@ void AKerunCharacter::Attack(AActor* target)
 
 void AKerunCharacter::InitAttackProjectile()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> Projectile(TEXT("/Game/Heros/Kerun/BP_KerunAttackProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> Projectile(TEXT("Blueprint'/Game/Heros/Kerun/BP_KerunAttackProjectile.BP_KerunAttackProjectile_C'"));
 	if (Projectile.Object)
 	{
-		ProjectileClass = (UClass*)Projectile.Object->GeneratedClass;
+		ProjectileClass = (UClass*)Projectile.Object;
 	}
 }
 
@@ -568,15 +568,13 @@ void AKerunCharacter::StartETimer()
 
 	generateHealthPoint.Add("ESkill", GenerateAmount);
 
-	GetWorld()->GetTimerManager().SetTimer(
-		ETimer,
-		FTimerDelegate::CreateLambda([&]() {
-			QuitETimer();
-			ECurrentStack = 0;
-			}),
-		GetEDuration(),
-		false
-		);
+	GetWorld()->GetTimerManager().SetTimer(ETimer,this,&AKerunCharacter::ETimeOut,GetEDuration(),false);
+}
+
+void AKerunCharacter::ETimeOut()
+{
+	QuitETimer();
+	ECurrentStack = 0;
 }
 
 void AKerunCharacter::QuitETimer()

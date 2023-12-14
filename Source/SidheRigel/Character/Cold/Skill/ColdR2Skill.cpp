@@ -9,10 +9,10 @@
 
 UColdR2Skill::UColdR2Skill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdR2Projectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> projectileRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdR2Projectile.BP_ColdR2Projectile_C'"));
 	if (projectileRef.Object)
 	{
-		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+		projectileClass = (UClass*)projectileRef.Object;
 	}
 }
 

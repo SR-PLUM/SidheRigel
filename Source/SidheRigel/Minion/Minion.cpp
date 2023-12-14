@@ -43,35 +43,35 @@ AMinion::AMinion()
 	AIControllerClass = AMinionAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Minion/BP_MinionProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> projectileRef(TEXT("Blueprint'/Game/Minion/BP_MinionProjectile.BP_MinionProjectile_C'"));
 	if (projectileRef.Object)
 	{
-		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+		projectileClass = (UClass*)projectileRef.Object;
 	}
 
 	//StunParticle
-	static ConstructorHelpers::FObjectFinder<UBlueprint> StunParticle(TEXT("/Game/Heros/Common/BP_StunParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> StunParticle(TEXT("Blueprint'/Game/Heros/Common/BP_StunParticle.BP_StunParticle_C'"));
 	if (StunParticle.Object)
 	{
-		stunParticleClass = (UClass*)StunParticle.Object->GeneratedClass;
+		stunParticleClass = (UClass*)StunParticle.Object;
 	}
 	//SlowParticle
-	static ConstructorHelpers::FObjectFinder<UBlueprint> SlowParticle(TEXT("/Game/Heros/Common/BP_SlowParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> SlowParticle(TEXT("Blueprint'/Game/Heros/Common/BP_SlowParticle.BP_SlowParticle_C'"));
 	if (SlowParticle.Object)
 	{
-		slowParticleClass = (UClass*)SlowParticle.Object->GeneratedClass;
+		slowParticleClass = (UClass*)SlowParticle.Object;
 	}
 	//StopParticle
-	static ConstructorHelpers::FObjectFinder<UBlueprint> StopParticle(TEXT("/Game/Heros/Common/BP_StopParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> StopParticle(TEXT("Blueprint'/Game/Heros/Common/BP_StopParticle.BP_StopParticle_C'"));
 	if (StopParticle.Object)
 	{
-		stopParticleClass = (UClass*)StopParticle.Object->GeneratedClass;
+		stopParticleClass = (UClass*)StopParticle.Object;
 	}
 	//SilenceParticle
-	static ConstructorHelpers::FObjectFinder<UBlueprint> SlienceParticle(TEXT("/Game/Heros/Common/BP_SilenceParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> SlienceParticle(TEXT("Blueprint'/Game/Heros/Common/BP_SilenceParticle.BP_SilenceParticle_C'"));
 	if (SlienceParticle.Object)
 	{
-		silenceParticleClass = (UClass*)SlienceParticle.Object->GeneratedClass;
+		silenceParticleClass = (UClass*)SlienceParticle.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> WMMesh(TEXT("/Game/Minion/Minion_Lane_Melee_Dawn"));

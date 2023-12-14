@@ -44,16 +44,16 @@ AColdQProjectile::AColdQProjectile()
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint>particleRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdQParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass>particleRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdQParticle.BP_ColdQParticle_C'"));
 	if (particleRef.Object)
 	{
-		particleClass = (UClass*)particleRef.Object->GeneratedClass;
+		particleClass = (UClass*)particleRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint>splashRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdQSplash"));
+	static ConstructorHelpers::FObjectFinder<UClass>splashRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdQSplash.BP_ColdQSplash_C'"));
 	if (splashRef.Object)
 	{
-		splashClass = (UClass*)splashRef.Object->GeneratedClass;
+		splashClass = (UClass*)splashRef.Object;
 	}
 }
 

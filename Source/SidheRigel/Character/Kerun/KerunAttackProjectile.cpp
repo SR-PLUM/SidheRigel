@@ -16,10 +16,10 @@ AKerunAttackProjectile::AKerunAttackProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint>colliderRef(TEXT("/Game/Heros/Kerun/BP_KerunAttackTalentCollider"));
+	static ConstructorHelpers::FObjectFinder<UClass>colliderRef(TEXT("Blueprint'/Game/Heros/Kerun/BP_KerunAttackTalentCollider.BP_KerunAttackTalentCollider_C'"));
 	if (colliderRef.Object)
 	{
-		colliderClass = (UClass*)colliderRef.Object->GeneratedClass;
+		colliderClass = (UClass*)colliderRef.Object;
 	}
 }
 

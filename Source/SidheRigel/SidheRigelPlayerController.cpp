@@ -49,10 +49,10 @@ ASidheRigelPlayerController::ASidheRigelPlayerController()
 		KerunPawn = KerunBPClass.Class;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> BPAI(TEXT("/Game/Heros/AI/BP_AISidheRigelCharacter"));
+	static ConstructorHelpers::FObjectFinder<UClass> BPAI(TEXT("Blueprint'/Game/Heros/AI/BP_AISidheRigelCharacter.BP_AISidheRigelCharacter_C'"));
 	if (BPAI.Object)
 	{
-		AIClass = (UClass*)BPAI.Object->GeneratedClass;
+		AIClass = (UClass*)BPAI.Object;
 	}
 
 	bShowMouseCursor = true;

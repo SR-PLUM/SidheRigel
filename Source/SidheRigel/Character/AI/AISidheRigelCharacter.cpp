@@ -19,10 +19,10 @@ AAISidheRigelCharacter::AAISidheRigelCharacter()
 	AIControllerClass = ACharacterAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> deathActorRef(TEXT("/Game/Heros/AI/BP_KerunAIDeathActor"));
+	static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("Blueprint'/Game/Heros/AI/BP_KerunAIDeathActor.BP_KerunAIDeathActor_C'"));
 	if (deathActorRef.Object)
 	{
-		deathActorClass = (UClass*)deathActorRef.Object->GeneratedClass;
+		deathActorClass = (UClass*)deathActorRef.Object;
 	}
 }
 

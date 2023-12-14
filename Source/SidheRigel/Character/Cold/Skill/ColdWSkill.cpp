@@ -11,22 +11,22 @@
 
 UColdWSkill::UColdWSkill()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> projectileRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdWProjectile"));
+	static ConstructorHelpers::FObjectFinder<UClass> projectileRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdWProjectile.BP_ColdWProjectile_C'"));
 	if (projectileRef.Object)
 	{
-		projectileClass = (UClass*)projectileRef.Object->GeneratedClass;
+		projectileClass = (UClass*)projectileRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> particleRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdWParticle"));
+	static ConstructorHelpers::FObjectFinder<UClass> particleRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdWParticle.BP_ColdWParticle_C'"));
 	if (particleRef.Object)
 	{
-		particleClass = (UClass*)particleRef.Object->GeneratedClass;
+		particleClass = (UClass*)particleRef.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> wallRef(TEXT("/Game/Heros/Cold/Skill/BP_ColdWWall"));
+	static ConstructorHelpers::FObjectFinder<UClass> wallRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdWWall.BP_ColdWWall_C'"));
 	if (wallRef.Object)
 	{
-		wallClass = (UClass*)wallRef.Object->GeneratedClass;
+		wallClass = (UClass*)wallRef.Object;
 	}
 }
 

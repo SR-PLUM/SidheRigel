@@ -4,6 +4,7 @@
 #include "InGameMenu.h"
 
 #include "Components/Button.h"
+#include "SidheRigel/SidheRigelGameInstance.h"
 
 bool UInGameMenu::Initialize()
 {
@@ -26,10 +27,8 @@ void UInGameMenu::CancelPressed()
 
 void UInGameMenu::QuitPressed()
 {
-	if (MenuInterface != nullptr) {
-		Teardown();
-		MenuInterface->LoadMainMenu();
-	}
+	Teardown();
+	GetGameInstance()->GetFirstLocalPlayerController()->ConsoleCommand("quit");
 }
 
 
