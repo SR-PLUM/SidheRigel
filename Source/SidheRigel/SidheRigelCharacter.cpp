@@ -40,6 +40,7 @@
 #include "SidheRigel/Character/Common/SilenceParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Character/AI/CharacterAIController.h"
+#include "SidheRigel/Nexus/Nexus.h"
 #include "SidheRigel/SidheRigelGameMode.h"
 
 ASidheRigelCharacter::ASidheRigelCharacter()
@@ -937,6 +938,17 @@ float ASidheRigelCharacter::GetRange()
 	for (auto& value : range)
 	{
 		res += value.Value;
+	}
+
+	if (sidheRigelController)
+	{
+		if (sidheRigelController->target)
+		{
+			if (Cast<ANexus>(sidheRigelController->target))
+			{
+				res += 100;
+			}
+		}
 	}
 
 	return res;
