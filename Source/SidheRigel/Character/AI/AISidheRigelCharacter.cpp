@@ -11,6 +11,7 @@
 #include "SidheRigel/Minion/WayPoint.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRIgel/Tower/Tower.h"
+#include "SidheRigel/Nexus/Nexus.h"
 #include "SidheRigel/UI/StatSummary.h"
 
 AAISidheRigelCharacter::AAISidheRigelCharacter()
@@ -172,6 +173,10 @@ void AAISidheRigelCharacter::OnEnterEnemy(UPrimitiveComponent* OverlappedCompone
 				InRangeActors.Add(OtherActor);
 			}
 			else if (ATower* TowerEnemy = Cast<ATower>(OtherActor))
+			{
+				InRangeActors.Add(OtherActor);
+			}
+			else if (ANexus* NexusEnemy = Cast<ANexus>(OtherActor))
 			{
 				InRangeActors.Add(OtherActor);
 			}
