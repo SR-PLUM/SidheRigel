@@ -32,6 +32,8 @@ public:
 		float duration = 1.f;
 	UPROPERTY(VisibleAnywhere)
 		class USplineMeshComponent* splineComponent;
+	UPROPERTY(VisibleAnywhere)
+		class USplineComponent* spline;
 
 private:
 	TSubclassOf<class AColdR2Laser> laserClass;

@@ -528,7 +528,7 @@ void ASidheRigelCharacter::InitDeathActorClass()
 	{
 		if (GameInstance->CharacterNum == Kerun)
 		{
-			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("/Game/Heros/Kerun/BP_KerunDeathActor"));
+			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("Blueprint'/Game/Heros/Kerun/BP_KerunDeathActor.BP_KerunDeathActor_C'"));
 			if (deathActorRef.Object)
 			{
 				deathActorClass = (UClass*)deathActorRef.Object;
@@ -536,7 +536,7 @@ void ASidheRigelCharacter::InitDeathActorClass()
 		}
 		else if (GameInstance->CharacterNum == FairyWing)
 		{
-			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("/Game/Heros/FairyWIng/BP_FairyWingDeathActor"));
+			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("Blueprint'/Game/Heros/FairyWIng/BP_FairyWingDeathActor.BP_FairyWingDeathActor_C'"));
 			if (deathActorRef.Object)
 			{
 				deathActorClass = (UClass*)deathActorRef.Object;
@@ -544,7 +544,7 @@ void ASidheRigelCharacter::InitDeathActorClass()
 		}
 		else if (GameInstance->CharacterNum == Cold)
 		{
-			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("/Game/Heros/Cold/BP_ColdDeathActor"));
+			static ConstructorHelpers::FObjectFinder<UClass> deathActorRef(TEXT("Blueprint'/Game/Heros/Cold/BP_ColdDeathActor.BP_ColdDeathActor_C'"));
 			if (deathActorRef.Object)
 			{
 				deathActorClass = (UClass*)deathActorRef.Object;

@@ -116,6 +116,7 @@ void AColdCharacter::InitProperty()
 	level = 9;
 
 	MaxExperience = 280;
+	experience = 260;
 
 	rangeBase = 600;
 	attackDamageBase = 60;
