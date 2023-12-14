@@ -55,7 +55,7 @@ protected:
 
 	AActor* GetCloseEnemy();
 
-	float range = 200.f;
+	float range = 30.f;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

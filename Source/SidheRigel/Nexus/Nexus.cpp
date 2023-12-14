@@ -132,6 +132,26 @@ void ANexus::Tick(float DeltaTime)
 
 	if (currentTarget)
 	{
+		if (GetDistanceTo(currentTarget) > range)
+		{
+			auto closeActor = GetCloseEnemy();
+			if (closeActor)
+			{
+				if (GetDistanceTo(closeActor) > range)
+				{
+					return;
+				}
+				else
+				{
+					currentTarget = closeActor;
+				}
+			}
+			else
+			{
+				return;
+			}
+		}
+
 		DrawDebugLine(GetWorld(), this->GetActorLocation() + FVector(0, 0, 150), currentTarget->GetActorLocation(), FColor(255, 0, 0));	
 
 		IDamagable* damagableTarget = Cast<IDamagable>(currentTarget);
@@ -152,25 +172,6 @@ void ANexus::Tick(float DeltaTime)
 			}
 			else if (attackDelay <= 0)
 			{
-				if (GetDistanceTo(currentTarget) > range)
-				{
-					auto closeActor = GetCloseEnemy();
-					if (closeActor)
-					{
-						if (GetDistanceTo(closeActor) > range)
-						{
-							return;
-						}
-						else
-						{
-							currentTarget = closeActor;
-						}
-					}
-					else
-					{
-						return;
-					}
-				}
 				FVector MuzzleLocation = muzzleLocation->GetComponentLocation();
 				FRotator MuzzleRotation = GetActorRotation();
 
