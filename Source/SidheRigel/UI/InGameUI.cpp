@@ -14,6 +14,8 @@ void UInGameUI::InitCharacterData(USidheRigelGameInstance* GameInstance)
 
 	GameInstanceRef = GameInstance;
 
+	CombatSummary->SetVisibility(ESlateVisibility::Hidden);
+
 	APlayerController* PlayerController = GameInstanceRef->GetFirstLocalPlayerController();
 
 	CharacterRef = Cast<ASidheRigelCharacter>(PlayerController->GetCharacter());
