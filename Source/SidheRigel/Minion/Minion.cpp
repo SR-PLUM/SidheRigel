@@ -253,6 +253,8 @@ void AMinion::OnEnterEnemy(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 					currentTarget = OtherActor;
 				}
 
+				
+
 				attackList.Add(OtherActor);
 			}
 		}
@@ -305,6 +307,23 @@ void AMinion::InitProperty()
 	range = 150;
 	gold = 20;
 	exp = 60;
+}
+
+AActor* AMinion::GetCloseEnemy()
+{
+	float dist = 30000;
+	AActor* retActor = nullptr;
+	for (auto actor : attackList)
+	{
+		auto tempDist = GetDistanceTo(actor);
+		if (tempDist < dist)
+		{
+			dist = tempDist;
+			retActor = actor;
+		}
+	}
+
+	return retActor;
 }
 
 E_Team AMinion::GetTeam()
@@ -490,6 +509,26 @@ void AMinion::RemoveSilenceParticle()
 
 void AMinion::Attack(AActor* Target)
 {
+	if (GetDistanceTo(currentTarget) > 500)
+	{
+		auto closeActor = GetCloseEnemy();
+		if (closeActor)
+		{
+			if (GetDistanceTo(closeActor) > 500)
+			{
+				return;
+			}
+			else
+			{
+				currentTarget = closeActor;
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
+
 	float totalRange = range;
 	if (currentTarget)
 	{

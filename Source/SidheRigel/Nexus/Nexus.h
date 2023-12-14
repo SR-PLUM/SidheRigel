@@ -53,6 +53,9 @@ protected:
 	void InitNexusWidget();
 	void InitNexusUI();
 
+	AActor* GetCloseEnemy();
+
+	float range = 200.f;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

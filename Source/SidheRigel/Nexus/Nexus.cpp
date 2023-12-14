@@ -42,7 +42,7 @@ ANexus::ANexus()
 	if (!rangeArea)
 	{
 		rangeArea = CreateDefaultSubobject<USphereComponent>(TEXT("rangeArea"));
-		rangeArea->InitSphereRadius(30.0f);
+		rangeArea->InitSphereRadius(range);
 		rangeArea->SetupAttachment(mesh);
 	}
 
@@ -152,6 +152,25 @@ void ANexus::Tick(float DeltaTime)
 			}
 			else if (attackDelay <= 0)
 			{
+				if (GetDistanceTo(currentTarget) > range)
+				{
+					auto closeActor = GetCloseEnemy();
+					if (closeActor)
+					{
+						if (GetDistanceTo(closeActor) > range)
+						{
+							return;
+						}
+						else
+						{
+							currentTarget = closeActor;
+						}
+					}
+					else
+					{
+						return;
+					}
+				}
 				FVector MuzzleLocation = muzzleLocation->GetComponentLocation();
 				FRotator MuzzleRotation = GetActorRotation();
 
@@ -274,3 +293,19 @@ E_Team ANexus::GetTeam()
 	return team;
 }
 
+AActor* ANexus::GetCloseEnemy()
+{
+	float dist = 30000;
+	AActor* retActor = nullptr;
+	for (auto actor : attackList)
+	{
+		auto tempDist = GetDistanceTo(actor);
+		if (tempDist < dist)
+		{
+			dist = tempDist;
+			retActor = actor;
+		}
+	}
+
+	return retActor;
+}

@@ -318,7 +318,24 @@ bool AAISidheRigelCharacter::IsNearByTower()
 bool AAISidheRigelCharacter::HasTarget()
 {
 	if (currentTarget)
+	{
+		//if (GetDistanceTo(currentTarget) > 500)
+		//{
+		//	auto closeActor = GetClosestEnemy();
+		//	if (GetDistanceTo(closeActor) > 500)
+		//	{
+		//		return false;
+		//	}
+		//	else
+		//	{
+		//		currentTarget = closeActor;
+
+		//		return true;
+		//	}
+		//}
+		
 		return true;
+	}
 	else
 		return false;
 }
