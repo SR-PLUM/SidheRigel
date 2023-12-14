@@ -818,6 +818,21 @@ void ASidheRigelCharacter::SetCurrentHP(float _hp)
 
 }
 
+void ASidheRigelCharacter::SetCurrentMP(float _mp)
+{
+	currentMP = _mp;
+
+	float var_MaxMP = GetMaxMP();
+	if (currentMP > var_MaxMP)
+	{
+		currentMP = var_MaxMP;
+	}
+
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateMP();
+	StatSummary->SetMPBar(currentMP / GetMaxMP());
+}
+
 float ASidheRigelCharacter::GetCurrentHP()
 {
 	return currentHP;

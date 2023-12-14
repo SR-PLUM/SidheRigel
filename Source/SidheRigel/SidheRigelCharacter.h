@@ -326,6 +326,7 @@ public:		//Getter, Setter
 	void SetLevel(int32 _level);
 	int32 GetCurrentLevel();
 	virtual void SetCurrentHP(float _hp);
+	virtual void SetCurrentMP(float _mp);
 	float GetCurrentHP();
 	void IE_GenerateHP();
 	void UseMana(float UseMP);

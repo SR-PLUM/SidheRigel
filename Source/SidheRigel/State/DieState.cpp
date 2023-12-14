@@ -43,6 +43,7 @@ void UDieState::Update(float DeltaTime)
 		myCharacter->GetMesh()->SetVisibility(true);
 		myCharacter->SetActorLocation(myCharacter->spawnLocation);
 		myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
+		myCharacter->SetCurrentMP(myCharacter->GetMaxMP());
 		myCharacter->TurnOnStatUI();
 		myCharacter->ClearDeathUI();
 
