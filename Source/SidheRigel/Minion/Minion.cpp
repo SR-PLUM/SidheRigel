@@ -13,6 +13,7 @@
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
+#include "SidheRigel/Nexus/Nexus.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -488,6 +489,15 @@ void AMinion::RemoveSilenceParticle()
 
 void AMinion::Attack(AActor* Target)
 {
+	float totalRange = range;
+	if (currentTarget)
+	{
+		if (auto nexusTarget = Cast<ANexus>(currentTarget))
+		{
+			totalRange += 100;
+		}
+	}
+
 	IDamagable* damagableTarget = Cast<IDamagable>(currentTarget);
 	if (damagableTarget)
 	{
@@ -508,7 +518,7 @@ void AMinion::Attack(AActor* Target)
 				currentTarget = attackList.Top();
 			}
 		}
-		else if (GetDistanceTo(currentTarget) <= range && attackDelay <= 0 && IsStun == false)
+		else if (GetDistanceTo(currentTarget) <= totalRange && attackDelay <= 0 && IsStun == false)
 		{
 			IsAttackAnim = true;
 			FVector MuzzleLocation = GetActorLocation();
@@ -545,7 +555,7 @@ void AMinion::Attack(AActor* Target)
 			{
 				if (HasAuthority())
 				{
-					AIController->MoveToActor(currentTarget, range - 80);
+					AIController->MoveToActor(currentTarget, totalRange - 80);
 				}
 			}
 			else
