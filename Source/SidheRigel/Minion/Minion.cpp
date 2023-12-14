@@ -14,6 +14,7 @@
 #include "SidheRigel/Character/Common/SilenceParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Nexus/Nexus.h"
+#include "SidheRigel/Tower/Tower.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
@@ -301,7 +302,7 @@ void AMinion::InitProperty()
 	hp = maxHp;
 	projectileDamage = 12;
 	attackDelay = 1.25;
-	range = 110;
+	range = 150;
 	gold = 20;
 	exp = 60;
 }
@@ -494,7 +495,11 @@ void AMinion::Attack(AActor* Target)
 	{
 		if (auto nexusTarget = Cast<ANexus>(currentTarget))
 		{
-			totalRange += 100;
+			totalRange += 150;
+		}
+		if (auto towerTarget = Cast<ATower>(currentTarget))
+		{
+			totalRange += 75;
 		}
 	}
 
