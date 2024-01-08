@@ -254,6 +254,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SpacePress", IE_Pressed, this, &ASidheRigelPlayerController::PressedSpaceButton);
 	InputComponent->BindAction("APress", IE_Pressed, this, &ASidheRigelPlayerController::PressedAButton);
 	InputComponent->BindAction("SPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedSButton);
+	InputComponent->BindAction("BPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedBButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
@@ -380,6 +381,36 @@ void ASidheRigelPlayerController::PressedSButton()
 		StopMovement();
 	}
 	
+}
+
+void ASidheRigelPlayerController::PressedBButton()
+{
+	if (!isGameOvered)
+	{
+		if (currentState == Die)
+			return;
+
+		ChangeState(Idle);
+		StopMovement();
+
+		myCharacter->isRecall = true;
+
+		UAnimInstance* AnimInstance = myCharacter->GetMesh()->GetAnimInstance();
+		if (AnimInstance && myCharacter->RecallMontage)
+		{
+			AnimInstance->Montage_Play(myCharacter->RecallMontage);
+		}
+
+		GetWorldTimerManager().SetTimer(myCharacter->RecallTimer,
+			FTimerDelegate::CreateLambda([=]()
+				{
+					myCharacter->SetActorLocation(myCharacter->GetActorLocation() - FVector(10, 10, 10));
+
+					myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
+					myCharacter->SetCurrentMP(myCharacter->GetMaxMP());
+				}
+		), 4.0f, false);
+	}
 }
 
 void ASidheRigelPlayerController::IE_Update()

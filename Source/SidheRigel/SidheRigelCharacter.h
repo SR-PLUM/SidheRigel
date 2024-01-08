@@ -442,5 +442,12 @@ public:	//FairyWing E Skill Talent
 
 public: //FairyWing W Skill Talent
 	bool isWSkillAlreadyHit = false;
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+		class UAnimMontage* RecallMontage;
+
+	bool isRecall = false;
+	FTimerHandle RecallTimer;
 };
 

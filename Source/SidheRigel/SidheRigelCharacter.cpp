@@ -1503,6 +1503,11 @@ void ASidheRigelCharacter::Silence(float time)
 
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
+	if (isRecall == true)
+	{
+		GetWorldTimerManager().ClearTimer(RecallTimer);
+		isRecall = false;
+	}
 	float tmp = damage - barrierAmount;
 	DecreaseBarrierAmount(damage);
 
