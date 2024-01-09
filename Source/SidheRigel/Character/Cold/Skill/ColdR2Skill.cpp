@@ -24,7 +24,8 @@ void UColdR2Skill::SetSkillProperty(ASidheRigelCharacter* Character, E_SkillStat
 {
 	skillDelay = 5.f;
 	skillCooldown = 0.f;
-	skillMaxCooldown = 100.f;
+	//skillMaxCooldown = 100.f;
+	skillMaxCooldown = 10.f;
 	range = 5000.f;
 	requireMana = 100; //100
 
