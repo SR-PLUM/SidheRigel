@@ -141,12 +141,12 @@ void AFairyWingCharacter::InitProperty()
 	MaxExperience = 280;
 
 	rangeBase = 575.f;
-	attackDamageBase = 53000.f;
+	attackDamageBase = 53.f;
 	attackSpeedBase = 0.681f;
 	criticalRateBase = 0;
 	criticalDamageBase = 75;
 
-	MaxHPBase = 574000.f;
+	MaxHPBase = 574.f;
 	generateHealthPointBase = 1.f;
 	MaxMPBase = 418.f;
 	generateManaPointBase = 2.f;

@@ -45,6 +45,8 @@ protected:
 	void PressedAButton();
 	void PressedSButton();
 
+	void PressedBButton();
+
 	//Set Pawn
 public:
 	FORCEINLINE UClass* GetPlayerPawnClass() { return MyPawnClass; }
