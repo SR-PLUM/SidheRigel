@@ -1417,6 +1417,26 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 	RestoreHP(damage * _lifeSteal);
 }
 
+void ASidheRigelCharacter::Execute()
+{
+	currentHP = 0;
+
+	if (currentHP <= 0 && !isDie)
+	{
+		currentHP = 0;
+		isDie = true;
+		DieTime = 10.f;
+		sidheRigelController->ChangeState(sidheRigelController->Die);
+		SpawnDeathActor();
+
+		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
+	}
+
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateHP();
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+}
+
 void ASidheRigelCharacter::Stun(float time)
 {
 	float totalTime = time * (1 - (GetEndurance() / 100.f));

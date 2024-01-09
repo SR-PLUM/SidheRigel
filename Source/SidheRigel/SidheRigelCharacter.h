@@ -399,6 +399,9 @@ public:	//Attack
 	UFUNCTION()
 		void LifeSteal(float damage);
 
+	UFUNCTION()
+		void Execute();
+
 protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
 	FTimerHandle GenerateMPTimer;
