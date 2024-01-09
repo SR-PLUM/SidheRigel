@@ -404,7 +404,7 @@ void ASidheRigelPlayerController::PressedBButton()
 		GetWorldTimerManager().SetTimer(myCharacter->RecallTimer,
 			FTimerDelegate::CreateLambda([=]()
 				{
-					myCharacter->SetActorLocation(myCharacter->GetActorLocation() - FVector(10, 10, 10));
+					myCharacter->SetActorLocation(myCharacter->spawnLocation);
 
 					myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
 					myCharacter->SetCurrentMP(myCharacter->GetMaxMP());
