@@ -129,7 +129,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 		silenceParticleClass = (UClass*)SlienceParticle.Object;
 	}
 	//RecallParticle
-	static ConstructorHelpers::FObjectFinder<UClass>RecallParticle(TEXT("Blueprint'/Game/Heros/Common/BP_RecallParticle.BP_RecallParticle_C'"));
+	static ConstructorHelpers::FObjectFinder<UClass> RecallParticle(TEXT("Blueprint'/Game/Heros/Common/BP_RecallParticle.BP_RecallParticle_C'"));
 	if (RecallParticle.Object)
 	{
 		recallParticleClass = (UClass*)RecallParticle.Object;
@@ -833,6 +833,7 @@ void ASidheRigelCharacter::RemoveRecallParticle()
 
 	recallParticle->Destroy();
 	recallParticle = nullptr;
+	isRecall = false;
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)
@@ -1570,7 +1571,6 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 	{
 		GetWorldTimerManager().ClearTimer(RecallTimer);
 		RemoveRecallParticle();
-		isRecall = false;
 	}
 
 	float tmp = damage - barrierAmount;
