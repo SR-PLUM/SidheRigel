@@ -5,7 +5,7 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
-#include "Engine/World.h"
+ 
 #include "GameFramework/GameModeBase.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine.h"
@@ -270,7 +270,8 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 		//UE_LOG(LogTemp, Error, TEXT("OnRightClick"))
 		//SkillCancel
 		bAttackReady = false;
-		bSkillReady = false;
+		bSkillReady = false;		
+
 		currentSkill = E_SkillState::Skill_Null;
 		if (myCharacter)
 		{
@@ -401,6 +402,8 @@ void ASidheRigelPlayerController::PressedBButton()
 			AnimInstance->Montage_Play(myCharacter->RecallMontage);
 		}
 
+		myCharacter->SpawnRecallParticle();
+
 		GetWorldTimerManager().SetTimer(myCharacter->RecallTimer,
 			FTimerDelegate::CreateLambda([=]()
 				{
@@ -408,6 +411,8 @@ void ASidheRigelPlayerController::PressedBButton()
 
 					myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
 					myCharacter->SetCurrentMP(myCharacter->GetMaxMP());
+
+					myCharacter->RemoveRecallParticle();
 				}
 		), 4.0f, false);
 	}
