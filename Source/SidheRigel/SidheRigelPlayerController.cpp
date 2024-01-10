@@ -271,6 +271,19 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 		//SkillCancel
 		bAttackReady = false;
 		bSkillReady = false;
+
+		if (myCharacter->isRecall == true)
+		{
+			myCharacter->isRecall = false;
+
+			UAnimInstance* AnimInstance = myCharacter->GetMesh()->GetAnimInstance();
+			if (AnimInstance && myCharacter->RecallMontage)
+			{
+				GetWorldTimerManager().ClearTimer(myCharacter->RecallTimer);
+				AnimInstance->Montage_Stop(0.f);
+			}
+		}		
+
 		currentSkill = E_SkillState::Skill_Null;
 		if (myCharacter)
 		{
@@ -400,6 +413,8 @@ void ASidheRigelPlayerController::PressedBButton()
 		{
 			AnimInstance->Montage_Play(myCharacter->RecallMontage);
 		}
+
+		myCharacter->SpawnRecallParticle();
 
 		GetWorldTimerManager().SetTimer(myCharacter->RecallTimer,
 			FTimerDelegate::CreateLambda([=]()

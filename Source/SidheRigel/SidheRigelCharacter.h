@@ -226,6 +226,15 @@ public:	//CC Particle
 	UFUNCTION()
 		void RemoveSilenceParticle();
 
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ARecallParticle> recallParticleClass;
+	UFUNCTION()
+		void SpawnRecallParticle();
+	UPROPERTY()
+		class ARecallParticle* recallParticle;
+	UFUNCTION()
+		void RemoveRecallParticle();
+
 protected:	//Stat
 	UPROPERTY()
 		int32 level;							//레벨

@@ -30,6 +30,7 @@
 #include "SidheRigel/UI/DeathTime.h"
 #include "SidheRigel/UI/GameOverUI.h"
 #include "Components/WidgetComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRigel/Tower/Tower.h"
 #include "SidheRigel/UI/TalentUI.h"
@@ -38,6 +39,7 @@
 #include "SidheRigel/Character/Common/SlowParticle.h"
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
+#include "SidheRigel/Character/Common/RecallParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Character/AI/CharacterAIController.h"
 #include "SidheRigel/Nexus/Nexus.h"
@@ -101,6 +103,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitAttackProjectile();
 
+
 	//StunParticle
 	static ConstructorHelpers::FObjectFinder<UClass> StunParticle(TEXT("Blueprint'/Game/Heros/Common/BP_StunParticle.BP_StunParticle_C'"));
 	if (StunParticle.Object)
@@ -124,6 +127,12 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	if (SlienceParticle.Object)
 	{
 		silenceParticleClass = (UClass*)SlienceParticle.Object;
+	}
+	//RecallParticle
+	static ConstructorHelpers::FObjectFinder<UClass>RecallParticle(TEXT("Blueprint'/Game/Heros/Common/BP_RecallParticle.BP_RecallParticle_C'"));
+	if (RecallParticle.Object)
+	{
+		recallParticleClass = (UClass*)RecallParticle.Object;
 	}
 
 	//InGameUIWidget
@@ -790,6 +799,40 @@ void ASidheRigelCharacter::RemoveSilenceParticle()
 
 	silenceParticle->Destroy();
 	silenceParticle = nullptr;
+}
+
+void ASidheRigelCharacter::SpawnRecallParticle()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Recall"));
+
+	if (recallParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		recallParticle = World->SpawnActorDeferred<ARecallParticle>(recallParticleClass, SpawnTransform);
+
+		if (recallParticle)
+		{
+			recallParticle->target = this;
+		}
+
+		recallParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveRecallParticle()
+{
+	if (!recallParticle)
+		return;
+
+	recallParticle->Destroy();
+	recallParticle = nullptr;
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)
@@ -1526,8 +1569,10 @@ void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 	if (isRecall == true)
 	{
 		GetWorldTimerManager().ClearTimer(RecallTimer);
+		RemoveRecallParticle();
 		isRecall = false;
 	}
+
 	float tmp = damage - barrierAmount;
 	DecreaseBarrierAmount(damage);
 
