@@ -626,9 +626,18 @@ void ASidheRigelPlayerController::ChangeCurrentSkill(E_SkillState SkillState)
 		bSkillReady = true;
 
 		//Check Instant cast
-		if (skill->IsInstantCast() && skill->CanUse())
+		if (skill->IsInstantCast())
 		{
-			ChangeState(UseSkill);
+			if (skill->CanUse())
+			{
+				ChangeState(UseSkill);
+			}
+			else
+			{
+				currentSkill = E_SkillState::Skill_Null;
+				bSkillReady = false;
+				myCharacter->skillRange->SetVisibility(false);
+			}
 		}
 	}
 	else //현재 사용 불가능 (마나 부족 || 쿨타임)

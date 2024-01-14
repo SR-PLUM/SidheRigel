@@ -115,6 +115,17 @@ public:	//Skill
 
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
+	UFUNCTION(BlueprintCallable)
+		bool ToggleInstantQ();
+	UFUNCTION(BlueprintCallable)
+		bool ToggleInstantW();
+	UFUNCTION(BlueprintCallable)
+		bool ToggleInstantE();
+	UFUNCTION(BlueprintCallable)
+		bool ToggleInstantR();
+	UFUNCTION(BlueprintCallable)
+		TArray<bool> GetIsInstanceSkill();
+
 public: //Talent
 	TArray<FTalentList> talentListArray;
 
