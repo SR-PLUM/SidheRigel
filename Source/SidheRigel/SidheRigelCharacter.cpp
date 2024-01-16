@@ -30,6 +30,7 @@
 #include "SidheRigel/UI/DeathTime.h"
 #include "SidheRigel/UI/GameOverUI.h"
 #include "Components/WidgetComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "SidheRigel/Minion/Minion.h"
 #include "SidheRigel/Tower/Tower.h"
 #include "SidheRigel/UI/TalentUI.h"
@@ -38,6 +39,7 @@
 #include "SidheRigel/Character/Common/SlowParticle.h"
 #include "SidheRigel/Character/Common/StopParticle.h"
 #include "SidheRigel/Character/Common/SilenceParticle.h"
+#include "SidheRigel/Character/Common/RecallParticle.h"
 #include "SidheRigel/SidheRigelGameInstance.h"
 #include "SidheRigel/Character/AI/CharacterAIController.h"
 #include "SidheRigel/Nexus/Nexus.h"
@@ -101,6 +103,7 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 
 	InitAttackProjectile();
 
+
 	//StunParticle
 	static ConstructorHelpers::FObjectFinder<UClass> StunParticle(TEXT("Blueprint'/Game/Heros/Common/BP_StunParticle.BP_StunParticle_C'"));
 	if (StunParticle.Object)
@@ -124,6 +127,12 @@ ASidheRigelCharacter::ASidheRigelCharacter()
 	if (SlienceParticle.Object)
 	{
 		silenceParticleClass = (UClass*)SlienceParticle.Object;
+	}
+	//RecallParticle
+	static ConstructorHelpers::FObjectFinder<UClass> RecallParticle(TEXT("Blueprint'/Game/Heros/Common/BP_RecallParticle.BP_RecallParticle_C'"));
+	if (RecallParticle.Object)
+	{
+		recallParticleClass = (UClass*)RecallParticle.Object;
 	}
 
 	//InGameUIWidget
@@ -346,6 +355,43 @@ void ASidheRigelCharacter::ChangeTarget()
 void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillState)
 {
 	
+}
+
+bool ASidheRigelCharacter::ToggleInstantQ()
+{
+	skills[E_SkillState::Q_Ready]->bIsInstantCast = !(skills[E_SkillState::Q_Ready]->bIsInstantCast);
+	return (skills[E_SkillState::Q_Ready]->bIsInstantCast);
+}
+
+bool ASidheRigelCharacter::ToggleInstantW()
+{
+	skills[E_SkillState::W_Ready]->bIsInstantCast = !(skills[E_SkillState::W_Ready]->bIsInstantCast);
+	return (skills[E_SkillState::W_Ready]->bIsInstantCast);
+}
+
+bool ASidheRigelCharacter::ToggleInstantE()
+{
+	skills[E_SkillState::E_Ready]->bIsInstantCast = !(skills[E_SkillState::E_Ready]->bIsInstantCast);
+	return (skills[E_SkillState::E_Ready]->bIsInstantCast);
+}
+
+bool ASidheRigelCharacter::ToggleInstantR()
+{
+	skills[E_SkillState::R_Ready]->bIsInstantCast = !(skills[E_SkillState::R_Ready]->bIsInstantCast);
+	return (skills[E_SkillState::R_Ready]->bIsInstantCast);
+}
+
+TArray<bool> ASidheRigelCharacter::GetIsInstanceSkill()
+{
+	TArray<bool> ret;
+	for (auto item : skills)
+	{
+		if (item.Value->bIsInstantCast)
+			ret.Add(true);
+		else
+			ret.Add(false);
+	}
+	return ret;
 }
 
 void ASidheRigelCharacter::InitTalentLIst()
@@ -790,6 +836,41 @@ void ASidheRigelCharacter::RemoveSilenceParticle()
 
 	silenceParticle->Destroy();
 	silenceParticle = nullptr;
+}
+
+void ASidheRigelCharacter::SpawnRecallParticle()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Recall"));
+
+	if (recallParticle)
+		return;
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(GetActorLocation());
+		SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+
+		recallParticle = World->SpawnActorDeferred<ARecallParticle>(recallParticleClass, SpawnTransform);
+
+		if (recallParticle)
+		{
+			recallParticle->target = this;
+		}
+
+		recallParticle->FinishSpawning(SpawnTransform);
+	}
+}
+
+void ASidheRigelCharacter::RemoveRecallParticle()
+{
+	if (!recallParticle)
+		return;
+
+	recallParticle->Destroy();
+	recallParticle = nullptr;
+	isRecall = false;
 }
 
 void ASidheRigelCharacter::SetLevel(int32 _level)
@@ -1417,6 +1498,26 @@ void ASidheRigelCharacter::LifeSteal(float damage)
 	RestoreHP(damage * _lifeSteal);
 }
 
+void ASidheRigelCharacter::Execute()
+{
+	currentHP = 0;
+
+	if (currentHP <= 0 && !isDie)
+	{
+		currentHP = 0;
+		isDie = true;
+		DieTime = 10.f;
+		sidheRigelController->ChangeState(sidheRigelController->Die);
+		SpawnDeathActor();
+
+		UE_LOG(LogTemp, Error, TEXT("Dead!!"));
+	}
+
+	if (InGameUI != nullptr)
+		InGameUI->CharacterStatus->UpdateHP();
+	StatSummary->SetHPBar(currentHP / GetMaxHP());
+}
+
 void ASidheRigelCharacter::Stun(float time)
 {
 	float totalTime = time * (1 - (GetEndurance() / 100.f));
@@ -1503,6 +1604,12 @@ void ASidheRigelCharacter::Silence(float time)
 
 void ASidheRigelCharacter::TakeDamage(float damage, AActor* damageCauser)
 {
+	if (isRecall == true)
+	{
+		GetWorldTimerManager().ClearTimer(RecallTimer);
+		RemoveRecallParticle();
+	}
+
 	float tmp = damage - barrierAmount;
 	DecreaseBarrierAmount(damage);
 

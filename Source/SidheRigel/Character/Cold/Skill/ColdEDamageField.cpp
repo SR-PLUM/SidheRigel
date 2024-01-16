@@ -113,6 +113,10 @@ void AColdEDamageField::Explosion()
 				if (target->GetHP() <= talentKillThreshold)
 				{
 					//처형 함수
+					if (auto characterTarget = Cast<ASidheRigelCharacter>(target))
+					{
+						characterTarget->Execute();
+					}
 				}
 			}
 		}

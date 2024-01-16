@@ -20,16 +20,12 @@ AColdR2Projectile::AColdR2Projectile()
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
 	}
-	if (!spline)
+	if (!mesh)
 	{
-		spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
-		spline->SetupAttachment(RootComponent);
+		mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+		
+		RootComponent = mesh;
 	}
-	//if (!splineComponent)
-	//{
-	//	splineComponent = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SplineComponent"));
-	//	RootComponent = splineComponent;
-	//}
 
 	static ConstructorHelpers::FObjectFinder<UClass>laserRef(TEXT("Blueprint'/Game/Heros/Cold/Skill/BP_ColdR2Laser.BP_ColdR2Laser_C'"));
 	if (laserRef.Object)
@@ -43,16 +39,13 @@ void AColdR2Projectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//splineComponent = NewObject<USplineMeshComponent>(this, USplineMeshComponent::StaticClass());
-	//splineComponent->AttachToComponent(spline,FAttachmentTransformRules::KeepRelativeTransform);
-	//splineComponent->SetStartAndEnd(FVector(0, 0, 0), FVector(100, 0, 0), FVector(5000, 0, 0), FVector(100, 0, 0));
-
 	FTimerHandle R2ProjectileTimer;
 	GetWorldTimerManager().SetTimer(R2ProjectileTimer,
 		FTimerDelegate::CreateLambda([=]()
 		{
 			TSet<AActor*> overlapActors;
-			//splineComponent->GetOverlappingActors(overlapActors);
+
+			mesh->GetOverlappingActors(overlapActors);
 
 			for (auto& item : overlapActors)
 			{
@@ -73,7 +66,7 @@ void AColdR2Projectile::BeginPlay()
 				FActorSpawnParameters SpawnParams;
 				FTransform SpawnTransform;
 				SpawnTransform.SetLocation(GetActorLocation());
-				SpawnTransform.SetRotation(GetActorRotation().Quaternion());
+				SpawnTransform.SetRotation(projectileOwner->GetActorRotation().Quaternion());
 				SpawnParams.Owner = projectileOwner;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 

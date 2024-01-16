@@ -5,7 +5,7 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
-#include "Engine/World.h"
+ 
 #include "GameFramework/GameModeBase.h"
 #include "Net/UnrealNetwork.h"
 #include "Engine.h"
@@ -254,6 +254,7 @@ void ASidheRigelPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SpacePress", IE_Pressed, this, &ASidheRigelPlayerController::PressedSpaceButton);
 	InputComponent->BindAction("APress", IE_Pressed, this, &ASidheRigelPlayerController::PressedAButton);
 	InputComponent->BindAction("SPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedSButton);
+	InputComponent->BindAction("BPress", IE_Pressed, this, &ASidheRigelPlayerController::PressedBButton);
 }
 
 void ASidheRigelPlayerController::OnSetDestinationReleased()
@@ -269,7 +270,8 @@ void ASidheRigelPlayerController::ClickedRightMouseButton()
 		//UE_LOG(LogTemp, Error, TEXT("OnRightClick"))
 		//SkillCancel
 		bAttackReady = false;
-		bSkillReady = false;
+		bSkillReady = false;		
+
 		currentSkill = E_SkillState::Skill_Null;
 		if (myCharacter)
 		{
@@ -380,6 +382,40 @@ void ASidheRigelPlayerController::PressedSButton()
 		StopMovement();
 	}
 	
+}
+
+void ASidheRigelPlayerController::PressedBButton()
+{
+	if (!isGameOvered)
+	{
+		if (currentState == Die)
+			return;
+
+		ChangeState(Idle);
+		StopMovement();
+
+		myCharacter->isRecall = true;
+
+		UAnimInstance* AnimInstance = myCharacter->GetMesh()->GetAnimInstance();
+		if (AnimInstance && myCharacter->RecallMontage)
+		{
+			AnimInstance->Montage_Play(myCharacter->RecallMontage);
+		}
+
+		myCharacter->SpawnRecallParticle();
+
+		GetWorldTimerManager().SetTimer(myCharacter->RecallTimer,
+			FTimerDelegate::CreateLambda([=]()
+				{
+					myCharacter->SetActorLocation(myCharacter->spawnLocation);
+
+					myCharacter->SetCurrentHP(myCharacter->GetMaxHP());
+					myCharacter->SetCurrentMP(myCharacter->GetMaxMP());
+
+					myCharacter->RemoveRecallParticle();
+				}
+		), 4.0f, false);
+	}
 }
 
 void ASidheRigelPlayerController::IE_Update()
@@ -590,9 +626,18 @@ void ASidheRigelPlayerController::ChangeCurrentSkill(E_SkillState SkillState)
 		bSkillReady = true;
 
 		//Check Instant cast
-		if (skill->IsInstantCast() && skill->CanUse())
+		if (skill->IsInstantCast())
 		{
-			ChangeState(UseSkill);
+			if (skill->CanUse())
+			{
+				ChangeState(UseSkill);
+			}
+			else
+			{
+				currentSkill = E_SkillState::Skill_Null;
+				bSkillReady = false;
+				myCharacter->skillRange->SetVisibility(false);
+			}
 		}
 	}
 	else //현재 사용 불가능 (마나 부족 || 쿨타임)

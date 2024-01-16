@@ -87,4 +87,18 @@ void UIdleState::OnKeyboard(E_SkillState SkillState)
 
 void UIdleState::OnEnd()
 {
+	if (myCharacter)
+	{
+		if (myCharacter->isRecall == true)
+		{
+			myCharacter->RemoveRecallParticle();
+
+			UAnimInstance* AnimInstance = myCharacter->GetMesh()->GetAnimInstance();
+			if (AnimInstance && myCharacter->RecallMontage)
+			{
+				myCharacter->GetWorldTimerManager().ClearTimer(myCharacter->RecallTimer);
+				AnimInstance->Montage_Stop(0.f);
+			}
+		}
+	}
 }

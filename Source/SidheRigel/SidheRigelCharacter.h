@@ -115,6 +115,17 @@ public:	//Skill
 
 	virtual void UseSkill(FHitResult HitResult, E_SkillState SkillState);
 
+	UFUNCTION(BlueprintCallable)
+		bool ToggleInstantQ();
+	UFUNCTION(BlueprintCallable)
+		bool ToggleInstantW();
+	UFUNCTION(BlueprintCallable)
+		bool ToggleInstantE();
+	UFUNCTION(BlueprintCallable)
+		bool ToggleInstantR();
+	UFUNCTION(BlueprintCallable)
+		TArray<bool> GetIsInstanceSkill();
+
 public: //Talent
 	TArray<FTalentList> talentListArray;
 
@@ -225,6 +236,15 @@ public:	//CC Particle
 		class ASilenceParticle* silenceParticle;
 	UFUNCTION()
 		void RemoveSilenceParticle();
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<class ARecallParticle> recallParticleClass;
+	UFUNCTION()
+		void SpawnRecallParticle();
+	UPROPERTY()
+		class ARecallParticle* recallParticle;
+	UFUNCTION()
+		void RemoveRecallParticle();
 
 protected:	//Stat
 	UPROPERTY()
@@ -399,6 +419,9 @@ public:	//Attack
 	UFUNCTION()
 		void LifeSteal(float damage);
 
+	UFUNCTION()
+		void Execute();
+
 protected:	//TimerHandle
 	FTimerHandle GenerateHPTimer;
 	FTimerHandle GenerateMPTimer;
@@ -442,5 +465,12 @@ public:	//FairyWing E Skill Talent
 
 public: //FairyWing W Skill Talent
 	bool isWSkillAlreadyHit = false;
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+		class UAnimMontage* RecallMontage;
+
+	bool isRecall = false;
+	FTimerHandle RecallTimer;
 };
 
