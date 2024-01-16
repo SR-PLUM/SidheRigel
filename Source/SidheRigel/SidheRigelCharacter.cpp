@@ -357,6 +357,43 @@ void ASidheRigelCharacter::UseSkill(FHitResult HitResult, E_SkillState SkillStat
 	
 }
 
+bool ASidheRigelCharacter::ToggleInstantQ()
+{
+	skills[E_SkillState::Q_Ready]->bIsInstantCast = !(skills[E_SkillState::Q_Ready]->bIsInstantCast);
+	return (skills[E_SkillState::Q_Ready]->bIsInstantCast);
+}
+
+bool ASidheRigelCharacter::ToggleInstantW()
+{
+	skills[E_SkillState::W_Ready]->bIsInstantCast = !(skills[E_SkillState::W_Ready]->bIsInstantCast);
+	return (skills[E_SkillState::W_Ready]->bIsInstantCast);
+}
+
+bool ASidheRigelCharacter::ToggleInstantE()
+{
+	skills[E_SkillState::E_Ready]->bIsInstantCast = !(skills[E_SkillState::E_Ready]->bIsInstantCast);
+	return (skills[E_SkillState::E_Ready]->bIsInstantCast);
+}
+
+bool ASidheRigelCharacter::ToggleInstantR()
+{
+	skills[E_SkillState::R_Ready]->bIsInstantCast = !(skills[E_SkillState::R_Ready]->bIsInstantCast);
+	return (skills[E_SkillState::R_Ready]->bIsInstantCast);
+}
+
+TArray<bool> ASidheRigelCharacter::GetIsInstanceSkill()
+{
+	TArray<bool> ret;
+	for (auto item : skills)
+	{
+		if (item.Value->bIsInstantCast)
+			ret.Add(true);
+		else
+			ret.Add(false);
+	}
+	return ret;
+}
+
 void ASidheRigelCharacter::InitTalentLIst()
 {
 	//Talent Init

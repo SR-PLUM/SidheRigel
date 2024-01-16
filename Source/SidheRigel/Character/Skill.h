@@ -32,7 +32,7 @@ public:
 	virtual float GetRange();
 	bool hasEnoughMana();
 
-protected:
+public:
 	float skillDelay;
 	float skillCooldown;
 	float skillMaxCooldown;
